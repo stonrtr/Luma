@@ -1,0 +1,7 @@
+server/tracker.db
+server/secret.key
+server/.env
+__pycache__/
+*.pyc
+.DS_Store
+.claude/

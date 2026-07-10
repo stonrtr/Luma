@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: top-superfoods-tracker
+    env: python
+    plan: starter
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: gunicorn --chdir server --bind 0.0.0.0:$PORT app:app
+    disk:
+      name: tracker-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: BOOTSTRAP_SECRET
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
