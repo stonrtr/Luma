@@ -1,0 +1,347 @@
+// Worksection-clone — полная доменная модель
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ----------------------------------------------------------------------------
+// Пользователи, команды, роли
+// ----------------------------------------------------------------------------
+
+enum SystemRole {
+  OWNER
+  ADMIN
+  MEMBER
+  CLIENT
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  avatarUrl    String?
+  title        String?
+  role         SystemRole @default(MEMBER)
+  hourlyRate   Float?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  createdProjects Project[]       @relation("ProjectCreator")
+  projectMembers  ProjectMember[]
+  createdTasks    Task[]          @relation("TaskCreator")
+  assignedTasks   TaskAssignee[]
+  comments        Comment[]
+  timeLogs        TimeLog[]
+  activities      Activity[]
+  notifications   Notification[]  @relation("NotificationRecipient")
+  triggeredNotifs Notification[]  @relation("NotificationActor")
+  uploadedFiles   Attachment[]
+  mentions        Mention[]
+}
+
+// ----------------------------------------------------------------------------
+// Проекты
+// ----------------------------------------------------------------------------
+
+enum ProjectStatus {
+  ACTIVE
+  ON_HOLD
+  DONE
+  ARCHIVED
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  color       String        @default("#4f46e5")
+  status      ProjectStatus @default(ACTIVE)
+  startDate   DateTime?
+  dueDate     DateTime?
+  budget      Float?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  createdById String
+  createdBy   User   @relation("ProjectCreator", fields: [createdById], references: [id])
+
+  members    ProjectMember[]
+  tasks      Task[]
+  milestones Milestone[]
+  tags       Tag[]
+  activities Activity[]
+
+  @@index([status])
+}
+
+enum ProjectRole {
+  MANAGER
+  MEMBER
+  CLIENT
+}
+
+model ProjectMember {
+  id        String      @id @default(cuid())
+  role      ProjectRole @default(MEMBER)
+  createdAt DateTime    @default(now())
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+}
+
+// ----------------------------------------------------------------------------
+// Задачи, вехи, зависимости
+// ----------------------------------------------------------------------------
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  TO_REVIEW
+  DONE
+  PAUSED
+}
+
+enum TaskPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(NORMAL)
+  startDate   DateTime?
+  dueDate     DateTime?
+  completedAt DateTime?
+  archivedAt  DateTime?
+  estimateHrs Float?
+  position    Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Task?   @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  subtasks Task[]  @relation("TaskSubtasks")
+
+  createdById String
+  createdBy   User   @relation("TaskCreator", fields: [createdById], references: [id])
+
+  milestoneId String?
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+
+  assignees   TaskAssignee[]
+  comments    Comment[]
+  timeLogs    TimeLog[]
+  checklist   ChecklistItem[]
+  attachments Attachment[]
+  tags        TaskTag[]
+  dependsOn   TaskDependency[] @relation("DependencySuccessor")
+  dependedBy  TaskDependency[] @relation("DependencyPredecessor")
+
+  @@index([projectId, status, position])
+  @@index([parentId])
+}
+
+model TaskAssignee {
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@index([userId])
+}
+
+model TaskDependency {
+  id            String @id @default(cuid())
+  predecessorId String
+  predecessor   Task   @relation("DependencyPredecessor", fields: [predecessorId], references: [id], onDelete: Cascade)
+  successorId   String
+  successor     Task   @relation("DependencySuccessor", fields: [successorId], references: [id], onDelete: Cascade)
+
+  @@unique([predecessorId, successorId])
+}
+
+model Milestone {
+  id        String    @id @default(cuid())
+  title     String
+  dueDate   DateTime?
+  createdAt DateTime  @default(now())
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+
+  @@index([projectId])
+}
+
+model ChecklistItem {
+  id       String  @id @default(cuid())
+  text     String
+  done     Boolean @default(false)
+  position Int     @default(0)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+}
+
+// ----------------------------------------------------------------------------
+// Теги
+// ----------------------------------------------------------------------------
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String
+  color String @default("#64748b")
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks TaskTag[]
+
+  @@unique([projectId, name])
+}
+
+model TaskTag {
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tagId  String
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+}
+
+// ----------------------------------------------------------------------------
+// Комментарии, упоминания, вложения
+// ----------------------------------------------------------------------------
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  mentions    Mention[]
+  attachments Attachment[]
+
+  @@index([taskId])
+}
+
+model Mention {
+  id String @id @default(cuid())
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+  url       String
+  createdAt DateTime @default(now())
+
+  uploadedById String
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+
+  taskId String?
+  task   Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+}
+
+// ----------------------------------------------------------------------------
+// Тайм-трекинг
+// ----------------------------------------------------------------------------
+
+model TimeLog {
+  id        String    @id @default(cuid())
+  minutes   Int
+  note      String?
+  billable  Boolean   @default(true)
+  loggedAt  DateTime  @default(now())
+  startedAt DateTime?
+  isRunning Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId, loggedAt])
+}
+
+// ----------------------------------------------------------------------------
+// Лента активности и уведомления
+// ----------------------------------------------------------------------------
+
+model Activity {
+  id        String   @id @default(cuid())
+  type      String
+  meta      String?
+  createdAt DateTime @default(now())
+
+  actorId String
+  actor   User   @relation(fields: [actorId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  type      String
+  message   String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  recipientId String
+  recipient   User   @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  actorId String?
+  actor   User?   @relation("NotificationActor", fields: [actorId], references: [id])
+
+  @@index([recipientId, readAt])
+}
