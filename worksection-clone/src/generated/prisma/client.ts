@@ -82,6 +82,11 @@ export type Milestone = Prisma.MilestoneModel
  */
 export type ChecklistItem = Prisma.ChecklistItemModel
 /**
+ * Model RecurringTask
+ * 
+ */
+export type RecurringTask = Prisma.RecurringTaskModel
+/**
  * Model Tag
  * 
  */
@@ -107,10 +112,40 @@ export type Mention = Prisma.MentionModel
  */
 export type Attachment = Prisma.AttachmentModel
 /**
+ * Model FileLink
+ * 
+ */
+export type FileLink = Prisma.FileLinkModel
+/**
+ * Model FileShare
+ * 
+ */
+export type FileShare = Prisma.FileShareModel
+/**
  * Model TimeLog
  * 
  */
 export type TimeLog = Prisma.TimeLogModel
+/**
+ * Model Call
+ * 
+ */
+export type Call = Prisma.CallModel
+/**
+ * Model MonthlyGoal
+ * 
+ */
+export type MonthlyGoal = Prisma.MonthlyGoalModel
+/**
+ * Model Kpi
+ * 
+ */
+export type Kpi = Prisma.KpiModel
+/**
+ * Model WeeklyPlanItem
+ * 
+ */
+export type WeeklyPlanItem = Prisma.WeeklyPlanItemModel
 /**
  * Model Activity
  * 

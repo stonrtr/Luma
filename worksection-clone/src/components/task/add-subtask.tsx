@@ -16,7 +16,7 @@ export function AddSubtask({ projectId, parentId }: { projectId: string; parentI
     const value = text.trim();
     setText("");
     start(async () => {
-      await createTask({ projectId, title: value, status: "TODO", priority: "NORMAL", parentId });
+      await createTask({ projectId, title: value, status: "TODO", priority: 5, parentId });
       router.refresh();
     });
   }

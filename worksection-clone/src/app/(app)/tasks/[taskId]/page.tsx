@@ -16,8 +16,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   TASK_STATUS_LABEL,
   TASK_STATUS_STYLE,
-  TASK_PRIORITY_LABEL,
-  TASK_PRIORITY_STYLE,
+  priorityStyle,
+  plannedLabel,
 } from "@/lib/domain";
 import { initials, formatDate, formatMinutes } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -33,21 +33,27 @@ export default async function TaskDetailPage({
   const task = await getTaskDetail(taskId);
   if (!task) notFound();
 
-  const member = await isProjectMember(task.projectId, user.id);
-  if (!member) redirect("/");
+  // задача проекта → проверяем участие; личная задача (без проекта) доступна создателю/исполнителю
+  if (task.projectId) {
+    const member = await isProjectMember(task.projectId, user.id);
+    if (!member) redirect("/");
+  } else {
+    const isOwn = task.createdById === user.id || task.assignees.some((a) => a.user.id === user.id);
+    if (!isOwn && user.role !== "OWNER" && user.role !== "ADMIN") redirect("/");
+  }
 
-  const members = task.project.members.map((m) => ({ id: m.user.id, name: m.user.name }));
+  const members = task.project?.members.map((m) => ({ id: m.user.id, name: m.user.name })) ?? [];
   const assigneeId = task.assignees[0]?.user.id ?? null;
   const totalMinutes = task.timeLogs.reduce((s, l) => s + l.minutes, 0);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-6">
       <Link
-        href={`/projects/${task.projectId}`}
+        href={task.projectId ? `/projects/${task.projectId}` : "/"}
         className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
-        {task.project.name}
+        {task.project?.name ?? "На головну"}
       </Link>
 
       {task.parent && (
@@ -67,8 +73,8 @@ export default async function TaskDetailPage({
               <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", TASK_STATUS_STYLE[task.status])}>
                 {TASK_STATUS_LABEL[task.status]}
               </span>
-              <span className={cn("rounded px-1.5 py-0.5 text-[11px] font-medium", TASK_PRIORITY_STYLE[task.priority])}>
-                {TASK_PRIORITY_LABEL[task.priority]}
+              <span className={cn("flex size-5 items-center justify-center rounded text-[11px] font-semibold", priorityStyle(task.priority))} title={`Пріоритет ${task.priority}`}>
+                {task.priority}
               </span>
               {task.tags.map((t) => (
                 <span
@@ -79,12 +85,14 @@ export default async function TaskDetailPage({
                   {t.tag.name}
                 </span>
               ))}
-              <TagPicker
-                taskId={task.id}
-                projectId={task.projectId}
-                allTags={task.project.tags}
-                selectedIds={task.tags.map((t) => t.tag.id)}
-              />
+              {task.projectId && task.project && (
+                <TagPicker
+                  taskId={task.id}
+                  projectId={task.projectId}
+                  allTags={task.project.tags}
+                  selectedIds={task.tags.map((t) => t.tag.id)}
+                />
+              )}
             </div>
             <EditableTaskHeader taskId={task.id} title={task.title} description={task.description} />
           </div>
@@ -114,7 +122,7 @@ export default async function TaskDetailPage({
                 </li>
               ))}
             </ul>
-            <AddSubtask projectId={task.projectId} parentId={task.id} />
+            <AddSubtask projectId={task.projectId ?? ""} parentId={task.id} />
           </section>
 
           {/* Чек-лист */}
@@ -164,7 +172,7 @@ export default async function TaskDetailPage({
             />
             <div className="mt-4 space-y-2 border-t pt-4 text-sm">
               <Row label="Срок" value={formatDate(task.dueDate)} />
-              <Row label="Оценка" value={task.estimateHrs ? `${task.estimateHrs} ч` : "—"} />
+              <Row label="Планований час" value={task.plannedMinutes ? plannedLabel(task.plannedMinutes) : "—"} />
               <Row label="Автор" value={task.createdBy.name} />
               <Row label="Веха" value={task.milestone?.title ?? "—"} />
             </div>

@@ -24,6 +24,7 @@ export async function getTimeReport() {
     byUser.set(l.userId, u);
 
     const p = l.task.project;
+    if (!p) continue; // задача без проекта
     const pr =
       byProject.get(p.id) ?? { name: p.name, color: p.color, minutes: 0, cost: 0, budget: p.budget };
     pr.minutes += l.minutes;

@@ -23,11 +23,11 @@ const LABEL_W = 240;
 const HEADER_H = 48;
 
 const BAR_COLOR: Record<TaskStatus, string> = {
+  IDEA: "#a855f7",
   TODO: "#94a3b8",
   IN_PROGRESS: "#3b82f6",
   TO_REVIEW: "#f59e0b",
   DONE: "#10b981",
-  PAUSED: "#a1a1aa",
 };
 
 function startOfDay(d: Date) {

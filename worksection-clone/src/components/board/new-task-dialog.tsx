@@ -23,8 +23,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TASK_STATUS_LABEL, TASK_PRIORITIES, TASK_PRIORITY_LABEL } from "@/lib/domain";
-import type { TaskPriority } from "@/generated/prisma/enums";
+import {
+  PRIORITY_VALUES,
+  DEFAULT_PRIORITY,
+  priorityStyle,
+  PLANNED_MINUTES,
+  plannedLabel,
+  TASK_STATUS_LABEL,
+} from "@/lib/domain";
+import { cn } from "@/lib/utils";
 
 export function NewTaskDialog({
   projectId,
@@ -40,116 +47,162 @@ export function NewTaskDialog({
   const router = useRouter();
   const [pending, start] = useTransition();
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState<TaskPriority>("NORMAL");
+  const [priority, setPriority] = useState<number>(DEFAULT_PRIORITY);
+  const [taskStatus, setTaskStatus] = useState<TaskStatus>("TODO");
+  const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
   const [assigneeId, setAssigneeId] = useState<string>("none");
   const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
 
   function reset() {
     setTitle("");
-    setPriority("NORMAL");
+    setPriority(DEFAULT_PRIORITY);
+    setTaskStatus("TODO");
+    setPlannedMinutes(30);
     setAssigneeId("none");
     setDueDate("");
+    setDueTime("");
   }
 
   function submit() {
     if (!title.trim()) {
-      toast.error("Введите название задачи");
+      toast.error("Введіть назву задачі");
       return;
     }
-    if (!status) return;
     start(async () => {
       try {
         await createTask({
           projectId,
           title: title.trim(),
-          status,
+          status: taskStatus,
           priority,
+          plannedMinutes,
           assigneeId: assigneeId === "none" ? undefined : assigneeId,
           dueDate: dueDate || undefined,
+          dueTime: dueTime || undefined,
         });
-        toast.success("Задача создана");
+        toast.success("Задачу створено");
         reset();
         onClose();
         router.refresh();
       } catch {
-        toast.error("Не удалось создать задачу");
+        toast.error("Не вдалося створити задачу");
       }
     });
   }
 
   return (
     <Dialog open={status !== null} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent>
+      <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>
-            Новая задача{status ? ` · ${TASK_STATUS_LABEL[status]}` : ""}
-          </DialogTitle>
+          <DialogTitle>Нова задача</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="task-title">Название</Label>
+            <Label htmlFor="task-title">Назва</Label>
             <Input
               id="task-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Что нужно сделать?"
+              placeholder="Що потрібно зробити?"
               autoFocus
               onKeyDown={(e) => e.key === "Enter" && submit()}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* Приоритет 1..10, 5 по центру, сразу активны */}
+          <div className="space-y-1.5">
+            <Label>Пріоритет</Label>
+            <div className="flex gap-1">
+              {PRIORITY_VALUES.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPriority(p)}
+                  className={cn(
+                    "flex h-8 flex-1 items-center justify-center rounded-md border text-sm font-medium transition-all",
+                    priority === p
+                      ? cn(priorityStyle(p), "border-transparent ring-2 ring-offset-1 ring-ring")
+                      : "border-border text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Статус: ідея / зробити */}
+          <div className="space-y-1.5">
+            <Label>Статус</Label>
+            <div className="flex gap-2">
+              {(["IDEA", "TODO"] as TaskStatus[]).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setTaskStatus(s)}
+                  className={cn(
+                    "flex-1 rounded-md border px-3 py-1.5 text-sm font-medium transition-all",
+                    taskStatus === s
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  {TASK_STATUS_LABEL[s]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Плановое время */}
+          <div className="space-y-1.5">
+            <Label>Планований час</Label>
+            <div className="flex gap-2">
+              {PLANNED_MINUTES.map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setPlannedMinutes(m)}
+                  className={cn(
+                    "flex-1 rounded-md border px-2 py-1.5 text-sm font-medium transition-all",
+                    plannedMinutes === m
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  {plannedLabel(m)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
             <div className="space-y-2">
-              <Label>Приоритет</Label>
-              <Select value={priority} onValueChange={(v) => setPriority(v as TaskPriority)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+              <Label htmlFor="task-due">Дата</Label>
+              <Input id="task-due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="task-time">Час</Label>
+              <Input id="task-time" type="time" value={dueTime} onChange={(e) => setDueTime(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Виконавець</Label>
+              <Select value={assigneeId} onValueChange={setAssigneeId}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {TASK_PRIORITIES.map((p) => (
-                    <SelectItem key={p} value={p}>
-                      {TASK_PRIORITY_LABEL[p]}
-                    </SelectItem>
+                  <SelectItem value="none">Без виконавця</SelectItem>
+                  {members.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="task-due">Срок</Label>
-              <Input
-                id="task-due"
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-              />
-            </div>
           </div>
-
-          <div className="space-y-2">
-            <Label>Исполнитель</Label>
-            <Select value={assigneeId} onValueChange={setAssigneeId}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Без исполнителя</SelectItem>
-                {members.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>
-                    {m.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <p className="text-xs text-muted-foreground">Якщо вказати дату та час — задача з&apos;явиться в календарі.</p>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={pending}>
-            Отмена
-          </Button>
-          <Button onClick={submit} disabled={pending}>
-            {pending ? "Создание…" : "Создать"}
-          </Button>
+          <Button variant="outline" onClick={onClose} disabled={pending}>Скасувати</Button>
+          <Button onClick={submit} disabled={pending}>{pending ? "Створення…" : "Створити"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -5,8 +5,7 @@ import {
   TASK_STATUSES,
   TASK_STATUS_LABEL,
   TASK_STATUS_DOT,
-  TASK_PRIORITY_LABEL,
-  TASK_PRIORITY_STYLE,
+  priorityStyle,
 } from "@/lib/domain";
 import { initials, formatShortDate, isOverdue } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -42,11 +41,12 @@ export function TaskList({ tasks }: { tasks: BoardTask[] }) {
                   )}
                   <span
                     className={cn(
-                      "shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium",
-                      TASK_PRIORITY_STYLE[t.priority],
+                      "flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold",
+                      priorityStyle(t.priority),
                     )}
+                    title={`Пріоритет ${t.priority}`}
                   >
-                    {TASK_PRIORITY_LABEL[t.priority]}
+                    {t.priority}
                   </span>
                   <span
                     className={cn(

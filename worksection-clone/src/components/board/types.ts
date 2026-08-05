@@ -1,4 +1,4 @@
-import type { TaskStatus, TaskPriority } from "@/generated/prisma/enums";
+import type { TaskStatus } from "@/generated/prisma/enums";
 
 export type BoardAssignee = { id: string; name: string };
 
@@ -6,9 +6,12 @@ export type BoardTask = {
   id: string;
   title: string;
   status: TaskStatus;
-  priority: TaskPriority;
+  priority: number;
   dueDate: string | null;
   position: number;
+  assignedByManager: boolean;
+  plannedMinutes: number | null;
+  isProject: boolean;
   assignees: BoardAssignee[];
   tags: { id: string; name: string; color: string }[];
   subtaskCount: number;

@@ -43,6 +43,7 @@ export type ProjectMinAggregateOutputType = {
   startDate: Date | null
   dueDate: Date | null
   budget: number | null
+  archivedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -57,6 +58,7 @@ export type ProjectMaxAggregateOutputType = {
   startDate: Date | null
   dueDate: Date | null
   budget: number | null
+  archivedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -71,6 +73,7 @@ export type ProjectCountAggregateOutputType = {
   startDate: number
   dueDate: number
   budget: number
+  archivedAt: number
   createdAt: number
   updatedAt: number
   createdById: number
@@ -95,6 +98,7 @@ export type ProjectMinAggregateInputType = {
   startDate?: true
   dueDate?: true
   budget?: true
+  archivedAt?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -109,6 +113,7 @@ export type ProjectMaxAggregateInputType = {
   startDate?: true
   dueDate?: true
   budget?: true
+  archivedAt?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -123,6 +128,7 @@ export type ProjectCountAggregateInputType = {
   startDate?: true
   dueDate?: true
   budget?: true
+  archivedAt?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -224,6 +230,7 @@ export type ProjectGroupByOutputType = {
   startDate: Date | null
   dueDate: Date | null
   budget: number | null
+  archivedAt: Date | null
   createdAt: Date
   updatedAt: Date
   createdById: string
@@ -261,6 +268,7 @@ export type ProjectWhereInput = {
   startDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableFilter<"Project"> | number | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   createdById?: Prisma.StringFilter<"Project"> | string
@@ -281,6 +289,7 @@ export type ProjectOrderByWithRelationInput = {
   startDate?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   budget?: Prisma.SortOrderInput | Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -304,6 +313,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   startDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableFilter<"Project"> | number | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   createdById?: Prisma.StringFilter<"Project"> | string
@@ -324,6 +334,7 @@ export type ProjectOrderByWithAggregationInput = {
   startDate?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   budget?: Prisma.SortOrderInput | Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -346,6 +357,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   startDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableWithAggregatesFilter<"Project"> | number | null
+  archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   createdById?: Prisma.StringWithAggregatesFilter<"Project"> | string
@@ -360,6 +372,7 @@ export type ProjectCreateInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedProjectsInput
@@ -379,6 +392,7 @@ export type ProjectUncheckedCreateInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -398,6 +412,7 @@ export type ProjectUpdateInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
@@ -417,6 +432,7 @@ export type ProjectUncheckedUpdateInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -436,6 +452,7 @@ export type ProjectCreateManyInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -450,6 +467,7 @@ export type ProjectUpdateManyMutationInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -463,6 +481,7 @@ export type ProjectUncheckedUpdateManyInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -487,6 +506,7 @@ export type ProjectCountOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   budget?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -505,6 +525,7 @@ export type ProjectMaxOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   budget?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -519,6 +540,7 @@ export type ProjectMinOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   budget?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -608,10 +630,12 @@ export type ProjectCreateNestedOneWithoutTasksInput = {
   connect?: Prisma.ProjectWhereUniqueInput
 }
 
-export type ProjectUpdateOneRequiredWithoutTasksNestedInput = {
+export type ProjectUpdateOneWithoutTasksNestedInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutTasksInput, Prisma.ProjectUncheckedCreateWithoutTasksInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTasksInput
   upsert?: Prisma.ProjectUpsertWithoutTasksInput
+  disconnect?: Prisma.ProjectWhereInput | boolean
+  delete?: Prisma.ProjectWhereInput | boolean
   connect?: Prisma.ProjectWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTasksInput, Prisma.ProjectUpdateWithoutTasksInput>, Prisma.ProjectUncheckedUpdateWithoutTasksInput>
 }
@@ -669,6 +693,7 @@ export type ProjectCreateWithoutCreatedByInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.ProjectMemberCreateNestedManyWithoutProjectInput
@@ -687,6 +712,7 @@ export type ProjectUncheckedCreateWithoutCreatedByInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutProjectInput
@@ -733,6 +759,7 @@ export type ProjectScalarWhereInput = {
   startDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableFilter<"Project"> | number | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   createdById?: Prisma.StringFilter<"Project"> | string
@@ -747,6 +774,7 @@ export type ProjectCreateWithoutMembersInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedProjectsInput
@@ -765,6 +793,7 @@ export type ProjectUncheckedCreateWithoutMembersInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -799,6 +828,7 @@ export type ProjectUpdateWithoutMembersInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
@@ -817,6 +847,7 @@ export type ProjectUncheckedUpdateWithoutMembersInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -835,6 +866,7 @@ export type ProjectCreateWithoutTasksInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedProjectsInput
@@ -853,6 +885,7 @@ export type ProjectUncheckedCreateWithoutTasksInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -887,6 +920,7 @@ export type ProjectUpdateWithoutTasksInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
@@ -905,6 +939,7 @@ export type ProjectUncheckedUpdateWithoutTasksInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -923,6 +958,7 @@ export type ProjectCreateWithoutMilestonesInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedProjectsInput
@@ -941,6 +977,7 @@ export type ProjectUncheckedCreateWithoutMilestonesInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -975,6 +1012,7 @@ export type ProjectUpdateWithoutMilestonesInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
@@ -993,6 +1031,7 @@ export type ProjectUncheckedUpdateWithoutMilestonesInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1011,6 +1050,7 @@ export type ProjectCreateWithoutTagsInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedProjectsInput
@@ -1029,6 +1069,7 @@ export type ProjectUncheckedCreateWithoutTagsInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -1063,6 +1104,7 @@ export type ProjectUpdateWithoutTagsInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
@@ -1081,6 +1123,7 @@ export type ProjectUncheckedUpdateWithoutTagsInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1099,6 +1142,7 @@ export type ProjectCreateWithoutActivitiesInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedProjectsInput
@@ -1117,6 +1161,7 @@ export type ProjectUncheckedCreateWithoutActivitiesInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById: string
@@ -1151,6 +1196,7 @@ export type ProjectUpdateWithoutActivitiesInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
@@ -1169,6 +1215,7 @@ export type ProjectUncheckedUpdateWithoutActivitiesInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1187,6 +1234,7 @@ export type ProjectCreateManyCreatedByInput = {
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1200,6 +1248,7 @@ export type ProjectUpdateWithoutCreatedByInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.ProjectMemberUpdateManyWithoutProjectNestedInput
@@ -1218,6 +1267,7 @@ export type ProjectUncheckedUpdateWithoutCreatedByInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.ProjectMemberUncheckedUpdateManyWithoutProjectNestedInput
@@ -1236,6 +1286,7 @@ export type ProjectUncheckedUpdateManyWithoutCreatedByInput = {
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1316,6 +1367,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -1337,6 +1389,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -1352,6 +1405,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -1367,12 +1421,13 @@ export type ProjectSelectScalar = {
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "color" | "status" | "startDate" | "dueDate" | "budget" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "color" | "status" | "startDate" | "dueDate" | "budget" | "archivedAt" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   members?: boolean | Prisma.Project$membersArgs<ExtArgs>
@@ -1408,6 +1463,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     startDate: Date | null
     dueDate: Date | null
     budget: number | null
+    archivedAt: Date | null
     createdAt: Date
     updatedAt: Date
     createdById: string
@@ -1848,6 +1904,7 @@ export interface ProjectFieldRefs {
   readonly startDate: Prisma.FieldRef<"Project", 'DateTime'>
   readonly dueDate: Prisma.FieldRef<"Project", 'DateTime'>
   readonly budget: Prisma.FieldRef<"Project", 'Float'>
+  readonly archivedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Project", 'String'>

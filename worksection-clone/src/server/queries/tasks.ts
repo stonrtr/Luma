@@ -5,7 +5,7 @@ import { db } from "@/server/db";
 export async function getBoardTasks(projectId: string) {
   return db.task.findMany({
     where: { projectId, parentId: null, archivedAt: null },
-    orderBy: [{ status: "asc" }, { position: "asc" }],
+    orderBy: [{ priority: "desc" }, { position: "asc" }],
     include: {
       assignees: { include: { user: true } },
       tags: { include: { tag: true } },

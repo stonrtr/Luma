@@ -59,12 +59,19 @@ export const ModelName = {
   TaskDependency: 'TaskDependency',
   Milestone: 'Milestone',
   ChecklistItem: 'ChecklistItem',
+  RecurringTask: 'RecurringTask',
   Tag: 'Tag',
   TaskTag: 'TaskTag',
   Comment: 'Comment',
   Mention: 'Mention',
   Attachment: 'Attachment',
+  FileLink: 'FileLink',
+  FileShare: 'FileShare',
   TimeLog: 'TimeLog',
+  Call: 'Call',
+  MonthlyGoal: 'MonthlyGoal',
+  Kpi: 'Kpi',
+  WeeklyPlanItem: 'WeeklyPlanItem',
   Activity: 'Activity',
   Notification: 'Notification'
 } as const
@@ -85,14 +92,24 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
   email: 'email',
   passwordHash: 'passwordHash',
   avatarUrl: 'avatarUrl',
   title: 'title',
+  functions: 'functions',
   role: 'role',
   hourlyRate: 'hourlyRate',
+  weeklyHours: 'weeklyHours',
+  locale: 'locale',
+  timezone: 'timezone',
+  theme: 'theme',
+  weekStartsMon: 'weekStartsMon',
+  isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  managerId: 'managerId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -107,6 +124,7 @@ export const ProjectScalarFieldEnum = {
   startDate: 'startDate',
   dueDate: 'dueDate',
   budget: 'budget',
+  archivedAt: 'archivedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
@@ -134,16 +152,20 @@ export const TaskScalarFieldEnum = {
   priority: 'priority',
   startDate: 'startDate',
   dueDate: 'dueDate',
+  scheduledAt: 'scheduledAt',
+  plannedMinutes: 'plannedMinutes',
   completedAt: 'completedAt',
   archivedAt: 'archivedAt',
-  estimateHrs: 'estimateHrs',
+  reviewRequestedAt: 'reviewRequestedAt',
+  assignedByManager: 'assignedByManager',
   position: 'position',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   projectId: 'projectId',
   parentId: 'parentId',
   createdById: 'createdById',
-  milestoneId: 'milestoneId'
+  milestoneId: 'milestoneId',
+  recurringTaskId: 'recurringTaskId'
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
@@ -186,6 +208,25 @@ export const ChecklistItemScalarFieldEnum = {
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
+
+
+export const RecurringTaskScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  priority: 'priority',
+  plannedMinutes: 'plannedMinutes',
+  frequency: 'frequency',
+  weekdays: 'weekdays',
+  dayOfMonth: 'dayOfMonth',
+  active: 'active',
+  lastGeneratedAt: 'lastGeneratedAt',
+  createdAt: 'createdAt',
+  assigneeId: 'assigneeId',
+  createdById: 'createdById',
+  projectId: 'projectId'
+} as const
+
+export type RecurringTaskScalarFieldEnum = (typeof RecurringTaskScalarFieldEnum)[keyof typeof RecurringTaskScalarFieldEnum]
 
 
 export const TagScalarFieldEnum = {
@@ -242,6 +283,27 @@ export const AttachmentScalarFieldEnum = {
 export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof typeof AttachmentScalarFieldEnum]
 
 
+export const FileLinkScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  kind: 'kind',
+  note: 'note',
+  createdAt: 'createdAt',
+  ownerId: 'ownerId'
+} as const
+
+export type FileLinkScalarFieldEnum = (typeof FileLinkScalarFieldEnum)[keyof typeof FileLinkScalarFieldEnum]
+
+
+export const FileShareScalarFieldEnum = {
+  fileId: 'fileId',
+  userId: 'userId'
+} as const
+
+export type FileShareScalarFieldEnum = (typeof FileShareScalarFieldEnum)[keyof typeof FileShareScalarFieldEnum]
+
+
 export const TimeLogScalarFieldEnum = {
   id: 'id',
   minutes: 'minutes',
@@ -256,6 +318,62 @@ export const TimeLogScalarFieldEnum = {
 } as const
 
 export type TimeLogScalarFieldEnum = (typeof TimeLogScalarFieldEnum)[keyof typeof TimeLogScalarFieldEnum]
+
+
+export const CallScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  scheduledAt: 'scheduledAt',
+  durationMin: 'durationMin',
+  note: 'note',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type CallScalarFieldEnum = (typeof CallScalarFieldEnum)[keyof typeof CallScalarFieldEnum]
+
+
+export const MonthlyGoalScalarFieldEnum = {
+  id: 'id',
+  year: 'year',
+  month: 'month',
+  text: 'text',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type MonthlyGoalScalarFieldEnum = (typeof MonthlyGoalScalarFieldEnum)[keyof typeof MonthlyGoalScalarFieldEnum]
+
+
+export const KpiScalarFieldEnum = {
+  id: 'id',
+  year: 'year',
+  month: 'month',
+  title: 'title',
+  target: 'target',
+  actualValue: 'actualValue',
+  achieved: 'achieved',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type KpiScalarFieldEnum = (typeof KpiScalarFieldEnum)[keyof typeof KpiScalarFieldEnum]
+
+
+export const WeeklyPlanItemScalarFieldEnum = {
+  id: 'id',
+  weekStart: 'weekStart',
+  title: 'title',
+  priority: 'priority',
+  order: 'order',
+  approved: 'approved',
+  projectId: 'projectId',
+  createdAt: 'createdAt',
+  userId: 'userId',
+  taskId: 'taskId'
+} as const
+
+export type WeeklyPlanItemScalarFieldEnum = (typeof WeeklyPlanItemScalarFieldEnum)[keyof typeof WeeklyPlanItemScalarFieldEnum]
 
 
 export const ActivityScalarFieldEnum = {

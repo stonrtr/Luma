@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { MessageSquare, ListChecks, GitBranch, Calendar } from "lucide-react";
+import { MessageSquare, ListChecks, GitBranch, Calendar, FolderKanban, Clock } from "lucide-react";
 import type { BoardTask } from "./types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { TASK_PRIORITY_LABEL, TASK_PRIORITY_STYLE } from "@/lib/domain";
+import { priorityStyle, plannedLabel } from "@/lib/domain";
 import { initials, formatShortDate, isOverdue } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +28,10 @@ export function TaskCard({ task }: { task: BoardTask }) {
       style={style}
       {...attributes}
       {...listeners}
-      className="group rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md"
+      className={cn(
+        "group rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md",
+        task.assignedByManager && "border-l-4 border-l-primary ring-1 ring-primary/20",
+      )}
     >
       <div className="mb-2 flex items-start justify-between gap-2">
         <Link
@@ -40,13 +43,29 @@ export function TaskCard({ task }: { task: BoardTask }) {
         </Link>
         <span
           className={cn(
-            "shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium",
-            TASK_PRIORITY_STYLE[task.priority],
+            "flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold",
+            priorityStyle(task.priority),
           )}
+          title={`Пріоритет ${task.priority}`}
         >
-          {TASK_PRIORITY_LABEL[task.priority]}
+          {task.priority}
         </span>
       </div>
+
+      {(task.isProject || task.assignedByManager) && (
+        <div className="mb-2 flex flex-wrap gap-1">
+          {task.isProject && (
+            <span className="inline-flex items-center gap-0.5 rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+              <FolderKanban className="size-3" /> Проєкт
+            </span>
+          )}
+          {task.assignedByManager && (
+            <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+              Від керівника
+            </span>
+          )}
+        </div>
+      )}
 
       {task.tags.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-1">
@@ -80,6 +99,12 @@ export function TaskCard({ task }: { task: BoardTask }) {
             <span className="flex items-center gap-0.5">
               <MessageSquare className="size-3.5" />
               {task.commentCount}
+            </span>
+          )}
+          {task.plannedMinutes != null && (
+            <span className="flex items-center gap-0.5">
+              <Clock className="size-3.5" />
+              {plannedLabel(task.plannedMinutes)}
             </span>
           )}
           {task.dueDate && (

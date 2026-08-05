@@ -39,21 +39,28 @@ export type ProjectRole = (typeof ProjectRole)[keyof typeof ProjectRole]
 
 
 export const TaskStatus = {
+  IDEA: 'IDEA',
   TODO: 'TODO',
   IN_PROGRESS: 'IN_PROGRESS',
   TO_REVIEW: 'TO_REVIEW',
-  DONE: 'DONE',
-  PAUSED: 'PAUSED'
+  DONE: 'DONE'
 } as const
 
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
 
-export const TaskPriority = {
-  LOW: 'LOW',
-  NORMAL: 'NORMAL',
-  HIGH: 'HIGH',
-  CRITICAL: 'CRITICAL'
+export const RecurrenceFreq = {
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  MONTHLY: 'MONTHLY'
 } as const
 
-export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority]
+export type RecurrenceFreq = (typeof RecurrenceFreq)[keyof typeof RecurrenceFreq]
+
+
+export const FileKind = {
+  LINK: 'LINK',
+  UPLOAD: 'UPLOAD'
+} as const
+
+export type FileKind = (typeof FileKind)[keyof typeof FileKind]

@@ -7,43 +7,81 @@ import { requireUser } from "@/server/dal";
 import type { TaskStatus } from "@/generated/prisma/enums";
 
 const createTaskSchema = z.object({
-  projectId: z.string().min(1),
-  title: z.string().min(1, "Введите название").max(200),
-  status: z.enum(["TODO", "IN_PROGRESS", "TO_REVIEW", "DONE", "PAUSED"]),
-  priority: z.enum(["LOW", "NORMAL", "HIGH", "CRITICAL"]).default("NORMAL"),
+  projectId: z.string().optional(),
+  title: z.string().min(1, "Введіть назву").max(200),
+  status: z.enum(["IDEA", "TODO", "IN_PROGRESS", "TO_REVIEW", "DONE"]).default("TODO"),
+  priority: z.number().int().min(1).max(10).default(5),
+  plannedMinutes: z.number().int().positive().nullable().optional(),
   assigneeId: z.string().optional(),
   dueDate: z.string().optional(),
+  dueTime: z.string().optional(),
   parentId: z.string().optional(),
+  recurringTaskId: z.string().optional(),
 });
 
 export async function createTask(input: z.infer<typeof createTaskSchema>) {
   const user = await requireUser();
   const data = createTaskSchema.parse(input);
+  const projectId = data.projectId || null;
 
   const last = await db.task.findFirst({
-    where: { projectId: data.projectId, status: data.status, parentId: data.parentId ?? null },
+    where: { projectId, status: data.status, parentId: data.parentId ?? null },
     orderBy: { position: "desc" },
   });
+
+  // задача от руководителя: назначена другому и создатель — админ/владелец или руководитель исполнителя
+  let assignedByManager = false;
+  if (data.assigneeId && data.assigneeId !== user.id) {
+    if (user.role === "OWNER" || user.role === "ADMIN") assignedByManager = true;
+    else {
+      const assignee = await db.user.findUnique({ where: { id: data.assigneeId }, select: { managerId: true } });
+      if (assignee?.managerId === user.id) assignedByManager = true;
+    }
+  }
+
+  // дата+время → scheduledAt (для календаря)
+  let scheduledAt: Date | null = null;
+  const dueDate = data.dueDate ? new Date(data.dueDate) : null;
+  if (data.dueDate && data.dueTime) {
+    scheduledAt = new Date(`${data.dueDate}T${data.dueTime}`);
+  }
 
   const task = await db.task.create({
     data: {
       title: data.title,
       status: data.status,
       priority: data.priority,
-      projectId: data.projectId,
+      plannedMinutes: data.plannedMinutes ?? null,
+      projectId,
       parentId: data.parentId ?? null,
       createdById: user.id,
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
+      dueDate,
+      scheduledAt,
+      assignedByManager,
+      recurringTaskId: data.recurringTaskId ?? null,
       position: (last?.position ?? -1) + 1,
       assignees: data.assigneeId ? { create: [{ userId: data.assigneeId }] } : undefined,
     },
   });
 
   await db.activity.create({
-    data: { type: "task.created", actorId: user.id, projectId: data.projectId, meta: task.title },
+    data: { type: "task.created", actorId: user.id, projectId, meta: task.title },
   });
 
-  revalidatePath(`/projects/${data.projectId}`);
+  // уведомление исполнителю о поставленной задаче
+  if (assignedByManager && data.assigneeId) {
+    await db.notification.create({
+      data: {
+        type: "assignment",
+        message: `${user.name} поставив вам задачу «${task.title}»`,
+        link: `/tasks/${task.id}`,
+        recipientId: data.assigneeId,
+        actorId: user.id,
+      },
+    });
+  }
+
+  if (projectId) revalidatePath(`/projects/${projectId}`);
   if (data.parentId) revalidatePath(`/tasks/${data.parentId}`);
   return task;
 }
@@ -89,10 +127,10 @@ const updateTaskSchema = z.object({
   taskId: z.string(),
   title: z.string().min(1).max(200).optional(),
   description: z.string().max(10000).optional(),
-  status: z.enum(["TODO", "IN_PROGRESS", "TO_REVIEW", "DONE", "PAUSED"]).optional(),
-  priority: z.enum(["LOW", "NORMAL", "HIGH", "CRITICAL"]).optional(),
+  status: z.enum(["IDEA", "TODO", "IN_PROGRESS", "TO_REVIEW", "DONE"]).optional(),
+  priority: z.number().int().min(1).max(10).optional(),
+  plannedMinutes: z.number().int().positive().nullable().optional(),
   dueDate: z.string().nullable().optional(),
-  estimateHrs: z.number().nullable().optional(),
 });
 
 export async function updateTask(input: z.infer<typeof updateTaskSchema>) {

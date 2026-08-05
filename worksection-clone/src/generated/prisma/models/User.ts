@@ -28,98 +28,162 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   hourlyRate: number | null
+  weeklyHours: number | null
 }
 
 export type UserSumAggregateOutputType = {
   hourlyRate: number | null
+  weeklyHours: number | null
 }
 
 export type UserMinAggregateOutputType = {
   id: string | null
   name: string | null
+  firstName: string | null
+  lastName: string | null
   email: string | null
   passwordHash: string | null
   avatarUrl: string | null
   title: string | null
+  functions: string | null
   role: $Enums.SystemRole | null
   hourlyRate: number | null
+  weeklyHours: number | null
+  locale: string | null
+  timezone: string | null
+  theme: string | null
+  weekStartsMon: boolean | null
+  isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  managerId: string | null
 }
 
 export type UserMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  firstName: string | null
+  lastName: string | null
   email: string | null
   passwordHash: string | null
   avatarUrl: string | null
   title: string | null
+  functions: string | null
   role: $Enums.SystemRole | null
   hourlyRate: number | null
+  weeklyHours: number | null
+  locale: string | null
+  timezone: string | null
+  theme: string | null
+  weekStartsMon: boolean | null
+  isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  managerId: string | null
 }
 
 export type UserCountAggregateOutputType = {
   id: number
   name: number
+  firstName: number
+  lastName: number
   email: number
   passwordHash: number
   avatarUrl: number
   title: number
+  functions: number
   role: number
   hourlyRate: number
+  weeklyHours: number
+  locale: number
+  timezone: number
+  theme: number
+  weekStartsMon: number
+  isActive: number
   createdAt: number
   updatedAt: number
+  managerId: number
   _all: number
 }
 
 
 export type UserAvgAggregateInputType = {
   hourlyRate?: true
+  weeklyHours?: true
 }
 
 export type UserSumAggregateInputType = {
   hourlyRate?: true
+  weeklyHours?: true
 }
 
 export type UserMinAggregateInputType = {
   id?: true
   name?: true
+  firstName?: true
+  lastName?: true
   email?: true
   passwordHash?: true
   avatarUrl?: true
   title?: true
+  functions?: true
   role?: true
   hourlyRate?: true
+  weeklyHours?: true
+  locale?: true
+  timezone?: true
+  theme?: true
+  weekStartsMon?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
+  managerId?: true
 }
 
 export type UserMaxAggregateInputType = {
   id?: true
   name?: true
+  firstName?: true
+  lastName?: true
   email?: true
   passwordHash?: true
   avatarUrl?: true
   title?: true
+  functions?: true
   role?: true
   hourlyRate?: true
+  weeklyHours?: true
+  locale?: true
+  timezone?: true
+  theme?: true
+  weekStartsMon?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
+  managerId?: true
 }
 
 export type UserCountAggregateInputType = {
   id?: true
   name?: true
+  firstName?: true
+  lastName?: true
   email?: true
   passwordHash?: true
   avatarUrl?: true
   title?: true
+  functions?: true
   role?: true
   hourlyRate?: true
+  weeklyHours?: true
+  locale?: true
+  timezone?: true
+  theme?: true
+  weekStartsMon?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
+  managerId?: true
   _all?: true
 }
 
@@ -212,14 +276,24 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type UserGroupByOutputType = {
   id: string
   name: string
+  firstName: string | null
+  lastName: string | null
   email: string
   passwordHash: string
   avatarUrl: string | null
   title: string | null
+  functions: string | null
   role: $Enums.SystemRole
   hourlyRate: number | null
+  weeklyHours: number | null
+  locale: string
+  timezone: string
+  theme: string
+  weekStartsMon: boolean
+  isActive: boolean
   createdAt: Date
   updatedAt: Date
+  managerId: string | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -248,14 +322,26 @@ export type UserWhereInput = {
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   id?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringFilter<"User"> | string
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
   email?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   title?: Prisma.StringNullableFilter<"User"> | string | null
+  functions?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
+  weeklyHours?: Prisma.FloatNullableFilter<"User"> | number | null
+  locale?: Prisma.StringFilter<"User"> | string
+  timezone?: Prisma.StringFilter<"User"> | string
+  theme?: Prisma.StringFilter<"User"> | string
+  weekStartsMon?: Prisma.BoolFilter<"User"> | boolean
+  isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  reports?: Prisma.UserListRelationFilter
   createdProjects?: Prisma.ProjectListRelationFilter
   projectMembers?: Prisma.ProjectMemberListRelationFilter
   createdTasks?: Prisma.TaskListRelationFilter
@@ -267,19 +353,39 @@ export type UserWhereInput = {
   triggeredNotifs?: Prisma.NotificationListRelationFilter
   uploadedFiles?: Prisma.AttachmentListRelationFilter
   mentions?: Prisma.MentionListRelationFilter
+  monthlyGoals?: Prisma.MonthlyGoalListRelationFilter
+  kpis?: Prisma.KpiListRelationFilter
+  weeklyPlanItems?: Prisma.WeeklyPlanItemListRelationFilter
+  recurringAssigned?: Prisma.RecurringTaskListRelationFilter
+  recurringCreated?: Prisma.RecurringTaskListRelationFilter
+  calls?: Prisma.CallListRelationFilter
+  ownedFiles?: Prisma.FileLinkListRelationFilter
+  fileShares?: Prisma.FileShareListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
+  functions?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  locale?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  weekStartsMon?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  managerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  manager?: Prisma.UserOrderByWithRelationInput
+  reports?: Prisma.UserOrderByRelationAggregateInput
   createdProjects?: Prisma.ProjectOrderByRelationAggregateInput
   projectMembers?: Prisma.ProjectMemberOrderByRelationAggregateInput
   createdTasks?: Prisma.TaskOrderByRelationAggregateInput
@@ -291,6 +397,14 @@ export type UserOrderByWithRelationInput = {
   triggeredNotifs?: Prisma.NotificationOrderByRelationAggregateInput
   uploadedFiles?: Prisma.AttachmentOrderByRelationAggregateInput
   mentions?: Prisma.MentionOrderByRelationAggregateInput
+  monthlyGoals?: Prisma.MonthlyGoalOrderByRelationAggregateInput
+  kpis?: Prisma.KpiOrderByRelationAggregateInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemOrderByRelationAggregateInput
+  recurringAssigned?: Prisma.RecurringTaskOrderByRelationAggregateInput
+  recurringCreated?: Prisma.RecurringTaskOrderByRelationAggregateInput
+  calls?: Prisma.CallOrderByRelationAggregateInput
+  ownedFiles?: Prisma.FileLinkOrderByRelationAggregateInput
+  fileShares?: Prisma.FileShareOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -300,13 +414,25 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
   passwordHash?: Prisma.StringFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   title?: Prisma.StringNullableFilter<"User"> | string | null
+  functions?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
+  weeklyHours?: Prisma.FloatNullableFilter<"User"> | number | null
+  locale?: Prisma.StringFilter<"User"> | string
+  timezone?: Prisma.StringFilter<"User"> | string
+  theme?: Prisma.StringFilter<"User"> | string
+  weekStartsMon?: Prisma.BoolFilter<"User"> | boolean
+  isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  reports?: Prisma.UserListRelationFilter
   createdProjects?: Prisma.ProjectListRelationFilter
   projectMembers?: Prisma.ProjectMemberListRelationFilter
   createdTasks?: Prisma.TaskListRelationFilter
@@ -318,19 +444,37 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   triggeredNotifs?: Prisma.NotificationListRelationFilter
   uploadedFiles?: Prisma.AttachmentListRelationFilter
   mentions?: Prisma.MentionListRelationFilter
+  monthlyGoals?: Prisma.MonthlyGoalListRelationFilter
+  kpis?: Prisma.KpiListRelationFilter
+  weeklyPlanItems?: Prisma.WeeklyPlanItemListRelationFilter
+  recurringAssigned?: Prisma.RecurringTaskListRelationFilter
+  recurringCreated?: Prisma.RecurringTaskListRelationFilter
+  calls?: Prisma.CallListRelationFilter
+  ownedFiles?: Prisma.FileLinkListRelationFilter
+  fileShares?: Prisma.FileShareListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
+  functions?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  locale?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  weekStartsMon?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -344,27 +488,48 @@ export type UserScalarWhereWithAggregatesInput = {
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
+  firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   title?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  functions?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleWithAggregatesFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
+  weeklyHours?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
+  locale?: Prisma.StringWithAggregatesFilter<"User"> | string
+  timezone?: Prisma.StringWithAggregatesFilter<"User"> | string
+  theme?: Prisma.StringWithAggregatesFilter<"User"> | string
+  weekStartsMon?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  managerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -376,19 +541,38 @@ export type UserCreateInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -400,19 +584,38 @@ export type UserUncheckedCreateInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -424,19 +627,38 @@ export type UserUpdateInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -448,30 +670,57 @@ export type UserUncheckedUpdateInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -479,61 +728,118 @@ export type UserUpdateManyMutationInput = {
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  functions?: Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrder
+  locale?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  weekStartsMon?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  managerId?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
   hourlyRate?: Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  functions?: Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrder
+  locale?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  weekStartsMon?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  managerId?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  functions?: Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrder
+  locale?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  weekStartsMon?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  managerId?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   hourlyRate?: Prisma.SortOrder
+  weeklyHours?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -541,9 +847,24 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
+export type UserCreateNestedOneWithoutReportsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReportsInput, Prisma.UserUncheckedCreateWithoutReportsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReportsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedManyWithoutManagerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutManagerInput, Prisma.UserUncheckedCreateWithoutManagerInput> | Prisma.UserCreateWithoutManagerInput[] | Prisma.UserUncheckedCreateWithoutManagerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagerInput | Prisma.UserCreateOrConnectWithoutManagerInput[]
+  createMany?: Prisma.UserCreateManyManagerInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutManagerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutManagerInput, Prisma.UserUncheckedCreateWithoutManagerInput> | Prisma.UserCreateWithoutManagerInput[] | Prisma.UserUncheckedCreateWithoutManagerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagerInput | Prisma.UserCreateOrConnectWithoutManagerInput[]
+  createMany?: Prisma.UserCreateManyManagerInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -566,8 +887,50 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserUpdateOneWithoutReportsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReportsInput, Prisma.UserUncheckedCreateWithoutReportsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReportsInput
+  upsert?: Prisma.UserUpsertWithoutReportsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReportsInput, Prisma.UserUpdateWithoutReportsInput>, Prisma.UserUncheckedUpdateWithoutReportsInput>
+}
+
+export type UserUpdateManyWithoutManagerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutManagerInput, Prisma.UserUncheckedCreateWithoutManagerInput> | Prisma.UserCreateWithoutManagerInput[] | Prisma.UserUncheckedCreateWithoutManagerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagerInput | Prisma.UserCreateOrConnectWithoutManagerInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutManagerInput | Prisma.UserUpsertWithWhereUniqueWithoutManagerInput[]
+  createMany?: Prisma.UserCreateManyManagerInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutManagerInput | Prisma.UserUpdateWithWhereUniqueWithoutManagerInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutManagerInput | Prisma.UserUpdateManyWithWhereWithoutManagerInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutManagerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutManagerInput, Prisma.UserUncheckedCreateWithoutManagerInput> | Prisma.UserCreateWithoutManagerInput[] | Prisma.UserUncheckedCreateWithoutManagerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagerInput | Prisma.UserCreateOrConnectWithoutManagerInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutManagerInput | Prisma.UserUpsertWithWhereUniqueWithoutManagerInput[]
+  createMany?: Prisma.UserCreateManyManagerInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutManagerInput | Prisma.UserUpdateWithWhereUniqueWithoutManagerInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutManagerInput | Prisma.UserUpdateManyWithWhereWithoutManagerInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutCreatedProjectsInput = {
@@ -626,6 +989,34 @@ export type UserUpdateOneRequiredWithoutAssignedTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedTasksInput, Prisma.UserUpdateWithoutAssignedTasksInput>, Prisma.UserUncheckedUpdateWithoutAssignedTasksInput>
 }
 
+export type UserCreateNestedOneWithoutRecurringAssignedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRecurringAssignedInput, Prisma.UserUncheckedCreateWithoutRecurringAssignedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRecurringAssignedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutRecurringCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRecurringCreatedInput, Prisma.UserUncheckedCreateWithoutRecurringCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRecurringCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRecurringAssignedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRecurringAssignedInput, Prisma.UserUncheckedCreateWithoutRecurringAssignedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRecurringAssignedInput
+  upsert?: Prisma.UserUpsertWithoutRecurringAssignedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRecurringAssignedInput, Prisma.UserUpdateWithoutRecurringAssignedInput>, Prisma.UserUncheckedUpdateWithoutRecurringAssignedInput>
+}
+
+export type UserUpdateOneRequiredWithoutRecurringCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRecurringCreatedInput, Prisma.UserUncheckedCreateWithoutRecurringCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRecurringCreatedInput
+  upsert?: Prisma.UserUpsertWithoutRecurringCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRecurringCreatedInput, Prisma.UserUpdateWithoutRecurringCreatedInput>, Prisma.UserUncheckedUpdateWithoutRecurringCreatedInput>
+}
+
 export type UserCreateNestedOneWithoutCommentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCommentsInput, Prisma.UserUncheckedCreateWithoutCommentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentsInput
@@ -668,6 +1059,34 @@ export type UserUpdateOneRequiredWithoutUploadedFilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedFilesInput, Prisma.UserUpdateWithoutUploadedFilesInput>, Prisma.UserUncheckedUpdateWithoutUploadedFilesInput>
 }
 
+export type UserCreateNestedOneWithoutOwnedFilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedFilesInput, Prisma.UserUncheckedCreateWithoutOwnedFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedFilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOwnedFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedFilesInput, Prisma.UserUncheckedCreateWithoutOwnedFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedFilesInput
+  upsert?: Prisma.UserUpsertWithoutOwnedFilesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedFilesInput, Prisma.UserUpdateWithoutOwnedFilesInput>, Prisma.UserUncheckedUpdateWithoutOwnedFilesInput>
+}
+
+export type UserCreateNestedOneWithoutFileSharesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFileSharesInput, Prisma.UserUncheckedCreateWithoutFileSharesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFileSharesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFileSharesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFileSharesInput, Prisma.UserUncheckedCreateWithoutFileSharesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFileSharesInput
+  upsert?: Prisma.UserUpsertWithoutFileSharesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFileSharesInput, Prisma.UserUpdateWithoutFileSharesInput>, Prisma.UserUncheckedUpdateWithoutFileSharesInput>
+}
+
 export type UserCreateNestedOneWithoutTimeLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTimeLogsInput, Prisma.UserUncheckedCreateWithoutTimeLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTimeLogsInput
@@ -680,6 +1099,62 @@ export type UserUpdateOneRequiredWithoutTimeLogsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutTimeLogsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTimeLogsInput, Prisma.UserUpdateWithoutTimeLogsInput>, Prisma.UserUncheckedUpdateWithoutTimeLogsInput>
+}
+
+export type UserCreateNestedOneWithoutCallsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCallsInput, Prisma.UserUncheckedCreateWithoutCallsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCallsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCallsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCallsInput, Prisma.UserUncheckedCreateWithoutCallsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCallsInput
+  upsert?: Prisma.UserUpsertWithoutCallsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCallsInput, Prisma.UserUpdateWithoutCallsInput>, Prisma.UserUncheckedUpdateWithoutCallsInput>
+}
+
+export type UserCreateNestedOneWithoutMonthlyGoalsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMonthlyGoalsInput, Prisma.UserUncheckedCreateWithoutMonthlyGoalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMonthlyGoalsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMonthlyGoalsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMonthlyGoalsInput, Prisma.UserUncheckedCreateWithoutMonthlyGoalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMonthlyGoalsInput
+  upsert?: Prisma.UserUpsertWithoutMonthlyGoalsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMonthlyGoalsInput, Prisma.UserUpdateWithoutMonthlyGoalsInput>, Prisma.UserUncheckedUpdateWithoutMonthlyGoalsInput>
+}
+
+export type UserCreateNestedOneWithoutKpisInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKpisInput, Prisma.UserUncheckedCreateWithoutKpisInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKpisInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutKpisNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKpisInput, Prisma.UserUncheckedCreateWithoutKpisInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKpisInput
+  upsert?: Prisma.UserUpsertWithoutKpisInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutKpisInput, Prisma.UserUpdateWithoutKpisInput>, Prisma.UserUncheckedUpdateWithoutKpisInput>
+}
+
+export type UserCreateNestedOneWithoutWeeklyPlanItemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWeeklyPlanItemsInput, Prisma.UserUncheckedCreateWithoutWeeklyPlanItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWeeklyPlanItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWeeklyPlanItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWeeklyPlanItemsInput, Prisma.UserUncheckedCreateWithoutWeeklyPlanItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWeeklyPlanItemsInput
+  upsert?: Prisma.UserUpsertWithoutWeeklyPlanItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWeeklyPlanItemsInput, Prisma.UserUpdateWithoutWeeklyPlanItemsInput>, Prisma.UserUncheckedUpdateWithoutWeeklyPlanItemsInput>
 }
 
 export type UserCreateNestedOneWithoutActivitiesInput = {
@@ -726,17 +1201,28 @@ export type UserUpdateOneWithoutTriggeredNotifsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTriggeredNotifsInput, Prisma.UserUpdateWithoutTriggeredNotifsInput>, Prisma.UserUncheckedUpdateWithoutTriggeredNotifsInput>
 }
 
-export type UserCreateWithoutCreatedProjectsInput = {
+export type UserCreateWithoutReportsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
   assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
@@ -747,19 +1233,38 @@ export type UserCreateWithoutCreatedProjectsInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutCreatedProjectsInput = {
+export type UserUncheckedCreateWithoutReportsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
   assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
@@ -770,6 +1275,333 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReportsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReportsInput, Prisma.UserUncheckedCreateWithoutReportsInput>
+}
+
+export type UserCreateWithoutManagerInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutManagerInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutManagerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutManagerInput, Prisma.UserUncheckedCreateWithoutManagerInput>
+}
+
+export type UserCreateManyManagerInputEnvelope = {
+  data: Prisma.UserCreateManyManagerInput | Prisma.UserCreateManyManagerInput[]
+}
+
+export type UserUpsertWithoutReportsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReportsInput, Prisma.UserUncheckedUpdateWithoutReportsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReportsInput, Prisma.UserUncheckedCreateWithoutReportsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReportsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReportsInput, Prisma.UserUncheckedUpdateWithoutReportsInput>
+}
+
+export type UserUpdateWithoutReportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithWhereUniqueWithoutManagerInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutManagerInput, Prisma.UserUncheckedUpdateWithoutManagerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutManagerInput, Prisma.UserUncheckedCreateWithoutManagerInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutManagerInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutManagerInput, Prisma.UserUncheckedUpdateWithoutManagerInput>
+}
+
+export type UserUpdateManyWithWhereWithoutManagerInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutManagerInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  name?: Prisma.StringFilter<"User"> | string
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
+  email?: Prisma.StringFilter<"User"> | string
+  passwordHash?: Prisma.StringFilter<"User"> | string
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  title?: Prisma.StringNullableFilter<"User"> | string | null
+  functions?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
+  hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
+  weeklyHours?: Prisma.FloatNullableFilter<"User"> | number | null
+  locale?: Prisma.StringFilter<"User"> | string
+  timezone?: Prisma.StringFilter<"User"> | string
+  theme?: Prisma.StringFilter<"User"> | string
+  weekStartsMon?: Prisma.BoolFilter<"User"> | boolean
+  isActive?: Prisma.BoolFilter<"User"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  managerId?: Prisma.StringNullableFilter<"User"> | string | null
+}
+
+export type UserCreateWithoutCreatedProjectsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCreatedProjectsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedProjectsInput = {
@@ -791,14 +1623,25 @@ export type UserUpdateToOneWithWhereWithoutCreatedProjectsInput = {
 export type UserUpdateWithoutCreatedProjectsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
   assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
@@ -809,19 +1652,38 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
   assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
@@ -832,19 +1694,38 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectMembersInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
   assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
@@ -855,19 +1736,38 @@ export type UserCreateWithoutProjectMembersInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectMembersInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
   assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
@@ -878,6 +1778,14 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectMembersInput = {
@@ -899,14 +1807,25 @@ export type UserUpdateToOneWithWhereWithoutProjectMembersInput = {
 export type UserUpdateWithoutProjectMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
   assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
@@ -917,19 +1836,38 @@ export type UserUpdateWithoutProjectMembersInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
   assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
@@ -940,19 +1878,38 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTasksInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
@@ -963,19 +1920,38 @@ export type UserCreateWithoutCreatedTasksInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTasksInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
@@ -986,6 +1962,14 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -1007,14 +1991,25 @@ export type UserUpdateToOneWithWhereWithoutCreatedTasksInput = {
 export type UserUpdateWithoutCreatedTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
@@ -1025,19 +2020,38 @@ export type UserUpdateWithoutCreatedTasksInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
@@ -1048,19 +2062,38 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssignedTasksInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1071,19 +2104,38 @@ export type UserCreateWithoutAssignedTasksInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTasksInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1094,6 +2146,14 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -1115,14 +2175,25 @@ export type UserUpdateToOneWithWhereWithoutAssignedTasksInput = {
 export type UserUpdateWithoutAssignedTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1133,19 +2204,38 @@ export type UserUpdateWithoutAssignedTasksInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1156,19 +2246,406 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRecurringAssignedInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRecurringAssignedInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRecurringAssignedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRecurringAssignedInput, Prisma.UserUncheckedCreateWithoutRecurringAssignedInput>
+}
+
+export type UserCreateWithoutRecurringCreatedInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRecurringCreatedInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRecurringCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRecurringCreatedInput, Prisma.UserUncheckedCreateWithoutRecurringCreatedInput>
+}
+
+export type UserUpsertWithoutRecurringAssignedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRecurringAssignedInput, Prisma.UserUncheckedUpdateWithoutRecurringAssignedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRecurringAssignedInput, Prisma.UserUncheckedCreateWithoutRecurringAssignedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRecurringAssignedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRecurringAssignedInput, Prisma.UserUncheckedUpdateWithoutRecurringAssignedInput>
+}
+
+export type UserUpdateWithoutRecurringAssignedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutRecurringCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRecurringCreatedInput, Prisma.UserUncheckedUpdateWithoutRecurringCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRecurringCreatedInput, Prisma.UserUncheckedCreateWithoutRecurringCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRecurringCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRecurringCreatedInput, Prisma.UserUncheckedUpdateWithoutRecurringCreatedInput>
+}
+
+export type UserUpdateWithoutRecurringCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1179,19 +2656,38 @@ export type UserCreateWithoutCommentsInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1202,6 +2698,14 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1223,14 +2727,25 @@ export type UserUpdateToOneWithWhereWithoutCommentsInput = {
 export type UserUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1241,19 +2756,38 @@ export type UserUpdateWithoutCommentsInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1264,19 +2798,38 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMentionsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1287,19 +2840,38 @@ export type UserCreateWithoutMentionsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMentionsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1310,6 +2882,14 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMentionsInput = {
@@ -1331,14 +2911,25 @@ export type UserUpdateToOneWithWhereWithoutMentionsInput = {
 export type UserUpdateWithoutMentionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1349,19 +2940,38 @@ export type UserUpdateWithoutMentionsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMentionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1372,19 +2982,38 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedFilesInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1395,19 +3024,38 @@ export type UserCreateWithoutUploadedFilesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedFilesInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1418,6 +3066,14 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedFilesInput = {
@@ -1439,14 +3095,25 @@ export type UserUpdateToOneWithWhereWithoutUploadedFilesInput = {
 export type UserUpdateWithoutUploadedFilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1457,19 +3124,38 @@ export type UserUpdateWithoutUploadedFilesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1480,19 +3166,406 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutOwnedFilesInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOwnedFilesInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOwnedFilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedFilesInput, Prisma.UserUncheckedCreateWithoutOwnedFilesInput>
+}
+
+export type UserUpsertWithoutOwnedFilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedFilesInput, Prisma.UserUncheckedUpdateWithoutOwnedFilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedFilesInput, Prisma.UserUncheckedCreateWithoutOwnedFilesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnedFilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedFilesInput, Prisma.UserUncheckedUpdateWithoutOwnedFilesInput>
+}
+
+export type UserUpdateWithoutOwnedFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnedFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutFileSharesInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutFileSharesInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutFileSharesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFileSharesInput, Prisma.UserUncheckedCreateWithoutFileSharesInput>
+}
+
+export type UserUpsertWithoutFileSharesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFileSharesInput, Prisma.UserUncheckedUpdateWithoutFileSharesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFileSharesInput, Prisma.UserUncheckedCreateWithoutFileSharesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFileSharesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFileSharesInput, Prisma.UserUncheckedUpdateWithoutFileSharesInput>
+}
+
+export type UserUpdateWithoutFileSharesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFileSharesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutTimeLogsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1503,19 +3576,38 @@ export type UserCreateWithoutTimeLogsInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTimeLogsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1526,6 +3618,14 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTimeLogsInput = {
@@ -1547,14 +3647,25 @@ export type UserUpdateToOneWithWhereWithoutTimeLogsInput = {
 export type UserUpdateWithoutTimeLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1565,19 +3676,38 @@ export type UserUpdateWithoutTimeLogsInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTimeLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1588,19 +3718,774 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCallsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCallsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCallsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCallsInput, Prisma.UserUncheckedCreateWithoutCallsInput>
+}
+
+export type UserUpsertWithoutCallsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCallsInput, Prisma.UserUncheckedUpdateWithoutCallsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCallsInput, Prisma.UserUncheckedCreateWithoutCallsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCallsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCallsInput, Prisma.UserUncheckedUpdateWithoutCallsInput>
+}
+
+export type UserUpdateWithoutCallsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCallsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutMonthlyGoalsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutMonthlyGoalsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMonthlyGoalsInput, Prisma.UserUncheckedCreateWithoutMonthlyGoalsInput>
+}
+
+export type UserUpsertWithoutMonthlyGoalsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMonthlyGoalsInput, Prisma.UserUncheckedUpdateWithoutMonthlyGoalsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMonthlyGoalsInput, Prisma.UserUncheckedCreateWithoutMonthlyGoalsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMonthlyGoalsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMonthlyGoalsInput, Prisma.UserUncheckedUpdateWithoutMonthlyGoalsInput>
+}
+
+export type UserUpdateWithoutMonthlyGoalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutKpisInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutKpisInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutKpisInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutKpisInput, Prisma.UserUncheckedCreateWithoutKpisInput>
+}
+
+export type UserUpsertWithoutKpisInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutKpisInput, Prisma.UserUncheckedUpdateWithoutKpisInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutKpisInput, Prisma.UserUncheckedCreateWithoutKpisInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutKpisInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutKpisInput, Prisma.UserUncheckedUpdateWithoutKpisInput>
+}
+
+export type UserUpdateWithoutKpisInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutKpisInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutWeeklyPlanItemsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutWeeklyPlanItemsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWeeklyPlanItemsInput, Prisma.UserUncheckedCreateWithoutWeeklyPlanItemsInput>
+}
+
+export type UserUpsertWithoutWeeklyPlanItemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWeeklyPlanItemsInput, Prisma.UserUncheckedUpdateWithoutWeeklyPlanItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWeeklyPlanItemsInput, Prisma.UserUncheckedCreateWithoutWeeklyPlanItemsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWeeklyPlanItemsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWeeklyPlanItemsInput, Prisma.UserUncheckedUpdateWithoutWeeklyPlanItemsInput>
+}
+
+export type UserUpdateWithoutWeeklyPlanItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1611,19 +4496,38 @@ export type UserCreateWithoutActivitiesInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1634,6 +4538,14 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -1655,14 +4567,25 @@ export type UserUpdateToOneWithWhereWithoutActivitiesInput = {
 export type UserUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1673,19 +4596,38 @@ export type UserUpdateWithoutActivitiesInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1696,19 +4638,38 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1719,19 +4680,38 @@ export type UserCreateWithoutNotificationsInput = {
   triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1742,6 +4722,14 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -1752,14 +4740,25 @@ export type UserCreateOrConnectWithoutNotificationsInput = {
 export type UserCreateWithoutTriggeredNotifsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
@@ -1770,19 +4769,38 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   id?: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email: string
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1793,6 +4811,14 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
   mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTriggeredNotifsInput = {
@@ -1814,14 +4840,25 @@ export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
 export type UserUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1832,19 +4869,38 @@ export type UserUpdateWithoutNotificationsInput = {
   triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1855,6 +4911,14 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTriggeredNotifsInput = {
@@ -1871,14 +4935,25 @@ export type UserUpdateToOneWithWhereWithoutTriggeredNotifsInput = {
 export type UserUpdateWithoutTriggeredNotifsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
@@ -1889,19 +4964,38 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1912,6 +5006,142 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateManyManagerInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UserUpdateWithoutManagerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutManagerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutManagerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1920,6 +5150,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
  */
 
 export type UserCountOutputType = {
+  reports: number
   createdProjects: number
   projectMembers: number
   createdTasks: number
@@ -1931,9 +5162,18 @@ export type UserCountOutputType = {
   triggeredNotifs: number
   uploadedFiles: number
   mentions: number
+  monthlyGoals: number
+  kpis: number
+  weeklyPlanItems: number
+  recurringAssigned: number
+  recurringCreated: number
+  calls: number
+  ownedFiles: number
+  fileShares: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reports?: boolean | UserCountOutputTypeCountReportsArgs
   createdProjects?: boolean | UserCountOutputTypeCountCreatedProjectsArgs
   projectMembers?: boolean | UserCountOutputTypeCountProjectMembersArgs
   createdTasks?: boolean | UserCountOutputTypeCountCreatedTasksArgs
@@ -1945,6 +5185,14 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   triggeredNotifs?: boolean | UserCountOutputTypeCountTriggeredNotifsArgs
   uploadedFiles?: boolean | UserCountOutputTypeCountUploadedFilesArgs
   mentions?: boolean | UserCountOutputTypeCountMentionsArgs
+  monthlyGoals?: boolean | UserCountOutputTypeCountMonthlyGoalsArgs
+  kpis?: boolean | UserCountOutputTypeCountKpisArgs
+  weeklyPlanItems?: boolean | UserCountOutputTypeCountWeeklyPlanItemsArgs
+  recurringAssigned?: boolean | UserCountOutputTypeCountRecurringAssignedArgs
+  recurringCreated?: boolean | UserCountOutputTypeCountRecurringCreatedArgs
+  calls?: boolean | UserCountOutputTypeCountCallsArgs
+  ownedFiles?: boolean | UserCountOutputTypeCountOwnedFilesArgs
+  fileShares?: boolean | UserCountOutputTypeCountFileSharesArgs
 }
 
 /**
@@ -1955,6 +5203,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
 }
 
 /**
@@ -2034,18 +5289,86 @@ export type UserCountOutputTypeCountMentionsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.MentionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMonthlyGoalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MonthlyGoalWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountKpisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KpiWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWeeklyPlanItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WeeklyPlanItemWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRecurringAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RecurringTaskWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRecurringCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RecurringTaskWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCallsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CallWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileLinkWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFileSharesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileShareWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  functions?: boolean
   role?: boolean
   hourlyRate?: boolean
+  weeklyHours?: boolean
+  locale?: boolean
+  timezone?: boolean
+  theme?: boolean
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  managerId?: boolean
+  manager?: boolean | Prisma.User$managerArgs<ExtArgs>
+  reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
   createdProjects?: boolean | Prisma.User$createdProjectsArgs<ExtArgs>
   projectMembers?: boolean | Prisma.User$projectMembersArgs<ExtArgs>
   createdTasks?: boolean | Prisma.User$createdTasksArgs<ExtArgs>
@@ -2057,50 +5380,92 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   triggeredNotifs?: boolean | Prisma.User$triggeredNotifsArgs<ExtArgs>
   uploadedFiles?: boolean | Prisma.User$uploadedFilesArgs<ExtArgs>
   mentions?: boolean | Prisma.User$mentionsArgs<ExtArgs>
+  monthlyGoals?: boolean | Prisma.User$monthlyGoalsArgs<ExtArgs>
+  kpis?: boolean | Prisma.User$kpisArgs<ExtArgs>
+  weeklyPlanItems?: boolean | Prisma.User$weeklyPlanItemsArgs<ExtArgs>
+  recurringAssigned?: boolean | Prisma.User$recurringAssignedArgs<ExtArgs>
+  recurringCreated?: boolean | Prisma.User$recurringCreatedArgs<ExtArgs>
+  calls?: boolean | Prisma.User$callsArgs<ExtArgs>
+  ownedFiles?: boolean | Prisma.User$ownedFilesArgs<ExtArgs>
+  fileShares?: boolean | Prisma.User$fileSharesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  functions?: boolean
   role?: boolean
   hourlyRate?: boolean
+  weeklyHours?: boolean
+  locale?: boolean
+  timezone?: boolean
+  theme?: boolean
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  managerId?: boolean
+  manager?: boolean | Prisma.User$managerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  functions?: boolean
   role?: boolean
   hourlyRate?: boolean
+  weeklyHours?: boolean
+  locale?: boolean
+  timezone?: boolean
+  theme?: boolean
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  managerId?: boolean
+  manager?: boolean | Prisma.User$managerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
   id?: boolean
   name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  functions?: boolean
   role?: boolean
   hourlyRate?: boolean
+  weeklyHours?: boolean
+  locale?: boolean
+  timezone?: boolean
+  theme?: boolean
+  weekStartsMon?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  managerId?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "avatarUrl" | "title" | "role" | "hourlyRate" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  manager?: boolean | Prisma.User$managerArgs<ExtArgs>
+  reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
   createdProjects?: boolean | Prisma.User$createdProjectsArgs<ExtArgs>
   projectMembers?: boolean | Prisma.User$projectMembersArgs<ExtArgs>
   createdTasks?: boolean | Prisma.User$createdTasksArgs<ExtArgs>
@@ -2112,14 +5477,28 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   triggeredNotifs?: boolean | Prisma.User$triggeredNotifsArgs<ExtArgs>
   uploadedFiles?: boolean | Prisma.User$uploadedFilesArgs<ExtArgs>
   mentions?: boolean | Prisma.User$mentionsArgs<ExtArgs>
+  monthlyGoals?: boolean | Prisma.User$monthlyGoalsArgs<ExtArgs>
+  kpis?: boolean | Prisma.User$kpisArgs<ExtArgs>
+  weeklyPlanItems?: boolean | Prisma.User$weeklyPlanItemsArgs<ExtArgs>
+  recurringAssigned?: boolean | Prisma.User$recurringAssignedArgs<ExtArgs>
+  recurringCreated?: boolean | Prisma.User$recurringCreatedArgs<ExtArgs>
+  calls?: boolean | Prisma.User$callsArgs<ExtArgs>
+  ownedFiles?: boolean | Prisma.User$ownedFilesArgs<ExtArgs>
+  fileShares?: boolean | Prisma.User$fileSharesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  manager?: boolean | Prisma.User$managerArgs<ExtArgs>
+}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  manager?: boolean | Prisma.User$managerArgs<ExtArgs>
+}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    manager: Prisma.$UserPayload<ExtArgs> | null
+    reports: Prisma.$UserPayload<ExtArgs>[]
     createdProjects: Prisma.$ProjectPayload<ExtArgs>[]
     projectMembers: Prisma.$ProjectMemberPayload<ExtArgs>[]
     createdTasks: Prisma.$TaskPayload<ExtArgs>[]
@@ -2131,18 +5510,36 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     triggeredNotifs: Prisma.$NotificationPayload<ExtArgs>[]
     uploadedFiles: Prisma.$AttachmentPayload<ExtArgs>[]
     mentions: Prisma.$MentionPayload<ExtArgs>[]
+    monthlyGoals: Prisma.$MonthlyGoalPayload<ExtArgs>[]
+    kpis: Prisma.$KpiPayload<ExtArgs>[]
+    weeklyPlanItems: Prisma.$WeeklyPlanItemPayload<ExtArgs>[]
+    recurringAssigned: Prisma.$RecurringTaskPayload<ExtArgs>[]
+    recurringCreated: Prisma.$RecurringTaskPayload<ExtArgs>[]
+    calls: Prisma.$CallPayload<ExtArgs>[]
+    ownedFiles: Prisma.$FileLinkPayload<ExtArgs>[]
+    fileShares: Prisma.$FileSharePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    firstName: string | null
+    lastName: string | null
     email: string
     passwordHash: string
     avatarUrl: string | null
     title: string | null
+    functions: string | null
     role: $Enums.SystemRole
     hourlyRate: number | null
+    weeklyHours: number | null
+    locale: string
+    timezone: string
+    theme: string
+    weekStartsMon: boolean
+    isActive: boolean
     createdAt: Date
     updatedAt: Date
+    managerId: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2537,6 +5934,8 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  manager<T extends Prisma.User$managerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$managerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reports<T extends Prisma.User$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdProjects<T extends Prisma.User$createdProjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdProjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projectMembers<T extends Prisma.User$projectMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdTasks<T extends Prisma.User$createdTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2548,6 +5947,14 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   triggeredNotifs<T extends Prisma.User$triggeredNotifsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$triggeredNotifsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedFiles<T extends Prisma.User$uploadedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mentions<T extends Prisma.User$mentionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mentionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MentionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  monthlyGoals<T extends Prisma.User$monthlyGoalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$monthlyGoalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyGoalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  kpis<T extends Prisma.User$kpisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$kpisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KpiPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  weeklyPlanItems<T extends Prisma.User$weeklyPlanItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$weeklyPlanItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WeeklyPlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  recurringAssigned<T extends Prisma.User$recurringAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$recurringAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecurringTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  recurringCreated<T extends Prisma.User$recurringCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$recurringCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecurringTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  calls<T extends Prisma.User$callsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$callsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedFiles<T extends Prisma.User$ownedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fileShares<T extends Prisma.User$fileSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fileSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2579,14 +5986,24 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
+  readonly firstName: Prisma.FieldRef<"User", 'String'>
+  readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly title: Prisma.FieldRef<"User", 'String'>
+  readonly functions: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'SystemRole'>
   readonly hourlyRate: Prisma.FieldRef<"User", 'Float'>
+  readonly weeklyHours: Prisma.FieldRef<"User", 'Float'>
+  readonly locale: Prisma.FieldRef<"User", 'String'>
+  readonly timezone: Prisma.FieldRef<"User", 'String'>
+  readonly theme: Prisma.FieldRef<"User", 'String'>
+  readonly weekStartsMon: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly managerId: Prisma.FieldRef<"User", 'String'>
 }
     
 
@@ -2839,6 +6256,10 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Users.
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2909,6 +6330,10 @@ export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Users to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2975,6 +6400,49 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.manager
+ */
+export type User$managerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * User.reports
+ */
+export type User$reportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**
@@ -3239,6 +6707,198 @@ export type User$mentionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.MentionScalarFieldEnum | Prisma.MentionScalarFieldEnum[]
+}
+
+/**
+ * User.monthlyGoals
+ */
+export type User$monthlyGoalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MonthlyGoal
+   */
+  select?: Prisma.MonthlyGoalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MonthlyGoal
+   */
+  omit?: Prisma.MonthlyGoalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MonthlyGoalInclude<ExtArgs> | null
+  where?: Prisma.MonthlyGoalWhereInput
+  orderBy?: Prisma.MonthlyGoalOrderByWithRelationInput | Prisma.MonthlyGoalOrderByWithRelationInput[]
+  cursor?: Prisma.MonthlyGoalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MonthlyGoalScalarFieldEnum | Prisma.MonthlyGoalScalarFieldEnum[]
+}
+
+/**
+ * User.kpis
+ */
+export type User$kpisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Kpi
+   */
+  select?: Prisma.KpiSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Kpi
+   */
+  omit?: Prisma.KpiOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KpiInclude<ExtArgs> | null
+  where?: Prisma.KpiWhereInput
+  orderBy?: Prisma.KpiOrderByWithRelationInput | Prisma.KpiOrderByWithRelationInput[]
+  cursor?: Prisma.KpiWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KpiScalarFieldEnum | Prisma.KpiScalarFieldEnum[]
+}
+
+/**
+ * User.weeklyPlanItems
+ */
+export type User$weeklyPlanItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WeeklyPlanItem
+   */
+  select?: Prisma.WeeklyPlanItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WeeklyPlanItem
+   */
+  omit?: Prisma.WeeklyPlanItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WeeklyPlanItemInclude<ExtArgs> | null
+  where?: Prisma.WeeklyPlanItemWhereInput
+  orderBy?: Prisma.WeeklyPlanItemOrderByWithRelationInput | Prisma.WeeklyPlanItemOrderByWithRelationInput[]
+  cursor?: Prisma.WeeklyPlanItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WeeklyPlanItemScalarFieldEnum | Prisma.WeeklyPlanItemScalarFieldEnum[]
+}
+
+/**
+ * User.recurringAssigned
+ */
+export type User$recurringAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RecurringTask
+   */
+  select?: Prisma.RecurringTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RecurringTask
+   */
+  omit?: Prisma.RecurringTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RecurringTaskInclude<ExtArgs> | null
+  where?: Prisma.RecurringTaskWhereInput
+  orderBy?: Prisma.RecurringTaskOrderByWithRelationInput | Prisma.RecurringTaskOrderByWithRelationInput[]
+  cursor?: Prisma.RecurringTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RecurringTaskScalarFieldEnum | Prisma.RecurringTaskScalarFieldEnum[]
+}
+
+/**
+ * User.recurringCreated
+ */
+export type User$recurringCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RecurringTask
+   */
+  select?: Prisma.RecurringTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RecurringTask
+   */
+  omit?: Prisma.RecurringTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RecurringTaskInclude<ExtArgs> | null
+  where?: Prisma.RecurringTaskWhereInput
+  orderBy?: Prisma.RecurringTaskOrderByWithRelationInput | Prisma.RecurringTaskOrderByWithRelationInput[]
+  cursor?: Prisma.RecurringTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RecurringTaskScalarFieldEnum | Prisma.RecurringTaskScalarFieldEnum[]
+}
+
+/**
+ * User.calls
+ */
+export type User$callsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Call
+   */
+  select?: Prisma.CallSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Call
+   */
+  omit?: Prisma.CallOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CallInclude<ExtArgs> | null
+  where?: Prisma.CallWhereInput
+  orderBy?: Prisma.CallOrderByWithRelationInput | Prisma.CallOrderByWithRelationInput[]
+  cursor?: Prisma.CallWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CallScalarFieldEnum | Prisma.CallScalarFieldEnum[]
+}
+
+/**
+ * User.ownedFiles
+ */
+export type User$ownedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FileLink
+   */
+  select?: Prisma.FileLinkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FileLink
+   */
+  omit?: Prisma.FileLinkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileLinkInclude<ExtArgs> | null
+  where?: Prisma.FileLinkWhereInput
+  orderBy?: Prisma.FileLinkOrderByWithRelationInput | Prisma.FileLinkOrderByWithRelationInput[]
+  cursor?: Prisma.FileLinkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FileLinkScalarFieldEnum | Prisma.FileLinkScalarFieldEnum[]
+}
+
+/**
+ * User.fileShares
+ */
+export type User$fileSharesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FileShare
+   */
+  select?: Prisma.FileShareSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FileShare
+   */
+  omit?: Prisma.FileShareOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileShareInclude<ExtArgs> | null
+  where?: Prisma.FileShareWhereInput
+  orderBy?: Prisma.FileShareOrderByWithRelationInput | Prisma.FileShareOrderByWithRelationInput[]
+  cursor?: Prisma.FileShareWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FileShareScalarFieldEnum | Prisma.FileShareScalarFieldEnum[]
 }
 
 /**

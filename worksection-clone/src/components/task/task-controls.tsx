@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { TaskStatus, TaskPriority } from "@/generated/prisma/enums";
+import type { TaskStatus } from "@/generated/prisma/enums";
 import { updateTask, setTaskAssignee } from "@/server/actions/tasks";
 import {
   Select,
@@ -15,8 +15,7 @@ import {
 import {
   TASK_STATUSES,
   TASK_STATUS_LABEL,
-  TASK_PRIORITIES,
-  TASK_PRIORITY_LABEL,
+  PRIORITY_VALUES,
 } from "@/lib/domain";
 
 export function TaskControls({
@@ -28,7 +27,7 @@ export function TaskControls({
 }: {
   taskId: string;
   status: TaskStatus;
-  priority: TaskPriority;
+  priority: number;
   assigneeId: string | null;
   members: { id: string; name: string }[];
 }) {
@@ -63,21 +62,21 @@ export function TaskControls({
         </Select>
       </Field>
 
-      <Field label="Приоритет">
+      <Field label="Пріоритет">
         <Select
-          value={priority}
-          onValueChange={(v) => run(() => updateTask({ taskId, priority: v as TaskPriority }), "Приоритет обновлён")}
+          value={String(priority)}
+          onValueChange={(v) => run(() => updateTask({ taskId, priority: Number(v) }), "Пріоритет оновлено")}
         >
           <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {TASK_PRIORITIES.map((p) => (
-              <SelectItem key={p} value={p}>{TASK_PRIORITY_LABEL[p]}</SelectItem>
+            {PRIORITY_VALUES.map((p) => (
+              <SelectItem key={p} value={String(p)}>{p}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
 
-      <Field label="Исполнитель">
+      <Field label="Виконавець">
         <Select
           value={assigneeId ?? "none"}
           onValueChange={(v) =>

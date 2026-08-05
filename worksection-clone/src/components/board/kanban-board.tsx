@@ -27,7 +27,8 @@ type Columns = Record<TaskStatus, BoardTask[]>;
 function group(tasks: BoardTask[]): Columns {
   const cols = Object.fromEntries(TASK_STATUSES.map((s) => [s, [] as BoardTask[]])) as Columns;
   for (const t of tasks) cols[t.status].push(t);
-  for (const s of TASK_STATUSES) cols[s].sort((a, b) => a.position - b.position);
+  // высокий приоритет выше; при равном — по позиции
+  for (const s of TASK_STATUSES) cols[s].sort((a, b) => b.priority - a.priority || a.position - b.position);
   return cols;
 }
 
