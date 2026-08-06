@@ -109,7 +109,10 @@ export default async function TeamPage({
               <p className="truncate text-sm font-medium leading-tight">{m.name}</p>
               <p className="truncate text-xs text-muted-foreground leading-tight">{m.title ?? "—"}</p>
             </div>
-            <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">{m.taskCount}</span>
+            <span className="ml-1 flex items-center gap-1">
+              <span title="Активні задачі на тиждень" className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{m.weekActive}</span>
+              <span title="Закрито за тиждень" className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600">{m.weekDone}</span>
+            </span>
           </Link>
         ))}
       </div>

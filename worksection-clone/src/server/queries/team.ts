@@ -38,7 +38,12 @@ export async function getAssignableMembers(userId: string, role: string) {
 
 // Обзор команды: участники + их незакрытые задачи с нагрузкой
 export async function getTeamOverview() {
-  const [members, tasks] = await Promise.all([
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const tomorrow = addDays(today, 1);
+  const weekStart = mondayOf(today);
+  const weekEnd = addDays(weekStart, 7);
+
+  const [members, tasks, doneThisWeek] = await Promise.all([
     db.user.findMany({
       where: { role: { not: "CLIENT" }, isActive: true },
       orderBy: { name: "asc" },
@@ -52,24 +57,32 @@ export async function getTeamOverview() {
         assignees: { include: { user: { select: { id: true, name: true } } } },
       },
     }),
+    // задачи, закрытые на этой неделе (для счётчика «закрито за тиждень»)
+    db.task.findMany({
+      where: { parentId: null, status: "DONE", completedAt: { gte: weekStart, lt: weekEnd } },
+      select: { id: true, assignees: { select: { userId: true } } },
+    }),
   ]);
 
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const tomorrow = addDays(today, 1);
-  const weekStart = mondayOf(today);
-  const weekEnd = addDays(weekStart, 7);
-
-  const load = new Map<string, { today: number; week: number; count: number }>();
-  for (const m of members) load.set(m.id, { today: 0, week: 0, count: 0 });
+  const load = new Map<string, { today: number; week: number; count: number; weekActive: number; weekDone: number }>();
+  for (const m of members) load.set(m.id, { today: 0, week: 0, count: 0, weekActive: 0, weekDone: 0 });
 
   for (const t of tasks) {
     const due = t.scheduledAt ?? t.dueDate;
+    const inWeek = !!due && due >= weekStart && due < weekEnd;
     for (const a of t.assignees) {
       const l = load.get(a.user.id);
       if (!l) continue;
       l.count += 1;
       if (due && due >= today && due < tomorrow) l.today += t.plannedMinutes ?? 0;
-      if (due && due >= weekStart && due < weekEnd) l.week += t.plannedMinutes ?? 0;
+      if (inWeek) { l.week += t.plannedMinutes ?? 0; l.weekActive += 1; }
+    }
+  }
+
+  for (const t of doneThisWeek) {
+    for (const a of t.assignees) {
+      const l = load.get(a.userId);
+      if (l) l.weekDone += 1;
     }
   }
 
@@ -77,7 +90,7 @@ export async function getTeamOverview() {
     const l = load.get(m.id)!;
     const dailyCap = m.weeklyHours ? Math.round((m.weeklyHours / 5) * 60) : 480;
     const weekCap = m.weeklyHours ? Math.round(m.weeklyHours * 60) : 2400;
-    return { ...m, todayMin: l.today, weekMin: l.week, taskCount: l.count, dailyCap, weekCap };
+    return { ...m, todayMin: l.today, weekMin: l.week, taskCount: l.count, weekActive: l.weekActive, weekDone: l.weekDone, dailyCap, weekCap };
   });
 
   return { members: withLoad, tasks };
