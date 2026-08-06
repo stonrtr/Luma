@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
 import { getMyTasks } from "@/server/queries/tasks";
-import { getMyCalendar } from "@/server/queries/calendar";
-import { MyWorkspace, type CalendarData } from "@/components/workspace/my-workspace";
-import type { CalEntry } from "@/components/calendar/month-calendar";
+import { getMyWeek } from "@/server/queries/calendar";
+import { MyWorkspace } from "@/components/workspace/my-workspace";
+import type { WeekData, WeekDay } from "@/components/calendar/week-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { mondayOf, addDays } from "@/lib/week";
 import { formatMinutes } from "@/lib/format";
@@ -31,43 +31,77 @@ function WorkloadBar({ label, used, cap }: { label: string; used: number; cap: n
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; y?: string; m?: string }>;
+  searchParams: Promise<{ view?: string; ws?: string }>;
 }) {
   const user = await requireUser();
-  const { view, y, m } = await searchParams;
+  const { view, ws } = await searchParams;
   const tasks = await getMyTasks(user.id);
 
-  // Данные для вида «Календар»
-  let calendar: CalendarData | undefined;
+  // Данные для вида «Календар» — недельный тайм-грид
+  let calendar: WeekData | undefined;
   if (view === "calendar") {
-    const nowD = new Date();
-    const year = y ? parseInt(y) : nowD.getFullYear();
-    const month = m != null ? parseInt(m) : nowD.getMonth();
-    const { tasks: calTasks, calls } = await getMyCalendar(user.id, year, month);
-    const timeOf = (d: Date) => d.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
-    const entries: CalEntry[] = [];
-    for (const ct of calTasks) {
-      const dt = ct.scheduledAt ?? ct.dueDate!;
-      entries.push({
-        day: new Date(dt).getDate(),
-        sort: ct.scheduledAt ? new Date(ct.scheduledAt).getHours() * 60 + new Date(ct.scheduledAt).getMinutes() : 9999,
-        time: ct.scheduledAt ? timeOf(new Date(ct.scheduledAt)) : null,
-        label: ct.title, color: ct.project?.color ?? "#4f46e5", type: "task", href: `/tasks/${ct.id}`,
-      });
+    const weekStart = mondayOf(ws ? new Date(ws) : new Date());
+    const weekEnd = addDays(weekStart, 7);
+    const { tasks: wkTasks, calls, logs, weeklyHours } = await getMyWeek(user.id, weekStart);
+    const dailyCap = weeklyHours ? Math.round((weeklyHours / 5) * 60) : 480;
+    const START_H = 8, END_H = 22;
+    const dayNames = ["пн", "вт", "ср", "чт", "пт", "сб", "нд"];
+    const todayD = new Date(); todayD.setHours(0, 0, 0, 0);
+    const dayIndex = (d: Date) => Math.floor((new Date(d).setHours(0, 0, 0, 0) - weekStart.getTime()) / 86400000);
+
+    const days: WeekDay[] = Array.from({ length: 7 }, (_, di) => {
+      const date = addDays(weekStart, di);
+      return {
+        weekdayLabel: dayNames[di],
+        dateLabel: `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`,
+        isToday: date.getTime() === todayD.getTime(),
+        events: [], allDay: [],
+        summary: { freeMin: dailyCap, tasksDone: 0, tasksPlanned: 0, actualMin: 0, plannedMin: 0 },
+      };
+    });
+
+    for (const tk of wkTasks) {
+      const inWeek = (d: Date | null) => d && new Date(d) >= weekStart && new Date(d) < weekEnd;
+      const done = tk.status === "DONE";
+      const color = tk.project?.color ?? (done ? "#10b981" : "#4f46e5");
+      let di = -1;
+      if (inWeek(tk.scheduledAt)) {
+        di = dayIndex(tk.scheduledAt!);
+        const s = new Date(tk.scheduledAt!);
+        const startMin = s.getHours() * 60 + s.getMinutes();
+        const dur = tk.plannedMinutes ?? 60;
+        days[di].events.push({ startMin, endMin: startMin + dur, title: tk.title, color, type: "task", href: `/tasks/${tk.id}`, done });
+      } else if (inWeek(tk.dueDate)) {
+        di = dayIndex(tk.dueDate!);
+        days[di].allDay.push({ title: tk.title, color, href: `/tasks/${tk.id}`, done });
+      }
+      if (di >= 0 && di < 7) {
+        const sm = days[di].summary;
+        sm.tasksPlanned += 1;
+        if (done) sm.tasksDone += 1;
+        sm.plannedMin += tk.plannedMinutes ?? 0;
+      }
     }
     for (const c of calls) {
-      entries.push({
-        day: new Date(c.scheduledAt).getDate(),
-        sort: new Date(c.scheduledAt).getHours() * 60 + new Date(c.scheduledAt).getMinutes(),
-        time: timeOf(new Date(c.scheduledAt)), label: c.title, color: "#0ea5e9", type: "call",
-      });
+      const di = dayIndex(c.scheduledAt);
+      if (di < 0 || di >= 7) continue;
+      const s = new Date(c.scheduledAt);
+      const startMin = s.getHours() * 60 + s.getMinutes();
+      days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#0ea5e9", type: "call" });
     }
-    const prev = month === 0 ? { y: year - 1, m: 11 } : { y: year, m: month - 1 };
-    const next = month === 11 ? { y: year + 1, m: 0 } : { y: year, m: month + 1 };
+    for (const l of logs) {
+      const di = dayIndex(l.loggedAt);
+      if (di >= 0 && di < 7) days[di].summary.actualMin += l.minutes;
+    }
+    for (const d of days) d.summary.freeMin = Math.max(0, dailyCap - d.summary.plannedMin);
+
+    const fmt = (d: Date) => `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     calendar = {
-      year, month, entries,
-      prevHref: `/?view=calendar&y=${prev.y}&m=${prev.m}`,
-      nextHref: `/?view=calendar&y=${next.y}&m=${next.m}`,
+      days, startHour: START_H, endHour: END_H,
+      title: `${fmt(weekStart)} — ${fmt(addDays(weekStart, 6))}`,
+      prevHref: `/?view=calendar&ws=${iso(addDays(weekStart, -7))}`,
+      nextHref: `/?view=calendar&ws=${iso(addDays(weekStart, 7))}`,
       todayHref: `/?view=calendar`,
     };
   }
@@ -109,11 +143,7 @@ export default async function HomePage({
   return (
     <div className="flex h-full flex-col">
       <header className="border-b px-6 py-4">
-        <h1 className="text-2xl font-semibold tracking-tight">{t(user.locale, "home.title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t(user.locale, "home.greeting")}, {(user.firstName || user.name).split(" ")[0]} 👋 — {t(user.locale, "home.subtitle")}
-        </p>
-        <div className="mt-4 grid max-w-md grid-cols-2 gap-3">
+        <div className="grid max-w-md grid-cols-2 gap-3">
           <WorkloadBar label={t(user.locale, "load.today")} used={todayMin} cap={dailyCap} />
           <WorkloadBar label={t(user.locale, "load.week")} used={weekMin} cap={weekCap} />
         </div>

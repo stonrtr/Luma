@@ -29,6 +29,7 @@ export type FileLinkMinAggregateOutputType = {
   name: string | null
   url: string | null
   kind: $Enums.FileKind | null
+  isTeam: boolean | null
   note: string | null
   createdAt: Date | null
   ownerId: string | null
@@ -39,6 +40,7 @@ export type FileLinkMaxAggregateOutputType = {
   name: string | null
   url: string | null
   kind: $Enums.FileKind | null
+  isTeam: boolean | null
   note: string | null
   createdAt: Date | null
   ownerId: string | null
@@ -49,6 +51,7 @@ export type FileLinkCountAggregateOutputType = {
   name: number
   url: number
   kind: number
+  isTeam: number
   note: number
   createdAt: number
   ownerId: number
@@ -61,6 +64,7 @@ export type FileLinkMinAggregateInputType = {
   name?: true
   url?: true
   kind?: true
+  isTeam?: true
   note?: true
   createdAt?: true
   ownerId?: true
@@ -71,6 +75,7 @@ export type FileLinkMaxAggregateInputType = {
   name?: true
   url?: true
   kind?: true
+  isTeam?: true
   note?: true
   createdAt?: true
   ownerId?: true
@@ -81,6 +86,7 @@ export type FileLinkCountAggregateInputType = {
   name?: true
   url?: true
   kind?: true
+  isTeam?: true
   note?: true
   createdAt?: true
   ownerId?: true
@@ -164,6 +170,7 @@ export type FileLinkGroupByOutputType = {
   name: string
   url: string
   kind: $Enums.FileKind
+  isTeam: boolean
   note: string | null
   createdAt: Date
   ownerId: string
@@ -195,6 +202,7 @@ export type FileLinkWhereInput = {
   name?: Prisma.StringFilter<"FileLink"> | string
   url?: Prisma.StringFilter<"FileLink"> | string
   kind?: Prisma.EnumFileKindFilter<"FileLink"> | $Enums.FileKind
+  isTeam?: Prisma.BoolFilter<"FileLink"> | boolean
   note?: Prisma.StringNullableFilter<"FileLink"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FileLink"> | Date | string
   ownerId?: Prisma.StringFilter<"FileLink"> | string
@@ -207,6 +215,7 @@ export type FileLinkOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   kind?: Prisma.SortOrder
+  isTeam?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -222,6 +231,7 @@ export type FileLinkWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"FileLink"> | string
   url?: Prisma.StringFilter<"FileLink"> | string
   kind?: Prisma.EnumFileKindFilter<"FileLink"> | $Enums.FileKind
+  isTeam?: Prisma.BoolFilter<"FileLink"> | boolean
   note?: Prisma.StringNullableFilter<"FileLink"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FileLink"> | Date | string
   ownerId?: Prisma.StringFilter<"FileLink"> | string
@@ -234,6 +244,7 @@ export type FileLinkOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   kind?: Prisma.SortOrder
+  isTeam?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -250,6 +261,7 @@ export type FileLinkScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"FileLink"> | string
   url?: Prisma.StringWithAggregatesFilter<"FileLink"> | string
   kind?: Prisma.EnumFileKindWithAggregatesFilter<"FileLink"> | $Enums.FileKind
+  isTeam?: Prisma.BoolWithAggregatesFilter<"FileLink"> | boolean
   note?: Prisma.StringNullableWithAggregatesFilter<"FileLink"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FileLink"> | Date | string
   ownerId?: Prisma.StringWithAggregatesFilter<"FileLink"> | string
@@ -260,6 +272,7 @@ export type FileLinkCreateInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedFilesInput
@@ -271,6 +284,7 @@ export type FileLinkUncheckedCreateInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   ownerId: string
@@ -282,6 +296,7 @@ export type FileLinkUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedFilesNestedInput
@@ -293,6 +308,7 @@ export type FileLinkUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -304,6 +320,7 @@ export type FileLinkCreateManyInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   ownerId: string
@@ -314,6 +331,7 @@ export type FileLinkUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -323,6 +341,7 @@ export type FileLinkUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -343,6 +362,7 @@ export type FileLinkCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   kind?: Prisma.SortOrder
+  isTeam?: Prisma.SortOrder
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -353,6 +373,7 @@ export type FileLinkMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   kind?: Prisma.SortOrder
+  isTeam?: Prisma.SortOrder
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -363,6 +384,7 @@ export type FileLinkMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   kind?: Prisma.SortOrder
+  isTeam?: Prisma.SortOrder
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -438,6 +460,7 @@ export type FileLinkCreateWithoutOwnerInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   shares?: Prisma.FileShareCreateNestedManyWithoutFileInput
@@ -448,6 +471,7 @@ export type FileLinkUncheckedCreateWithoutOwnerInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   shares?: Prisma.FileShareUncheckedCreateNestedManyWithoutFileInput
@@ -486,6 +510,7 @@ export type FileLinkScalarWhereInput = {
   name?: Prisma.StringFilter<"FileLink"> | string
   url?: Prisma.StringFilter<"FileLink"> | string
   kind?: Prisma.EnumFileKindFilter<"FileLink"> | $Enums.FileKind
+  isTeam?: Prisma.BoolFilter<"FileLink"> | boolean
   note?: Prisma.StringNullableFilter<"FileLink"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FileLink"> | Date | string
   ownerId?: Prisma.StringFilter<"FileLink"> | string
@@ -496,6 +521,7 @@ export type FileLinkCreateWithoutSharesInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedFilesInput
@@ -506,6 +532,7 @@ export type FileLinkUncheckedCreateWithoutSharesInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
   ownerId: string
@@ -532,6 +559,7 @@ export type FileLinkUpdateWithoutSharesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedFilesNestedInput
@@ -542,6 +570,7 @@ export type FileLinkUncheckedUpdateWithoutSharesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -552,6 +581,7 @@ export type FileLinkCreateManyOwnerInput = {
   name: string
   url: string
   kind?: $Enums.FileKind
+  isTeam?: boolean
   note?: string | null
   createdAt?: Date | string
 }
@@ -561,6 +591,7 @@ export type FileLinkUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shares?: Prisma.FileShareUpdateManyWithoutFileNestedInput
@@ -571,6 +602,7 @@ export type FileLinkUncheckedUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shares?: Prisma.FileShareUncheckedUpdateManyWithoutFileNestedInput
@@ -581,6 +613,7 @@ export type FileLinkUncheckedUpdateManyWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumFileKindFieldUpdateOperationsInput | $Enums.FileKind
+  isTeam?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -621,6 +654,7 @@ export type FileLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   url?: boolean
   kind?: boolean
+  isTeam?: boolean
   note?: boolean
   createdAt?: boolean
   ownerId?: boolean
@@ -634,6 +668,7 @@ export type FileLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   url?: boolean
   kind?: boolean
+  isTeam?: boolean
   note?: boolean
   createdAt?: boolean
   ownerId?: boolean
@@ -645,6 +680,7 @@ export type FileLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   url?: boolean
   kind?: boolean
+  isTeam?: boolean
   note?: boolean
   createdAt?: boolean
   ownerId?: boolean
@@ -656,12 +692,13 @@ export type FileLinkSelectScalar = {
   name?: boolean
   url?: boolean
   kind?: boolean
+  isTeam?: boolean
   note?: boolean
   createdAt?: boolean
   ownerId?: boolean
 }
 
-export type FileLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "url" | "kind" | "note" | "createdAt" | "ownerId", ExtArgs["result"]["fileLink"]>
+export type FileLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "url" | "kind" | "isTeam" | "note" | "createdAt" | "ownerId", ExtArgs["result"]["fileLink"]>
 export type FileLinkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   shares?: boolean | Prisma.FileLink$sharesArgs<ExtArgs>
@@ -685,6 +722,7 @@ export type $FileLinkPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     url: string
     kind: $Enums.FileKind
+    isTeam: boolean
     note: string | null
     createdAt: Date
     ownerId: string
@@ -1117,6 +1155,7 @@ export interface FileLinkFieldRefs {
   readonly name: Prisma.FieldRef<"FileLink", 'String'>
   readonly url: Prisma.FieldRef<"FileLink", 'String'>
   readonly kind: Prisma.FieldRef<"FileLink", 'FileKind'>
+  readonly isTeam: Prisma.FieldRef<"FileLink", 'Boolean'>
   readonly note: Prisma.FieldRef<"FileLink", 'String'>
   readonly createdAt: Prisma.FieldRef<"FileLink", 'DateTime'>
   readonly ownerId: Prisma.FieldRef<"FileLink", 'String'>

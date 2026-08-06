@@ -8,13 +8,30 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 
-export async function addFileLink(input: { name: string; url: string; note?: string }) {
+export async function addFileLink(input: { name: string; url: string; note?: string; isTeam?: boolean }) {
   const user = await requireUser();
-  const schema = z.object({ name: z.string().min(1).max(200), url: z.string().url("Невірне посилання"), note: z.string().max(500).optional() });
+  const schema = z.object({ name: z.string().min(1).max(200), url: z.string().url("Невірне посилання"), note: z.string().max(500).optional(), isTeam: z.boolean().optional() });
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Помилка" };
-  await db.fileLink.create({ data: { name: parsed.data.name.trim(), url: parsed.data.url, note: parsed.data.note?.trim() || null, kind: "LINK", ownerId: user.id } });
+  const isTeam = !!parsed.data.isTeam && (user.role === "OWNER" || user.role === "ADMIN");
+  await db.fileLink.create({ data: { name: parsed.data.name.trim(), url: parsed.data.url, note: parsed.data.note?.trim() || null, kind: "LINK", isTeam, ownerId: user.id } });
   revalidatePath("/files");
+  return { error: null };
+}
+
+export async function setDriveFolder(input: { userId?: string; url: string }) {
+  const viewer = await requireUser();
+  const targetId = input.userId || viewer.id;
+  if (targetId !== viewer.id) {
+    if (viewer.role !== "OWNER" && viewer.role !== "ADMIN") {
+      const target = await db.user.findUnique({ where: { id: targetId }, select: { managerId: true } });
+      if (target?.managerId !== viewer.id) return { error: "Немає прав" };
+    }
+  }
+  const url = input.url.trim();
+  await db.user.update({ where: { id: targetId }, data: { driveFolderUrl: url || null } });
+  revalidatePath("/files");
+  revalidatePath("/org");
   return { error: null };
 }
 

@@ -49,6 +49,7 @@ export type UserMinAggregateOutputType = {
   role: $Enums.SystemRole | null
   hourlyRate: number | null
   weeklyHours: number | null
+  driveFolderUrl: string | null
   locale: string | null
   timezone: string | null
   theme: string | null
@@ -72,6 +73,7 @@ export type UserMaxAggregateOutputType = {
   role: $Enums.SystemRole | null
   hourlyRate: number | null
   weeklyHours: number | null
+  driveFolderUrl: string | null
   locale: string | null
   timezone: string | null
   theme: string | null
@@ -95,6 +97,7 @@ export type UserCountAggregateOutputType = {
   role: number
   hourlyRate: number
   weeklyHours: number
+  driveFolderUrl: number
   locale: number
   timezone: number
   theme: number
@@ -130,6 +133,7 @@ export type UserMinAggregateInputType = {
   role?: true
   hourlyRate?: true
   weeklyHours?: true
+  driveFolderUrl?: true
   locale?: true
   timezone?: true
   theme?: true
@@ -153,6 +157,7 @@ export type UserMaxAggregateInputType = {
   role?: true
   hourlyRate?: true
   weeklyHours?: true
+  driveFolderUrl?: true
   locale?: true
   timezone?: true
   theme?: true
@@ -176,6 +181,7 @@ export type UserCountAggregateInputType = {
   role?: true
   hourlyRate?: true
   weeklyHours?: true
+  driveFolderUrl?: true
   locale?: true
   timezone?: true
   theme?: true
@@ -286,6 +292,7 @@ export type UserGroupByOutputType = {
   role: $Enums.SystemRole
   hourlyRate: number | null
   weeklyHours: number | null
+  driveFolderUrl: string | null
   locale: string
   timezone: string
   theme: string
@@ -332,6 +339,7 @@ export type UserWhereInput = {
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
   weeklyHours?: Prisma.FloatNullableFilter<"User"> | number | null
+  driveFolderUrl?: Prisma.StringNullableFilter<"User"> | string | null
   locale?: Prisma.StringFilter<"User"> | string
   timezone?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.StringFilter<"User"> | string
@@ -376,6 +384,7 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
   weeklyHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  driveFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   locale?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   theme?: Prisma.SortOrder
@@ -423,6 +432,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
   weeklyHours?: Prisma.FloatNullableFilter<"User"> | number | null
+  driveFolderUrl?: Prisma.StringNullableFilter<"User"> | string | null
   locale?: Prisma.StringFilter<"User"> | string
   timezone?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.StringFilter<"User"> | string
@@ -467,6 +477,7 @@ export type UserOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
   weeklyHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  driveFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   locale?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   theme?: Prisma.SortOrder
@@ -498,6 +509,7 @@ export type UserScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumSystemRoleWithAggregatesFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
   weeklyHours?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
+  driveFolderUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   locale?: Prisma.StringWithAggregatesFilter<"User"> | string
   timezone?: Prisma.StringWithAggregatesFilter<"User"> | string
   theme?: Prisma.StringWithAggregatesFilter<"User"> | string
@@ -521,6 +533,7 @@ export type UserCreateInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -564,6 +577,7 @@ export type UserUncheckedCreateInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -607,6 +621,7 @@ export type UserUpdateInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -650,6 +665,7 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -693,6 +709,7 @@ export type UserCreateManyInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -716,6 +733,7 @@ export type UserUpdateManyMutationInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -738,6 +756,7 @@ export type UserUncheckedUpdateManyInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -776,6 +795,7 @@ export type UserCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
   weeklyHours?: Prisma.SortOrder
+  driveFolderUrl?: Prisma.SortOrder
   locale?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   theme?: Prisma.SortOrder
@@ -804,6 +824,7 @@ export type UserMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
   weeklyHours?: Prisma.SortOrder
+  driveFolderUrl?: Prisma.SortOrder
   locale?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   theme?: Prisma.SortOrder
@@ -827,6 +848,7 @@ export type UserMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
   weeklyHours?: Prisma.SortOrder
+  driveFolderUrl?: Prisma.SortOrder
   locale?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   theme?: Prisma.SortOrder
@@ -1214,6 +1236,7 @@ export type UserCreateWithoutReportsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1256,6 +1279,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1303,6 +1327,7 @@ export type UserCreateWithoutManagerInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1345,6 +1370,7 @@ export type UserUncheckedCreateWithoutManagerInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1407,6 +1433,7 @@ export type UserUpdateWithoutReportsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1449,6 +1476,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1510,6 +1538,7 @@ export type UserScalarWhereInput = {
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
   weeklyHours?: Prisma.FloatNullableFilter<"User"> | number | null
+  driveFolderUrl?: Prisma.StringNullableFilter<"User"> | string | null
   locale?: Prisma.StringFilter<"User"> | string
   timezone?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.StringFilter<"User"> | string
@@ -1533,6 +1562,7 @@ export type UserCreateWithoutCreatedProjectsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1575,6 +1605,7 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1633,6 +1664,7 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1675,6 +1707,7 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1717,6 +1750,7 @@ export type UserCreateWithoutProjectMembersInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1759,6 +1793,7 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1817,6 +1852,7 @@ export type UserUpdateWithoutProjectMembersInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1859,6 +1895,7 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1901,6 +1938,7 @@ export type UserCreateWithoutCreatedTasksInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -1943,6 +1981,7 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2001,6 +2040,7 @@ export type UserUpdateWithoutCreatedTasksInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2043,6 +2083,7 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2085,6 +2126,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2127,6 +2169,7 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2185,6 +2228,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2227,6 +2271,7 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2269,6 +2314,7 @@ export type UserCreateWithoutRecurringAssignedInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2311,6 +2357,7 @@ export type UserUncheckedCreateWithoutRecurringAssignedInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2358,6 +2405,7 @@ export type UserCreateWithoutRecurringCreatedInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2400,6 +2448,7 @@ export type UserUncheckedCreateWithoutRecurringCreatedInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2458,6 +2507,7 @@ export type UserUpdateWithoutRecurringAssignedInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2500,6 +2550,7 @@ export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2553,6 +2604,7 @@ export type UserUpdateWithoutRecurringCreatedInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2595,6 +2647,7 @@ export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2637,6 +2690,7 @@ export type UserCreateWithoutCommentsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2679,6 +2733,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2737,6 +2792,7 @@ export type UserUpdateWithoutCommentsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2779,6 +2835,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2821,6 +2878,7 @@ export type UserCreateWithoutMentionsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2863,6 +2921,7 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -2921,6 +2980,7 @@ export type UserUpdateWithoutMentionsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2963,6 +3023,7 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3005,6 +3066,7 @@ export type UserCreateWithoutUploadedFilesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3047,6 +3109,7 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3105,6 +3168,7 @@ export type UserUpdateWithoutUploadedFilesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3147,6 +3211,7 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3189,6 +3254,7 @@ export type UserCreateWithoutOwnedFilesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3231,6 +3297,7 @@ export type UserUncheckedCreateWithoutOwnedFilesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3289,6 +3356,7 @@ export type UserUpdateWithoutOwnedFilesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3331,6 +3399,7 @@ export type UserUncheckedUpdateWithoutOwnedFilesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3373,6 +3442,7 @@ export type UserCreateWithoutFileSharesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3415,6 +3485,7 @@ export type UserUncheckedCreateWithoutFileSharesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3473,6 +3544,7 @@ export type UserUpdateWithoutFileSharesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3515,6 +3587,7 @@ export type UserUncheckedUpdateWithoutFileSharesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3557,6 +3630,7 @@ export type UserCreateWithoutTimeLogsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3599,6 +3673,7 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3657,6 +3732,7 @@ export type UserUpdateWithoutTimeLogsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3699,6 +3775,7 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3741,6 +3818,7 @@ export type UserCreateWithoutCallsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3783,6 +3861,7 @@ export type UserUncheckedCreateWithoutCallsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3841,6 +3920,7 @@ export type UserUpdateWithoutCallsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3883,6 +3963,7 @@ export type UserUncheckedUpdateWithoutCallsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3925,6 +4006,7 @@ export type UserCreateWithoutMonthlyGoalsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -3967,6 +4049,7 @@ export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4025,6 +4108,7 @@ export type UserUpdateWithoutMonthlyGoalsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4067,6 +4151,7 @@ export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4109,6 +4194,7 @@ export type UserCreateWithoutKpisInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4151,6 +4237,7 @@ export type UserUncheckedCreateWithoutKpisInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4209,6 +4296,7 @@ export type UserUpdateWithoutKpisInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4251,6 +4339,7 @@ export type UserUncheckedUpdateWithoutKpisInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4293,6 +4382,7 @@ export type UserCreateWithoutWeeklyPlanItemsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4335,6 +4425,7 @@ export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4393,6 +4484,7 @@ export type UserUpdateWithoutWeeklyPlanItemsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4435,6 +4527,7 @@ export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4477,6 +4570,7 @@ export type UserCreateWithoutActivitiesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4519,6 +4613,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4577,6 +4672,7 @@ export type UserUpdateWithoutActivitiesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4619,6 +4715,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4661,6 +4758,7 @@ export type UserCreateWithoutNotificationsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4703,6 +4801,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4750,6 +4849,7 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4792,6 +4892,7 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -4850,6 +4951,7 @@ export type UserUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4892,6 +4994,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4945,6 +5048,7 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4987,6 +5091,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5029,6 +5134,7 @@ export type UserCreateManyManagerInput = {
   role?: $Enums.SystemRole
   hourlyRate?: number | null
   weeklyHours?: number | null
+  driveFolderUrl?: string | null
   locale?: string
   timezone?: string
   theme?: string
@@ -5051,6 +5157,7 @@ export type UserUpdateWithoutManagerInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5093,6 +5200,7 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5135,6 +5243,7 @@ export type UserUncheckedUpdateManyWithoutManagerInput = {
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5359,6 +5468,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   hourlyRate?: boolean
   weeklyHours?: boolean
+  driveFolderUrl?: boolean
   locale?: boolean
   timezone?: boolean
   theme?: boolean
@@ -5404,6 +5514,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   hourlyRate?: boolean
   weeklyHours?: boolean
+  driveFolderUrl?: boolean
   locale?: boolean
   timezone?: boolean
   theme?: boolean
@@ -5428,6 +5539,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   hourlyRate?: boolean
   weeklyHours?: boolean
+  driveFolderUrl?: boolean
   locale?: boolean
   timezone?: boolean
   theme?: boolean
@@ -5452,6 +5564,7 @@ export type UserSelectScalar = {
   role?: boolean
   hourlyRate?: boolean
   weeklyHours?: boolean
+  driveFolderUrl?: boolean
   locale?: boolean
   timezone?: boolean
   theme?: boolean
@@ -5462,7 +5575,7 @@ export type UserSelectScalar = {
   managerId?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "driveFolderUrl" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
@@ -5532,6 +5645,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     role: $Enums.SystemRole
     hourlyRate: number | null
     weeklyHours: number | null
+    driveFolderUrl: string | null
     locale: string
     timezone: string
     theme: string
@@ -5996,6 +6110,7 @@ export interface UserFieldRefs {
   readonly role: Prisma.FieldRef<"User", 'SystemRole'>
   readonly hourlyRate: Prisma.FieldRef<"User", 'Float'>
   readonly weeklyHours: Prisma.FieldRef<"User", 'Float'>
+  readonly driveFolderUrl: Prisma.FieldRef<"User", 'String'>
   readonly locale: Prisma.FieldRef<"User", 'String'>
   readonly timezone: Prisma.FieldRef<"User", 'String'>
   readonly theme: Prisma.FieldRef<"User", 'String'>

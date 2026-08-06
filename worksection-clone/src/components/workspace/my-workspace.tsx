@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { KanbanBoard } from "@/components/board/kanban-board";
-import { MonthCalendar, type CalEntry } from "@/components/calendar/month-calendar";
+import { WeekCalendar, type WeekData } from "@/components/calendar/week-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { priorityStyle, plannedLabel, TASK_STATUS_LABEL, TASK_STATUS_STYLE } from "@/lib/domain";
 import { formatShortDate, isOverdue } from "@/lib/format";
@@ -14,12 +14,10 @@ const VIEWS = [
   { key: "calendar", i18n: "nav.calendar" },
 ];
 
-export type CalendarData = { year: number; month: number; entries: CalEntry[]; prevHref: string; nextHref: string; todayHref: string };
-
 export function MyWorkspace({
   tasks, userId, view, locale, calendar,
 }: {
-  tasks: BoardTask[]; userId: string; view: string; locale: string; calendar?: CalendarData;
+  tasks: BoardTask[]; userId: string; view: string; locale: string; calendar?: WeekData;
 }) {
   return (
     <div className="flex h-full flex-col">
@@ -39,7 +37,7 @@ export function MyWorkspace({
       </div>
       <div className="flex-1 overflow-auto px-6 py-4">
         {view === "calendar" && calendar ? (
-          <MonthCalendar year={calendar.year} month={calendar.month} entries={calendar.entries} prevHref={calendar.prevHref} nextHref={calendar.nextHref} todayHref={calendar.todayHref} />
+          <WeekCalendar data={calendar} />
         ) : view === "day" ? (
           <DayView tasks={tasks} />
         ) : (

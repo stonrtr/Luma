@@ -20,7 +20,7 @@ export function KanbanColumn({
   const { setNodeRef, isOver } = useDroppable({ id: status, data: { type: "column", status } });
 
   return (
-    <div className="flex w-72 shrink-0 flex-col">
+    <div className="flex min-w-64 flex-1 flex-col">
       <div className="mb-2 flex items-center gap-2 px-1">
         <span className={cn("size-2.5 rounded-full", TASK_STATUS_DOT[status])} />
         <span className="text-sm font-medium">{TASK_STATUS_LABEL[status]}</span>

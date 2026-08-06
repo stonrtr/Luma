@@ -5,7 +5,7 @@ export const LOCALE_LABEL: Record<Locale, string> = { uk: "Українська"
 type Dict = Record<string, string>;
 
 const uk: Dict = {
-  "nav.myspace": "Мій простір",
+  "nav.myspace": "Задачі",
   "nav.planning": "Планування",
   "nav.calendar": "Календар",
   "nav.org": "Оргсхема",
@@ -48,7 +48,7 @@ const uk: Dict = {
 };
 
 const ru: Dict = {
-  "nav.myspace": "Моё пространство",
+  "nav.myspace": "Задачи",
   "nav.planning": "Планирование",
   "nav.calendar": "Календарь",
   "nav.org": "Оргсхема",
@@ -91,7 +91,7 @@ const ru: Dict = {
 };
 
 const en: Dict = {
-  "nav.myspace": "My space",
+  "nav.myspace": "Tasks",
   "nav.planning": "Planning",
   "nav.calendar": "Calendar",
   "nav.org": "Org chart",

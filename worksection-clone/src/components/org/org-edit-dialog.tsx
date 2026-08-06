@@ -18,7 +18,7 @@ import {
 
 type OrgUser = {
   id: string; name: string; title: string | null; functions: string | null;
-  weeklyHours: number | null; managerId: string | null;
+  weeklyHours: number | null; managerId: string | null; driveFolderUrl: string | null;
 };
 
 export function OrgEditDialog({
@@ -31,6 +31,7 @@ export function OrgEditDialog({
   const [title, setTitle] = useState(user.title ?? "");
   const [functions, setFunctions] = useState(user.functions ?? "");
   const [hours, setHours] = useState(user.weeklyHours != null ? String(user.weeklyHours) : "");
+  const [drive, setDrive] = useState(user.driveFolderUrl ?? "");
   const [managerId, setManagerId] = useState(user.managerId ?? "none");
   const [pending, start] = useTransition();
 
@@ -41,6 +42,7 @@ export function OrgEditDialog({
         title: title.trim(),
         functions: functions.trim(),
         weeklyHours: hours.trim() ? parseFloat(hours) : null,
+        driveFolderUrl: drive.trim(),
         managerId: isAdmin ? (managerId === "none" ? null : managerId) : undefined,
       });
       if (res?.error) toast.error(res.error);
@@ -63,6 +65,10 @@ export function OrgEditDialog({
           <div className="space-y-2">
             <Label htmlFor="org-func">Функції / обов&apos;язки</Label>
             <Textarea id="org-func" value={functions} onChange={(e) => setFunctions(e.target.value)} rows={3} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="org-drive">Папка Google Drive</Label>
+            <Input id="org-drive" value={drive} onChange={(e) => setDrive(e.target.value)} placeholder="https://drive.google.com/drive/folders/…" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">

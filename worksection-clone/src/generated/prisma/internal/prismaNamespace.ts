@@ -2190,6 +2190,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   hourlyRate: 'hourlyRate',
   weeklyHours: 'weeklyHours',
+  driveFolderUrl: 'driveFolderUrl',
   locale: 'locale',
   timezone: 'timezone',
   theme: 'theme',
@@ -2376,6 +2377,7 @@ export const FileLinkScalarFieldEnum = {
   name: 'name',
   url: 'url',
   kind: 'kind',
+  isTeam: 'isTeam',
   note: 'note',
   createdAt: 'createdAt',
   ownerId: 'ownerId'

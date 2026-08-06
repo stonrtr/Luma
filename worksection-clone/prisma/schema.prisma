@@ -32,6 +32,7 @@ model User {
   role         SystemRole @default(MEMBER)
   hourlyRate   Float?
   weeklyHours  Float?     // оговоренные рабочие часы в неделю (неполный день)
+  driveFolderUrl String?  // папка Google Drive сотрудника
   locale       String     @default("uk") // uk | ru | en
   timezone     String     @default("Europe/Kyiv")
   theme        String     @default("system")
@@ -359,6 +360,7 @@ model FileLink {
   name      String
   url       String
   kind      FileKind @default(LINK)
+  isTeam    Boolean  @default(false) // командний файл (видно всім)
   note      String?
   createdAt DateTime @default(now())
 

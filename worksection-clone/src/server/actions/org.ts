@@ -16,6 +16,7 @@ const schema = z.object({
   title: z.string().max(120).optional(),
   functions: z.string().max(1000).optional(),
   weeklyHours: z.number().min(0).max(168).nullable().optional(),
+  driveFolderUrl: z.string().max(500).nullable().optional(),
   managerId: z.string().nullable().optional(),
 });
 
@@ -32,6 +33,7 @@ export async function updateOrgUser(input: z.infer<typeof schema>) {
       title: data.title,
       functions: data.functions,
       weeklyHours: data.weeklyHours ?? null,
+      ...(data.driveFolderUrl !== undefined ? { driveFolderUrl: data.driveFolderUrl || null } : {}),
       ...(isAdmin && data.managerId !== undefined ? { managerId: data.managerId } : {}),
     },
   });

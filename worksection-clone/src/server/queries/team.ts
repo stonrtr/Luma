@@ -8,7 +8,7 @@ export async function getOrgUsers() {
     orderBy: [{ role: "asc" }, { name: "asc" }],
     select: {
       id: true, name: true, title: true, functions: true, role: true,
-      weeklyHours: true, managerId: true, isActive: true, email: true,
+      weeklyHours: true, managerId: true, isActive: true, email: true, driveFolderUrl: true,
     },
   });
 }
