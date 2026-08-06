@@ -132,7 +132,7 @@ export default async function TeamPage({
         {members.map((m) => (
           <Link
             key={m.id}
-            href={`/team?member=${m.id}`}
+            href={`/team?member=${m.id}&view=${view}`}
             className={cn("flex items-center gap-2 rounded-xl border bg-card px-3 py-2 transition-colors hover:bg-muted", member === m.id && "border-primary ring-1 ring-primary")}
           >
             <Avatar className="size-8"><AvatarFallback className="text-[10px]">{initials(m.name)}</AvatarFallback></Avatar>
