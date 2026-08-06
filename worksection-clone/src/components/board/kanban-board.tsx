@@ -40,12 +40,14 @@ export function KanbanBoard({
   members,
   lockedAssigneeId,
   projects,
+  collapseIdeaByDefault,
 }: {
   projectId: string;
   initialTasks: BoardTask[];
   members: BoardMember[];
   lockedAssigneeId?: string;
   projects?: { id: string; name: string; color: string }[];
+  collapseIdeaByDefault?: boolean;
 }) {
   const [columns, setColumns] = useState<Columns>(() => group(initialTasks));
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
@@ -64,8 +66,10 @@ export function KanbanBoard({
       if (s) setOverrides(JSON.parse(s));
     } catch {}
   }, [storageKey]);
-  // «Ідеї» скрыты по умолчанию (даже с задачами), пустые — тоже
-  const collapsedByDefault = (status: TaskStatus) => status === "IDEA" || columns[status].length === 0;
+  // Пустые колонки скрыты по умолчанию. «Ідеї» дополнительно скрываем только
+  // на агрегированной доске руководителя (collapseIdeaByDefault), не на личных.
+  const collapsedByDefault = (status: TaskStatus) =>
+    (collapseIdeaByDefault && status === "IDEA") || columns[status].length === 0;
   const isCollapsed = (status: TaskStatus) =>
     overrides[status] ?? collapsedByDefault(status);
   function toggleCollapse(status: TaskStatus) {

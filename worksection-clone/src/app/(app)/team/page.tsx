@@ -27,6 +27,8 @@ function mapTasks(tasks: AnyTask[]): BoardTask[] {
     assignedByManager: t.assignedByManager,
     plannedMinutes: t.plannedMinutes,
     isProject: !!t.projectId,
+    projectName: t.project?.name ?? null,
+    projectColor: t.project?.color ?? null,
     assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
     tags: t.tags.map((tt) => ({ id: tt.tag.id, name: tt.tag.name, color: tt.tag.color })),
     subtaskCount: t._count.subtasks,
@@ -174,7 +176,7 @@ async function AllView({ view, members, viewerId }: { view: string; members: Boa
         ))}
       </div>
       {view === "board" ? (
-        <KanbanBoard projectId="" initialTasks={tasks} members={members} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} />
+        <KanbanBoard projectId="" initialTasks={tasks} members={members} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} collapseIdeaByDefault />
       ) : (
         <DayBoard initialTasks={tasks} />
       )}

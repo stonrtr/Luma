@@ -12,6 +12,8 @@ export type BoardTask = {
   assignedByManager: boolean;
   plannedMinutes: number | null;
   isProject: boolean;
+  projectName?: string | null;
+  projectColor?: string | null;
   assignees: BoardAssignee[];
   tags: { id: string; name: string; color: string }[];
   subtaskCount: number;

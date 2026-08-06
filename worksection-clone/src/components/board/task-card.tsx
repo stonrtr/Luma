@@ -41,6 +41,7 @@ export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: b
   const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
   const done = task.status === "DONE";
   const badge = task.dueDate ? dueBadge(task.dueDate, done) : null;
+  const overdue = !!(!done && task.dueDate && new Date(task.dueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
   const sel = useSelection();
   const selected = sel?.selected.has(task.id) ?? false;
   const selectionActive = (sel?.selected.size ?? 0) > 0;
@@ -53,8 +54,9 @@ export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: b
       {...listeners}
       onClick={() => { if (selectionActive) sel?.toggle(task.id); }}
       className={cn(
-        "group flex items-center gap-2.5 rounded-lg border bg-card px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md",
-        task.assignedByManager && "border-l-4 border-l-primary",
+        "group flex items-start gap-2.5 rounded-lg border bg-card px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md",
+        task.assignedByManager && "border-l-4 border-l-amber-500",
+        overdue && "border-red-300 bg-red-50 dark:border-red-900/60 dark:bg-red-950/30",
         selected && "ring-2 ring-primary",
         selectionActive && "cursor-pointer",
       )}
@@ -68,21 +70,35 @@ export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: b
         {selected ? <CheckCircle2 className="size-[15px]" /> : <Circle className="size-[15px]" />}
       </button>
 
-      {task.isProject && <span className="size-2 shrink-0 rounded-full bg-indigo-500" title="Проєктна задача" />}
-
-      <Link
-        href={`/tasks/${task.id}`}
-        onClick={(e) => { if (selectionActive) { e.preventDefault(); e.stopPropagation(); sel?.toggle(task.id); } }}
-        className={cn("min-w-0 flex-1 break-words text-sm font-medium hover:text-primary", done && "text-muted-foreground line-through")}
-      >
-        {task.title}
-      </Link>
-
-      {showStatus && (
-        <span className={cn("shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium", TASK_STATUS_STYLE[task.status])} title="Статус">
-          {TASK_STATUS_LABEL[task.status]}
-        </span>
-      )}
+      <div className="min-w-0 flex-1">
+        <Link
+          href={`/tasks/${task.id}`}
+          onClick={(e) => { if (selectionActive) { e.preventDefault(); e.stopPropagation(); sel?.toggle(task.id); } }}
+          className={cn("block break-words text-sm font-medium hover:text-primary", done && "text-muted-foreground line-through")}
+        >
+          {task.title}
+        </Link>
+        {(task.projectName || task.assignedByManager || showStatus) && (
+          <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+            {task.projectName && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                <span className="size-1.5 rounded-full" style={{ backgroundColor: task.projectColor ?? "#6366f1" }} />
+                {task.projectName}
+              </span>
+            )}
+            {task.assignedByManager && (
+              <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                від керівника
+              </span>
+            )}
+            {showStatus && (
+              <span className={cn("rounded px-1.5 py-0.5 text-[10px] font-medium", TASK_STATUS_STYLE[task.status])} title="Статус">
+                {TASK_STATUS_LABEL[task.status]}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       {badge && (
         <span className={cn("shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium", badge.cls)}>{badge.text}</span>

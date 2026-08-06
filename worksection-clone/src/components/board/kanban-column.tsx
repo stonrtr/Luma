@@ -49,7 +49,7 @@ export function KanbanColumn({
   }
 
   return (
-    <div className="flex w-80 shrink-0 flex-col">
+    <div className="flex w-96 shrink-0 flex-col">
       <div className="mb-2 flex items-center gap-2 px-1">
         <button onClick={() => onToggle(id)} title="Згорнути" className="text-muted-foreground transition-colors hover:text-foreground">
           <ChevronDown className="size-4" />

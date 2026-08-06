@@ -119,6 +119,8 @@ export default async function HomePage({
     assignedByManager: t.assignedByManager,
     plannedMinutes: t.plannedMinutes,
     isProject: !!t.projectId,
+    projectName: t.project?.name ?? null,
+    projectColor: t.project?.color ?? null,
     assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
     tags: t.tags.map((tt) => ({ id: tt.tag.id, name: tt.tag.name, color: tt.tag.color })),
     subtaskCount: t._count.subtasks,
