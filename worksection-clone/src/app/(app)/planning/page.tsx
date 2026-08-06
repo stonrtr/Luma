@@ -69,22 +69,6 @@ export default async function PlanningPage({
           />
         </div>
       </div>
-
-      {/* Проекты в работе */}
-      {plan.projects.length > 0 && (
-        <div className="mt-6">
-          <h3 className="mb-2 text-sm font-semibold">Проєкти в роботі</h3>
-          <div className="flex flex-wrap gap-2">
-            {plan.projects.map((p) => (
-              <Link key={p.id} href={`/projects/${p.id}`} className="flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-sm hover:bg-muted">
-                <span className="size-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                {p.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

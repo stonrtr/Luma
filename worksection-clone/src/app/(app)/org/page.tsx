@@ -4,7 +4,6 @@ import { OrgEditDialog } from "@/components/org/org-edit-dialog";
 import { OrgAddDialog } from "@/components/org/org-add-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
 const ROLE_LABEL: Record<string, string> = { OWNER: "Власник", ADMIN: "Адміністратор", MEMBER: "Співробітник" };
 
@@ -24,38 +23,48 @@ export default async function OrgPage() {
     byManager.set(key, arr);
   }
 
-  function Node({ user, depth }: { user: OrgUser; depth: number }) {
+  function Node({ user }: { user: OrgUser }) {
     const reports = byManager.get(user.id) ?? [];
     const canEdit = isAdmin || user.managerId === viewer.id;
     return (
-      <div className={cn(depth > 0 && "ml-6 border-l pl-6")}>
-        <div className="mb-3 rounded-xl border bg-card p-4">
-          <div className="flex items-start gap-3">
-            <Avatar className="size-10"><AvatarFallback className="text-xs">{initials(user.name)}</AvatarFallback></Avatar>
+      <li>
+        <div className="orgcard inline-flex w-56 flex-col rounded-xl border bg-card p-3 text-left align-top shadow-sm">
+          <div className="flex items-start gap-2">
+            <Avatar className="size-9"><AvatarFallback className="text-xs">{initials(user.name)}</AvatarFallback></Avatar>
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{user.name}</span>
-                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{ROLE_LABEL[user.role] ?? user.role}</span>
-                {!user.isActive && <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">Неактивний</span>}
-                {canEdit && <span className="ml-auto"><OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} /></span>}
+              <div className="flex items-center gap-1.5">
+                <span className="truncate text-sm font-semibold">{user.name}</span>
+                {canEdit && (
+                  <span className="ml-auto shrink-0">
+                    <OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} />
+                  </span>
+                )}
               </div>
-              <p className="text-sm text-muted-foreground">{user.title ?? "Посада не вказана"}</p>
-              {user.functions && <p className="mt-1.5 text-sm">{user.functions}</p>}
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                {user.weeklyHours != null ? `${user.weeklyHours} год/тиждень${user.weeklyHours < 40 ? " · неповний день" : ""}` : "Години не вказані"}
-              </p>
+              <p className="truncate text-xs text-muted-foreground">{user.title ?? "Посада не вказана"}</p>
             </div>
           </div>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1">
+            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{ROLE_LABEL[user.role] ?? user.role}</span>
+            {!user.isActive && <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">Неактивний</span>}
+            <span className="ml-auto text-[11px] text-muted-foreground">
+              {user.weeklyHours != null ? `${Math.round((user.weeklyHours / 5) * 10) / 10} год/день` : "—"}
+            </span>
+          </div>
+          {user.functions && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{user.functions}</p>}
         </div>
-        {reports.map((r) => <Node key={r.id} user={r} depth={depth + 1} />)}
-      </div>
+        {reports.length > 0 && (
+          <ul>
+            {reports.map((r) => <Node key={r.id} user={r} />)}
+          </ul>
+        )}
+      </li>
     );
   }
 
   const roots = byManager.get(null) ?? [];
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-8">
+    <div className="mx-auto max-w-full px-6 py-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Оргсхема</h1>
@@ -63,7 +72,37 @@ export default async function OrgPage() {
         </div>
         {isAdmin && <OrgAddDialog candidates={candidates} />}
       </div>
-      {roots.map((u) => <Node key={u.id} user={u} depth={0} />)}
+
+      <div className="overflow-x-auto pb-6">
+        <ul className="orgtree w-max min-w-full">
+          {roots.map((u) => <Node key={u.id} user={u} />)}
+        </ul>
+      </div>
+
+      {/* Соединительные линии дерева (сверху вниз, ветвление вширь) */}
+      <style>{`
+        .orgtree, .orgtree ul { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; }
+        .orgtree > li { padding-top: 0; }
+        .orgtree li { position: relative; display: flex; flex-direction: column; align-items: center; padding: 24px 14px 0; }
+        .orgtree ul { position: relative; }
+        /* горизонтальные соединители между детьми */
+        .orgtree ul li::before, .orgtree ul li::after {
+          content: ""; position: absolute; top: 0; width: 50%; height: 24px;
+          border-top: 2px solid var(--border);
+        }
+        .orgtree ul li::before { right: 50%; }
+        .orgtree ul li::after  { left: 50%; border-left: 2px solid var(--border); }
+        /* единственный ребёнок — только вертикаль, без «уголков» */
+        .orgtree ul li:only-child::before, .orgtree ul li:only-child::after { display: none; }
+        /* обрезаем внешние края у крайних детей */
+        .orgtree ul li:first-child::before, .orgtree ul li:last-child::after { border: 0 none; }
+        .orgtree ul li:last-child::before { border-right: 2px solid var(--border); }
+        /* вертикальный «стебель» от родителя к группе детей */
+        .orgtree ul::before {
+          content: ""; position: absolute; top: -24px; left: 50%;
+          height: 24px; border-left: 2px solid var(--border);
+        }
+      `}</style>
     </div>
   );
 }

@@ -60,12 +60,16 @@ export async function getTeamOverview() {
     // задачи, закрытые на этой неделе (для счётчика «закрито за тиждень»)
     db.task.findMany({
       where: { parentId: null, status: "DONE", completedAt: { gte: weekStart, lt: weekEnd } },
-      select: { id: true, assignees: { select: { userId: true } } },
+      select: { id: true, title: true, assignees: { select: { userId: true } } },
     }),
   ]);
 
-  const load = new Map<string, { today: number; week: number; count: number; weekActive: number; weekDone: number }>();
-  for (const m of members) load.set(m.id, { today: 0, week: 0, count: 0, weekActive: 0, weekDone: 0 });
+  type TaskRef = { id: string; title: string };
+  const load = new Map<string, {
+    today: number; week: number; count: number;
+    weekActiveTasks: TaskRef[]; weekDoneTasks: TaskRef[];
+  }>();
+  for (const m of members) load.set(m.id, { today: 0, week: 0, count: 0, weekActiveTasks: [], weekDoneTasks: [] });
 
   for (const t of tasks) {
     const due = t.scheduledAt ?? t.dueDate;
@@ -75,14 +79,14 @@ export async function getTeamOverview() {
       if (!l) continue;
       l.count += 1;
       if (due && due >= today && due < tomorrow) l.today += t.plannedMinutes ?? 0;
-      if (inWeek) { l.week += t.plannedMinutes ?? 0; l.weekActive += 1; }
+      if (inWeek) { l.week += t.plannedMinutes ?? 0; l.weekActiveTasks.push({ id: t.id, title: t.title }); }
     }
   }
 
   for (const t of doneThisWeek) {
     for (const a of t.assignees) {
       const l = load.get(a.userId);
-      if (l) l.weekDone += 1;
+      if (l) l.weekDoneTasks.push({ id: t.id, title: t.title });
     }
   }
 
@@ -90,7 +94,12 @@ export async function getTeamOverview() {
     const l = load.get(m.id)!;
     const dailyCap = m.weeklyHours ? Math.round((m.weeklyHours / 5) * 60) : 480;
     const weekCap = m.weeklyHours ? Math.round(m.weeklyHours * 60) : 2400;
-    return { ...m, todayMin: l.today, weekMin: l.week, taskCount: l.count, weekActive: l.weekActive, weekDone: l.weekDone, dailyCap, weekCap };
+    return {
+      ...m, todayMin: l.today, weekMin: l.week, taskCount: l.count,
+      weekActive: l.weekActiveTasks.length, weekDone: l.weekDoneTasks.length,
+      weekActiveTasks: l.weekActiveTasks, weekDoneTasks: l.weekDoneTasks,
+      dailyCap, weekCap,
+    };
   });
 
   return { members: withLoad, tasks };

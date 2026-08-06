@@ -1,18 +1,32 @@
 import "server-only";
 import nodemailer from "nodemailer";
 
-// Почтовый отправитель. Настраивается через env:
-//   SMTP_HOST, SMTP_PORT (587), SMTP_SECURE (true|false), SMTP_USER, SMTP_PASS, MAIL_FROM
-// Если SMTP не сконфигурирован — письмо выводится в консоль сервера (dev-fallback),
-// чтобы поток «створення → лист» работал локально без реального провайдера.
+// Почтовый отправитель. Приоритет настройки:
+//   1) RESEND_API_KEY — отправка через Resend (SMTP smtp.resend.com), самый простой путь;
+//   2) SMTP_HOST/SMTP_PORT/SMTP_SECURE/SMTP_USER/SMTP_PASS — любой свой SMTP.
+// Отправитель задаётся MAIL_FROM (для Resend адрес должен быть на верифицированном домене,
+// для быстрого теста подойдёт onboarding@resend.dev — уходит только на почту владельца ключа).
+// Если ничего не задано — письмо выводится в консоль сервера (dev-fallback).
 
 type Mail = { to: string; subject: string; text: string; html?: string };
 
 let cached: nodemailer.Transporter | null = null;
 function transport(): nodemailer.Transporter | null {
+  if (cached) return cached;
+
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    cached = nodemailer.createTransport({
+      host: "smtp.resend.com",
+      port: 465,
+      secure: true,
+      auth: { user: "resend", pass: resendKey },
+    });
+    return cached;
+  }
+
   const host = process.env.SMTP_HOST;
   if (!host) return null;
-  if (cached) return cached;
   cached = nodemailer.createTransport({
     host,
     port: Number(process.env.SMTP_PORT ?? 587),

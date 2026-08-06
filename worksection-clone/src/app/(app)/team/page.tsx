@@ -2,20 +2,21 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/server/dal";
 import { getTeamOverview } from "@/server/queries/team";
-import { getMyTasks } from "@/server/queries/tasks";
+import { getMyTasks, getAllTasks } from "@/server/queries/tasks";
 import { getMyWeek } from "@/server/queries/calendar";
+import { getProjectsForUser } from "@/server/queries/projects";
 import { KanbanBoard } from "@/components/board/kanban-board";
 import { DayBoard } from "@/components/board/day-board";
 import { WeekCalendar, type WeekData, type WeekDay } from "@/components/calendar/week-calendar";
-import type { BoardTask } from "@/components/board/types";
+import type { BoardTask, BoardMember } from "@/components/board/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { PriorityPopover } from "@/components/task/inline-controls";
-import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
-import { initials, formatShortDate, isOverdue } from "@/lib/format";
+import { initials } from "@/lib/format";
 import { mondayOf, addDays } from "@/lib/week";
 import { cn } from "@/lib/utils";
 
-function mapTasks(tasks: Awaited<ReturnType<typeof getMyTasks>>): BoardTask[] {
+type AnyTask = Awaited<ReturnType<typeof getMyTasks>>[number] | Awaited<ReturnType<typeof getAllTasks>>[number];
+
+function mapTasks(tasks: AnyTask[]): BoardTask[] {
   return tasks.map((t) => ({
     id: t.id,
     title: t.title,
@@ -71,12 +72,39 @@ async function buildWeek(userId: string, ws?: string): Promise<WeekData> {
   for (const l of logs) { const di = dayIndex(l.loggedAt); if (di >= 0 && di < 7) days[di].summary.actualMin += l.minutes; }
   for (const d of days) d.summary.freeMin = Math.max(0, dailyCap - d.summary.plannedMin);
   const fmt = (d: Date) => `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
-  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   return {
     days, startHour: 8, endHour: 22,
     title: `${fmt(weekStart)} — ${fmt(addDays(weekStart, 6))}`,
-    prevHref: "", nextHref: "", todayHref: "", // подставим в вызывающем коде
+    prevHref: "", nextHref: "", todayHref: "",
   };
+}
+
+// Плашка счётчиков сотрудника: «Активні N», «Завершені N» + всплывающий список задач
+function MemberCounters({ m }: { m: Awaited<ReturnType<typeof getTeamOverview>>["members"][number] }) {
+  return (
+    <span className="ml-1 flex items-center gap-2 text-[11px]">
+      <span className="group/act relative flex items-center gap-1">
+        <span className="text-muted-foreground">Активні</span>
+        <span className="rounded-full bg-primary/10 px-1.5 py-0.5 font-semibold text-primary">{m.weekActive}</span>
+        <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-1.5 hidden w-60 -translate-x-1/2 rounded-lg border bg-popover p-2 text-left shadow-lg group-hover/act:block">
+          <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Активні цього тижня</span>
+          {m.weekActiveTasks.length
+            ? m.weekActiveTasks.map((t) => <span key={t.id} className="block truncate text-xs">• {t.title}</span>)
+            : <span className="block text-xs text-muted-foreground">Немає задач</span>}
+        </span>
+      </span>
+      <span className="group/done relative flex items-center gap-1">
+        <span className="text-muted-foreground">Завершені</span>
+        <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 font-semibold text-emerald-600">{m.weekDone}</span>
+        <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-1.5 hidden w-60 -translate-x-1/2 rounded-lg border bg-popover p-2 text-left shadow-lg group-hover/done:block">
+          <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Завершені цього тижня</span>
+          {m.weekDoneTasks.length
+            ? m.weekDoneTasks.map((t) => <span key={t.id} className="block truncate text-xs">• {t.title}</span>)
+            : <span className="block text-xs text-muted-foreground">Немає задач</span>}
+        </span>
+      </span>
+    </span>
+  );
 }
 
 export default async function TeamPage({
@@ -90,7 +118,7 @@ export default async function TeamPage({
   const member = sp.member ?? "all";
   const view = sp.view ?? "day";
 
-  const { members, tasks } = await getTeamOverview();
+  const { members } = await getTeamOverview();
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-8">
@@ -110,26 +138,13 @@ export default async function TeamPage({
               <p className="truncate text-sm font-medium leading-tight">{m.name}</p>
               <p className="truncate text-xs text-muted-foreground leading-tight">{m.title ?? "—"}</p>
             </div>
-            <span className="ml-1 flex items-center gap-1">
-              <span className="group/act relative">
-                <span className="block rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{m.weekActive}</span>
-                <span className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 translate-y-1 scale-90 rounded-md bg-primary px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-primary-foreground opacity-0 shadow-md transition-all duration-150 group-hover/act:translate-y-0 group-hover/act:scale-100 group-hover/act:opacity-100">
-                  Активні
-                </span>
-              </span>
-              <span className="group/done relative">
-                <span className="block rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600">{m.weekDone}</span>
-                <span className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 translate-y-1 scale-90 rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-white opacity-0 shadow-md transition-all duration-150 group-hover/done:translate-y-0 group-hover/done:scale-100 group-hover/done:opacity-100">
-                  Завершені
-                </span>
-              </span>
-            </span>
+            <MemberCounters m={m} />
           </Link>
         ))}
       </div>
 
       {member === "all" ? (
-        <AllBoard tasks={tasks} />
+        <AllView view={view} members={members.map((m) => ({ id: m.id, name: m.name }))} viewerId={viewer.id} />
       ) : (
         <MemberView memberId={member} view={view} ws={sp.ws} />
       )}
@@ -137,44 +152,32 @@ export default async function TeamPage({
   );
 }
 
-// Агрегатная доска всех задач по статусам
-function AllBoard({ tasks }: { tasks: Awaited<ReturnType<typeof getTeamOverview>>["tasks"] }) {
+// Переключатель видов для агрегата всех сотрудников
+async function AllView({ view, members, viewerId }: { view: string; members: BoardMember[]; viewerId: string }) {
+  const [allTasks, projects] = await Promise.all([getAllTasks(), getProjectsForUser(viewerId)]);
+  const tasks = mapTasks(allTasks);
+  const tabs = [
+    { key: "day", label: "По днях" },
+    { key: "board", label: "Канбан" },
+  ];
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
-      {TASK_STATUSES.filter((s) => s !== "DONE").map((status) => {
-        const rows = tasks.filter((t) => t.status === status);
-        return (
-          <div key={status} className="flex w-72 shrink-0 flex-col">
-            <div className="mb-2 flex items-center gap-2 px-1">
-              <span className={cn("size-2.5 rounded-full", TASK_STATUS_DOT[status])} />
-              <span className="text-sm font-medium">{TASK_STATUS_LABEL[status]}</span>
-              <span className="text-xs text-muted-foreground">{rows.length}</span>
-            </div>
-            <div className="flex flex-col gap-2 rounded-xl bg-muted/40 p-2">
-              {rows.map((t) => (
-                <div key={t.id} className={cn("rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md", t.assignedByManager && "border-l-4 border-l-primary")}>
-                  <div className="flex items-start justify-between gap-2">
-                    <Link href={`/tasks/${t.id}`} className="text-sm font-medium leading-snug hover:underline">{t.title}</Link>
-                    <PriorityPopover taskId={t.id} priority={t.priority} />
-                  </div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                      {t.project && <span className="flex items-center gap-1"><span className="size-2 rounded-full" style={{ backgroundColor: t.project.color }} />{t.project.name}</span>}
-                      {t.dueDate && <span className={cn(isOverdue(t.dueDate) && "text-destructive")}>{formatShortDate(t.dueDate)}</span>}
-                    </div>
-                    <div className="flex -space-x-1.5">
-                      {t.assignees.map((a) => (
-                        <Avatar key={a.user.id} className="size-6 border-2 border-card" title={a.user.name}><AvatarFallback className="text-[9px]">{initials(a.user.name)}</AvatarFallback></Avatar>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {rows.length === 0 && <p className="px-2 py-4 text-center text-xs text-muted-foreground">Порожньо</p>}
-            </div>
-          </div>
-        );
-      })}
+    <div>
+      <div className="mb-4 flex gap-1">
+        {tabs.map((t) => (
+          <Link
+            key={t.key}
+            href={`/team?view=${t.key}`}
+            className={cn("rounded-md px-3 py-1 text-sm font-medium transition-colors", (view === t.key || (t.key === "day" && view !== "board")) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted")}
+          >
+            {t.label}
+          </Link>
+        ))}
+      </div>
+      {view === "board" ? (
+        <KanbanBoard projectId="" initialTasks={tasks} members={members} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} />
+      ) : (
+        <DayBoard initialTasks={tasks} />
+      )}
     </div>
   );
 }

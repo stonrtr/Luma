@@ -30,6 +30,21 @@ export async function getMyTasks(userId: string) {
   });
 }
 
+// Все задачи команды (для агрегированной доски «Всі» на вкладці Команда)
+export async function getAllTasks() {
+  return db.task.findMany({
+    where: { parentId: null, archivedAt: null },
+    orderBy: [{ priority: "desc" }, { position: "asc" }],
+    include: {
+      project: { select: { name: true, color: true } },
+      assignees: { include: { user: true } },
+      tags: { include: { tag: true } },
+      _count: { select: { subtasks: true, comments: true, checklist: true } },
+      checklist: { select: { done: true } },
+    },
+  });
+}
+
 export async function getTaskDetail(taskId: string) {
   return db.task.findUnique({
     where: { id: taskId },
