@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
 import { getPlanning, getPlanningTargets } from "@/server/queries/planning";
-import { GoalsBlock } from "@/components/planning/goals-block";
 import { KpiBlock } from "@/components/planning/kpi-block";
 import { WeeklyPlan } from "@/components/planning/weekly-plan";
 import { RecurringBlock } from "@/components/planning/recurring-block";
@@ -51,11 +50,6 @@ export default async function PlanningPage({
             ))}
           </div>
         )}
-      </div>
-
-      {/* Цели месяца — всегда перед глазами (на всю ширину) */}
-      <div className="mb-4 rounded-xl border bg-card p-5">
-        <GoalsBlock userId={targetId} year={plan.year} month={plan.month} goals={plan.goals} canManage={canManage} />
       </div>
 
       {/* Верх доски пополам: слева KPI месяца, справа план на неделю */}

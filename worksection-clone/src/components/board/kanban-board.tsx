@@ -46,6 +46,9 @@ export function KanbanBoard({
   const [columns, setColumns] = useState<Columns>(() => group(initialTasks));
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
   const [dialogStatus, setDialogStatus] = useState<TaskStatus | null>(null);
+  // рендерим доску (drag-and-drop) лише на клієнті — dnd-kit генерує id, що не збігаються при SSR
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // сворачивание колонок: пустые скрыты по умолчанию, выбор пользователя запоминается
   const storageKey = `ws_board_collapsed_${projectId || "me"}`;
@@ -145,6 +148,11 @@ export function KanbanBoard({
     } catch {
       toast.error("Не удалось переместить задачу");
     }
+  }
+
+  if (!mounted) {
+    // плейсхолдер під час гідрації (щоб не було стрибка розмітки)
+    return <div className="min-h-40" />;
   }
 
   return (
