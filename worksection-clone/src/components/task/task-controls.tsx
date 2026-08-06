@@ -28,18 +28,17 @@ export function TaskControls({
     <div>
       <p className="mb-1.5 text-xs font-medium text-muted-foreground">Виконавець</p>
       <Select
-        value={assigneeId ?? "none"}
+        value={assigneeId ?? undefined}
         onValueChange={(v) =>
           start(async () => {
-            await setTaskAssignee({ taskId, userId: v === "none" ? null : v });
+            await setTaskAssignee({ taskId, userId: v });
             toast.success("Виконавця оновлено");
             router.refresh();
           })
         }
       >
-        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+        <SelectTrigger className="w-full"><SelectValue placeholder="Оберіть виконавця" /></SelectTrigger>
         <SelectContent>
-          <SelectItem value="none">Без виконавця</SelectItem>
           {members.map((m) => (
             <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
           ))}

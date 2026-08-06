@@ -106,15 +106,17 @@ export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: b
         </div>
       </div>
 
-      {/* Вторая строка: проект, «від керівника», статус — под назвою */}
-      {(task.projectName || task.assignedByManager || showStatus) && (
-        <div className="flex flex-wrap items-center gap-1.5 pl-[25px]">
-          {task.projectName && (
-            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-              <span className="size-1.5 rounded-full" style={{ backgroundColor: task.projectColor ?? "#6366f1" }} />
-              {task.projectName}
-            </span>
-          )}
+      {/* Проект — под назвою */}
+      {task.projectName && (
+        <div className="flex items-center gap-1 pl-[25px] text-[11px] text-muted-foreground">
+          <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: task.projectColor ?? "#6366f1" }} />
+          <span className="truncate">{task.projectName}</span>
+        </div>
+      )}
+
+      {/* Нижний левый угол: «від керівника», далее — статус */}
+      {(task.assignedByManager || showStatus) && (
+        <div className="mt-auto flex flex-wrap items-center gap-1.5 pl-[25px] pt-0.5">
           {task.assignedByManager && (
             <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-950 dark:text-amber-300">
               від керівника

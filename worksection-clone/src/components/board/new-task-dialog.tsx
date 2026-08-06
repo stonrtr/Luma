@@ -56,7 +56,7 @@ export function NewTaskDialog({
   const [priority, setPriority] = useState<number>(DEFAULT_PRIORITY);
   const [taskStatus, setTaskStatus] = useState<TaskStatus>("TODO");
   const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
-  const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? "none");
+  const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? members[0]?.id ?? "");
   const [projectSel, setProjectSel] = useState<string>("base");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
@@ -69,7 +69,7 @@ export function NewTaskDialog({
     setPriority(DEFAULT_PRIORITY);
     setTaskStatus("TODO");
     setPlannedMinutes(30);
-    setAssigneeId(defaultAssigneeId ?? "none");
+    setAssigneeId(defaultAssigneeId ?? members[0]?.id ?? "");
     setProjectSel("base");
     setDueDate("");
     setDueTime("");
@@ -90,7 +90,7 @@ export function NewTaskDialog({
           status: taskStatus,
           priority,
           plannedMinutes,
-          assigneeId: lockedAssigneeId ?? (assigneeId === "none" ? undefined : assigneeId),
+          assigneeId: lockedAssigneeId ?? (assigneeId || undefined),
           dueDate: dueDate || undefined,
           dueTime: dueTime || undefined,
         });
@@ -219,7 +219,6 @@ export function NewTaskDialog({
                 <Select value={assigneeId} onValueChange={setAssigneeId}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Без виконавця</SelectItem>
                     {members.map((m) => (
                       <SelectItem key={m.id} value={m.id}>
                         {m.name}{m.isActive === false ? " · закритий" : ""}

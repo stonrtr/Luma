@@ -14,9 +14,9 @@ export function TopNav({
   const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b bg-sidebar px-4 text-sidebar-foreground">
-      <Link href="/" className="flex shrink-0 items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">W</div>
-        <span className="hidden font-semibold sm:inline">Worksection</span>
+      <Link href="/" className="flex shrink-0 items-baseline text-foreground">
+        <span className="text-lg font-medium tracking-tight">team</span>
+        <span className="ml-1 text-2xl font-extrabold leading-none tracking-tight">M</span>
       </Link>
       <div className="flex-1 overflow-x-auto">
         <TopNavLinks locale={user.locale} isAdmin={isAdmin} />

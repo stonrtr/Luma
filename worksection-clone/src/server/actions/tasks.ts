@@ -24,6 +24,8 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
   const user = await requireUser();
   const data = createTaskSchema.parse(input);
   const projectId = data.projectId || null;
+  // задача не может существовать без исполнителя — по умолчанию это создатель
+  const assigneeId = data.assigneeId || user.id;
 
   const last = await db.task.findFirst({
     where: { projectId, status: data.status, parentId: data.parentId ?? null },
@@ -32,10 +34,10 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
 
   // задача от руководителя: назначена другому и создатель — админ/владелец или руководитель исполнителя
   let assignedByManager = false;
-  if (data.assigneeId && data.assigneeId !== user.id) {
+  if (assigneeId !== user.id) {
     if (user.role === "OWNER" || user.role === "ADMIN") assignedByManager = true;
     else {
-      const assignee = await db.user.findUnique({ where: { id: data.assigneeId }, select: { managerId: true } });
+      const assignee = await db.user.findUnique({ where: { id: assigneeId }, select: { managerId: true } });
       if (assignee?.managerId === user.id) assignedByManager = true;
     }
   }
@@ -61,7 +63,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
       assignedByManager,
       recurringTaskId: data.recurringTaskId ?? null,
       position: (last?.position ?? -1) + 1,
-      assignees: data.assigneeId ? { create: [{ userId: data.assigneeId }] } : undefined,
+      assignees: { create: [{ userId: assigneeId }] },
     },
   });
 
@@ -70,13 +72,13 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
   });
 
   // уведомление исполнителю о поставленной задаче
-  if (assignedByManager && data.assigneeId && (await isNotificationEnabled("assignment"))) {
+  if (assignedByManager && (await isNotificationEnabled("assignment"))) {
     await db.notification.create({
       data: {
         type: "assignment",
         message: `${user.name} поставив вам задачу «${task.title}»`,
         link: `/tasks/${task.id}`,
-        recipientId: data.assigneeId,
+        recipientId: assigneeId,
         actorId: user.id,
       },
     });
