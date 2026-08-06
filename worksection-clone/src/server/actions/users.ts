@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { sendMail, inviteEmail } from "@/server/mail";
 
 const schema = z.object({
   name: z.string().min(1).max(80),
@@ -78,9 +79,17 @@ export async function inviteMember(input: z.infer<typeof inviteSchema>) {
       weeklyHours: data.weeklyHours ?? null,
     },
   });
+  // отправляем доступы на почту сотруднику (или dev-fallback в консоль, если SMTP не настроен)
+  let emailed = false;
+  try {
+    emailed = await sendMail(inviteEmail(name, data.email, tempPassword));
+  } catch (e) {
+    console.error("[invite] не вдалося надіслати листа:", e);
+  }
+
   revalidatePath("/org");
   revalidatePath("/admin/users");
-  return { error: null, tempPassword };
+  return { error: null, tempPassword, emailed };
 }
 
 export async function setUserActive(input: { userId: string; active: boolean }) {

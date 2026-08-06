@@ -24,7 +24,7 @@ export function OrgAddDialog({ candidates }: { candidates: { id: string; name: s
   const [title, setTitle] = useState("");
   const [managerId, setManagerId] = useState("none");
   const [hours, setHours] = useState("");
-  const [created, setCreated] = useState<{ email: string; pass: string } | null>(null);
+  const [created, setCreated] = useState<{ email: string; pass: string; emailed: boolean } | null>(null);
   const [pending, start] = useTransition();
 
   function reset() {
@@ -40,7 +40,7 @@ export function OrgAddDialog({ candidates }: { candidates: { id: string; name: s
         weeklyHours: hours.trim() ? parseFloat(hours) * 5 : null,
       });
       if (res?.error) toast.error(res.error);
-      else { setCreated({ email: email.trim(), pass: res.tempPassword! }); router.refresh(); }
+      else { setCreated({ email: email.trim(), pass: res.tempPassword!, emailed: !!res.emailed }); router.refresh(); }
     });
   }
 
@@ -53,7 +53,11 @@ export function OrgAddDialog({ candidates }: { candidates: { id: string; name: s
         <DialogHeader><DialogTitle>Запросити співробітника</DialogTitle></DialogHeader>
         {created ? (
           <div className="space-y-3">
-            <p className="text-sm">Акаунт створено. Передайте співробітнику дані для входу:</p>
+            <p className="text-sm">
+              {created.emailed
+                ? `Акаунт створено. Лист із доступами надіслано на ${created.email}.`
+                : "Акаунт створено. Передайте співробітнику дані для входу (email не налаштовано):"}
+            </p>
             <div className="rounded-lg border bg-muted/40 p-3 text-sm">
               <p><span className="text-muted-foreground">Email:</span> {created.email}</p>
               <div className="flex items-center gap-2">
