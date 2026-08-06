@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model CallPoint
+ * 
+ */
+export type CallPoint = Prisma.CallPointModel
+/**
  * Model Project
  * 
  */

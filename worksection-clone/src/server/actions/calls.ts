@@ -5,7 +5,9 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 
-const schema = z.object({
+// ---- Запланированные звонки (календарь) ----
+
+const callSchema = z.object({
   title: z.string().min(1).max(200),
   date: z.string(),
   time: z.string(),
@@ -13,9 +15,9 @@ const schema = z.object({
   userId: z.string().optional(), // кому (по умолчанию — себе)
 });
 
-export async function createCall(input: z.infer<typeof schema>) {
+export async function createCall(input: z.infer<typeof callSchema>) {
   const viewer = await requireUser();
-  const data = schema.parse(input);
+  const data = callSchema.parse(input);
   const scheduledAt = new Date(`${data.date}T${data.time}`);
   if (isNaN(scheduledAt.getTime())) return { error: "Невірна дата/час" };
 
@@ -38,4 +40,125 @@ export async function deleteCall(id: string) {
   if (call.userId !== viewer.id && viewer.role !== "OWNER" && viewer.role !== "ADMIN") return;
   await db.call.delete({ where: { id } });
   revalidatePath("/calendar");
+}
+
+// ---- Поінти до дзвінка (что обсудить с членом команды) ----
+
+export async function addCallPoint(input: { memberId: string; text: string }) {
+  const user = await requireUser();
+  const text = input.text.trim();
+  if (!text) return { error: "Порожній пункт" };
+  await db.callPoint.create({ data: { authorId: user.id, memberId: input.memberId, text } });
+  revalidatePath("/calls");
+  return { error: null };
+}
+
+export async function toggleCallPoint(id: string) {
+  const user = await requireUser();
+  const p = await db.callPoint.findUnique({ where: { id } });
+  if (!p || p.authorId !== user.id) return;
+  await db.callPoint.update({ where: { id }, data: { done: !p.done } });
+  revalidatePath("/calls");
+}
+
+export async function deleteCallPoint(id: string) {
+  const user = await requireUser();
+  const p = await db.callPoint.findUnique({ where: { id } });
+  if (!p || p.authorId !== user.id) return;
+  await db.callPoint.delete({ where: { id } });
+  revalidatePath("/calls");
+}
+
+// ---- Извлечение задач из саммари созвона в «Ідеї» ----
+
+// Эвристический разбор: берём строки-пункты, похожие на задачи.
+function heuristicExtract(summary: string): string[] {
+  const lines = summary
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^\s*(?:[-*•·▪◦]|\d+[.)]|[a-zа-яґєіїA-ZА-ЯҐЄІЇ][.)])\s+/u, "").trim())
+    .filter(Boolean);
+
+  const actionWords = /(зроби|додай|підготу|напиши|створи|перевір|надішли|узгодь|з'ясуй|виправ|онови|проаналізуй|запланова|сделать|подготов|написать|создать|проверить|отправить|согласовать|выяснить|исправить|обновить|запланировать|todo|task|need to|should|must)/iu;
+
+  const candidates = (lines.length > 1 ? lines : summary.split(/(?<=[.!?])\s+/))
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 4 && s.length <= 200)
+    .filter((s) => lines.length > 1 || actionWords.test(s));
+
+  // если бул-листов не было и глаголов не нашли — берём непустые предложения
+  const result = candidates.length ? candidates : lines;
+  // dedupe + лимит
+  return [...new Set(result)].slice(0, 30);
+}
+
+// Вызов Anthropic API, если задан ключ. Возвращает массив задач или null.
+async function aiExtract(summary: string): Promise<string[] | null> {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) return null;
+  const model = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: 1024,
+        messages: [{
+          role: "user",
+          content:
+            "Ось саммарі робочого дзвінка. Виокрем із нього чіткі задачі до виконання (тільки конкретні дії). " +
+            "Поверни ЛИШЕ JSON-масив рядків, без пояснень, кожен рядок — коротке формулювання задачі українською.\n\n" +
+            summary,
+        }],
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const text: string = data?.content?.[0]?.text ?? "";
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) return null;
+    const arr = JSON.parse(match[0]);
+    if (!Array.isArray(arr)) return null;
+    return arr.map((x) => String(x).trim()).filter(Boolean).slice(0, 30);
+  } catch {
+    return null;
+  }
+}
+
+export async function extractTasksFromSummary(input: { summary: string }) {
+  const user = await requireUser();
+  const summary = input.summary.trim();
+  if (summary.length < 10) return { error: "Замало тексту", created: 0 };
+
+  const titles = (await aiExtract(summary)) ?? heuristicExtract(summary);
+  if (titles.length === 0) return { error: "Не вдалося виокремити задачі", created: 0 };
+
+  // берём последнюю позицию в колонке «Ідеї»
+  const last = await db.task.findFirst({
+    where: { status: "IDEA", parentId: null, assignees: { some: { userId: user.id } } },
+    orderBy: { position: "desc" },
+    select: { position: true },
+  });
+  let pos = (last?.position ?? -1) + 1;
+
+  for (const title of titles) {
+    await db.task.create({
+      data: {
+        title: title.slice(0, 200),
+        status: "IDEA",
+        priority: 5,
+        createdById: user.id,
+        position: pos++,
+        assignees: { create: [{ userId: user.id }] },
+      },
+    });
+  }
+
+  revalidatePath("/");
+  revalidatePath("/calls");
+  return { error: null, created: titles.length };
 }

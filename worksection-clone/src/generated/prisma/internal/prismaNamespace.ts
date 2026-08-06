@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  CallPoint: 'CallPoint',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
   Task: 'Task',
@@ -436,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
+    modelProps: "user" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -511,6 +512,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    CallPoint: {
+      payload: Prisma.$CallPointPayload<ExtArgs>
+      fields: Prisma.CallPointFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CallPointFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CallPointFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>
+        }
+        findFirst: {
+          args: Prisma.CallPointFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CallPointFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>
+        }
+        findMany: {
+          args: Prisma.CallPointFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>[]
+        }
+        create: {
+          args: Prisma.CallPointCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>
+        }
+        createMany: {
+          args: Prisma.CallPointCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CallPointCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>[]
+        }
+        delete: {
+          args: Prisma.CallPointDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>
+        }
+        update: {
+          args: Prisma.CallPointUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>
+        }
+        deleteMany: {
+          args: Prisma.CallPointDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CallPointUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CallPointUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>[]
+        }
+        upsert: {
+          args: Prisma.CallPointUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CallPointPayload>
+        }
+        aggregate: {
+          args: Prisma.CallPointAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCallPoint>
+        }
+        groupBy: {
+          args: Prisma.CallPointGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CallPointGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CallPointCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CallPointCountAggregateOutputType> | number
         }
       }
     }
@@ -2279,6 +2354,18 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const CallPointScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  done: 'done',
+  createdAt: 'createdAt',
+  authorId: 'authorId',
+  memberId: 'memberId'
+} as const
+
+export type CallPointScalarFieldEnum = (typeof CallPointScalarFieldEnum)[keyof typeof CallPointScalarFieldEnum]
+
+
 export const ProjectScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -2825,6 +2912,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  callPoint?: Prisma.CallPointOmit
   project?: Prisma.ProjectOmit
   projectMember?: Prisma.ProjectMemberOmit
   task?: Prisma.TaskOmit

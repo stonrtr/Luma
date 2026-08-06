@@ -369,6 +369,8 @@ export type UserWhereInput = {
   calls?: Prisma.CallListRelationFilter
   ownedFiles?: Prisma.FileLinkListRelationFilter
   fileShares?: Prisma.FileShareListRelationFilter
+  callPointsAuthored?: Prisma.CallPointListRelationFilter
+  callPointsAbout?: Prisma.CallPointListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -414,6 +416,8 @@ export type UserOrderByWithRelationInput = {
   calls?: Prisma.CallOrderByRelationAggregateInput
   ownedFiles?: Prisma.FileLinkOrderByRelationAggregateInput
   fileShares?: Prisma.FileShareOrderByRelationAggregateInput
+  callPointsAuthored?: Prisma.CallPointOrderByRelationAggregateInput
+  callPointsAbout?: Prisma.CallPointOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -462,6 +466,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   calls?: Prisma.CallListRelationFilter
   ownedFiles?: Prisma.FileLinkListRelationFilter
   fileShares?: Prisma.FileShareListRelationFilter
+  callPointsAuthored?: Prisma.CallPointListRelationFilter
+  callPointsAbout?: Prisma.CallPointListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -562,6 +568,8 @@ export type UserCreateInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -606,6 +614,8 @@ export type UserUncheckedCreateInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserUpdateInput = {
@@ -650,6 +660,8 @@ export type UserUpdateInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -694,6 +706,8 @@ export type UserUncheckedUpdateInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -953,6 +967,34 @@ export type UserUncheckedUpdateManyWithoutManagerNestedInput = {
   update?: Prisma.UserUpdateWithWhereUniqueWithoutManagerInput | Prisma.UserUpdateWithWhereUniqueWithoutManagerInput[]
   updateMany?: Prisma.UserUpdateManyWithWhereWithoutManagerInput | Prisma.UserUpdateManyWithWhereWithoutManagerInput[]
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedOneWithoutCallPointsAuthoredInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAuthoredInput, Prisma.UserUncheckedCreateWithoutCallPointsAuthoredInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCallPointsAuthoredInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutCallPointsAboutInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAboutInput, Prisma.UserUncheckedCreateWithoutCallPointsAboutInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCallPointsAboutInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCallPointsAuthoredNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAuthoredInput, Prisma.UserUncheckedCreateWithoutCallPointsAuthoredInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCallPointsAuthoredInput
+  upsert?: Prisma.UserUpsertWithoutCallPointsAuthoredInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCallPointsAuthoredInput, Prisma.UserUpdateWithoutCallPointsAuthoredInput>, Prisma.UserUncheckedUpdateWithoutCallPointsAuthoredInput>
+}
+
+export type UserUpdateOneRequiredWithoutCallPointsAboutNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAboutInput, Prisma.UserUncheckedCreateWithoutCallPointsAboutInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCallPointsAboutInput
+  upsert?: Prisma.UserUpsertWithoutCallPointsAboutInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCallPointsAboutInput, Prisma.UserUpdateWithoutCallPointsAboutInput>, Prisma.UserUncheckedUpdateWithoutCallPointsAboutInput>
 }
 
 export type UserCreateNestedOneWithoutCreatedProjectsInput = {
@@ -1264,6 +1306,8 @@ export type UserCreateWithoutReportsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -1307,6 +1351,8 @@ export type UserUncheckedCreateWithoutReportsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -1355,6 +1401,8 @@ export type UserCreateWithoutManagerInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutManagerInput = {
@@ -1398,6 +1446,8 @@ export type UserUncheckedCreateWithoutManagerInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutManagerInput = {
@@ -1461,6 +1511,8 @@ export type UserUpdateWithoutReportsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -1504,6 +1556,8 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -1549,6 +1603,398 @@ export type UserScalarWhereInput = {
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
+export type UserCreateWithoutCallPointsAuthoredInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
+}
+
+export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type UserCreateOrConnectWithoutCallPointsAuthoredInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAuthoredInput, Prisma.UserUncheckedCreateWithoutCallPointsAuthoredInput>
+}
+
+export type UserCreateWithoutCallPointsAboutInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutCallPointsAboutInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutCallPointsAboutInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAboutInput, Prisma.UserUncheckedCreateWithoutCallPointsAboutInput>
+}
+
+export type UserUpsertWithoutCallPointsAuthoredInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCallPointsAuthoredInput, Prisma.UserUncheckedUpdateWithoutCallPointsAuthoredInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAuthoredInput, Prisma.UserUncheckedCreateWithoutCallPointsAuthoredInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCallPointsAuthoredInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCallPointsAuthoredInput, Prisma.UserUncheckedUpdateWithoutCallPointsAuthoredInput>
+}
+
+export type UserUpdateWithoutCallPointsAuthoredInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type UserUpsertWithoutCallPointsAboutInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCallPointsAboutInput, Prisma.UserUncheckedUpdateWithoutCallPointsAboutInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCallPointsAboutInput, Prisma.UserUncheckedCreateWithoutCallPointsAboutInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCallPointsAboutInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCallPointsAboutInput, Prisma.UserUncheckedUpdateWithoutCallPointsAboutInput>
+}
+
+export type UserUpdateWithoutCallPointsAboutInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
 export type UserCreateWithoutCreatedProjectsInput = {
   id?: string
   name: string
@@ -1590,6 +2036,8 @@ export type UserCreateWithoutCreatedProjectsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutCreatedProjectsInput = {
@@ -1633,6 +2081,8 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutCreatedProjectsInput = {
@@ -1692,6 +2142,8 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
@@ -1735,6 +2187,8 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutProjectMembersInput = {
@@ -1778,6 +2232,8 @@ export type UserCreateWithoutProjectMembersInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutProjectMembersInput = {
@@ -1821,6 +2277,8 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutProjectMembersInput = {
@@ -1880,6 +2338,8 @@ export type UserUpdateWithoutProjectMembersInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectMembersInput = {
@@ -1923,6 +2383,8 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutCreatedTasksInput = {
@@ -1966,6 +2428,8 @@ export type UserCreateWithoutCreatedTasksInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTasksInput = {
@@ -2009,6 +2473,8 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -2068,6 +2534,8 @@ export type UserUpdateWithoutCreatedTasksInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTasksInput = {
@@ -2111,6 +2579,8 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutAssignedTasksInput = {
@@ -2154,6 +2624,8 @@ export type UserCreateWithoutAssignedTasksInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -2197,6 +2669,8 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -2256,6 +2730,8 @@ export type UserUpdateWithoutAssignedTasksInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -2299,6 +2775,8 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutRecurringAssignedInput = {
@@ -2342,6 +2820,8 @@ export type UserCreateWithoutRecurringAssignedInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutRecurringAssignedInput = {
@@ -2385,6 +2865,8 @@ export type UserUncheckedCreateWithoutRecurringAssignedInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutRecurringAssignedInput = {
@@ -2433,6 +2915,8 @@ export type UserCreateWithoutRecurringCreatedInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutRecurringCreatedInput = {
@@ -2476,6 +2960,8 @@ export type UserUncheckedCreateWithoutRecurringCreatedInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutRecurringCreatedInput = {
@@ -2535,6 +3021,8 @@ export type UserUpdateWithoutRecurringAssignedInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
@@ -2578,6 +3066,8 @@ export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUpsertWithoutRecurringCreatedInput = {
@@ -2632,6 +3122,8 @@ export type UserUpdateWithoutRecurringCreatedInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
@@ -2675,6 +3167,8 @@ export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -2718,6 +3212,8 @@ export type UserCreateWithoutCommentsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -2761,6 +3257,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -2820,6 +3318,8 @@ export type UserUpdateWithoutCommentsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -2863,6 +3363,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutMentionsInput = {
@@ -2906,6 +3408,8 @@ export type UserCreateWithoutMentionsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutMentionsInput = {
@@ -2949,6 +3453,8 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutMentionsInput = {
@@ -3008,6 +3514,8 @@ export type UserUpdateWithoutMentionsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMentionsInput = {
@@ -3051,6 +3559,8 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutUploadedFilesInput = {
@@ -3094,6 +3604,8 @@ export type UserCreateWithoutUploadedFilesInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutUploadedFilesInput = {
@@ -3137,6 +3649,8 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutUploadedFilesInput = {
@@ -3196,6 +3710,8 @@ export type UserUpdateWithoutUploadedFilesInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedFilesInput = {
@@ -3239,6 +3755,8 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutOwnedFilesInput = {
@@ -3282,6 +3800,8 @@ export type UserCreateWithoutOwnedFilesInput = {
   recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutOwnedFilesInput = {
@@ -3325,6 +3845,8 @@ export type UserUncheckedCreateWithoutOwnedFilesInput = {
   recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutOwnedFilesInput = {
@@ -3384,6 +3906,8 @@ export type UserUpdateWithoutOwnedFilesInput = {
   recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedFilesInput = {
@@ -3427,6 +3951,8 @@ export type UserUncheckedUpdateWithoutOwnedFilesInput = {
   recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutFileSharesInput = {
@@ -3470,6 +3996,8 @@ export type UserCreateWithoutFileSharesInput = {
   recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutFileSharesInput = {
@@ -3513,6 +4041,8 @@ export type UserUncheckedCreateWithoutFileSharesInput = {
   recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutFileSharesInput = {
@@ -3572,6 +4102,8 @@ export type UserUpdateWithoutFileSharesInput = {
   recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFileSharesInput = {
@@ -3615,6 +4147,8 @@ export type UserUncheckedUpdateWithoutFileSharesInput = {
   recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutTimeLogsInput = {
@@ -3658,6 +4192,8 @@ export type UserCreateWithoutTimeLogsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutTimeLogsInput = {
@@ -3701,6 +4237,8 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutTimeLogsInput = {
@@ -3760,6 +4298,8 @@ export type UserUpdateWithoutTimeLogsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTimeLogsInput = {
@@ -3803,6 +4343,8 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutCallsInput = {
@@ -3846,6 +4388,8 @@ export type UserCreateWithoutCallsInput = {
   recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutCallsInput = {
@@ -3889,6 +4433,8 @@ export type UserUncheckedCreateWithoutCallsInput = {
   recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutCallsInput = {
@@ -3948,6 +4494,8 @@ export type UserUpdateWithoutCallsInput = {
   recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallsInput = {
@@ -3991,6 +4539,8 @@ export type UserUncheckedUpdateWithoutCallsInput = {
   recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutMonthlyGoalsInput = {
@@ -4034,6 +4584,8 @@ export type UserCreateWithoutMonthlyGoalsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
@@ -4077,6 +4629,8 @@ export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutMonthlyGoalsInput = {
@@ -4136,6 +4690,8 @@ export type UserUpdateWithoutMonthlyGoalsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
@@ -4179,6 +4735,8 @@ export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutKpisInput = {
@@ -4222,6 +4780,8 @@ export type UserCreateWithoutKpisInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutKpisInput = {
@@ -4265,6 +4825,8 @@ export type UserUncheckedCreateWithoutKpisInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutKpisInput = {
@@ -4324,6 +4886,8 @@ export type UserUpdateWithoutKpisInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutKpisInput = {
@@ -4367,6 +4931,8 @@ export type UserUncheckedUpdateWithoutKpisInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutWeeklyPlanItemsInput = {
@@ -4410,6 +4976,8 @@ export type UserCreateWithoutWeeklyPlanItemsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
@@ -4453,6 +5021,8 @@ export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutWeeklyPlanItemsInput = {
@@ -4512,6 +5082,8 @@ export type UserUpdateWithoutWeeklyPlanItemsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
@@ -4555,6 +5127,8 @@ export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -4598,6 +5172,8 @@ export type UserCreateWithoutActivitiesInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -4641,6 +5217,8 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -4700,6 +5278,8 @@ export type UserUpdateWithoutActivitiesInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -4743,6 +5323,8 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4786,6 +5368,8 @@ export type UserCreateWithoutNotificationsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4829,6 +5413,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4877,6 +5463,8 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   calls?: Prisma.CallCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
 }
 
 export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
@@ -4920,6 +5508,8 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
   ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type UserCreateOrConnectWithoutTriggeredNotifsInput = {
@@ -4979,6 +5569,8 @@ export type UserUpdateWithoutNotificationsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -5022,6 +5614,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUpsertWithoutTriggeredNotifsInput = {
@@ -5076,6 +5670,8 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
@@ -5119,6 +5715,8 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserCreateManyManagerInput = {
@@ -5185,6 +5783,8 @@ export type UserUpdateWithoutManagerInput = {
   calls?: Prisma.CallUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerInput = {
@@ -5228,6 +5828,8 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
   ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -5279,6 +5881,8 @@ export type UserCountOutputType = {
   calls: number
   ownedFiles: number
   fileShares: number
+  callPointsAuthored: number
+  callPointsAbout: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5302,6 +5906,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   calls?: boolean | UserCountOutputTypeCountCallsArgs
   ownedFiles?: boolean | UserCountOutputTypeCountOwnedFilesArgs
   fileShares?: boolean | UserCountOutputTypeCountFileSharesArgs
+  callPointsAuthored?: boolean | UserCountOutputTypeCountCallPointsAuthoredArgs
+  callPointsAbout?: boolean | UserCountOutputTypeCountCallPointsAboutArgs
 }
 
 /**
@@ -5454,6 +6060,20 @@ export type UserCountOutputTypeCountFileSharesArgs<ExtArgs extends runtime.Types
   where?: Prisma.FileShareWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCallPointsAuthoredArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CallPointWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCallPointsAboutArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CallPointWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5498,6 +6118,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   calls?: boolean | Prisma.User$callsArgs<ExtArgs>
   ownedFiles?: boolean | Prisma.User$ownedFilesArgs<ExtArgs>
   fileShares?: boolean | Prisma.User$fileSharesArgs<ExtArgs>
+  callPointsAuthored?: boolean | Prisma.User$callPointsAuthoredArgs<ExtArgs>
+  callPointsAbout?: boolean | Prisma.User$callPointsAboutArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -5598,6 +6220,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   calls?: boolean | Prisma.User$callsArgs<ExtArgs>
   ownedFiles?: boolean | Prisma.User$ownedFilesArgs<ExtArgs>
   fileShares?: boolean | Prisma.User$fileSharesArgs<ExtArgs>
+  callPointsAuthored?: boolean | Prisma.User$callPointsAuthoredArgs<ExtArgs>
+  callPointsAbout?: boolean | Prisma.User$callPointsAboutArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5631,6 +6255,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     calls: Prisma.$CallPayload<ExtArgs>[]
     ownedFiles: Prisma.$FileLinkPayload<ExtArgs>[]
     fileShares: Prisma.$FileSharePayload<ExtArgs>[]
+    callPointsAuthored: Prisma.$CallPointPayload<ExtArgs>[]
+    callPointsAbout: Prisma.$CallPointPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6069,6 +6695,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   calls<T extends Prisma.User$callsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$callsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownedFiles<T extends Prisma.User$ownedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fileShares<T extends Prisma.User$fileSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fileSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  callPointsAuthored<T extends Prisma.User$callPointsAuthoredArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$callPointsAuthoredArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CallPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  callPointsAbout<T extends Prisma.User$callPointsAboutArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$callPointsAboutArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CallPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7014,6 +7642,54 @@ export type User$fileSharesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.FileShareScalarFieldEnum | Prisma.FileShareScalarFieldEnum[]
+}
+
+/**
+ * User.callPointsAuthored
+ */
+export type User$callPointsAuthoredArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CallPoint
+   */
+  select?: Prisma.CallPointSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CallPoint
+   */
+  omit?: Prisma.CallPointOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CallPointInclude<ExtArgs> | null
+  where?: Prisma.CallPointWhereInput
+  orderBy?: Prisma.CallPointOrderByWithRelationInput | Prisma.CallPointOrderByWithRelationInput[]
+  cursor?: Prisma.CallPointWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CallPointScalarFieldEnum | Prisma.CallPointScalarFieldEnum[]
+}
+
+/**
+ * User.callPointsAbout
+ */
+export type User$callPointsAboutArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CallPoint
+   */
+  select?: Prisma.CallPointSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CallPoint
+   */
+  omit?: Prisma.CallPointOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CallPointInclude<ExtArgs> | null
+  where?: Prisma.CallPointWhereInput
+  orderBy?: Prisma.CallPointOrderByWithRelationInput | Prisma.CallPointOrderByWithRelationInput[]
+  cursor?: Prisma.CallPointWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CallPointScalarFieldEnum | Prisma.CallPointScalarFieldEnum[]
 }
 
 /**

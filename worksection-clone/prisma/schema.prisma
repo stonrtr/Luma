@@ -65,6 +65,23 @@ model User {
   calls           Call[]          @relation("CallOwner")
   ownedFiles      FileLink[]      @relation("FileOwner")
   fileShares      FileShare[]
+  callPointsAuthored CallPoint[]  @relation("CallPointAuthor")
+  callPointsAbout    CallPoint[]  @relation("CallPointMember")
+}
+
+// Поінти до дзвінка: что обсудить с конкретным членом команды перед созвоном
+model CallPoint {
+  id        String   @id @default(cuid())
+  text      String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  authorId String
+  author   User   @relation("CallPointAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  memberId String
+  member   User   @relation("CallPointMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([authorId, memberId])
 }
 
 // ----------------------------------------------------------------------------

@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  CallPoint: 'CallPoint',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
   Task: 'Task',
@@ -115,6 +116,18 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const CallPointScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  done: 'done',
+  createdAt: 'createdAt',
+  authorId: 'authorId',
+  memberId: 'memberId'
+} as const
+
+export type CallPointScalarFieldEnum = (typeof CallPointScalarFieldEnum)[keyof typeof CallPointScalarFieldEnum]
 
 
 export const ProjectScalarFieldEnum = {

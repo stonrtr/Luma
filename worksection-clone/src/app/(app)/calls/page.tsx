@@ -1,0 +1,36 @@
+import { requireUser } from "@/server/dal";
+import { getCallBoard } from "@/server/queries/calls";
+import { CallPointsPanel } from "@/components/calls/call-points-panel";
+import { SummaryExtractor } from "@/components/calls/summary-extractor";
+import { ListChecks, Sparkles } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+
+export default async function CallsPage() {
+  const user = await requireUser();
+  const members = await getCallBoard(user.id);
+
+  return (
+    <div className="mx-auto max-w-5xl px-6 py-8">
+      <h1 className="text-2xl font-semibold tracking-tight">Дзвінки</h1>
+      <p className="mt-1 text-sm text-muted-foreground">Поінти до созвонів та задачі із саммарі дзвінка.</p>
+
+      <section className="mt-6">
+        <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
+          <ListChecks className="size-4 text-primary" /> Поінти до дзвінка
+        </h2>
+        <p className="mb-3 text-xs text-muted-foreground">Фіксуйте, що обговорити з кожним, щоб не забути на созвоні.</p>
+        <CallPointsPanel members={members} />
+      </section>
+
+      <section className="mt-8">
+        <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
+          <Sparkles className="size-4 text-primary" /> Задачі із саммарі дзвінка
+        </h2>
+        <div className="rounded-xl border bg-card p-5">
+          <SummaryExtractor />
+        </div>
+      </section>
+    </div>
+  );
+}
