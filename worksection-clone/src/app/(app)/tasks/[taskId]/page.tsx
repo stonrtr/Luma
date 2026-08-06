@@ -12,6 +12,7 @@ import { AddSubtask } from "@/components/task/add-subtask";
 import { EditableTaskHeader } from "@/components/task/editable-task-header";
 import { TagPicker } from "@/components/task/tag-picker";
 import { Attachments } from "@/components/task/attachments";
+import { ReviewButton } from "@/components/task/review-button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   TASK_STATUS_LABEL,
@@ -174,8 +175,13 @@ export default async function TaskDetailPage({
               <Row label="Срок" value={formatDate(task.dueDate)} />
               <Row label="Планований час" value={task.plannedMinutes ? plannedLabel(task.plannedMinutes) : "—"} />
               <Row label="Автор" value={task.createdBy.name} />
-              <Row label="Веха" value={task.milestone?.title ?? "—"} />
+              <Row label="Віха" value={task.milestone?.title ?? "—"} />
             </div>
+            {task.status !== "DONE" && task.status !== "TO_REVIEW" && (
+              <div className="mt-4 border-t pt-4">
+                <ReviewButton taskId={task.id} />
+              </div>
+            )}
           </div>
 
           {/* Вложения */}

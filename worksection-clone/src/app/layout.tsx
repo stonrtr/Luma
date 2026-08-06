@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="ru" className="h-full antialiased">
       <body className="min-h-full">
         {children}
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="bottom-right" />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/server/dal";
 import { getAllUsers } from "@/server/queries/users";
 import { NewUserDialog } from "@/components/admin/new-user-dialog";
+import { UserRowActions } from "@/components/admin/user-row-actions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials, formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -38,16 +39,17 @@ export default async function AdminUsersPage() {
 
       <div className="overflow-hidden rounded-xl border bg-card">
         {users.map((u, i) => (
-          <div key={u.id} className={cn("flex items-center gap-3 px-4 py-3", i > 0 && "border-t")}>
+          <div key={u.id} className={cn("flex items-center gap-3 px-4 py-3", i > 0 && "border-t", !u.isActive && "opacity-60")}>
             <Avatar className="size-9"><AvatarFallback className="text-xs">{initials(u.name)}</AvatarFallback></Avatar>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{u.name}</p>
               <p className="truncate text-xs text-muted-foreground">{u.title ?? u.email}</p>
             </div>
-            {u.title && <span className="hidden text-xs text-muted-foreground sm:block">{u.email}</span>}
+            {!u.isActive && <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">Неактивний</span>}
             <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", ROLE_STYLE[u.role])}>
               {ROLE_LABEL[u.role]}
             </span>
+            <UserRowActions userId={u.id} isActive={u.isActive} canManage={u.id !== user.id && u.role !== "OWNER"} />
           </div>
         ))}
       </div>

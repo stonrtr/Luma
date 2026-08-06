@@ -39,3 +39,25 @@ export async function createUser(input: z.infer<typeof schema>) {
   revalidatePath("/admin/users");
   return { error: null };
 }
+
+export async function setUserActive(input: { userId: string; active: boolean }) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };
+  if (input.userId === admin.id) return { error: "Не можна деактивувати себе" };
+  const target = await db.user.findUnique({ where: { id: input.userId }, select: { role: true } });
+  if (target?.role === "OWNER") return { error: "Не можна деактивувати власника" };
+  await db.user.update({ where: { id: input.userId }, data: { isActive: input.active } });
+  revalidatePath("/admin/users");
+  return { error: null };
+}
+
+export async function deleteUser(userId: string) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };
+  if (userId === admin.id) return { error: "Не можна видалити себе" };
+  const target = await db.user.findUnique({ where: { id: userId }, select: { role: true } });
+  if (target?.role === "OWNER") return { error: "Не можна видалити власника" };
+  await db.user.delete({ where: { id: userId } });
+  revalidatePath("/admin/users");
+  return { error: null };
+}

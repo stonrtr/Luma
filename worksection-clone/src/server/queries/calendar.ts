@@ -1,0 +1,33 @@
+import "server-only";
+import { db } from "@/server/db";
+
+// Календарь всей команды: задачи (по scheduledAt/dueDate) и звонки за месяц
+export async function getCalendarData(year: number, month: number) {
+  const from = new Date(year, month, 1);
+  const to = new Date(year, month + 1, 1);
+
+  const [tasks, calls, users] = await Promise.all([
+    db.task.findMany({
+      where: {
+        parentId: null,
+        archivedAt: null,
+        OR: [
+          { scheduledAt: { gte: from, lt: to } },
+          { dueDate: { gte: from, lt: to }, scheduledAt: null },
+        ],
+      },
+      include: {
+        project: { select: { color: true } },
+        assignees: { include: { user: { select: { id: true, name: true } } } },
+      },
+    }),
+    db.call.findMany({
+      where: { scheduledAt: { gte: from, lt: to } },
+      include: { user: { select: { id: true, name: true } } },
+      orderBy: { scheduledAt: "asc" },
+    }),
+    db.user.findMany({ where: { role: { not: "CLIENT" }, isActive: true }, select: { id: true, name: true } }),
+  ]);
+
+  return { tasks, calls, users };
+}

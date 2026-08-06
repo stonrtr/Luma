@@ -38,11 +38,13 @@ export function NewTaskDialog({
   members,
   status,
   onClose,
+  lockedAssigneeId,
 }: {
   projectId: string;
   members: BoardMember[];
   status: TaskStatus | null;
   onClose: () => void;
+  lockedAssigneeId?: string;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -72,12 +74,12 @@ export function NewTaskDialog({
     start(async () => {
       try {
         await createTask({
-          projectId,
+          projectId: projectId || undefined,
           title: title.trim(),
           status: taskStatus,
           priority,
           plannedMinutes,
-          assigneeId: assigneeId === "none" ? undefined : assigneeId,
+          assigneeId: lockedAssigneeId ?? (assigneeId === "none" ? undefined : assigneeId),
           dueDate: dueDate || undefined,
           dueTime: dueTime || undefined,
         });
@@ -185,18 +187,20 @@ export function NewTaskDialog({
               <Label htmlFor="task-time">Час</Label>
               <Input id="task-time" type="time" value={dueTime} onChange={(e) => setDueTime(e.target.value)} />
             </div>
-            <div className="space-y-2">
-              <Label>Виконавець</Label>
-              <Select value={assigneeId} onValueChange={setAssigneeId}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Без виконавця</SelectItem>
-                  {members.map((m) => (
-                    <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {!lockedAssigneeId && (
+              <div className="space-y-2">
+                <Label>Виконавець</Label>
+                <Select value={assigneeId} onValueChange={setAssigneeId}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Без виконавця</SelectItem>
+                    {members.map((m) => (
+                      <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">Якщо вказати дату та час — задача з&apos;явиться в календарі.</p>
         </div>

@@ -15,6 +15,21 @@ export async function getBoardTasks(projectId: string) {
   });
 }
 
+// Личные задачи пользователя (из всех проектов + без проекта), назначенные на него
+export async function getMyTasks(userId: string) {
+  return db.task.findMany({
+    where: { parentId: null, archivedAt: null, assignees: { some: { userId } } },
+    orderBy: [{ priority: "desc" }, { position: "asc" }],
+    include: {
+      project: { select: { name: true, color: true } },
+      assignees: { include: { user: true } },
+      tags: { include: { tag: true } },
+      _count: { select: { subtasks: true, comments: true, checklist: true } },
+      checklist: { select: { done: true } },
+    },
+  });
+}
+
 export async function getTaskDetail(taskId: string) {
   return db.task.findUnique({
     where: { id: taskId },

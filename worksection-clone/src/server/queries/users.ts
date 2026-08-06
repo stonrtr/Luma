@@ -12,6 +12,6 @@ export async function getUsersNotInProject(projectId: string) {
 export async function getAllUsers() {
   return db.user.findMany({
     orderBy: { name: "asc" },
-    select: { id: true, name: true, email: true, title: true, role: true },
+    select: { id: true, name: true, email: true, title: true, role: true, isActive: true },
   });
 }

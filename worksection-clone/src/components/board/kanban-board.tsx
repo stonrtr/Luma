@@ -36,10 +36,12 @@ export function KanbanBoard({
   projectId,
   initialTasks,
   members,
+  lockedAssigneeId,
 }: {
   projectId: string;
   initialTasks: BoardTask[];
   members: BoardMember[];
+  lockedAssigneeId?: string;
 }) {
   const [columns, setColumns] = useState<Columns>(() => group(initialTasks));
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
@@ -152,6 +154,7 @@ export function KanbanBoard({
         members={members}
         status={dialogStatus}
         onClose={() => setDialogStatus(null)}
+        lockedAssigneeId={lockedAssigneeId}
       />
     </>
   );

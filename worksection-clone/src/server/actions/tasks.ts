@@ -83,6 +83,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
 
   if (projectId) revalidatePath(`/projects/${projectId}`);
   if (data.parentId) revalidatePath(`/tasks/${data.parentId}`);
+  revalidatePath("/");
   return task;
 }
 
@@ -120,7 +121,8 @@ export async function moveTask(input: {
     ),
   ]);
 
-  revalidatePath(`/projects/${task.projectId}`);
+  if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
+  revalidatePath("/");
 }
 
 const updateTaskSchema = z.object({
@@ -149,6 +151,38 @@ export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
 
   revalidatePath(`/tasks/${taskId}`);
   revalidatePath(`/projects/${task.projectId}`);
+}
+
+// Отправить задачу на проверку руководителю
+export async function sendForReview(taskId: string) {
+  const user = await requireUser();
+  const task = await db.task.findUnique({
+    where: { id: taskId },
+    include: { assignees: { include: { user: { select: { managerId: true } } } } },
+  });
+  if (!task) return;
+
+  await db.task.update({ where: { id: taskId }, data: { status: "TO_REVIEW", reviewRequestedAt: new Date() } });
+
+  // уведомляем руководителя исполнителя (или всех админов/владельцев)
+  const managerIds = new Set<string>();
+  for (const a of task.assignees) if (a.user.managerId) managerIds.add(a.user.managerId);
+  if (managerIds.size === 0) {
+    const admins = await db.user.findMany({ where: { role: { in: ["OWNER", "ADMIN"] } }, select: { id: true } });
+    for (const a of admins) managerIds.add(a.id);
+  }
+  managerIds.delete(user.id);
+  await Promise.all(
+    [...managerIds].map((rid) =>
+      db.notification.create({
+        data: { type: "review", message: `${user.name} відправив на перевірку «${task.title}»`, link: `/tasks/${task.id}`, recipientId: rid, actorId: user.id },
+      }),
+    ),
+  );
+
+  if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
+  revalidatePath(`/tasks/${taskId}`);
+  revalidatePath("/");
 }
 
 export async function setTaskAssignee(input: { taskId: string; userId: string | null }) {

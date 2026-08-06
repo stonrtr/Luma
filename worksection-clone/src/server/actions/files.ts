@@ -1,0 +1,60 @@
+"use server";
+
+import { promises as fs } from "fs";
+import path from "path";
+import { randomUUID } from "crypto";
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
+import { db } from "@/server/db";
+import { requireUser } from "@/server/dal";
+
+export async function addFileLink(input: { name: string; url: string; note?: string }) {
+  const user = await requireUser();
+  const schema = z.object({ name: z.string().min(1).max(200), url: z.string().url("Невірне посилання"), note: z.string().max(500).optional() });
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Помилка" };
+  await db.fileLink.create({ data: { name: parsed.data.name.trim(), url: parsed.data.url, note: parsed.data.note?.trim() || null, kind: "LINK", ownerId: user.id } });
+  revalidatePath("/files");
+  return { error: null };
+}
+
+export async function uploadFileDoc(formData: FormData) {
+  const user = await requireUser();
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) return { error: "Файл не вибрано" };
+  if (file.size > 20 * 1024 * 1024) return { error: "Файл більше 20 МБ" };
+  const safeName = file.name.replace(/[^\w.\-а-яА-ЯіїєґІЇЄҐ ]+/g, "_");
+  const key = `${randomUUID()}-${safeName}`;
+  const dir = path.join(process.cwd(), "public", "uploads", "files");
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(path.join(dir, key), Buffer.from(await file.arrayBuffer()));
+  await db.fileLink.create({ data: { name: file.name, url: `/uploads/files/${key}`, kind: "UPLOAD", ownerId: user.id } });
+  revalidatePath("/files");
+  return { error: null };
+}
+
+export async function deleteFile(id: string) {
+  const user = await requireUser();
+  const f = await db.fileLink.findUnique({ where: { id } });
+  if (!f || f.ownerId !== user.id) return;
+  if (f.kind === "UPLOAD" && f.url.startsWith("/uploads/")) {
+    try { await fs.unlink(path.join(process.cwd(), "public", f.url)); } catch {}
+  }
+  await db.fileLink.delete({ where: { id } });
+  revalidatePath("/files");
+}
+
+export async function shareFile(input: { fileId: string; userId: string; on: boolean }) {
+  const user = await requireUser();
+  const f = await db.fileLink.findUnique({ where: { id: input.fileId } });
+  if (!f || f.ownerId !== user.id) return;
+  if (input.on) {
+    await db.fileShare.upsert({
+      where: { fileId_userId: { fileId: input.fileId, userId: input.userId } },
+      update: {}, create: { fileId: input.fileId, userId: input.userId },
+    });
+  } else {
+    await db.fileShare.deleteMany({ where: { fileId: input.fileId, userId: input.userId } });
+  }
+  revalidatePath("/files");
+}
