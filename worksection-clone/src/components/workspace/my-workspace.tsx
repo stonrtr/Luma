@@ -20,7 +20,7 @@ export function MyWorkspace({
   tasks: BoardTask[]; userId: string; view: string; locale: string; calendar?: WeekData;
 }) {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col">
       <div className="flex gap-1 px-6 pt-4">
         {VIEWS.map((v) => (
           <Link
@@ -35,7 +35,7 @@ export function MyWorkspace({
           </Link>
         ))}
       </div>
-      <div className="flex-1 overflow-auto px-6 py-4">
+      <div className="px-6 py-4">
         {view === "calendar" && calendar ? (
           <WeekCalendar data={calendar} />
         ) : view === "day" ? (

@@ -14,16 +14,14 @@ function WorkloadBar({ label, used, cap }: { label: string; used: number; cap: n
   const pct = cap ? Math.min(100, Math.round((used / cap) * 100)) : 0;
   const over = used > cap;
   return (
-    <div className="rounded-xl border bg-card p-4">
-      <div className="mb-1.5 flex items-baseline justify-between">
-        <span className="text-xs text-muted-foreground">{label}</span>
-        <span className={cn("text-sm font-semibold", over && "text-destructive")}>
-          {formatMinutes(used)} <span className="font-normal text-muted-foreground">/ {formatMinutes(cap)}</span>
-        </span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-muted">
+    <div className="flex flex-1 items-center gap-2.5 rounded-lg border bg-card px-3 py-1.5">
+      <span className="whitespace-nowrap text-xs text-muted-foreground">{label}</span>
+      <div className="h-1.5 min-w-12 flex-1 overflow-hidden rounded-full bg-muted">
         <div className={cn("h-full rounded-full", over ? "bg-destructive" : pct > 80 ? "bg-amber-500" : "bg-emerald-500")} style={{ width: `${pct}%` }} />
       </div>
+      <span className={cn("whitespace-nowrap text-xs font-semibold", over && "text-destructive")}>
+        {formatMinutes(used)}<span className="font-normal text-muted-foreground"> / {formatMinutes(cap)}</span>
+      </span>
     </div>
   );
 }
@@ -141,14 +139,14 @@ export default async function HomePage({
   const weekCap = user.weeklyHours ? Math.round(user.weeklyHours * 60) : 2400;
 
   return (
-    <div className="flex h-full flex-col">
-      <header className="border-b px-6 py-4">
-        <div className="grid max-w-md grid-cols-2 gap-3">
+    <div className="flex flex-col">
+      <header className="border-b px-6 py-2.5">
+        <div className="flex max-w-2xl flex-wrap gap-3">
           <WorkloadBar label={t(user.locale, "load.today")} used={todayMin} cap={dailyCap} />
           <WorkloadBar label={t(user.locale, "load.week")} used={weekMin} cap={weekCap} />
         </div>
       </header>
-      <div className="flex-1 overflow-hidden">
+      <div>
         <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} />
       </div>
     </div>

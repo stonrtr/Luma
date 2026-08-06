@@ -15,7 +15,7 @@ export function TopNav({
 }) {
   const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-sidebar px-4 text-sidebar-foreground">
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b bg-sidebar px-4 text-sidebar-foreground">
       <Link href="/" className="flex shrink-0 items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">W</div>
         <span className="hidden font-semibold sm:inline">Worksection</span>

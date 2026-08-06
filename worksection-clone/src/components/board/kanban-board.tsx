@@ -47,6 +47,26 @@ export function KanbanBoard({
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
   const [dialogStatus, setDialogStatus] = useState<TaskStatus | null>(null);
 
+  // сворачивание колонок: пустые скрыты по умолчанию, выбор пользователя запоминается
+  const storageKey = `ws_board_collapsed_${projectId || "me"}`;
+  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem(storageKey);
+      if (s) setOverrides(JSON.parse(s));
+    } catch {}
+  }, [storageKey]);
+  const isCollapsed = (status: TaskStatus) =>
+    overrides[status] ?? columns[status].length === 0;
+  function toggleCollapse(status: TaskStatus) {
+    setOverrides((prev) => {
+      const cur = prev[status] ?? columns[status].length === 0;
+      const next = { ...prev, [status]: !cur };
+      try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
   // синхронизация с сервером после revalidate (перемещения, создание задач)
   useEffect(() => {
     setColumns(group(initialTasks));
@@ -143,6 +163,8 @@ export function KanbanBoard({
               status={status}
               tasks={columns[status]}
               onAdd={setDialogStatus}
+              collapsed={isCollapsed(status)}
+              onToggle={toggleCollapse}
             />
           ))}
         </div>

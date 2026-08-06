@@ -62,7 +62,7 @@ export default async function ProjectBoardPage({
   const gantt = isGantt ? await getGanttData(projectId) : null;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col">
       <header className="border-b px-6 py-4">
         <div className="flex items-center gap-3">
           <span className="size-3 rounded-full" style={{ backgroundColor: project.color }} />
@@ -134,7 +134,7 @@ export default async function ProjectBoardPage({
         </div>
       </header>
 
-      <div className="flex-1 overflow-auto px-6 py-4">
+      <div className="overflow-x-auto px-6 py-4">
         {isGantt && gantt ? (
           <GanttChart
             tasks={gantt.tasks.map((t) => ({

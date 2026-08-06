@@ -5,6 +5,7 @@ import { generateDueRecurringTasks } from "@/server/recurring-engine";
 import { runLifecycleMaintenance } from "@/server/lifecycle-engine";
 import { TopNav } from "@/components/app-shell/top-nav";
 import { NotificationToaster } from "@/components/app-shell/notification-toaster";
+import { QuickAddFab } from "@/components/workspace/quick-add-fab";
 
 export default async function AppLayout({
   children,
@@ -21,7 +22,7 @@ export default async function AppLayout({
   ]);
 
   return (
-    <div className={`flex h-screen flex-col overflow-hidden ${user.theme === "dark" ? "dark" : ""}`}>
+    <div className={`flex min-h-screen flex-col ${user.theme === "dark" ? "dark" : ""}`}>
       <TopNav
         user={{ name: user.name, email: user.email, title: user.title, role: user.role, locale: user.locale, avatarUrl: user.avatarUrl }}
         projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))}
@@ -36,7 +37,8 @@ export default async function AppLayout({
           unread: notifications.unread,
         }}
       />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="flex-1">{children}</main>
+      <QuickAddFab userId={user.id} />
       <NotificationToaster
         items={notifications.items.map((n) => ({ id: n.id, type: n.type, message: n.message, link: n.link, readAt: n.readAt ? n.readAt.toISOString() : null }))}
       />

@@ -2,6 +2,7 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { ChevronDown, ChevronLeft, Plus } from "lucide-react";
 import type { TaskStatus } from "@/generated/prisma/enums";
 import type { BoardTask } from "./types";
 import { TaskCard } from "./task-card";
@@ -12,25 +13,51 @@ export function KanbanColumn({
   status,
   tasks,
   onAdd,
+  collapsed,
+  onToggle,
 }: {
   status: TaskStatus;
   tasks: BoardTask[];
   onAdd: (status: TaskStatus) => void;
+  collapsed: boolean;
+  onToggle: (status: TaskStatus) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status, data: { type: "column", status } });
+
+  if (collapsed) {
+    return (
+      <div
+        ref={setNodeRef}
+        onClick={() => onToggle(status)}
+        title="Розгорнути"
+        className={cn(
+          "flex w-11 shrink-0 cursor-pointer flex-col items-center gap-2 rounded-xl bg-muted/40 py-2 transition-colors hover:bg-muted",
+          isOver && "bg-accent/60 ring-2 ring-primary/30",
+        )}
+      >
+        <ChevronLeft className="size-4 text-muted-foreground" />
+        <span className={cn("size-2.5 rounded-full", TASK_STATUS_DOT[status])} />
+        <span className="text-xs text-muted-foreground">{tasks.length}</span>
+        <span className="text-sm font-medium [writing-mode:vertical-rl]">{TASK_STATUS_LABEL[status]}</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-w-64 flex-1 flex-col">
       <div className="mb-2 flex items-center gap-2 px-1">
+        <button onClick={() => onToggle(status)} title="Згорнути" className="text-muted-foreground transition-colors hover:text-foreground">
+          <ChevronDown className="size-4" />
+        </button>
         <span className={cn("size-2.5 rounded-full", TASK_STATUS_DOT[status])} />
         <span className="text-sm font-medium">{TASK_STATUS_LABEL[status]}</span>
         <span className="text-xs text-muted-foreground">{tasks.length}</span>
         <button
           onClick={() => onAdd(status)}
           className="ml-auto text-muted-foreground transition-colors hover:text-foreground"
-          title="Добавить задачу"
+          title="Додати задачу"
         >
-          +
+          <Plus className="size-4" />
         </button>
       </div>
 
@@ -51,7 +78,7 @@ export function KanbanColumn({
             onClick={() => onAdd(status)}
             className="rounded-lg border border-dashed py-6 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
           >
-            + Добавить задачу
+            + Додати задачу
           </button>
         )}
       </div>
