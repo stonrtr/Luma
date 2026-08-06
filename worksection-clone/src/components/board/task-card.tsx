@@ -8,6 +8,7 @@ import type { BoardTask } from "./types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { priorityStyle } from "@/lib/domain";
 import { initials } from "@/lib/format";
+import { useSelection } from "./selection-context";
 import { cn } from "@/lib/utils";
 
 function pluralDays(n: number): string {
@@ -40,6 +41,8 @@ export function TaskCard({ task }: { task: BoardTask }) {
   const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
   const done = task.status === "DONE";
   const badge = task.dueDate ? dueBadge(task.dueDate, done) : null;
+  const sel = useSelection();
+  const selected = sel?.selected.has(task.id) ?? false;
 
   return (
     <div
@@ -50,11 +53,17 @@ export function TaskCard({ task }: { task: BoardTask }) {
       className={cn(
         "group flex items-center gap-2.5 rounded-lg border bg-card px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md",
         task.assignedByManager && "border-l-4 border-l-primary",
+        selected && "ring-2 ring-primary",
       )}
     >
-      <span className={cn("shrink-0", done ? "text-emerald-500" : "text-muted-foreground/40")} aria-hidden>
-        {done ? <CheckCircle2 className="size-[15px]" /> : <Circle className="size-[15px]" />}
-      </span>
+      <button
+        onClick={(e) => { e.stopPropagation(); e.preventDefault(); sel?.toggle(task.id); }}
+        onPointerDown={(e) => e.stopPropagation()}
+        className={cn("shrink-0 transition-colors", selected ? "text-primary" : "text-muted-foreground/40 hover:text-primary")}
+        title="Виділити задачу"
+      >
+        {selected ? <CheckCircle2 className="size-[15px]" /> : <Circle className="size-[15px]" />}
+      </button>
 
       {task.isProject && <span className="size-2 shrink-0 rounded-full bg-indigo-500" title="Проєктна задача" />}
 

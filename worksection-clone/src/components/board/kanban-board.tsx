@@ -19,6 +19,8 @@ import type { BoardTask, BoardMember } from "./types";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
 import { NewTaskDialog } from "./new-task-dialog";
+import { SelectionProvider } from "./selection-context";
+import { BulkBar } from "./bulk-bar";
 import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
 import { moveTask } from "@/server/actions/tasks";
 
@@ -158,7 +160,7 @@ export function KanbanBoard({
   }
 
   return (
-    <>
+    <SelectionProvider>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -191,6 +193,7 @@ export function KanbanBoard({
         lockedAssigneeId={lockedAssigneeId}
         projects={projects}
       />
-    </>
+      <BulkBar />
+    </SelectionProvider>
   );
 }

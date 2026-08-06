@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import type { BoardTask } from "./types";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
+import { SelectionProvider } from "./selection-context";
+import { BulkBar } from "./bulk-bar";
 import { updateTask } from "@/server/actions/tasks";
 import { mondayOf, addDays } from "@/lib/week";
 
@@ -157,21 +159,24 @@ export function DayBoard({ initialTasks }: { initialTasks: BoardTask[] }) {
   if (!mounted) return <div className="min-h-40" />;
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
-      <div className="flex gap-4 overflow-x-auto pb-4">
-        {BUCKETS.map((b) => (
-          <KanbanColumn
-            key={b.key}
-            id={b.key}
-            label={b.label}
-            dotClass={b.dot}
-            tasks={columns[b.key]}
-            collapsed={isCollapsed(b.key)}
-            onToggle={toggleCollapse}
-          />
-        ))}
-      </div>
-      <DragOverlay>{activeTask ? <TaskCard task={activeTask} /> : null}</DragOverlay>
-    </DndContext>
+    <SelectionProvider>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+        <div className="flex gap-4 overflow-x-auto pb-4">
+          {BUCKETS.map((b) => (
+            <KanbanColumn
+              key={b.key}
+              id={b.key}
+              label={b.label}
+              dotClass={b.dot}
+              tasks={columns[b.key]}
+              collapsed={isCollapsed(b.key)}
+              onToggle={toggleCollapse}
+            />
+          ))}
+        </div>
+        <DragOverlay>{activeTask ? <TaskCard task={activeTask} /> : null}</DragOverlay>
+      </DndContext>
+      <BulkBar />
+    </SelectionProvider>
   );
 }

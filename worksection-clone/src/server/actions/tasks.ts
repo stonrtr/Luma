@@ -154,6 +154,18 @@ export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
   revalidatePath(`/projects/${task.projectId}`);
 }
 
+// Массовая смена статуса выбранных задач
+export async function bulkSetStatus(input: { taskIds: string[]; status: TaskStatus }) {
+  await requireUser();
+  const ids = [...new Set(input.taskIds)].filter(Boolean);
+  if (ids.length === 0) return;
+  await db.task.updateMany({
+    where: { id: { in: ids } },
+    data: { status: input.status, completedAt: input.status === "DONE" ? new Date() : null },
+  });
+  revalidatePath("/", "layout");
+}
+
 // Отправить задачу на проверку руководителю
 export async function sendForReview(taskId: string) {
   const user = await requireUser();
