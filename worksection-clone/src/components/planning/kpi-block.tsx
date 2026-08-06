@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Gauge, Plus, X, Check } from "lucide-react";
 import { toast } from "sonner";
-import { addKpi, deleteKpi, updateKpiResult } from "@/server/actions/planning";
+import { Pencil } from "lucide-react";
+import { addKpi, deleteKpi, updateKpiResult, updateKpiTarget } from "@/server/actions/planning";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -56,21 +57,55 @@ export function KpiBlock({
 function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolean; canEditResult: boolean }) {
   const router = useRouter();
   const [actual, setActual] = useState(kpi.actualValue ?? "");
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [targetVal, setTargetVal] = useState(kpi.target ?? "");
   const [, start] = useTransition();
 
   function save(achieved: boolean | null) {
     start(async () => {
       await updateKpiResult({ id: kpi.id, actualValue: actual, achieved });
+      toast.success("Збережено");
       router.refresh();
     });
+  }
+  function saveTarget() {
+    setEditingTarget(false);
+    if (targetVal !== (kpi.target ?? "")) {
+      start(async () => {
+        await updateKpiTarget({ id: kpi.id, target: targetVal });
+        toast.success("Ціль оновлено");
+        router.refresh();
+      });
+    }
   }
 
   return (
     <div className="rounded-lg border bg-card p-3">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-start justify-between gap-2">
         <span className="text-sm font-medium">{kpi.title}</span>
         <div className="flex items-center gap-2">
-          {kpi.target && <span className="text-xs text-muted-foreground">ціль: {kpi.target}</span>}
+          {/* Цель — крупно и редактируемо */}
+          {editingTarget ? (
+            <Input
+              value={targetVal}
+              onChange={(e) => setTargetVal(e.target.value)}
+              onBlur={saveTarget}
+              onKeyDown={(e) => { if (e.key === "Enter") saveTarget(); if (e.key === "Escape") { setTargetVal(kpi.target ?? ""); setEditingTarget(false); } }}
+              autoFocus
+              className="h-8 w-24 text-right text-lg font-bold"
+            />
+          ) : (
+            <button
+              onClick={() => canManage && setEditingTarget(true)}
+              disabled={!canManage}
+              className="group flex items-baseline gap-1"
+              title={canManage ? "Редагувати ціль" : undefined}
+            >
+              <span className="text-[11px] text-muted-foreground">ціль</span>
+              <span className="text-xl font-bold text-primary">{kpi.target ?? "—"}</span>
+              {canManage && <Pencil className="size-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />}
+            </button>
+          )}
           {canManage && (
             <button onClick={() => start(async () => { await deleteKpi(kpi.id); router.refresh(); })} className="text-muted-foreground hover:text-destructive">
               <X className="size-3.5" />
@@ -82,6 +117,7 @@ function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolea
         <Input
           value={actual}
           onChange={(e) => setActual(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && canEditResult) save(kpi.achieved); }}
           onBlur={() => canEditResult && actual !== (kpi.actualValue ?? "") && save(kpi.achieved)}
           placeholder="Факт"
           disabled={!canEditResult}

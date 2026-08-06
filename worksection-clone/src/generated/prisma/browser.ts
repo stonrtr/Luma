@@ -128,6 +128,11 @@ export type WeeklyPlanItem = Prisma.WeeklyPlanItemModel
  */
 export type Activity = Prisma.ActivityModel
 /**
+ * Model NotificationSetting
+ * 
+ */
+export type NotificationSetting = Prisma.NotificationSettingModel
+/**
  * Model Notification
  * 
  */

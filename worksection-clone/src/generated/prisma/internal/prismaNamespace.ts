@@ -419,6 +419,7 @@ export const ModelName = {
   Kpi: 'Kpi',
   WeeklyPlanItem: 'WeeklyPlanItem',
   Activity: 'Activity',
+  NotificationSetting: 'NotificationSetting',
   Notification: 'Notification'
 } as const
 
@@ -435,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notification"
+    modelProps: "user" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2067,6 +2068,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    NotificationSetting: {
+      payload: Prisma.$NotificationSettingPayload<ExtArgs>
+      fields: Prisma.NotificationSettingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NotificationSettingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NotificationSettingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>
+        }
+        findFirst: {
+          args: Prisma.NotificationSettingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NotificationSettingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>
+        }
+        findMany: {
+          args: Prisma.NotificationSettingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>[]
+        }
+        create: {
+          args: Prisma.NotificationSettingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>
+        }
+        createMany: {
+          args: Prisma.NotificationSettingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NotificationSettingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>[]
+        }
+        delete: {
+          args: Prisma.NotificationSettingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>
+        }
+        update: {
+          args: Prisma.NotificationSettingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>
+        }
+        deleteMany: {
+          args: Prisma.NotificationSettingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NotificationSettingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NotificationSettingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>[]
+        }
+        upsert: {
+          args: Prisma.NotificationSettingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationSettingPayload>
+        }
+        aggregate: {
+          args: Prisma.NotificationSettingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNotificationSetting>
+        }
+        groupBy: {
+          args: Prisma.NotificationSettingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificationSettingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NotificationSettingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificationSettingCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -2478,6 +2553,14 @@ export const ActivityScalarFieldEnum = {
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
+export const NotificationSettingScalarFieldEnum = {
+  type: 'type',
+  enabled: 'enabled'
+} as const
+
+export type NotificationSettingScalarFieldEnum = (typeof NotificationSettingScalarFieldEnum)[keyof typeof NotificationSettingScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -2763,6 +2846,7 @@ export type GlobalOmitConfig = {
   kpi?: Prisma.KpiOmit
   weeklyPlanItem?: Prisma.WeeklyPlanItemOmit
   activity?: Prisma.ActivityOmit
+  notificationSetting?: Prisma.NotificationSettingOmit
   notification?: Prisma.NotificationOmit
 }
 

@@ -497,6 +497,12 @@ model Activity {
   @@index([projectId, createdAt])
 }
 
+// Глобальные настройки: какие уведомления отправлять (админ)
+model NotificationSetting {
+  type    String  @id // assignment | overdue | review | kpi_reminder
+  enabled Boolean @default(true)
+}
+
 model Notification {
   id        String    @id @default(cuid())
   type      String

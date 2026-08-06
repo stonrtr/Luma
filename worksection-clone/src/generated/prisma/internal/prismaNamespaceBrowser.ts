@@ -73,6 +73,7 @@ export const ModelName = {
   Kpi: 'Kpi',
   WeeklyPlanItem: 'WeeklyPlanItem',
   Activity: 'Activity',
+  NotificationSetting: 'NotificationSetting',
   Notification: 'Notification'
 } as const
 
@@ -388,6 +389,14 @@ export const ActivityScalarFieldEnum = {
 } as const
 
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
+
+
+export const NotificationSettingScalarFieldEnum = {
+  type: 'type',
+  enabled: 'enabled'
+} as const
+
+export type NotificationSettingScalarFieldEnum = (typeof NotificationSettingScalarFieldEnum)[keyof typeof NotificationSettingScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

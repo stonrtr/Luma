@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { isNotificationEnabled } from "@/server/queries/notification-settings";
 import type { TaskStatus } from "@/generated/prisma/enums";
 
 const createTaskSchema = z.object({
@@ -69,7 +70,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
   });
 
   // уведомление исполнителю о поставленной задаче
-  if (assignedByManager && data.assigneeId) {
+  if (assignedByManager && data.assigneeId && (await isNotificationEnabled("assignment"))) {
     await db.notification.create({
       data: {
         type: "assignment",
@@ -172,13 +173,15 @@ export async function sendForReview(taskId: string) {
     for (const a of admins) managerIds.add(a.id);
   }
   managerIds.delete(user.id);
-  await Promise.all(
-    [...managerIds].map((rid) =>
-      db.notification.create({
-        data: { type: "review", message: `${user.name} відправив на перевірку «${task.title}»`, link: `/tasks/${task.id}`, recipientId: rid, actorId: user.id },
-      }),
-    ),
-  );
+  if (await isNotificationEnabled("review")) {
+    await Promise.all(
+      [...managerIds].map((rid) =>
+        db.notification.create({
+          data: { type: "review", message: `${user.name} відправив на перевірку «${task.title}»`, link: `/tasks/${task.id}`, recipientId: rid, actorId: user.id },
+        }),
+      ),
+    );
+  }
 
   if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
   revalidatePath(`/tasks/${taskId}`);

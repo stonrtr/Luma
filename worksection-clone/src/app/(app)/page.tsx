@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
 import { getMyTasks } from "@/server/queries/tasks";
+import { getMonthlyKpis } from "@/server/queries/planning";
 import { getMyWeek } from "@/server/queries/calendar";
 import { MyWorkspace } from "@/components/workspace/my-workspace";
+import { KpiStrip } from "@/components/workspace/kpi-strip";
 import type { WeekData, WeekDay } from "@/components/calendar/week-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { mondayOf, addDays } from "@/lib/week";
@@ -34,6 +36,7 @@ export default async function HomePage({
   const user = await requireUser();
   const { view, ws } = await searchParams;
   const tasks = await getMyTasks(user.id);
+  const kpis = await getMonthlyKpis(user.id);
 
   // Данные для вида «Календар» — недельный тайм-грид
   let calendar: WeekData | undefined;
@@ -140,6 +143,9 @@ export default async function HomePage({
 
   return (
     <div className="flex flex-col">
+      <KpiStrip
+        kpis={kpis.map((k) => ({ id: k.id, title: k.title, target: k.target, actualValue: k.actualValue, achieved: k.achieved }))}
+      />
       <header className="border-b px-6 py-2.5">
         <div className="flex max-w-2xl flex-wrap gap-3">
           <WorkloadBar label={t(user.locale, "load.today")} used={todayMin} cap={dailyCap} />

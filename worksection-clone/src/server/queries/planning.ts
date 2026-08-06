@@ -27,6 +27,14 @@ export async function getPlanning(userId: string, ref: Date = new Date()) {
   return { user, year, month, weekStart, goals, kpis, planItems, projects, recurring };
 }
 
+// KPI пользователя за месяц (для показа на вкладке «Задачі»)
+export async function getMonthlyKpis(userId: string, ref: Date = new Date()) {
+  return db.kpi.findMany({
+    where: { userId, year: ref.getFullYear(), month: ref.getMonth() },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
 // Список подчинённых (для руководителя) + сам пользователь
 export async function getPlanningTargets(viewerId: string, role: string) {
   if (role === "OWNER" || role === "ADMIN") {

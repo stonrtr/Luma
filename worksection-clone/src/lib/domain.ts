@@ -5,7 +5,7 @@ export const TASK_STATUSES: TaskStatus[] = ["IDEA", "TODO", "IN_PROGRESS", "TO_R
 
 // Метки по умолчанию (українською — мова застосунку за замовчуванням)
 export const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
-  IDEA: "Ідея",
+  IDEA: "Ідеї",
   TODO: "Зробити",
   IN_PROGRESS: "В роботі",
   TO_REVIEW: "На перевірці",

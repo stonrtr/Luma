@@ -47,6 +47,24 @@ export async function addKpi(input: { userId: string; title: string; target: str
   return { error: null };
 }
 
+// Редактирование цели KPI после создания (руководитель)
+export async function updateKpiTarget(input: { id: string; title?: string; target: string }) {
+  const viewer = await requireUser();
+  const kpi = await db.kpi.findUnique({ where: { id: input.id } });
+  if (!kpi) return { error: "Не знайдено" };
+  if (!(await canManage(viewer.id, viewer.role, kpi.userId))) return { error: "Немає прав" };
+  await db.kpi.update({
+    where: { id: input.id },
+    data: {
+      target: input.target.trim() || null,
+      ...(input.title != null && input.title.trim() ? { title: input.title.trim() } : {}),
+    },
+  });
+  revalidatePath("/planning");
+  revalidatePath("/");
+  return { error: null };
+}
+
 export async function deleteKpi(id: string) {
   const viewer = await requireUser();
   const kpi = await db.kpi.findUnique({ where: { id } });

@@ -3,6 +3,7 @@ import { requireUser } from "@/server/dal";
 import { getAllUsers } from "@/server/queries/users";
 import { NewUserDialog } from "@/components/admin/new-user-dialog";
 import { UserRowActions } from "@/components/admin/user-row-actions";
+import { AdminTabs } from "@/components/admin/admin-tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials, formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -36,6 +37,8 @@ export default async function AdminUsersPage() {
         </div>
         <NewUserDialog />
       </div>
+
+      <AdminTabs />
 
       <div className="overflow-hidden rounded-xl border bg-card">
         {users.map((u, i) => (
