@@ -27,6 +27,10 @@ export async function getPlanning(userId: string, ref: Date = new Date()) {
   return { user, year, month, weekStart, goals, kpis, planItems, projects, recurring };
 }
 
+export async function getRecurringForUser(userId: string) {
+  return db.recurringTask.findMany({ where: { assigneeId: userId }, orderBy: { createdAt: "asc" } });
+}
+
 // KPI пользователя за месяц (для показа на вкладке «Задачі»)
 export async function getMonthlyKpis(userId: string, ref: Date = new Date()) {
   return db.kpi.findMany({

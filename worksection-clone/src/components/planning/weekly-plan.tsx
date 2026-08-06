@@ -49,7 +49,7 @@ export function WeeklyPlan({
     <div>
       <div className="mb-2 flex items-center justify-between">
         <h3 className="flex items-center gap-1.5 text-sm font-semibold">
-          <ListChecks className="size-4 text-primary" /> План на тиждень
+          <ListChecks className="size-4 text-primary" /> Пріоритети тижня
           <span className="text-xs font-normal text-muted-foreground">({items.length})</span>
         </h3>
         {canEdit && unapproved > 0 && (

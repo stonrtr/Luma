@@ -41,7 +41,7 @@ export async function createRecurringTask(input: z.infer<typeof schema>) {
       createdById: viewer.id,
     },
   });
-  revalidatePath("/planning");
+  revalidatePath("/settings");
   return { error: null };
 }
 
@@ -51,5 +51,5 @@ export async function deleteRecurringTask(id: string) {
   if (!r) return;
   if (!(await canManage(viewer.id, viewer.role, r.assigneeId))) return;
   await db.recurringTask.delete({ where: { id } });
-  revalidatePath("/planning");
+  revalidatePath("/settings");
 }

@@ -3,7 +3,6 @@ import { requireUser } from "@/server/dal";
 import { getPlanning, getPlanningTargets } from "@/server/queries/planning";
 import { KpiBlock } from "@/components/planning/kpi-block";
 import { WeeklyPlan } from "@/components/planning/weekly-plan";
-import { RecurringBlock } from "@/components/planning/recurring-block";
 import { monthLabel, weekLabel } from "@/lib/week";
 import { cn } from "@/lib/utils";
 
@@ -86,14 +85,6 @@ export default async function PlanningPage({
         </div>
       )}
 
-      {/* Регулярные задачи */}
-      <div className="mt-6 rounded-xl border bg-card p-5">
-        <RecurringBlock
-          userId={targetId}
-          items={plan.recurring.map((r) => ({ id: r.id, title: r.title, priority: r.priority, frequency: r.frequency, weekdays: r.weekdays, dayOfMonth: r.dayOfMonth }))}
-          canEdit={canEditPlan}
-        />
-      </div>
     </div>
   );
 }
