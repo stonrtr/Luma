@@ -29,7 +29,7 @@ const BUCKETS = [
   { key: "today", label: "Сьогодні", dot: "bg-blue-500" },
   { key: "tomorrow", label: "Завтра", dot: "bg-indigo-500" },
   { key: "week", label: "На тиждень", dot: "bg-emerald-500" },
-  { key: "month", label: "На місяць", dot: "bg-amber-500" },
+  { key: "nextweek", label: "Наступний тиждень", dot: "bg-amber-500" },
 ] as const;
 type BucketKey = (typeof BUCKETS)[number]["key"];
 const KEYS = BUCKETS.map((b) => b.key) as BucketKey[];
@@ -42,14 +42,14 @@ function bucketOf(t: BoardTask): BucketKey {
   const today = dayStart(new Date());
   const d = dayStart(new Date(t.dueDate));
   const tomorrow = addDays(today, 1);
-  const weekEnd = addDays(mondayOf(today), 7); // конец текущей недели (пн след. недели)
-  const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  const weekEnd = addDays(mondayOf(today), 7);      // начало следующей недели
+  const nextWeekEnd = addDays(mondayOf(today), 14); // начало недели через одну
   if (t.status !== "DONE" && d < today) return "overdue";
   if (d.getTime() === today.getTime()) return "today";
   if (d.getTime() === tomorrow.getTime()) return "tomorrow";
   if (d > tomorrow && d < weekEnd) return "week";
-  if (d >= weekEnd && d < monthEnd) return "month";
-  return "other";
+  if (d >= weekEnd && d < nextWeekEnd) return "nextweek"; // наступний тиждень
+  return "other"; // всё, что дальше следующей недели
 }
 
 function iso(d: Date) {
@@ -63,8 +63,8 @@ function dueForBucket(key: BucketKey): string | null | undefined {
     case "overdue": return undefined; // нельзя осмысленно «просрочить» перетягиванием
     case "today": return iso(today);
     case "tomorrow": return iso(addDays(today, 1));
-    case "week": return iso(addDays(mondayOf(today), 6)); // воскресенье текущей недели
-    case "month": return iso(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+    case "week": return iso(addDays(mondayOf(today), 6));      // воскресенье текущей недели
+    case "nextweek": return iso(addDays(mondayOf(today), 13)); // воскресенье следующей недели
   }
 }
 

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Circle, CheckCircle2 } from "lucide-react";
+import { Circle, CheckCircle2, User } from "lucide-react";
 import type { BoardTask } from "./types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { priorityStyle, TASK_STATUS_LABEL, TASK_STATUS_STYLE } from "@/lib/domain";
@@ -54,70 +54,79 @@ export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: b
       {...listeners}
       onClick={() => { if (selectionActive) sel?.toggle(task.id); }}
       className={cn(
-        "group flex items-start gap-2.5 rounded-lg border bg-card px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md",
+        "group flex flex-col gap-1 rounded-lg border bg-card px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md",
         task.assignedByManager && "border-l-4 border-l-amber-500",
         overdue && "border-red-300 bg-red-50 dark:border-red-900/60 dark:bg-red-950/30",
         selected && "ring-2 ring-primary",
         selectionActive && "cursor-pointer",
       )}
     >
-      <button
-        onClick={(e) => { e.stopPropagation(); e.preventDefault(); sel?.toggle(task.id); }}
-        onPointerDown={(e) => e.stopPropagation()}
-        className={cn("shrink-0 transition-colors", selected ? "text-primary" : "text-muted-foreground/40 hover:text-primary")}
-        title="Виділити задачу"
-      >
-        {selected ? <CheckCircle2 className="size-[15px]" /> : <Circle className="size-[15px]" />}
-      </button>
+      {/* Первая строка: чекбокс, назва, срок, пріоритет, аватар — на одной линии */}
+      <div className="flex items-start gap-2.5">
+        <button
+          onClick={(e) => { e.stopPropagation(); e.preventDefault(); sel?.toggle(task.id); }}
+          onPointerDown={(e) => e.stopPropagation()}
+          className={cn("flex h-6 shrink-0 items-center transition-colors", selected ? "text-primary" : "text-muted-foreground/40 hover:text-primary")}
+          title="Виділити задачу"
+        >
+          {selected ? <CheckCircle2 className="size-[15px]" /> : <Circle className="size-[15px]" />}
+        </button>
 
-      <div className="min-w-0 flex-1">
         <Link
           href={`/tasks/${task.id}`}
           onClick={(e) => { if (selectionActive) { e.preventDefault(); e.stopPropagation(); sel?.toggle(task.id); } }}
-          className={cn("block break-words text-sm font-medium hover:text-primary", done && "text-muted-foreground line-through")}
+          className={cn("min-w-0 flex-1 break-words text-sm font-medium leading-6 hover:text-primary", done && "text-muted-foreground line-through")}
         >
           {task.title}
         </Link>
-        {(task.projectName || task.assignedByManager || showStatus) && (
-          <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-            {task.projectName && (
-              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                <span className="size-1.5 rounded-full" style={{ backgroundColor: task.projectColor ?? "#6366f1" }} />
-                {task.projectName}
-              </span>
-            )}
-            {task.assignedByManager && (
-              <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-                від керівника
-              </span>
-            )}
-            {showStatus && (
-              <span className={cn("rounded px-1.5 py-0.5 text-[10px] font-medium", TASK_STATUS_STYLE[task.status])} title="Статус">
-                {TASK_STATUS_LABEL[task.status]}
-              </span>
-            )}
-          </div>
-        )}
+
+        <div className="flex h-6 shrink-0 items-center gap-2">
+          {badge && (
+            <span className={cn("rounded-md px-1.5 py-0.5 text-[11px] font-medium", badge.cls)}>{badge.text}</span>
+          )}
+          <span
+            className={cn("flex size-5 items-center justify-center rounded text-[11px] font-semibold", priorityStyle(task.priority))}
+            title={`Пріоритет ${task.priority}`}
+          >
+            {task.priority}
+          </span>
+          {task.assignees.length > 0 ? (
+            <div className="flex -space-x-1.5">
+              {task.assignees.map((a) => (
+                <Avatar key={a.id} className="size-6 border-2 border-card" title={a.name}>
+                  <AvatarFallback className="text-[9px]">{initials(a.name)}</AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+          ) : (
+            <span className="flex size-6 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/40" title="Без виконавця">
+              <User className="size-3" />
+            </span>
+          )}
+        </div>
       </div>
 
-      {badge && (
-        <span className={cn("shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium", badge.cls)}>{badge.text}</span>
+      {/* Вторая строка: проект, «від керівника», статус — под назвою */}
+      {(task.projectName || task.assignedByManager || showStatus) && (
+        <div className="flex flex-wrap items-center gap-1.5 pl-[25px]">
+          {task.projectName && (
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+              <span className="size-1.5 rounded-full" style={{ backgroundColor: task.projectColor ?? "#6366f1" }} />
+              {task.projectName}
+            </span>
+          )}
+          {task.assignedByManager && (
+            <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+              від керівника
+            </span>
+          )}
+          {showStatus && (
+            <span className={cn("rounded px-1.5 py-0.5 text-[10px] font-medium", TASK_STATUS_STYLE[task.status])} title="Статус">
+              {TASK_STATUS_LABEL[task.status]}
+            </span>
+          )}
+        </div>
       )}
-
-      <span
-        className={cn("flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold", priorityStyle(task.priority))}
-        title={`Пріоритет ${task.priority}`}
-      >
-        {task.priority}
-      </span>
-
-      <div className="flex shrink-0 -space-x-1.5">
-        {task.assignees.map((a) => (
-          <Avatar key={a.id} className="size-6 border-2 border-card">
-            <AvatarFallback className="text-[9px]">{initials(a.name)}</AvatarFallback>
-          </Avatar>
-        ))}
-      </div>
     </div>
   );
 }
