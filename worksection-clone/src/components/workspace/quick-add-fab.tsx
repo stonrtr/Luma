@@ -10,7 +10,7 @@ export function QuickAddFab({
 }: {
   userId: string;
   projects: { id: string; name: string; color: string }[];
-  members: { id: string; name: string }[];
+  members: { id: string; name: string; isActive?: boolean }[];
 }) {
   const [open, setOpen] = useState(false);
   const canAssignOthers = members.length > 1;

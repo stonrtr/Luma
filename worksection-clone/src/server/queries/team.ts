@@ -13,19 +13,26 @@ export async function getOrgUsers() {
   });
 }
 
-// Кому текущий пользователь может ставить задачи (сам + подчинённые; админ — все)
+// Кому текущий пользователь может ставить задачи.
+// Руководитель (админ или у кого есть подчинённые) — любой член команды,
+// включая деактивированных («закриті»). Обычный сотрудник — только себе.
 export async function getAssignableMembers(userId: string, role: string) {
-  if (role === "OWNER" || role === "ADMIN") {
+  const isAdmin = role === "OWNER" || role === "ADMIN";
+  const subordinates = isAdmin ? 1 : await db.user.count({ where: { managerId: userId } });
+  const isManager = isAdmin || subordinates > 0;
+
+  if (!isManager) {
     return db.user.findMany({
-      where: { role: { not: "CLIENT" }, isActive: true },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
+      where: { id: userId },
+      select: { id: true, name: true, isActive: true },
     });
   }
+
+  // активные сверху, деактивированные ниже — но видны все
   return db.user.findMany({
-    where: { isActive: true, OR: [{ id: userId }, { managerId: userId }] },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
+    where: { role: { not: "CLIENT" } },
+    select: { id: true, name: true, isActive: true },
+    orderBy: [{ isActive: "desc" }, { name: "asc" }],
   });
 }
 

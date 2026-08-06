@@ -195,7 +195,7 @@ export function NewTaskDialog({
               <Select value={projectSel} onValueChange={setProjectSel}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="base">Базова</SelectItem>
+                  <SelectItem value="base">Ні</SelectItem>
                   {projects!.map((p) => (
                     <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                   ))}
@@ -221,7 +221,9 @@ export function NewTaskDialog({
                   <SelectContent>
                     <SelectItem value="none">Без виконавця</SelectItem>
                     {members.map((m) => (
-                      <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.name}{m.isActive === false ? " · закритий" : ""}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

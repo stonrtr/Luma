@@ -1,6 +1,9 @@
 server/tracker.db
 server/secret.key
 server/.env
+vocab-recall/server/vocab.db
+vocab-recall/server/secret.key
+vocab-recall/server/password.txt
 __pycache__/
 *.pyc
 .DS_Store

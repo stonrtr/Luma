@@ -32,3 +32,27 @@ services:
         sync: false
       - key: GOOGLE_REDIRECT_URI
         sync: false
+
+  - type: web
+    name: task-tracker
+    env: node
+    plan: starter
+    buildCommand: cd task-tracker && npm install && npx prisma migrate deploy && npm run build
+    startCommand: cd task-tracker && npm run start
+    disk:
+      name: task-tracker-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: file:/var/data/prod.db
+      - key: NODE_VERSION
+        value: 22.23.2
+      - key: AUTH_SECRET
+        sync: false
+      - key: ADMIN_NAME
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  IDEA
+  TODO
+  IN_PROGRESS
+  TO_APPROVE
+  DONE
+  PAUSED
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  avatarUrl    String?
+  role         Role     @default(MEMBER)
+  createdAt    DateTime @default(now())
+
+  createdTasks    Task[]          @relation("TaskCreator")
+  assignedTasks   Task[]          @relation("TaskAssignee")
+  comments        Comment[]
+  recurringTasks  RecurringTask[] @relation("RecurringTaskAssignee")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus @default(IDEA)
+  priority    Int        @default(5)
+  dueDate     DateTime?
+  completedAt DateTime?
+  archivedAt  DateTime?
+  position    Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  assigneeId String
+  assignee   User   @relation("TaskAssignee", fields: [assigneeId], references: [id])
+
+  createdById String
+  createdBy   User   @relation("TaskCreator", fields: [createdById], references: [id])
+
+  comments Comment[]
+
+  @@index([assigneeId, status, position])
+}
+
+model RecurringTask {
+  id          String              @id @default(cuid())
+  title       String
+  description String?
+  priority    Int                 @default(5)
+  frequency   RecurrenceFrequency
+  weekday     Int?
+  dayOfMonth  Int?
+  lastGeneratedAt DateTime?
+  createdAt   DateTime            @default(now())
+
+  assigneeId String
+  assignee   User   @relation("RecurringTaskAssignee", fields: [assigneeId], references: [id])
+
+  @@index([assigneeId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  createdAt DateTime @default(now())
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+}

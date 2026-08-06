@@ -20,4 +20,4 @@ export type BoardTask = {
   checklistDone: number;
 };
 
-export type BoardMember = { id: string; name: string };
+export type BoardMember = { id: string; name: string; isActive?: boolean };
