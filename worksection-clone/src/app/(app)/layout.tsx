@@ -3,7 +3,7 @@ import { getProjectsForUser } from "@/server/queries/projects";
 import { getNotifications } from "@/server/queries/notifications";
 import { generateDueRecurringTasks } from "@/server/recurring-engine";
 import { runLifecycleMaintenance } from "@/server/lifecycle-engine";
-import { Sidebar } from "@/components/app-shell/sidebar";
+import { TopNav } from "@/components/app-shell/top-nav";
 import { NotificationToaster } from "@/components/app-shell/notification-toaster";
 
 export default async function AppLayout({
@@ -21,8 +21,8 @@ export default async function AppLayout({
   ]);
 
   return (
-    <div className={`flex h-screen overflow-hidden ${user.theme === "dark" ? "dark" : ""}`}>
-      <Sidebar
+    <div className={`flex h-screen flex-col overflow-hidden ${user.theme === "dark" ? "dark" : ""}`}>
+      <TopNav
         user={{ name: user.name, email: user.email, title: user.title, role: user.role, locale: user.locale, avatarUrl: user.avatarUrl }}
         projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))}
         notifications={{

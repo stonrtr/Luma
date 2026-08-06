@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { KanbanBoard } from "@/components/board/kanban-board";
-import { TaskList } from "@/components/board/task-list";
+import { MonthCalendar, type CalEntry } from "@/components/calendar/month-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { priorityStyle, plannedLabel, TASK_STATUS_LABEL, TASK_STATUS_STYLE } from "@/lib/domain";
 import { formatShortDate, isOverdue } from "@/lib/format";
@@ -11,10 +11,16 @@ import { cn } from "@/lib/utils";
 const VIEWS = [
   { key: "board", i18n: "view.board" },
   { key: "day", i18n: "view.day" },
-  { key: "list", i18n: "view.list" },
+  { key: "calendar", i18n: "nav.calendar" },
 ];
 
-export function MyWorkspace({ tasks, userId, view, locale }: { tasks: BoardTask[]; userId: string; view: string; locale: string }) {
+export type CalendarData = { year: number; month: number; entries: CalEntry[]; prevHref: string; nextHref: string; todayHref: string };
+
+export function MyWorkspace({
+  tasks, userId, view, locale, calendar,
+}: {
+  tasks: BoardTask[]; userId: string; view: string; locale: string; calendar?: CalendarData;
+}) {
   return (
     <div className="flex h-full flex-col">
       <div className="flex gap-1 px-6 pt-4">
@@ -32,8 +38,8 @@ export function MyWorkspace({ tasks, userId, view, locale }: { tasks: BoardTask[
         ))}
       </div>
       <div className="flex-1 overflow-auto px-6 py-4">
-        {view === "list" ? (
-          <TaskList tasks={tasks} />
+        {view === "calendar" && calendar ? (
+          <MonthCalendar year={calendar.year} month={calendar.month} entries={calendar.entries} prevHref={calendar.prevHref} nextHref={calendar.nextHref} todayHref={calendar.todayHref} />
         ) : view === "day" ? (
           <DayView tasks={tasks} />
         ) : (
@@ -48,24 +54,27 @@ function DayView({ tasks }: { tasks: BoardTask[] }) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const tomorrow = addDays(today, 1);
   const weekEnd = addDays(mondayOf(today), 7);
+  const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
   const buckets: { key: string; label: string; items: BoardTask[] }[] = [
+    { key: "idea", label: "Ідеї", items: [] },
     { key: "overdue", label: "Прострочені", items: [] },
     { key: "today", label: "Сьогодні", items: [] },
     { key: "week", label: "Цього тижня", items: [] },
+    { key: "month", label: "Цього місяця", items: [] },
     { key: "later", label: "Пізніше", items: [] },
-    { key: "nodate", label: "Без дати", items: [] },
   ];
   const by = Object.fromEntries(buckets.map((b) => [b.key, b])) as Record<string, (typeof buckets)[0]>;
 
   for (const t of tasks) {
-    if (!t.dueDate) { by.nodate.items.push(t); continue; }
+    if (t.status === "IDEA") { by.idea.items.push(t); continue; }
+    if (!t.dueDate) { by.later.items.push(t); continue; }
     const d = new Date(t.dueDate); d.setHours(0, 0, 0, 0);
     if (t.status !== "DONE" && d < today) by.overdue.items.push(t);
     else if (d >= today && d < tomorrow) by.today.items.push(t);
     else if (d >= tomorrow && d < weekEnd) by.week.items.push(t);
-    else if (d >= weekEnd) by.later.items.push(t);
-    else by.today.items.push(t);
+    else if (d >= weekEnd && d < monthEnd) by.month.items.push(t);
+    else by.later.items.push(t);
   }
 
   return (
@@ -84,7 +93,7 @@ function DayView({ tasks }: { tasks: BoardTask[] }) {
                   <span className="flex-1 truncate">{t.title}</span>
                   {t.plannedMinutes != null && <span className="shrink-0 text-xs text-muted-foreground">{plannedLabel(t.plannedMinutes)}</span>}
                   <span className={cn("shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium", TASK_STATUS_STYLE[t.status])}>{TASK_STATUS_LABEL[t.status]}</span>
-                  {t.dueDate && b.key !== "today" && (
+                  {t.dueDate && b.key !== "today" && b.key !== "idea" && (
                     <span className={cn("shrink-0 text-xs", isOverdue(t.dueDate) && t.status !== "DONE" ? "text-destructive" : "text-muted-foreground")}>
                       {formatShortDate(t.dueDate)}
                     </span>

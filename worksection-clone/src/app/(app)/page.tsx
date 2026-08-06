@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
 import { getMyTasks } from "@/server/queries/tasks";
-import { MyWorkspace } from "@/components/workspace/my-workspace";
+import { getMyCalendar } from "@/server/queries/calendar";
+import { MyWorkspace, type CalendarData } from "@/components/workspace/my-workspace";
+import type { CalEntry } from "@/components/calendar/month-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { mondayOf, addDays } from "@/lib/week";
 import { formatMinutes } from "@/lib/format";
@@ -29,11 +31,46 @@ function WorkloadBar({ label, used, cap }: { label: string; used: number; cap: n
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; y?: string; m?: string }>;
 }) {
   const user = await requireUser();
-  const { view } = await searchParams;
+  const { view, y, m } = await searchParams;
   const tasks = await getMyTasks(user.id);
+
+  // Данные для вида «Календар»
+  let calendar: CalendarData | undefined;
+  if (view === "calendar") {
+    const nowD = new Date();
+    const year = y ? parseInt(y) : nowD.getFullYear();
+    const month = m != null ? parseInt(m) : nowD.getMonth();
+    const { tasks: calTasks, calls } = await getMyCalendar(user.id, year, month);
+    const timeOf = (d: Date) => d.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
+    const entries: CalEntry[] = [];
+    for (const ct of calTasks) {
+      const dt = ct.scheduledAt ?? ct.dueDate!;
+      entries.push({
+        day: new Date(dt).getDate(),
+        sort: ct.scheduledAt ? new Date(ct.scheduledAt).getHours() * 60 + new Date(ct.scheduledAt).getMinutes() : 9999,
+        time: ct.scheduledAt ? timeOf(new Date(ct.scheduledAt)) : null,
+        label: ct.title, color: ct.project?.color ?? "#4f46e5", type: "task", href: `/tasks/${ct.id}`,
+      });
+    }
+    for (const c of calls) {
+      entries.push({
+        day: new Date(c.scheduledAt).getDate(),
+        sort: new Date(c.scheduledAt).getHours() * 60 + new Date(c.scheduledAt).getMinutes(),
+        time: timeOf(new Date(c.scheduledAt)), label: c.title, color: "#0ea5e9", type: "call",
+      });
+    }
+    const prev = month === 0 ? { y: year - 1, m: 11 } : { y: year, m: month - 1 };
+    const next = month === 11 ? { y: year + 1, m: 0 } : { y: year, m: month + 1 };
+    calendar = {
+      year, month, entries,
+      prevHref: `/?view=calendar&y=${prev.y}&m=${prev.m}`,
+      nextHref: `/?view=calendar&y=${next.y}&m=${next.m}`,
+      todayHref: `/?view=calendar`,
+    };
+  }
 
   const boardTasks: BoardTask[] = tasks.map((t) => ({
     id: t.id,
@@ -82,7 +119,7 @@ export default async function HomePage({
         </div>
       </header>
       <div className="flex-1 overflow-hidden">
-        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} />
+        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} />
       </div>
     </div>
   );

@@ -53,15 +53,33 @@ export default async function PlanningPage({
         )}
       </div>
 
-      {/* Верхний блок: цели + KPI (всегда перед глазами) */}
-      <div className="mb-6 grid gap-4 rounded-xl border bg-card p-5 lg:grid-cols-2">
+      {/* Цели месяца — всегда перед глазами (на всю ширину) */}
+      <div className="mb-4 rounded-xl border bg-card p-5">
         <GoalsBlock userId={targetId} year={plan.year} month={plan.month} goals={plan.goals} canManage={canManage} />
-        <KpiBlock userId={targetId} year={plan.year} month={plan.month} kpis={plan.kpis} canManage={canManage} canEditResult={canEditKpiResult} />
+      </div>
+
+      {/* Верх доски пополам: слева KPI месяца, справа план на неделю */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-xl border bg-card p-5">
+          <KpiBlock userId={targetId} year={plan.year} month={plan.month} kpis={plan.kpis} canManage={canManage} canEditResult={canEditKpiResult} />
+        </div>
+        <div className="rounded-xl border bg-card p-5">
+          <WeeklyPlan
+            userId={targetId}
+            weekStart={plan.weekStart.toISOString()}
+            items={plan.planItems.map((i) => ({
+              id: i.id, title: i.title, priority: i.priority, approved: i.approved,
+              projectId: i.projectId, task: i.task,
+            }))}
+            projects={plan.projects}
+            canEdit={canEditPlan}
+          />
+        </div>
       </div>
 
       {/* Проекты в работе */}
       {plan.projects.length > 0 && (
-        <div className="mb-6">
+        <div className="mt-6">
           <h3 className="mb-2 text-sm font-semibold">Проєкти в роботі</h3>
           <div className="flex flex-wrap gap-2">
             {plan.projects.map((p) => (
@@ -73,20 +91,6 @@ export default async function PlanningPage({
           </div>
         </div>
       )}
-
-      {/* Недельный план */}
-      <div className="rounded-xl border bg-card p-5">
-        <WeeklyPlan
-          userId={targetId}
-          weekStart={plan.weekStart.toISOString()}
-          items={plan.planItems.map((i) => ({
-            id: i.id, title: i.title, priority: i.priority, approved: i.approved,
-            projectId: i.projectId, task: i.task,
-          }))}
-          projects={plan.projects}
-          canEdit={canEditPlan}
-        />
-      </div>
 
       {/* Регулярные задачи */}
       <div className="mt-6 rounded-xl border bg-card p-5">

@@ -31,3 +31,26 @@ export async function getCalendarData(year: number, month: number) {
 
   return { tasks, calls, users };
 }
+
+// Персональный календарь: задачи и звонки текущего пользователя за месяц
+export async function getMyCalendar(userId: string, year: number, month: number) {
+  const from = new Date(year, month, 1);
+  const to = new Date(year, month + 1, 1);
+  const [tasks, calls] = await Promise.all([
+    db.task.findMany({
+      where: {
+        parentId: null,
+        archivedAt: null,
+        assignees: { some: { userId } },
+        OR: [
+          { scheduledAt: { gte: from, lt: to } },
+          { dueDate: { gte: from, lt: to }, scheduledAt: null },
+        ],
+      },
+      include: { project: { select: { color: true } } },
+    }),
+    db.call.findMany({ where: { userId, scheduledAt: { gte: from, lt: to } }, orderBy: { scheduledAt: "asc" } }),
+  ]);
+  return { tasks, calls };
+}
+
