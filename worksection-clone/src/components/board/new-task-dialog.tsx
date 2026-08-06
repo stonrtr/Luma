@@ -39,6 +39,7 @@ export function NewTaskDialog({
   status,
   onClose,
   lockedAssigneeId,
+  defaultAssigneeId,
   projects,
 }: {
   projectId: string;
@@ -46,6 +47,7 @@ export function NewTaskDialog({
   status: TaskStatus | null;
   onClose: () => void;
   lockedAssigneeId?: string;
+  defaultAssigneeId?: string;
   projects?: { id: string; name: string; color: string }[];
 }) {
   const router = useRouter();
@@ -54,7 +56,7 @@ export function NewTaskDialog({
   const [priority, setPriority] = useState<number>(DEFAULT_PRIORITY);
   const [taskStatus, setTaskStatus] = useState<TaskStatus>("TODO");
   const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
-  const [assigneeId, setAssigneeId] = useState<string>("none");
+  const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? "none");
   const [projectSel, setProjectSel] = useState<string>("base");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
@@ -67,7 +69,7 @@ export function NewTaskDialog({
     setPriority(DEFAULT_PRIORITY);
     setTaskStatus("TODO");
     setPlannedMinutes(30);
-    setAssigneeId("none");
+    setAssigneeId(defaultAssigneeId ?? "none");
     setProjectSel("base");
     setDueDate("");
     setDueTime("");

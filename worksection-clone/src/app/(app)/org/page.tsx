@@ -1,6 +1,7 @@
 import { requireUser } from "@/server/dal";
 import { getOrgUsers } from "@/server/queries/team";
 import { OrgEditDialog } from "@/components/org/org-edit-dialog";
+import { OrgAddDialog } from "@/components/org/org-add-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -36,7 +37,7 @@ export default async function OrgPage() {
                 <span className="font-medium">{user.name}</span>
                 <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{ROLE_LABEL[user.role] ?? user.role}</span>
                 {!user.isActive && <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">Неактивний</span>}
-                {canEdit && <span className="ml-auto"><OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} /></span>}
+                {canEdit && <span className="ml-auto"><OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} /></span>}
               </div>
               <p className="text-sm text-muted-foreground">{user.title ?? "Посада не вказана"}</p>
               {user.functions && <p className="mt-1.5 text-sm">{user.functions}</p>}
@@ -55,8 +56,13 @@ export default async function OrgPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Оргсхема</h1>
-      <p className="mb-6 mt-1 text-sm text-muted-foreground">Структура команди, функції та робочі години</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Оргсхема</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Структура команди, функції та робочі години</p>
+        </div>
+        {isAdmin && <OrgAddDialog candidates={candidates} />}
+      </div>
       {roots.map((u) => <Node key={u.id} user={u} depth={0} />)}
     </div>
   );

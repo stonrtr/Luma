@@ -4,9 +4,16 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { NewTaskDialog } from "@/components/board/new-task-dialog";
 
-// Плавающая кнопка «+» (внизу зліва) для швидкого додавання задачі
-export function QuickAddFab({ userId, projects }: { userId: string; projects: { id: string; name: string; color: string }[] }) {
+// Плавающая кнопка «+» (внизу зліва). Керівник може обрати виконавця (себе або підлеглого).
+export function QuickAddFab({
+  userId, projects, members,
+}: {
+  userId: string;
+  projects: { id: string; name: string; color: string }[];
+  members: { id: string; name: string }[];
+}) {
   const [open, setOpen] = useState(false);
+  const canAssignOthers = members.length > 1;
   return (
     <>
       <button
@@ -18,10 +25,11 @@ export function QuickAddFab({ userId, projects }: { userId: string; projects: { 
       </button>
       <NewTaskDialog
         projectId=""
-        members={[]}
+        members={members}
         status={open ? "TODO" : null}
         onClose={() => setOpen(false)}
-        lockedAssigneeId={userId}
+        lockedAssigneeId={canAssignOthers ? undefined : userId}
+        defaultAssigneeId={canAssignOthers ? userId : undefined}
         projects={projects}
       />
     </>

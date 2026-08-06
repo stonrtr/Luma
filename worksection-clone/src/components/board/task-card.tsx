@@ -43,6 +43,7 @@ export function TaskCard({ task }: { task: BoardTask }) {
   const badge = task.dueDate ? dueBadge(task.dueDate, done) : null;
   const sel = useSelection();
   const selected = sel?.selected.has(task.id) ?? false;
+  const selectionActive = (sel?.selected.size ?? 0) > 0;
 
   return (
     <div
@@ -50,10 +51,12 @@ export function TaskCard({ task }: { task: BoardTask }) {
       style={style}
       {...attributes}
       {...listeners}
+      onClick={() => { if (selectionActive) sel?.toggle(task.id); }}
       className={cn(
         "group flex items-center gap-2.5 rounded-lg border bg-card px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md",
         task.assignedByManager && "border-l-4 border-l-primary",
         selected && "ring-2 ring-primary",
+        selectionActive && "cursor-pointer",
       )}
     >
       <button
@@ -69,7 +72,7 @@ export function TaskCard({ task }: { task: BoardTask }) {
 
       <Link
         href={`/tasks/${task.id}`}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => { if (selectionActive) { e.preventDefault(); e.stopPropagation(); sel?.toggle(task.id); } }}
         className={cn("min-w-0 flex-1 truncate text-sm font-medium hover:text-primary", done && "text-muted-foreground line-through")}
       >
         {task.title}

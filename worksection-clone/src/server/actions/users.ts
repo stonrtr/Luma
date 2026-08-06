@@ -40,6 +40,43 @@ export async function createUser(input: z.infer<typeof schema>) {
   return { error: null };
 }
 
+// Пригласить сотрудника из оргсхемы: создаёт аккаунт, назначает руководителя, возвращает временный пароль
+const inviteSchema = z.object({
+  name: z.string().min(1).max(80),
+  email: z.string().email("Невірний email"),
+  title: z.string().max(80).optional(),
+  role: z.enum(["ADMIN", "MEMBER", "CLIENT"]).default("MEMBER"),
+  managerId: z.string().nullable().optional(),
+  weeklyHours: z.number().min(0).max(168).nullable().optional(),
+});
+
+export async function inviteMember(input: z.infer<typeof inviteSchema>) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };
+  const parsed = inviteSchema.safeParse(input);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Помилка" };
+  const data = parsed.data;
+
+  const existing = await db.user.findUnique({ where: { email: data.email } });
+  if (existing) return { error: "Користувач з таким email вже існує" };
+
+  const tempPassword = Math.random().toString(36).slice(-4) + Math.random().toString(36).slice(-4).toUpperCase() + "1!";
+  await db.user.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      passwordHash: await bcrypt.hash(tempPassword, 10),
+      title: data.title || null,
+      role: data.role,
+      managerId: data.managerId || null,
+      weeklyHours: data.weeklyHours ?? null,
+    },
+  });
+  revalidatePath("/org");
+  revalidatePath("/admin/users");
+  return { error: null, tempPassword };
+}
+
 export async function setUserActive(input: { userId: string; active: boolean }) {
   const admin = await requireUser();
   if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };

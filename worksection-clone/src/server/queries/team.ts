@@ -13,6 +13,22 @@ export async function getOrgUsers() {
   });
 }
 
+// Кому текущий пользователь может ставить задачи (сам + подчинённые; админ — все)
+export async function getAssignableMembers(userId: string, role: string) {
+  if (role === "OWNER" || role === "ADMIN") {
+    return db.user.findMany({
+      where: { role: { not: "CLIENT" }, isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    });
+  }
+  return db.user.findMany({
+    where: { isActive: true, OR: [{ id: userId }, { managerId: userId }] },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+}
+
 // Обзор команды: участники + их незакрытые задачи с нагрузкой
 export async function getTeamOverview() {
   const [members, tasks] = await Promise.all([

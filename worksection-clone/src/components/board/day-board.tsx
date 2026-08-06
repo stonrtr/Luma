@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import type { BoardTask } from "./types";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
-import { SelectionProvider } from "./selection-context";
+import { SelectionContext, useSelectionState } from "./selection-context";
 import { BulkBar } from "./bulk-bar";
 import { updateTask } from "@/server/actions/tasks";
 import { mondayOf, addDays } from "@/lib/week";
@@ -80,6 +80,7 @@ export function DayBoard({ initialTasks }: { initialTasks: BoardTask[] }) {
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  const selection = useSelectionState();
 
   const storageKey = "ws_dayboard_collapsed";
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
@@ -149,17 +150,22 @@ export function DayBoard({ initialTasks }: { initialTasks: BoardTask[] }) {
 
     const due = dueForBucket(to);
     if (due === undefined) { toast.message("Дату «Прострочено» не можна встановити"); return; }
+
+    // Мультиперетаскивание: если тянут выбранную и выбрано >1 — переносим всі виділені
+    const sel = selection.selected;
+    const ids = sel.has(active.id as string) && sel.size > 1 ? [...sel] : [active.id as string];
     try {
-      await updateTask({ taskId: active.id as string, dueDate: due });
+      await Promise.all(ids.map((id) => updateTask({ taskId: id, dueDate: due })));
     } catch {
       toast.error("Не вдалося оновити термін");
     }
+    if (ids.length > 1) selection.clear();
   }
 
   if (!mounted) return <div className="min-h-40" />;
 
   return (
-    <SelectionProvider>
+    <SelectionContext.Provider value={selection}>
       <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {BUCKETS.map((b) => (
@@ -177,6 +183,6 @@ export function DayBoard({ initialTasks }: { initialTasks: BoardTask[] }) {
         <DragOverlay>{activeTask ? <TaskCard task={activeTask} /> : null}</DragOverlay>
       </DndContext>
       <BulkBar />
-    </SelectionProvider>
+    </SelectionContext.Provider>
   );
 }

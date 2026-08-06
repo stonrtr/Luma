@@ -3,8 +3,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { updateOrgUser } from "@/server/actions/org";
+import { deleteUser } from "@/server/actions/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,9 +23,9 @@ type OrgUser = {
 };
 
 export function OrgEditDialog({
-  user, candidates, isAdmin,
+  user, candidates, isAdmin, canDelete,
 }: {
-  user: OrgUser; candidates: { id: string; name: string }[]; isAdmin: boolean;
+  user: OrgUser; candidates: { id: string; name: string }[]; isAdmin: boolean; canDelete?: boolean;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -91,7 +92,22 @@ export function OrgEditDialog({
             )}
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="sm:justify-between">
+          {canDelete ? (
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (!confirm("Видалити співробітника назавжди?")) return;
+                start(async () => {
+                  const res = await deleteUser(user.id);
+                  if (res?.error) toast.error(res.error);
+                  else { toast.success("Видалено"); setOpen(false); router.refresh(); }
+                });
+              }}
+            >
+              <Trash2 className="size-4" /> Видалити
+            </Button>
+          ) : <span />}
           <Button onClick={save} disabled={pending}>{pending ? "Збереження…" : "Зберегти"}</Button>
         </DialogFooter>
       </DialogContent>

@@ -1,5 +1,6 @@
 import { requireUser } from "@/server/dal";
 import { getProjectsForUser } from "@/server/queries/projects";
+import { getAssignableMembers } from "@/server/queries/team";
 import { getNotifications } from "@/server/queries/notifications";
 import { generateDueRecurringTasks } from "@/server/recurring-engine";
 import { runLifecycleMaintenance } from "@/server/lifecycle-engine";
@@ -16,16 +17,16 @@ export default async function AppLayout({
   // фоновое обслуживание: регулярные задачи + автоархив завершённых
   await generateDueRecurringTasks();
   await runLifecycleMaintenance(user.id);
-  const [projects, notifications] = await Promise.all([
+  const [projects, notifications, assignable] = await Promise.all([
     getProjectsForUser(user.id),
     getNotifications(user.id),
+    getAssignableMembers(user.id, user.role),
   ]);
 
   return (
     <div className={`flex min-h-screen flex-col ${user.theme === "dark" ? "dark" : ""}`}>
       <TopNav
         user={{ name: user.name, email: user.email, title: user.title, role: user.role, locale: user.locale, avatarUrl: user.avatarUrl }}
-        projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))}
         notifications={{
           items: notifications.items.map((n) => ({
             id: n.id,
@@ -38,7 +39,7 @@ export default async function AppLayout({
         }}
       />
       <main className="flex-1">{children}</main>
-      <QuickAddFab userId={user.id} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} />
+      <QuickAddFab userId={user.id} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} members={assignable} />
       <NotificationToaster
         items={notifications.items.map((n) => ({ id: n.id, type: n.type, message: n.message, link: n.link, readAt: n.readAt ? n.readAt.toISOString() : null }))}
       />

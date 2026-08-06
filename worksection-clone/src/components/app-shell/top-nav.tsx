@@ -3,14 +3,12 @@ import { NotificationBell } from "./notification-bell";
 import { TopNavLinks } from "./top-nav-links";
 import { UserMenu } from "./user-menu";
 
-type Project = { id: string; name: string; color: string };
 type Notif = { id: string; message: string; link: string | null; readAt: string | null; createdAt: string };
 
 export function TopNav({
-  user, projects, notifications,
+  user, notifications,
 }: {
   user: { name: string; email: string; title: string | null; role: string; locale: string; avatarUrl: string | null };
-  projects: Project[];
   notifications: { items: Notif[]; unread: number };
 }) {
   const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
@@ -21,7 +19,7 @@ export function TopNav({
         <span className="hidden font-semibold sm:inline">Worksection</span>
       </Link>
       <div className="flex-1 overflow-x-auto">
-        <TopNavLinks locale={user.locale} isAdmin={isAdmin} projects={projects} />
+        <TopNavLinks locale={user.locale} isAdmin={isAdmin} />
       </div>
       <div className="flex shrink-0 items-center gap-1">
         <NotificationBell items={notifications.items} unread={notifications.unread} />

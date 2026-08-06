@@ -8,9 +8,10 @@ type Ctx = {
   clear: () => void;
 };
 
-const SelectionContext = createContext<Ctx | null>(null);
+export const SelectionContext = createContext<Ctx | null>(null);
 
-export function SelectionProvider({ children }: { children: React.ReactNode }) {
+// Хук состояния выбора — держится в самой доске, чтобы обработчик drag знал о выделении
+export function useSelectionState(): Ctx {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const toggle = useCallback((id: string) => {
     setSelected((prev) => {
@@ -20,7 +21,7 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
   const clear = useCallback(() => setSelected(new Set()), []);
-  return <SelectionContext.Provider value={{ selected, toggle, clear }}>{children}</SelectionContext.Provider>;
+  return { selected, toggle, clear };
 }
 
 export function useSelection() {

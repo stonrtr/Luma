@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
+import { BackButton } from "@/components/task/back-button";
 import { requireUser } from "@/server/dal";
 import { getTaskDetail } from "@/server/queries/tasks";
 import { isProjectMember } from "@/server/queries/projects";
@@ -38,13 +38,7 @@ export default async function TaskDetailPage({
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-6">
-      <Link
-        href={task.projectId ? `/projects/${task.projectId}` : "/"}
-        className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        {task.project?.name ?? "На головну"}
-      </Link>
+      <BackButton fallback={task.projectId ? `/projects/${task.projectId}` : "/"} />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_16rem]">
         {/* Основная колонка */}

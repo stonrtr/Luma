@@ -19,10 +19,10 @@ import type { BoardTask, BoardMember } from "./types";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
 import { NewTaskDialog } from "./new-task-dialog";
-import { SelectionProvider } from "./selection-context";
+import { SelectionContext, useSelectionState } from "./selection-context";
 import { BulkBar } from "./bulk-bar";
 import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
-import { moveTask } from "@/server/actions/tasks";
+import { moveTask, bulkSetStatus } from "@/server/actions/tasks";
 
 type Columns = Record<TaskStatus, BoardTask[]>;
 
@@ -50,6 +50,7 @@ export function KanbanBoard({
   const [columns, setColumns] = useState<Columns>(() => group(initialTasks));
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
   const [dialogStatus, setDialogStatus] = useState<TaskStatus | null>(null);
+  const selection = useSelectionState();
   // рендерим доску (drag-and-drop) лише на клієнті — dnd-kit генерує id, що не збігаються при SSR
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -128,6 +129,31 @@ export function KanbanBoard({
     const to = findColumn(over.id as string);
     if (!to) return;
 
+    // Мультиперетаскивание: если тянут выбранную задачу и выбрано >1 — переносим все выбранные
+    const sel = selection.selected;
+    if (sel.has(active.id as string) && sel.size > 1) {
+      const ids = new Set(sel);
+      setColumns((prev) => {
+        const moving: BoardTask[] = [];
+        const next = Object.fromEntries(TASK_STATUSES.map((s) => [s, [] as BoardTask[]])) as Columns;
+        for (const s of TASK_STATUSES) {
+          for (const tk of prev[s]) {
+            if (ids.has(tk.id)) moving.push({ ...tk, status: to });
+            else next[s].push(tk);
+          }
+        }
+        next[to] = [...moving, ...next[to]];
+        return next;
+      });
+      try {
+        await bulkSetStatus({ taskIds: [...ids], status: to });
+      } catch {
+        toast.error("Не вдалося перемістити задачі");
+      }
+      selection.clear();
+      return;
+    }
+
     let toIndex = columns[to].findIndex((t) => t.id === over.id);
     if (toIndex === -1) toIndex = columns[to].length;
 
@@ -160,7 +186,7 @@ export function KanbanBoard({
   }
 
   return (
-    <SelectionProvider>
+    <SelectionContext.Provider value={selection}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -194,6 +220,6 @@ export function KanbanBoard({
         projects={projects}
       />
       <BulkBar />
-    </SelectionProvider>
+    </SelectionContext.Provider>
   );
 }

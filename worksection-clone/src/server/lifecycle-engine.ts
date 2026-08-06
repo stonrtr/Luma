@@ -48,6 +48,25 @@ export async function runLifecycleMaintenance(userId: string) {
     }
   }
 
+  // 3b) Просроченные задачи, которые ЭТОТ пользователь поставил подчинённым → уведомляем его (руководителя)
+  if (await isNotificationEnabled("manager_overdue")) {
+    const managerOverdue = await db.task.findMany({
+      where: { createdById: userId, assignedByManager: true, archivedAt: null, status: { not: "DONE" }, dueDate: { lt: today } },
+      include: { assignees: { include: { user: { select: { name: true } } } } },
+      take: 20,
+    });
+    for (const t of managerOverdue) {
+      const link = `/tasks/${t.id}`;
+      const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "manager_overdue", link, readAt: null } });
+      if (!exists) {
+        const who = t.assignees[0]?.user.name ?? "виконавець";
+        await db.notification.create({
+          data: { type: "manager_overdue", message: `Прострочено у «${who}»: «${t.title}»`, link, recipientId: userId },
+        });
+      }
+    }
+  }
+
   // 4) Напоминание заполнить KPI за прошлый месяц (1–3 числа)
   if (now.getDate() >= 1 && now.getDate() <= 3 && (await isNotificationEnabled("kpi_reminder"))) {
     const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
