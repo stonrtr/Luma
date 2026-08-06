@@ -64,11 +64,13 @@ export function KanbanBoard({
       if (s) setOverrides(JSON.parse(s));
     } catch {}
   }, [storageKey]);
+  // «Ідеї» скрыты по умолчанию (даже с задачами), пустые — тоже
+  const collapsedByDefault = (status: TaskStatus) => status === "IDEA" || columns[status].length === 0;
   const isCollapsed = (status: TaskStatus) =>
-    overrides[status] ?? columns[status].length === 0;
+    overrides[status] ?? collapsedByDefault(status);
   function toggleCollapse(status: TaskStatus) {
     setOverrides((prev) => {
-      const cur = prev[status] ?? columns[status].length === 0;
+      const cur = prev[status] ?? collapsedByDefault(status);
       const next = { ...prev, [status]: !cur };
       try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch {}
       return next;

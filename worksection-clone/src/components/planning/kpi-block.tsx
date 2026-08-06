@@ -7,9 +7,12 @@ import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 import { addKpi, deleteKpi, updateKpiResult, updateKpiTarget } from "@/server/actions/planning";
 import { Input } from "@/components/ui/input";
+import { monthLabel } from "@/lib/week";
 import { cn } from "@/lib/utils";
 
 type Kpi = { id: string; title: string; target: string | null; actualValue: string | null; achieved: boolean | null };
+
+const MIN_KPI_SLOTS = 2;
 
 export function KpiBlock({
   userId, year, month, kpis, canManage, canEditResult,
@@ -32,16 +35,24 @@ export function KpiBlock({
     });
   }
 
+  const emptySlots = Math.max(0, MIN_KPI_SLOTS - kpis.length);
+
   return (
     <div>
       <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
-        <Gauge className="size-4 text-primary" /> KPI місяця
+        <Gauge className="size-4 text-primary" /> KPI місяця · {monthLabel(month)}
       </h3>
       <div className="space-y-2">
         {kpis.map((k) => (
           <KpiRow key={k.id} kpi={k} canManage={canManage} canEditResult={canEditResult} />
         ))}
-        {kpis.length === 0 && <p className="text-sm text-muted-foreground">KPI поки немає.</p>}
+        {/* пустые слоты-заготовки до минимума */}
+        {Array.from({ length: emptySlots }).map((_, i) => (
+          <div key={`kpi-slot-${i}`} className="flex items-center gap-2 rounded-lg border border-dashed bg-muted/20 px-3 py-3 text-sm text-muted-foreground">
+            <Gauge className="size-4 opacity-50" />
+            {canManage ? "Порожній слот KPI — задайте ціль" : "KPI не задано"}
+          </div>
+        ))}
       </div>
       {canManage && (
         <div className="mt-2 flex gap-2">

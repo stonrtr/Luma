@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
-import { getPlanning, getPlanningTargets } from "@/server/queries/planning";
+import { getPlanning, getPlanningTargets, ensureMonthlyKpis, getKpiArchive, getPlanArchive } from "@/server/queries/planning";
+import { getMyTasks } from "@/server/queries/tasks";
 import { KpiBlock } from "@/components/planning/kpi-block";
 import { WeeklyPlan } from "@/components/planning/weekly-plan";
-import { monthLabel, weekLabel } from "@/lib/week";
+import { Gauge, ListChecks } from "lucide-react";
+import { monthLabel, weekLabel, isoWeekNumber } from "@/lib/week";
+import { priorityStyle } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 
 export default async function PlanningPage({
@@ -16,7 +19,17 @@ export default async function PlanningPage({
   const targets = await getPlanningTargets(viewer.id, viewer.role);
 
   const targetId = sp.user && targets.some((t) => t.id === sp.user) ? sp.user : viewer.id;
-  const plan = await getPlanning(targetId);
+  // авто-KPI: если на этот месяц целей нет — переносим из прошлого
+  await ensureMonthlyKpis(targetId);
+  const [plan, myTasks, kpiArchive, planArchive] = await Promise.all([
+    getPlanning(targetId), getMyTasks(targetId), getKpiArchive(targetId), getPlanArchive(targetId),
+  ]);
+
+  // существующие задачи, которые ещё не в плане недели (для выбора «обрати наявну»)
+  const planTaskIds = new Set(plan.planItems.map((i) => i.task?.id).filter(Boolean) as string[]);
+  const availableTasks = myTasks
+    .filter((t) => t.status !== "DONE" && !planTaskIds.has(t.id))
+    .map((t) => ({ id: t.id, title: t.title, priority: t.priority }));
 
   const isAdmin = viewer.role === "OWNER" || viewer.role === "ADMIN";
   const canManage = isAdmin || plan.user?.managerId === viewer.id; // ставит цели/KPI
@@ -65,8 +78,67 @@ export default async function PlanningPage({
               projectId: i.projectId, task: i.task,
             }))}
             projects={plan.projects}
+            availableTasks={availableTasks}
             canEdit={canEditPlan}
           />
+        </div>
+      </div>
+
+      {/* Архивы внизу */}
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="rounded-xl border bg-card p-5">
+          <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
+            <Gauge className="size-4 text-muted-foreground" /> Архів KPI
+          </h3>
+          {kpiArchive.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Архів порожній.</p>
+          ) : (
+            <div className="space-y-1.5">
+              {kpiArchive.map((g) => (
+                <details key={`${g.year}-${g.month}`} className="rounded-lg border bg-muted/20 px-3 py-2">
+                  <summary className="cursor-pointer text-sm font-medium">{monthLabel(g.month)} {g.year} <span className="text-xs text-muted-foreground">({g.kpis.length})</span></summary>
+                  <ul className="mt-2 space-y-1">
+                    {g.kpis.map((k) => (
+                      <li key={k.id} className="flex items-center justify-between gap-2 text-sm">
+                        <span>{k.title}</span>
+                        <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>ціль {k.target ?? "—"}</span>
+                          {k.actualValue != null && <span>факт {k.actualValue}</span>}
+                          {k.achieved === true && <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-600">досягнуто</span>}
+                          {k.achieved === false && <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">ні</span>}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-xl border bg-card p-5">
+          <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
+            <ListChecks className="size-4 text-muted-foreground" /> Архів пріоритетів тижня
+          </h3>
+          {planArchive.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Архів порожній.</p>
+          ) : (
+            <div className="space-y-1.5">
+              {planArchive.map((g) => (
+                <details key={g.weekStart.toISOString()} className="rounded-lg border bg-muted/20 px-3 py-2">
+                  <summary className="cursor-pointer text-sm font-medium">Тиждень №{isoWeekNumber(g.weekStart)} <span className="text-xs text-muted-foreground">· {weekLabel(g.weekStart)} ({g.items.length})</span></summary>
+                  <ul className="mt-2 space-y-1">
+                    {g.items.map((it) => (
+                      <li key={it.id} className="flex items-center gap-2 text-sm">
+                        <span className={cn("flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold", priorityStyle(it.priority))}>{it.priority}</span>
+                        <span className="flex-1">{it.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

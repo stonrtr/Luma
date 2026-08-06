@@ -116,6 +116,33 @@ export async function addPlanItem(input: z.infer<typeof planItemSchema>) {
   return { error: null };
 }
 
+// Добавить в план уже существующую задачу (без создания новой)
+const fromTaskSchema = z.object({ userId: z.string(), weekStart: z.string(), taskId: z.string() });
+export async function addExistingTaskToPlan(input: z.infer<typeof fromTaskSchema>) {
+  const viewer = await requireUser();
+  const data = fromTaskSchema.parse(input);
+  const canEdit = data.userId === viewer.id || (await canManage(viewer.id, viewer.role, data.userId));
+  if (!canEdit) return { error: "Немає прав" };
+
+  const task = await db.task.findUnique({ where: { id: data.taskId }, select: { id: true, title: true, priority: true, projectId: true } });
+  if (!task) return { error: "Задачу не знайдено" };
+
+  const ws = mondayOf(new Date(data.weekStart));
+  const dup = await db.weeklyPlanItem.findFirst({ where: { userId: data.userId, weekStart: ws, taskId: task.id } });
+  if (dup) return { error: "Задача вже в плані" };
+
+  const count = await db.weeklyPlanItem.count({ where: { userId: data.userId, weekStart: ws } });
+  await db.weeklyPlanItem.create({
+    data: {
+      userId: data.userId, weekStart: ws, title: task.title,
+      priority: task.priority, order: count, projectId: task.projectId,
+      approved: true, taskId: task.id,
+    },
+  });
+  revalidatePath("/planning");
+  return { error: null };
+}
+
 export async function deletePlanItem(id: string) {
   const viewer = await requireUser();
   const item = await db.weeklyPlanItem.findUnique({ where: { id } });

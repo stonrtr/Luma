@@ -73,7 +73,7 @@ export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: b
       <Link
         href={`/tasks/${task.id}`}
         onClick={(e) => { if (selectionActive) { e.preventDefault(); e.stopPropagation(); sel?.toggle(task.id); } }}
-        className={cn("min-w-0 flex-1 truncate text-sm font-medium hover:text-primary", done && "text-muted-foreground line-through")}
+        className={cn("min-w-0 flex-1 break-words text-sm font-medium hover:text-primary", done && "text-muted-foreground line-through")}
       >
         {task.title}
       </Link>
