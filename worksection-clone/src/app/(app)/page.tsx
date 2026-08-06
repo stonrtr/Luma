@@ -148,6 +148,7 @@ export default async function HomePage({
   return (
     <div className="flex flex-col">
       <KpiStrip
+        ownerName={user.name}
         kpis={kpis.map((k) => ({ id: k.id, title: k.title, target: k.target, actualValue: k.actualValue, achieved: k.achieved }))}
       />
       <header className="border-b px-6 py-2.5">
