@@ -110,8 +110,18 @@ export default async function TeamPage({
               <p className="truncate text-xs text-muted-foreground leading-tight">{m.title ?? "—"}</p>
             </div>
             <span className="ml-1 flex items-center gap-1">
-              <span title="Активні задачі на тиждень" className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{m.weekActive}</span>
-              <span title="Закрито за тиждень" className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600">{m.weekDone}</span>
+              <span className="group/act relative">
+                <span className="block rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{m.weekActive}</span>
+                <span className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 translate-y-1 scale-90 rounded-md bg-primary px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-primary-foreground opacity-0 shadow-md transition-all duration-150 group-hover/act:translate-y-0 group-hover/act:scale-100 group-hover/act:opacity-100">
+                  Активні
+                </span>
+              </span>
+              <span className="group/done relative">
+                <span className="block rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600">{m.weekDone}</span>
+                <span className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 translate-y-1 scale-90 rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-white opacity-0 shadow-md transition-all duration-150 group-hover/done:translate-y-0 group-hover/done:scale-100 group-hover/done:opacity-100">
+                  Завершені
+                </span>
+              </span>
             </span>
           </Link>
         ))}
