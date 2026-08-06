@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { NewTaskDialog } from "@/components/board/new-task-dialog";
 
 // Плавающая кнопка «+» (внизу зліва) для швидкого додавання задачі
-export function QuickAddFab({ userId }: { userId: string }) {
+export function QuickAddFab({ userId, projects }: { userId: string; projects: { id: string; name: string; color: string }[] }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -22,6 +22,7 @@ export function QuickAddFab({ userId }: { userId: string }) {
         status={open ? "TODO" : null}
         onClose={() => setOpen(false)}
         lockedAssigneeId={userId}
+        projects={projects}
       />
     </>
   );

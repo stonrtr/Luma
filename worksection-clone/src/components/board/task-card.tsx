@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Circle, CheckCircle2 } from "lucide-react";
 import type { BoardTask } from "./types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { priorityStyle } from "@/lib/domain";
-import { updateTask } from "@/server/actions/tasks";
 import { initials } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -35,8 +32,6 @@ function dueBadge(dueISO: string, done: boolean): { text: string; cls: string } 
 }
 
 export function TaskCard({ task }: { task: BoardTask }) {
-  const router = useRouter();
-  const [, start] = useTransition();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: "task", task },
@@ -45,15 +40,6 @@ export function TaskCard({ task }: { task: BoardTask }) {
   const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
   const done = task.status === "DONE";
   const badge = task.dueDate ? dueBadge(task.dueDate, done) : null;
-
-  function toggleDone(e: React.MouseEvent) {
-    e.stopPropagation();
-    e.preventDefault();
-    start(async () => {
-      await updateTask({ taskId: task.id, status: done ? "TODO" : "DONE" });
-      router.refresh();
-    });
-  }
 
   return (
     <div
@@ -66,14 +52,9 @@ export function TaskCard({ task }: { task: BoardTask }) {
         task.assignedByManager && "border-l-4 border-l-primary",
       )}
     >
-      <button
-        onClick={toggleDone}
-        onPointerDown={(e) => e.stopPropagation()}
-        className={cn("shrink-0 transition-colors", done ? "text-emerald-500" : "text-muted-foreground/40 hover:text-emerald-500")}
-        title={done ? "Повернути в роботу" : "Позначити виконаною"}
-      >
+      <span className={cn("shrink-0", done ? "text-emerald-500" : "text-muted-foreground/40")} aria-hidden>
         {done ? <CheckCircle2 className="size-[15px]" /> : <Circle className="size-[15px]" />}
-      </button>
+      </span>
 
       {task.isProject && <span className="size-2 shrink-0 rounded-full bg-indigo-500" title="Проєктна задача" />}
 

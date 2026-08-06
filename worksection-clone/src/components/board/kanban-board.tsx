@@ -19,7 +19,7 @@ import type { BoardTask, BoardMember } from "./types";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
 import { NewTaskDialog } from "./new-task-dialog";
-import { TASK_STATUSES } from "@/lib/domain";
+import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
 import { moveTask } from "@/server/actions/tasks";
 
 type Columns = Record<TaskStatus, BoardTask[]>;
@@ -37,11 +37,13 @@ export function KanbanBoard({
   initialTasks,
   members,
   lockedAssigneeId,
+  projects,
 }: {
   projectId: string;
   initialTasks: BoardTask[];
   members: BoardMember[];
   lockedAssigneeId?: string;
+  projects?: { id: string; name: string; color: string }[];
 }) {
   const [columns, setColumns] = useState<Columns>(() => group(initialTasks));
   const [activeTask, setActiveTask] = useState<BoardTask | null>(null);
@@ -168,11 +170,13 @@ export function KanbanBoard({
           {TASK_STATUSES.map((status) => (
             <KanbanColumn
               key={status}
-              status={status}
+              id={status}
+              label={TASK_STATUS_LABEL[status]}
+              dotClass={TASK_STATUS_DOT[status]}
               tasks={columns[status]}
-              onAdd={setDialogStatus}
+              onAdd={(id) => setDialogStatus(id as TaskStatus)}
               collapsed={isCollapsed(status)}
-              onToggle={toggleCollapse}
+              onToggle={(id) => toggleCollapse(id as TaskStatus)}
             />
           ))}
         </div>
@@ -185,6 +189,7 @@ export function KanbanBoard({
         status={dialogStatus}
         onClose={() => setDialogStatus(null)}
         lockedAssigneeId={lockedAssigneeId}
+        projects={projects}
       />
     </>
   );

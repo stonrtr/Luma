@@ -38,7 +38,7 @@ export default async function AppLayout({
         }}
       />
       <main className="flex-1">{children}</main>
-      <QuickAddFab userId={user.id} />
+      <QuickAddFab userId={user.id} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} />
       <NotificationToaster
         items={notifications.items.map((n) => ({ id: n.id, type: n.type, message: n.message, link: n.link, readAt: n.readAt ? n.readAt.toISOString() : null }))}
       />

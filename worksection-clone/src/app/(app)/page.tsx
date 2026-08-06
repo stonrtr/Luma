@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireUser } from "@/server/dal";
 import { getMyTasks } from "@/server/queries/tasks";
 import { getMonthlyKpis } from "@/server/queries/planning";
+import { getProjectsForUser } from "@/server/queries/projects";
 import { getMyWeek } from "@/server/queries/calendar";
 import { MyWorkspace } from "@/components/workspace/my-workspace";
 import { KpiStrip } from "@/components/workspace/kpi-strip";
@@ -37,6 +38,7 @@ export default async function HomePage({
   const { view, ws } = await searchParams;
   const tasks = await getMyTasks(user.id);
   const kpis = await getMonthlyKpis(user.id);
+  const myProjects = (await getProjectsForUser(user.id)).map((p) => ({ id: p.id, name: p.name, color: p.color }));
 
   // Данные для вида «Календар» — недельный тайм-грид
   let calendar: WeekData | undefined;
@@ -153,7 +155,7 @@ export default async function HomePage({
         </div>
       </header>
       <div>
-        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} />
+        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} projects={myProjects} />
       </div>
     </div>
   );

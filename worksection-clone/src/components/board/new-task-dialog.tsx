@@ -39,12 +39,14 @@ export function NewTaskDialog({
   status,
   onClose,
   lockedAssigneeId,
+  projects,
 }: {
   projectId: string;
   members: BoardMember[];
   status: TaskStatus | null;
   onClose: () => void;
   lockedAssigneeId?: string;
+  projects?: { id: string; name: string; color: string }[];
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -53,8 +55,12 @@ export function NewTaskDialog({
   const [taskStatus, setTaskStatus] = useState<TaskStatus>("TODO");
   const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
   const [assigneeId, setAssigneeId] = useState<string>("none");
+  const [projectSel, setProjectSel] = useState<string>("base");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
+
+  // выбор проекта показываем только в личном контексте (нет жёсткого проекта) и если проекты есть
+  const showProjectSelect = !projectId && !!projects && projects.length > 0;
 
   function reset() {
     setTitle("");
@@ -62,6 +68,7 @@ export function NewTaskDialog({
     setTaskStatus("TODO");
     setPlannedMinutes(30);
     setAssigneeId("none");
+    setProjectSel("base");
     setDueDate("");
     setDueTime("");
   }
@@ -74,7 +81,9 @@ export function NewTaskDialog({
     start(async () => {
       try {
         await createTask({
-          projectId: projectId || undefined,
+          projectId: showProjectSelect
+            ? (projectSel === "base" ? undefined : projectSel)
+            : (projectId || undefined),
           title: title.trim(),
           status: taskStatus,
           priority,
@@ -177,6 +186,21 @@ export function NewTaskDialog({
               ))}
             </div>
           </div>
+
+          {showProjectSelect && (
+            <div className="space-y-1.5">
+              <Label>Проєкт</Label>
+              <Select value={projectSel} onValueChange={setProjectSel}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="base">Базова</SelectItem>
+                  {projects!.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-2">
