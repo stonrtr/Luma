@@ -16,6 +16,7 @@ export function KanbanColumn({
   collapsed,
   onToggle,
   onAdd,
+  showStatus,
 }: {
   id: string;
   label: string;
@@ -24,6 +25,7 @@ export function KanbanColumn({
   collapsed: boolean;
   onToggle: (id: string) => void;
   onAdd?: (id: string) => void;
+  showStatus?: boolean;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id, data: { type: "column", id } });
 
@@ -75,7 +77,7 @@ export function KanbanColumn({
       >
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard key={task.id} task={task} showStatus={showStatus} />
           ))}
         </SortableContext>
         {tasks.length === 0 && onAdd && (

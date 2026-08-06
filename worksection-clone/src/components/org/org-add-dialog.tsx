@@ -18,27 +18,26 @@ import {
 export function OrgAddDialog({ candidates }: { candidates: { id: string; name: string }[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
-  const [role, setRole] = useState("MEMBER");
   const [managerId, setManagerId] = useState("none");
   const [hours, setHours] = useState("");
   const [created, setCreated] = useState<{ email: string; pass: string } | null>(null);
   const [pending, start] = useTransition();
 
   function reset() {
-    setName(""); setEmail(""); setTitle(""); setRole("MEMBER"); setManagerId("none"); setHours(""); setCreated(null);
+    setFirstName(""); setLastName(""); setEmail(""); setTitle(""); setManagerId("none"); setHours(""); setCreated(null);
   }
 
   function submit() {
-    if (!name.trim() || !email.trim()) { toast.error("Вкажіть ім'я та email"); return; }
+    if (!firstName.trim() || !email.trim()) { toast.error("Вкажіть ім'я та email"); return; }
     start(async () => {
       const res = await inviteMember({
-        name: name.trim(), email: email.trim(), title: title.trim(),
-        role: role as "ADMIN" | "MEMBER" | "CLIENT",
+        firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim(), title: title.trim(),
         managerId: managerId === "none" ? null : managerId,
-        weeklyHours: hours.trim() ? parseFloat(hours) : null,
+        weeklyHours: hours.trim() ? parseFloat(hours) * 5 : null,
       });
       if (res?.error) toast.error(res.error);
       else { setCreated({ email: email.trim(), pass: res.tempPassword! }); router.refresh(); }
@@ -71,22 +70,14 @@ export function OrgAddDialog({ candidates }: { candidates: { id: string; name: s
           <>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2"><Label>Ім&apos;я та прізвище</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
-                <div className="space-y-2"><Label>Посада</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+                <div className="space-y-2"><Label>Ім&apos;я</Label><Input value={firstName} onChange={(e) => setFirstName(e.target.value)} autoFocus /></div>
+                <div className="space-y-2"><Label>Прізвище</Label><Input value={lastName} onChange={(e) => setLastName(e.target.value)} /></div>
               </div>
-              <div className="space-y-2"><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="employee@company.com" /></div>
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-2">
-                  <Label>Роль</Label>
-                  <Select value={role} onValueChange={setRole}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MEMBER">Співробітник</SelectItem>
-                      <SelectItem value="ADMIN">Адміністратор</SelectItem>
-                      <SelectItem value="CLIENT">Клієнт</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2"><Label>Посада</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="напр. Дизайнер" /></div>
+                <div className="space-y-2"><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="employee@company.com" /></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label>Керівник</Label>
                   <Select value={managerId} onValueChange={setManagerId}>
@@ -97,7 +88,13 @@ export function OrgAddDialog({ candidates }: { candidates: { id: string; name: s
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2"><Label>Годин/тиждень</Label><Input value={hours} onChange={(e) => setHours(e.target.value)} inputMode="decimal" placeholder="40" /></div>
+                <div className="space-y-2">
+                  <Label>Годин на день</Label>
+                  <Input value={hours} onChange={(e) => setHours(e.target.value)} inputMode="decimal" placeholder="8" />
+                  {hours.trim() && !Number.isNaN(parseFloat(hours)) && (
+                    <p className="text-xs text-muted-foreground">≈ {parseFloat(hours) * 5} год/тиждень</p>
+                  )}
+                </div>
               </div>
             </div>
             <DialogFooter>

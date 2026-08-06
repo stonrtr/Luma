@@ -31,7 +31,7 @@ export function OrgEditDialog({
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(user.title ?? "");
   const [functions, setFunctions] = useState(user.functions ?? "");
-  const [hours, setHours] = useState(user.weeklyHours != null ? String(user.weeklyHours) : "");
+  const [hours, setHours] = useState(user.weeklyHours != null ? String(user.weeklyHours / 5) : "");
   const [drive, setDrive] = useState(user.driveFolderUrl ?? "");
   const [managerId, setManagerId] = useState(user.managerId ?? "none");
   const [pending, start] = useTransition();
@@ -42,7 +42,7 @@ export function OrgEditDialog({
         userId: user.id,
         title: title.trim(),
         functions: functions.trim(),
-        weeklyHours: hours.trim() ? parseFloat(hours) : null,
+        weeklyHours: hours.trim() ? parseFloat(hours) * 5 : null,
         driveFolderUrl: drive.trim(),
         managerId: isAdmin ? (managerId === "none" ? null : managerId) : undefined,
       });
@@ -73,8 +73,11 @@ export function OrgEditDialog({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="org-hours">Годин на тиждень</Label>
-              <Input id="org-hours" value={hours} onChange={(e) => setHours(e.target.value)} inputMode="decimal" placeholder="40" />
+              <Label htmlFor="org-hours">Годин на день</Label>
+              <Input id="org-hours" value={hours} onChange={(e) => setHours(e.target.value)} inputMode="decimal" placeholder="8" />
+              {hours.trim() && !Number.isNaN(parseFloat(hours)) && (
+                <p className="text-xs text-muted-foreground">≈ {parseFloat(hours) * 5} год/тиждень</p>
+              )}
             </div>
             {isAdmin && (
               <div className="space-y-2">

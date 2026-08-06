@@ -6,7 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Circle, CheckCircle2 } from "lucide-react";
 import type { BoardTask } from "./types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { priorityStyle } from "@/lib/domain";
+import { priorityStyle, TASK_STATUS_LABEL, TASK_STATUS_STYLE } from "@/lib/domain";
 import { initials } from "@/lib/format";
 import { useSelection } from "./selection-context";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ function dueBadge(dueISO: string, done: boolean): { text: string; cls: string } 
   return { text: `${diff} ${pluralDays(diff)}`, cls: soon };
 }
 
-export function TaskCard({ task }: { task: BoardTask }) {
+export function TaskCard({ task, showStatus }: { task: BoardTask; showStatus?: boolean }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: "task", task },
@@ -77,6 +77,12 @@ export function TaskCard({ task }: { task: BoardTask }) {
       >
         {task.title}
       </Link>
+
+      {showStatus && (
+        <span className={cn("shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium", TASK_STATUS_STYLE[task.status])} title="Статус">
+          {TASK_STATUS_LABEL[task.status]}
+        </span>
+      )}
 
       {badge && (
         <span className={cn("shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium", badge.cls)}>{badge.text}</span>

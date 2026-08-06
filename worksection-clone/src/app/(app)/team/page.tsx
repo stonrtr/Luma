@@ -9,7 +9,8 @@ import { DayBoard } from "@/components/board/day-board";
 import { WeekCalendar, type WeekData, type WeekDay } from "@/components/calendar/week-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT, priorityStyle } from "@/lib/domain";
+import { PriorityPopover } from "@/components/task/inline-controls";
+import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
 import { initials, formatShortDate, isOverdue } from "@/lib/format";
 import { mondayOf, addDays } from "@/lib/week";
 import { cn } from "@/lib/utils";
@@ -151,10 +152,10 @@ function AllBoard({ tasks }: { tasks: Awaited<ReturnType<typeof getTeamOverview>
             </div>
             <div className="flex flex-col gap-2 rounded-xl bg-muted/40 p-2">
               {rows.map((t) => (
-                <Link key={t.id} href={`/tasks/${t.id}`} className={cn("rounded-lg border bg-card p-3 shadow-sm hover:shadow-md", t.assignedByManager && "border-l-4 border-l-primary")}>
+                <div key={t.id} className={cn("rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md", t.assignedByManager && "border-l-4 border-l-primary")}>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-sm font-medium leading-snug">{t.title}</span>
-                    <span className={cn("flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold", priorityStyle(t.priority))}>{t.priority}</span>
+                    <Link href={`/tasks/${t.id}`} className="text-sm font-medium leading-snug hover:underline">{t.title}</Link>
+                    <PriorityPopover taskId={t.id} priority={t.priority} />
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -167,7 +168,7 @@ function AllBoard({ tasks }: { tasks: Awaited<ReturnType<typeof getTeamOverview>
                       ))}
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
               {rows.length === 0 && <p className="px-2 py-4 text-center text-xs text-muted-foreground">Порожньо</p>}
             </div>

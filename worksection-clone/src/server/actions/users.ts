@@ -42,10 +42,10 @@ export async function createUser(input: z.infer<typeof schema>) {
 
 // Пригласить сотрудника из оргсхемы: создаёт аккаунт, назначает руководителя, возвращает временный пароль
 const inviteSchema = z.object({
-  name: z.string().min(1).max(80),
+  firstName: z.string().min(1, "Вкажіть ім'я").max(60),
+  lastName: z.string().max(60).optional(),
   email: z.string().email("Невірний email"),
   title: z.string().max(80).optional(),
-  role: z.enum(["ADMIN", "MEMBER", "CLIENT"]).default("MEMBER"),
   managerId: z.string().nullable().optional(),
   weeklyHours: z.number().min(0).max(168).nullable().optional(),
 });
@@ -60,14 +60,20 @@ export async function inviteMember(input: z.infer<typeof inviteSchema>) {
   const existing = await db.user.findUnique({ where: { email: data.email } });
   if (existing) return { error: "Користувач з таким email вже існує" };
 
+  const firstName = data.firstName.trim();
+  const lastName = (data.lastName ?? "").trim();
+  const name = [firstName, lastName].filter(Boolean).join(" ");
+
   const tempPassword = Math.random().toString(36).slice(-4) + Math.random().toString(36).slice(-4).toUpperCase() + "1!";
   await db.user.create({
     data: {
-      name: data.name,
+      name,
+      firstName,
+      lastName: lastName || null,
       email: data.email,
       passwordHash: await bcrypt.hash(tempPassword, 10),
       title: data.title || null,
-      role: data.role,
+      role: "MEMBER",
       managerId: data.managerId || null,
       weeklyHours: data.weeklyHours ?? null,
     },

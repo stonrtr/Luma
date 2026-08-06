@@ -177,10 +177,11 @@ export function DayBoard({ initialTasks }: { initialTasks: BoardTask[] }) {
               tasks={columns[b.key]}
               collapsed={isCollapsed(b.key)}
               onToggle={toggleCollapse}
+              showStatus
             />
           ))}
         </div>
-        <DragOverlay>{activeTask ? <TaskCard task={activeTask} /> : null}</DragOverlay>
+        <DragOverlay>{activeTask ? <TaskCard task={activeTask} showStatus /> : null}</DragOverlay>
       </DndContext>
       <BulkBar />
     </SelectionContext.Provider>
