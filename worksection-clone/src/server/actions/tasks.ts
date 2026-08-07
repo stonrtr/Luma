@@ -223,6 +223,31 @@ export async function sendForReview(taskId: string) {
   revalidatePath("/");
 }
 
+// Задача (successor) залежить від predecessor — той має бути завершений раніше
+export async function addDependency(input: { taskId: string; predecessorId: string }) {
+  await requireUser();
+  const { taskId, predecessorId } = input;
+  if (!predecessorId || predecessorId === taskId) return { error: "Некоректна залежність" };
+  // защита от прямого цикла: predecessor не должен уже зависеть от этой задачи
+  const reverse = await db.taskDependency.findUnique({ where: { predecessorId_successorId: { predecessorId: taskId, successorId: predecessorId } } });
+  if (reverse) return { error: "Це створило б цикл" };
+  await db.taskDependency.upsert({
+    where: { predecessorId_successorId: { predecessorId, successorId: taskId } },
+    create: { predecessorId, successorId: taskId },
+    update: {},
+  });
+  revalidatePath(`/tasks/${taskId}`);
+  return { error: null };
+}
+
+export async function removeDependency(dependencyId: string) {
+  await requireUser();
+  const dep = await db.taskDependency.findUnique({ where: { id: dependencyId } });
+  if (!dep) return;
+  await db.taskDependency.delete({ where: { id: dependencyId } });
+  revalidatePath(`/tasks/${dep.successorId}`);
+}
+
 export async function setTaskAssignee(input: { taskId: string; userId: string | null }) {
   await requireUser();
   const task = await db.task.findUnique({ where: { id: input.taskId } });

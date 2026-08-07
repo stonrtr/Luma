@@ -2,8 +2,10 @@ import { notFound, redirect } from "next/navigation";
 import { MessageSquare, CalendarDays, Clock, User } from "lucide-react";
 import { BackButton } from "@/components/task/back-button";
 import { requireUser } from "@/server/dal";
+import { db } from "@/server/db";
 import { getTaskDetail } from "@/server/queries/tasks";
 import { isProjectMember } from "@/server/queries/projects";
+import { Dependencies } from "@/components/task/dependencies";
 import { CommentForm } from "@/components/task/comment-form";
 import { EditableTaskHeader } from "@/components/task/editable-task-header";
 import { TagPicker } from "@/components/task/tag-picker";
@@ -35,6 +37,19 @@ export default async function TaskDetailPage({
   }
 
   const members = task.project?.members.map((m) => ({ id: m.user.id, name: m.user.name })) ?? [];
+  const dependsOn = task.dependsOn.map((d) => ({ depId: d.id, taskId: d.predecessor.id, title: d.predecessor.title, status: d.predecessor.status }));
+  const blocks = task.dependedBy.map((d) => ({ taskId: d.successor.id, title: d.successor.title, status: d.successor.status }));
+  const excludeIds = [taskId, ...task.dependsOn.map((d) => d.predecessorId)];
+  const depCandidates = (await db.task.findMany({
+    where: {
+      id: { notIn: excludeIds }, parentId: null, archivedAt: null,
+      ...(task.projectId ? { projectId: task.projectId } : { assignees: { some: { userId: user.id } } }),
+    },
+    select: { id: true, title: true },
+    orderBy: { updatedAt: "desc" },
+    take: 50,
+  })).map((c) => ({ id: c.id, title: c.title }));
+
   const assignee = task.assignees[0]?.user ?? null;
   const overdue =!!(task.status !== "DONE" && task.dueDate && new Date(task.dueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
 
@@ -127,6 +142,8 @@ export default async function TaskDetailPage({
               <CommentForm taskId={task.id} members={members} />
             </div>
           </section>
+
+          <Dependencies taskId={task.id} dependsOn={dependsOn} blocks={blocks} candidates={depCandidates} />
         </div>
 
         {/* Правая колонка — минимум полей */}

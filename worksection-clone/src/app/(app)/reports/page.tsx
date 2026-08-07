@@ -4,6 +4,7 @@ import { getTimeReport } from "@/server/queries/reports";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatMinutes, formatMoney, formatDate, initials } from "@/lib/format";
 import { Clock } from "lucide-react";
+import { ReportExport } from "@/components/reports/report-export";
 
 export default async function ReportsPage() {
   await requireUser();
@@ -17,8 +18,13 @@ export default async function ReportsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Отчёты по времени</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Сводка учтённого времени по людям и проектам</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Отчёты по времени</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Сводка учтённого времени по людям и проектам</p>
+        </div>
+        <ReportExport />
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-xl border bg-card p-4">
