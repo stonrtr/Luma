@@ -4,14 +4,18 @@ import { SettingsForm } from "@/components/settings/settings-form";
 import { RecurringBlock } from "@/components/planning/recurring-block";
 import { GoogleCalendarCard } from "@/components/settings/google-calendar-card";
 import { PushToggle } from "@/components/settings/push-toggle";
+import { NotificationSettingsForm } from "@/components/admin/notification-settings-form";
+import { getNotificationSettings } from "@/server/queries/notification-settings";
 import { db } from "@/server/db";
 import { isGoogleConfigured } from "@/server/google/oauth";
 import { t } from "@/lib/i18n";
 
 export default async function SettingsPage() {
   const user = await requireUser();
+  const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
   const recurring = await getRecurringForUser(user.id);
   const googleAcc = await db.googleAccount.findUnique({ where: { userId: user.id }, select: { googleEmail: true } });
+  const notificationSettings = isAdmin ? await getNotificationSettings() : null;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
@@ -33,6 +37,14 @@ export default async function SettingsPage() {
       />
 
       <PushToggle />
+
+      {notificationSettings && (
+        <section className="mt-6">
+          <h2 className="mb-1 text-sm font-semibold">Сповіщення команди</h2>
+          <p className="mb-3 text-xs text-muted-foreground">Які сповіщення надсилати співробітникам</p>
+          <NotificationSettingsForm settings={notificationSettings} />
+        </section>
+      )}
 
       <GoogleCalendarCard configured={isGoogleConfigured()} connected={!!googleAcc} email={googleAcc?.googleEmail ?? null} />
 

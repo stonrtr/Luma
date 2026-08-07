@@ -36,7 +36,7 @@ export default async function OrgPage() {
                 <span className="truncate text-sm font-semibold">{user.name}</span>
                 {canEdit && (
                   <span className="ml-auto shrink-0">
-                    <OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} />
+                    <OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} canManageAccess={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} />
                   </span>
                 )}
               </div>

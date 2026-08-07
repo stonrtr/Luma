@@ -30,8 +30,14 @@ function describe(item: HistoryItem): { text: string; title: string | null } {
   if (item.type === "task.status") {
     try {
       const m = JSON.parse(item.meta ?? "{}") as { title?: string; to?: TaskStatus };
-      const label = m.to ? TASK_STATUS_LABEL[m.to] : "";
-      const verb = m.to === "DONE" ? "завершив(ла)" : `перевів(ла) у «${label}»`;
+      const VERB: Record<TaskStatus, string> = {
+        DONE: "завершив(ла)",
+        TO_REVIEW: "відправив(ла) на перевірку",
+        IN_PROGRESS: "взяв(ла) в роботу",
+        TODO: "повернув(ла) у «Зробити»",
+        IDEA: "переніс(ла) в «Ідеї»",
+      };
+      const verb = m.to ? VERB[m.to] : "змінив(ла) статус";
       return { text: verb, title: m.title ?? null };
     } catch {
       return { text: "змінив(ла) статус", title: null };

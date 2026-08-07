@@ -198,6 +198,9 @@ export async function sendForReview(taskId: string) {
   if (!task) return;
 
   await db.task.update({ where: { id: taskId }, data: { status: "TO_REVIEW", reviewRequestedAt: new Date() } });
+  await db.activity.create({
+    data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId: task.id, meta: JSON.stringify({ title: task.title, to: "TO_REVIEW" }) },
+  });
 
   // уведомляем руководителя исполнителя (или всех админов/владельцев)
   const managerIds = new Set<string>();

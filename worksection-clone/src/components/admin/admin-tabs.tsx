@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/admin/users", label: "Користувачі" },
-  { href: "/admin/notifications", label: "Сповіщення" },
 ];
 
 export function AdminTabs() {

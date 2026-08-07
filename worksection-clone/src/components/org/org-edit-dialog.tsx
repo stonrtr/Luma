@@ -20,31 +20,45 @@ import {
 type OrgUser = {
   id: string; name: string; title: string | null; functions: string | null;
   weeklyHours: number | null; managerId: string | null; driveFolderUrl: string | null;
+  role?: string; isActive?: boolean;
 };
 
+const ROLE_OPTIONS = [
+  { value: "ADMIN", label: "Адміністратор" },
+  { value: "MEMBER", label: "Співробітник" },
+  { value: "CLIENT", label: "Клієнт" },
+];
+
 export function OrgEditDialog({
-  user, candidates, isAdmin, canDelete,
+  user, candidates, isAdmin, canDelete, canManageAccess,
 }: {
-  user: OrgUser; candidates: { id: string; name: string }[]; isAdmin: boolean; canDelete?: boolean;
+  user: OrgUser; candidates: { id: string; name: string }[]; isAdmin: boolean; canDelete?: boolean; canManageAccess?: boolean;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [name, setName] = useState(user.name);
   const [title, setTitle] = useState(user.title ?? "");
   const [functions, setFunctions] = useState(user.functions ?? "");
   const [hours, setHours] = useState(user.weeklyHours != null ? String(user.weeklyHours / 5) : "");
   const [drive, setDrive] = useState(user.driveFolderUrl ?? "");
   const [managerId, setManagerId] = useState(user.managerId ?? "none");
+  const [role, setRole] = useState(user.role ?? "MEMBER");
+  const [active, setActive] = useState(user.isActive ?? true);
   const [pending, start] = useTransition();
 
   function save() {
+    if (!name.trim()) { toast.error("Введіть ім'я"); return; }
     start(async () => {
       const res = await updateOrgUser({
         userId: user.id,
+        name: name.trim(),
         title: title.trim(),
         functions: functions.trim(),
         weeklyHours: hours.trim() ? parseFloat(hours) * 5 : null,
         driveFolderUrl: drive.trim(),
         managerId: isAdmin ? (managerId === "none" ? null : managerId) : undefined,
+        role: canManageAccess ? (role as "ADMIN" | "MEMBER" | "CLIENT") : undefined,
+        isActive: canManageAccess ? active : undefined,
       });
       if (res?.error) toast.error(res.error);
       else { toast.success("Збережено"); setOpen(false); router.refresh(); }
@@ -59,6 +73,10 @@ export function OrgEditDialog({
       <DialogContent>
         <DialogHeader><DialogTitle>{user.name}</DialogTitle></DialogHeader>
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="org-name">Ім&apos;я</Label>
+            <Input id="org-name" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="org-title">Посада</Label>
             <Input id="org-title" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -94,6 +112,30 @@ export function OrgEditDialog({
               </div>
             )}
           </div>
+
+          {canManageAccess && (
+            <div className="grid grid-cols-2 gap-3 border-t pt-4">
+              <div className="space-y-2">
+                <Label>Роль / доступ</Label>
+                <Select value={role} onValueChange={setRole}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {ROLE_OPTIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Обліковий запис</Label>
+                <Select value={active ? "1" : "0"} onValueChange={(v) => setActive(v === "1")}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Активний</SelectItem>
+                    <SelectItem value="0">Деактивований</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
         </div>
         <DialogFooter className="sm:justify-between">
           {canDelete ? (
