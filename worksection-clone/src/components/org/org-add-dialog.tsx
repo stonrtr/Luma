@@ -15,20 +15,20 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
-export function OrgAddDialog({ candidates }: { candidates: { id: string; name: string }[] }) {
+export function OrgAddDialog({ candidates, defaultManagerId, trigger }: { candidates: { id: string; name: string }[]; defaultManagerId?: string; trigger?: React.ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
-  const [managerId, setManagerId] = useState("none");
+  const [managerId, setManagerId] = useState(defaultManagerId ?? "none");
   const [hours, setHours] = useState("");
   const [created, setCreated] = useState<{ email: string; pass: string; emailed: boolean } | null>(null);
   const [pending, start] = useTransition();
 
   function reset() {
-    setFirstName(""); setLastName(""); setEmail(""); setTitle(""); setManagerId("none"); setHours(""); setCreated(null);
+    setFirstName(""); setLastName(""); setEmail(""); setTitle(""); setManagerId(defaultManagerId ?? "none"); setHours(""); setCreated(null);
   }
 
   function submit() {
@@ -47,10 +47,10 @@ export function OrgAddDialog({ candidates }: { candidates: { id: string; name: s
   return (
     <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
       <DialogTrigger asChild>
-        <Button><UserPlus className="size-4" /> Запросити співробітника</Button>
+        {trigger ?? <Button><UserPlus className="size-4" /> Запросити співробітника</Button>}
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader><DialogTitle>Запросити співробітника</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{defaultManagerId ? "Додати підлеглого" : "Запросити співробітника"}</DialogTitle></DialogHeader>
         {created ? (
           <div className="space-y-3">
             <p className="text-sm">

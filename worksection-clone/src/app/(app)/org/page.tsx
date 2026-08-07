@@ -4,6 +4,7 @@ import { OrgEditDialog } from "@/components/org/org-edit-dialog";
 import { OrgAddDialog } from "@/components/org/org-add-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials } from "@/lib/format";
+import { Plus } from "lucide-react";
 
 const ROLE_LABEL: Record<string, string> = { OWNER: "Власник", ADMIN: "Адміністратор", MEMBER: "Співробітник" };
 
@@ -34,9 +35,18 @@ export default async function OrgPage() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
                 <span className="truncate text-sm font-semibold">{user.name}</span>
-                {canEdit && (
-                  <span className="ml-auto shrink-0">
-                    <OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} canManageAccess={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} />
+                {(canEdit || isAdmin) && (
+                  <span className="ml-auto flex shrink-0 items-center gap-1">
+                    {isAdmin && (
+                      <OrgAddDialog
+                        candidates={candidates}
+                        defaultManagerId={user.id}
+                        trigger={<button type="button" className="text-muted-foreground hover:text-primary" title={`Додати підлеглого до «${user.name}»`}><Plus className="size-3.5" /></button>}
+                      />
+                    )}
+                    {canEdit && (
+                      <OrgEditDialog user={user} candidates={candidates} isAdmin={isAdmin} canDelete={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} canManageAccess={isAdmin && user.role !== "OWNER" && user.id !== viewer.id} />
+                    )}
                   </span>
                 )}
               </div>
