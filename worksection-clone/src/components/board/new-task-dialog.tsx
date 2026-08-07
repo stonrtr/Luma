@@ -209,7 +209,7 @@ export function NewTaskDialog({
 
           {/* Плановое время */}
           <div className="space-y-1.5">
-            <Label>Планований час</Label>
+            <Label>Запланований час</Label>
             <div className="flex gap-2">
               {PLANNED_MINUTES.map((m) => (
                 <button
