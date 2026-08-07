@@ -38,7 +38,6 @@ function todayStr(): string {
   const d = new Date();
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
-const DEFAULT_TIME = "09:00"; // время по умолчанию для нової задачі
 
 export function NewTaskDialog({
   projectId,
@@ -80,7 +79,7 @@ export function NewTaskDialog({
   const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? members[0]?.id ?? "");
   const [projectSel, setProjectSel] = useState<string>("base");
   const [dueDate, setDueDate] = useState(initialDueDate ?? todayStr());
-  const [dueTime, setDueTime] = useState(DEFAULT_TIME);
+  const [dueTime] = useState("");
 
   // выбор проекта показываем только в личном контексте (нет жёсткого проекта) и если проекты есть
   const showProjectSelect = !projectId && !!projects && projects.length > 0;
@@ -93,7 +92,6 @@ export function NewTaskDialog({
     setAssigneeId(defaultAssigneeId ?? members[0]?.id ?? "");
     setProjectSel("base");
     setDueDate(initialDueDate ?? todayStr());
-    setDueTime(DEFAULT_TIME);
   }
 
   function submit() {
@@ -229,14 +227,10 @@ export function NewTaskDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="task-due">Дата</Label>
+              <Label htmlFor="task-due">Дедлайн</Label>
               <Input id="task-due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="task-time">Час</Label>
-              <Input id="task-time" type="time" value={dueTime} onChange={(e) => setDueTime(e.target.value)} />
             </div>
             {!lockedAssigneeId && (
               <div className="space-y-2">
@@ -254,7 +248,7 @@ export function NewTaskDialog({
               </div>
             )}
           </div>
-          <p className="text-xs text-muted-foreground">Якщо вказати дату та час — задача з&apos;явиться в календарі.</p>
+          <p className="text-xs text-muted-foreground">Дата — це дедлайн задачі.</p>
         </div>
         <DialogFooter className="sm:flex-col sm:items-stretch sm:gap-2">
           <div className="flex justify-end gap-2">
