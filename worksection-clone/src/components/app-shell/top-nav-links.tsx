@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ClipboardList, FolderOpen, Network, UsersRound, BarChart3, Users, FolderKanban, Phone } from "lucide-react";
+import { LayoutDashboard, ClipboardList, FolderOpen, Network, UsersRound, BarChart3, FolderKanban, Phone } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,6 @@ export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: bool
     { href: "/org", key: "nav.org", icon: Network },
     ...(isAdmin ? [{ href: "/team", key: "nav.team", icon: UsersRound }] : []),
     { href: "/reports", key: "nav.reports", icon: BarChart3 },
-    ...(isAdmin ? [{ href: "/admin/users", key: "nav.users", icon: Users }] : []),
   ];
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
   const base = "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors";
