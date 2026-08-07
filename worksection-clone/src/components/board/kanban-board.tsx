@@ -21,6 +21,7 @@ import { TaskCard } from "./task-card";
 import { NewTaskDialog } from "./new-task-dialog";
 import { SelectionContext, useSelectionState } from "./selection-context";
 import { BulkBar } from "./bulk-bar";
+import { BoardFilterBar, type BoardFilter, DEFAULT_FILTER, applyFilter } from "./board-filter-bar";
 import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
 import { moveTask, bulkSetStatus } from "@/server/actions/tasks";
 
@@ -85,6 +86,22 @@ export function KanbanBoard({
   useEffect(() => {
     setColumns(group(initialTasks));
   }, [initialTasks]);
+
+  // Фильтры (сохранённый вид) — по исполнителю, метке, приоритету
+  const filterKey = `ws_board_filter_${projectId || "me"}`;
+  const [filter, setFilter] = useState<BoardFilter>(DEFAULT_FILTER);
+  useEffect(() => {
+    try { const s = localStorage.getItem(filterKey); if (s) setFilter({ ...DEFAULT_FILTER, ...JSON.parse(s) }); } catch {}
+  }, [filterKey]);
+  function updateFilter(f: BoardFilter) {
+    setFilter(f);
+    try { localStorage.setItem(filterKey, JSON.stringify(f)); } catch {}
+  }
+  const viewColumns = useMemo(() => {
+    const out = {} as Columns;
+    for (const s of TASK_STATUSES) out[s] = columns[s].filter((t) => applyFilter(t, filter));
+    return out;
+  }, [columns, filter]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -193,6 +210,7 @@ export function KanbanBoard({
 
   return (
     <SelectionContext.Provider value={selection}>
+      <BoardFilterBar tasks={initialTasks} filter={filter} onChange={updateFilter} />
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -207,7 +225,7 @@ export function KanbanBoard({
               id={status}
               label={TASK_STATUS_LABEL[status]}
               dotClass={TASK_STATUS_DOT[status]}
-              tasks={columns[status]}
+              tasks={viewColumns[status]}
               onAdd={(id) => setDialogStatus(id as TaskStatus)}
               collapsed={isCollapsed(status)}
               onToggle={(id) => toggleCollapse(id as TaskStatus)}
