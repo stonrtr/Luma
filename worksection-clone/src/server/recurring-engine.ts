@@ -6,10 +6,11 @@ function sameDay(a: Date, b: Date) {
 }
 
 // Генерация экземпляров регулярных задач на сегодня (идемпотентно по lastGeneratedAt)
-export async function generateDueRecurringTasks() {
+export async function generateDueRecurringTasks(): Promise<number> {
   const now = new Date();
   const weekday = ((now.getDay() + 6) % 7) + 1; // 1=Пн..7=Нд
   const recurring = await db.recurringTask.findMany({ where: { active: true } });
+  let created = 0;
 
   for (const r of recurring) {
     if (r.lastGeneratedAt && sameDay(new Date(r.lastGeneratedAt), now)) continue;
@@ -41,5 +42,7 @@ export async function generateDueRecurringTasks() {
       },
     });
     await db.recurringTask.update({ where: { id: r.id }, data: { lastGeneratedAt: now } });
+    created++;
   }
+  return created;
 }
