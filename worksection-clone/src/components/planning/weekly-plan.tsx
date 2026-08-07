@@ -9,6 +9,7 @@ import type { TaskStatus } from "@/generated/prisma/enums";
 import { addPlanItem, addExistingTaskToPlan, deletePlanItem, approvePlan, submitPlanForApproval, returnPlan } from "@/server/actions/planning";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { NewTaskDialog } from "@/components/board/new-task-dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -39,6 +40,7 @@ export function WeeklyPlan({
   const [priority, setPriority] = useState(DEFAULT_PRIORITY);
   const [projectId, setProjectId] = useState("none");
   const [taskId, setTaskId] = useState("");
+  const [newTaskOpen, setNewTaskOpen] = useState(false);
   const [pending, start] = useTransition();
 
   const unapproved = items.filter((i) => !i.approved).length;
@@ -149,28 +151,9 @@ export function WeeklyPlan({
           </div>
 
           {mode === "create" ? (
-            <>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Ключова задача тижня…" className="h-8" />
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex gap-0.5">
-                  {PRIORITY_VALUES.map((p) => (
-                    <button key={p} type="button" onClick={() => setPriority(p)}
-                      className={cn("flex size-6 items-center justify-center rounded text-[11px] font-medium transition-all",
-                        priority === p ? cn(priorityStyle(p), "ring-1 ring-ring ring-offset-1") : "border text-muted-foreground hover:bg-muted")}>
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <Select value={projectId} onValueChange={setProjectId}>
-                  <SelectTrigger className="h-8 w-40"><SelectValue placeholder="Проєкт" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Без проєкту</SelectItem>
-                    {projects.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-                <button onClick={add} disabled={pending} className="flex size-8 items-center justify-center rounded-md border hover:bg-muted disabled:opacity-50"><Plus className="size-4" /></button>
-              </div>
-            </>
+            <button type="button" onClick={() => setNewTaskOpen(true)} className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed py-2 text-sm text-muted-foreground hover:bg-muted">
+              <Plus className="size-4" /> Створити задачу
+            </button>
           ) : (
             <div className="flex flex-wrap items-center gap-2">
               {availableTasks.length > 0 ? (
@@ -197,6 +180,17 @@ export function WeeklyPlan({
           )}
         </div>
       )}
+
+      <NewTaskDialog
+        projectId=""
+        members={[]}
+        status={newTaskOpen ? "TODO" : null}
+        onClose={() => setNewTaskOpen(false)}
+        lockedAssigneeId={userId}
+        projects={projects}
+        headerTitle="Нова задача тижня"
+        onCreated={(newId) => { setNewTaskOpen(false); start(async () => { await addExistingTaskToPlan({ userId, weekStart, taskId: newId }); router.refresh(); }); }}
+      />
     </div>
   );
 }

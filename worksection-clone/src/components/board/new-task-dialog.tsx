@@ -72,7 +72,7 @@ export function NewTaskDialog({
   headerTitle?: string;
   cancelLabel?: string;
   extraFooter?: React.ReactNode;
-  onCreated?: () => void;
+  onCreated?: (taskId: string) => void;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -106,7 +106,7 @@ export function NewTaskDialog({
     }
     start(async () => {
       try {
-        await createTask({
+        const created = await createTask({
           projectId: showProjectSelect
             ? (projectSel === "base" ? undefined : projectSel)
             : (projectId || undefined),
@@ -120,7 +120,7 @@ export function NewTaskDialog({
         });
         toast.success("Задачу створено");
         if (onCreated) {
-          onCreated();
+          onCreated(created.id);
         } else {
           reset();
           onClose();

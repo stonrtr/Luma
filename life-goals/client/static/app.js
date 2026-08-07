@@ -28,6 +28,18 @@ const EMOJI_PALETTE = [
   "👨‍👩‍👧","🐶","🍳","🧹","🙏","⭐","🔥","💡",
 ];
 
+// Палитра цветов направлений — стабильно выбирается по id, так у каждого
+// направления свой узнаваемый оттенок (акценты карточек, обложек, чекбоксов).
+const DIR_COLORS = [
+  "#e11d48", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899",
+  "#14b8a6", "#f97316", "#6366f1", "#84cc16", "#06b6d4", "#a855f7",
+  "#ef4444", "#0ea5e9", "#22c55e", "#d946ef",
+];
+function catColor(cat) {
+  const n = DIR_COLORS.length;
+  return DIR_COLORS[(((cat?.id ?? 1) - 1) % n + n) % n];
+}
+
 const state = {
   view: "board",                     // board | settings | archive
   board: { categories: [], cards: [], goals: [] },
@@ -247,7 +259,7 @@ function renderBoard() {
 
   // Строки сроков × направления.
   for (const tf of TIMEFRAMES) {
-    board.append(el("div", { class: "board__rowlabel", text: tf.label }));
+    board.append(el("div", { class: "board__rowlabel", dataset: { tf: tf.key }, text: tf.label }));
     for (const cat of cats) board.append(renderCell(cat, tf.key));
   }
 
@@ -260,11 +272,12 @@ function renderBoard() {
 function renderColHead(cat) {
   const hasCover = !!cat.background_image;
   const head = el("div", {
-    class: "colhead" + (hasCover ? " has-cover" : ""),
+    class: "colhead " + (hasCover ? "has-cover" : "no-cover"),
     draggable: true,
     dataset: { catId: cat.id },
     title: "Клик — настройки · перетащите на другое направление, чтобы поменять местами",
   });
+  head.style.setProperty("--c", catColor(cat));
 
   if (hasCover) {
     const cover = el("div", { class: "colhead__cover" });
@@ -327,6 +340,7 @@ function renderCell(cat, timeframe) {
     class: "cell " + (cards.length ? "has-cards" : "is-empty"),
     dataset: { catId: cat.id, timeframe },
   });
+  cell.style.setProperty("--c", catColor(cat));
 
   cards.forEach(card => cell.append(renderCard(card)));
 
@@ -401,7 +415,10 @@ function renderDoneTray() {
     .sort((a, b) => (parseUTC(b.done_at)?.getTime() || 0) - (parseUTC(a.done_at)?.getTime() || 0));
 
   const tray = el("div", { class: "done-tray" });
-  tray.append(el("h2", { class: "section-title", text: "Выполнено за неделю" }));
+  tray.append(el("div", { class: "section-head" }, [
+    el("h2", { class: "section-title", text: "Выполнено за неделю" }),
+    done.length ? el("span", { class: "section-count", text: String(done.length) }) : null,
+  ]));
 
   if (done.length === 0) {
     tray.append(el("div", { class: "empty-hint",
@@ -417,7 +434,7 @@ function renderDoneTray() {
     const meta = left <= 0
       ? "уедет в архив сегодня"
       : `в архив через ${left} ${plural(left, "день", "дня", "дней")}`;
-    list.append(el("div", { class: "tray-row" }, [
+    const row = el("div", { class: "tray-row" }, [
       el("span", { class: "tray-row__emoji", text: cat?.emoji || "✓" }),
       el("div", { class: "tray-row__body" }, [
         el("div", { class: "tray-row__title", text: card.title }),
@@ -429,7 +446,9 @@ function renderDoneTray() {
         el("button", { class: "icon-btn danger", title: "Удалить навсегда",
           html: ICON.trash, onClick: () => deleteCard(card) }),
       ]),
-    ]));
+    ]);
+    row.style.setProperty("--c", catColor(cat));
+    list.append(row);
   }
   tray.append(list);
   return tray;
@@ -569,6 +588,12 @@ function renderSettings() {
   const screen = el("div", { class: "screen" });
   const wrap = el("div", { class: "settings" });
 
+  wrap.append(el("div", { class: "settings__intro" }, [
+    el("div", { class: "kicker", text: "Настройки" }),
+    el("h2", { text: "Направления" }),
+    el("p", { text: "Обложка, эмодзи, название и цели каждого вектора жизни." }),
+  ]));
+
   if (state.board.categories.length === 0) {
     wrap.append(el("div", { class: "empty-hint",
       text: "Направлений пока нет — добавьте первое кнопкой ниже." }));
@@ -595,6 +620,7 @@ function renderSettings() {
 
 function renderDirCard(cat) {
   const card = el("div", { class: "dir-card", id: "dir-" + cat.id });
+  card.style.setProperty("--c", catColor(cat));
 
   // --- обложка ---
   const cover = el("div", { class: "dir-cover" });
