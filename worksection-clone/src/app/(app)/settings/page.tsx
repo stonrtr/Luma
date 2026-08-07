@@ -3,7 +3,6 @@ import { getRecurringForUser } from "@/server/queries/planning";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { RecurringBlock } from "@/components/planning/recurring-block";
 import { GoogleCalendarCard } from "@/components/settings/google-calendar-card";
-import { PushToggle } from "@/components/settings/push-toggle";
 import { NotificationSettingsForm } from "@/components/admin/notification-settings-form";
 import { getNotificationSettings } from "@/server/queries/notification-settings";
 import { db } from "@/server/db";
@@ -35,8 +34,6 @@ export default async function SettingsPage() {
           weekStartsMon: user.weekStartsMon,
         }}
       />
-
-      <PushToggle />
 
       {notificationSettings && (
         <section className="mt-6">
