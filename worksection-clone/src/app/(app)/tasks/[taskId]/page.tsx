@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, CalendarDays, Clock, User } from "lucide-react";
 import { BackButton } from "@/components/task/back-button";
 import { requireUser } from "@/server/dal";
 import { getTaskDetail } from "@/server/queries/tasks";
@@ -11,8 +11,10 @@ import { TagPicker } from "@/components/task/tag-picker";
 import { Attachments } from "@/components/task/attachments";
 import { ReviewButton } from "@/components/task/review-button";
 import { StatusPopover, PriorityPopover } from "@/components/task/inline-controls";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { initials, formatDate } from "@/lib/format";
+import { plannedLabel } from "@/lib/domain";
+import { cn } from "@/lib/utils";
 
 export default async function TaskDetailPage({
   params,
@@ -34,7 +36,9 @@ export default async function TaskDetailPage({
   }
 
   const members = task.project?.members.map((m) => ({ id: m.user.id, name: m.user.name })) ?? [];
-  const assigneeId = task.assignees[0]?.user.id ?? null;
+  const assignee = task.assignees[0]?.user ?? null;
+  const assigneeId = assignee?.id ?? null;
+  const overdue = !!(task.status !== "DONE" && task.dueDate && new Date(task.dueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-6">
@@ -66,6 +70,35 @@ export default async function TaskDetailPage({
               )}
             </div>
             <EditableTaskHeader taskId={task.id} title={task.title} description={task.description} />
+
+            {/* Сводка: исполнитель, дедлайн, плановий час */}
+            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                {assignee ? (
+                  <>
+                    <Avatar className="size-6">
+                      {assignee.avatarUrl && <AvatarImage src={assignee.avatarUrl} alt={assignee.name} />}
+                      <AvatarFallback className="text-[10px]">{initials(assignee.name)}</AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{assignee.name}</span>
+                  </>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                    <User className="size-4" /> Без виконавця
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CalendarDays className={cn("size-4", overdue ? "text-red-600" : "text-muted-foreground")} />
+                <span className={cn(overdue ? "font-medium text-red-600" : "text-muted-foreground")}>
+                  {task.dueDate ? formatDate(task.dueDate) : "Без дедлайну"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <Clock className="size-4" />
+                <span>{task.plannedMinutes ? plannedLabel(task.plannedMinutes) : "Час не задано"}</span>
+              </div>
+            </div>
           </div>
 
           {/* Комментарии */}
