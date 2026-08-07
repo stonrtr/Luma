@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 import { isNotificationEnabled } from "@/server/queries/notification-settings";
+import { syncTaskToGoogle } from "@/server/google/calendar";
 import type { TaskStatus } from "@/generated/prisma/enums";
 
 const createTaskSchema = z.object({
@@ -83,6 +84,8 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
       },
     });
   }
+
+  await syncTaskToGoogle(task.id); // best-effort: событие в Google Calendar исполнителя
 
   if (projectId) revalidatePath(`/projects/${projectId}`);
   if (data.parentId) revalidatePath(`/tasks/${data.parentId}`);
@@ -165,6 +168,8 @@ export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
       data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId, meta: JSON.stringify({ title: task.title, to: status }) },
     });
   }
+
+  await syncTaskToGoogle(taskId); // best-effort: обновить событие в Google Calendar
 
   revalidatePath(`/tasks/${taskId}`);
   revalidatePath(`/projects/${task.projectId}`);

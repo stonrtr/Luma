@@ -2,11 +2,15 @@ import { requireUser } from "@/server/dal";
 import { getRecurringForUser } from "@/server/queries/planning";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { RecurringBlock } from "@/components/planning/recurring-block";
+import { GoogleCalendarCard } from "@/components/settings/google-calendar-card";
+import { db } from "@/server/db";
+import { isGoogleConfigured } from "@/server/google/oauth";
 import { t } from "@/lib/i18n";
 
 export default async function SettingsPage() {
   const user = await requireUser();
   const recurring = await getRecurringForUser(user.id);
+  const googleAcc = await db.googleAccount.findUnique({ where: { userId: user.id }, select: { googleEmail: true } });
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
@@ -26,6 +30,8 @@ export default async function SettingsPage() {
           weekStartsMon: user.weekStartsMon,
         }}
       />
+
+      <GoogleCalendarCard configured={isGoogleConfigured()} connected={!!googleAcc} email={googleAcc?.googleEmail ?? null} />
 
       <section className="mt-6 rounded-xl border bg-card p-5">
         <RecurringBlock

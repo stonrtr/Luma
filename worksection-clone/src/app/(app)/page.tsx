@@ -4,6 +4,7 @@ import { getMyTasks, getArchivedTasks } from "@/server/queries/tasks";
 import { getMonthlyKpis } from "@/server/queries/planning";
 import { getProjectsForUser } from "@/server/queries/projects";
 import { getMyWeek } from "@/server/queries/calendar";
+import { listGoogleEvents } from "@/server/google/calendar";
 import { MyWorkspace } from "@/components/workspace/my-workspace";
 import { KpiStrip } from "@/components/workspace/kpi-strip";
 import type { WeekData, WeekDay } from "@/components/calendar/week-calendar";
@@ -99,6 +100,23 @@ export default async function HomePage({
       const s = new Date(c.scheduledAt);
       const startMin = s.getHours() * 60 + s.getMinutes();
       days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#0ea5e9", type: "call" });
+    }
+    // события из Google Calendar пользователя (звонки/встречи); задачи-зеркала пропускаем
+    for (const g of await listGoogleEvents(user.id, weekStart, weekEnd)) {
+      if (g.fromApp) continue;
+      if (g.start) {
+        const di = dayIndex(new Date(g.start));
+        if (di < 0 || di >= 7) continue;
+        const s = new Date(g.start);
+        const startMin = s.getHours() * 60 + s.getMinutes();
+        let endMin = startMin + 30;
+        if (g.end) { const e = new Date(g.end); endMin = e.getHours() * 60 + e.getMinutes(); }
+        days[di].events.push({ startMin, endMin: Math.max(endMin, startMin + 15), title: g.title, color: "#16a34a", type: "call", href: g.htmlLink ?? undefined });
+      } else if (g.allDayDate) {
+        const di = dayIndex(new Date(`${g.allDayDate}T00:00:00`));
+        if (di < 0 || di >= 7) continue;
+        days[di].allDay.push({ title: g.title, color: "#16a34a", href: g.htmlLink ?? undefined });
+      }
     }
     for (const l of logs) {
       const di = dayIndex(l.loggedAt);
