@@ -10,6 +10,7 @@ import { KpiStrip } from "@/components/workspace/kpi-strip";
 import type { WeekData, WeekDay } from "@/components/calendar/week-calendar";
 import type { BoardTask } from "@/components/board/types";
 import { mondayOf, addDays } from "@/lib/week";
+import { zonedDateStr, zonedMinutes } from "@/lib/tz";
 import { formatMinutes } from "@/lib/format";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -58,15 +59,21 @@ export default async function HomePage({
     const dailyCap = weeklyHours ? Math.round((weeklyHours / 5) * 60) : 480;
     const START_H = 8, END_H = 22;
     const dayNames = ["пн", "вт", "ср", "чт", "пт", "сб", "нд"];
-    const todayD = new Date(); todayD.setHours(0, 0, 0, 0);
-    const dayIndex = (d: Date) => Math.floor((new Date(d).setHours(0, 0, 0, 0) - weekStart.getTime()) / 86400000);
+    const tz = user.timezone || "Europe/Kyiv";
+    // ключи дней недели (YYYY-MM-DD) в часовом поясе пользователя; полдень, чтобы дата не «съезжала»
+    const dayKeys = Array.from({ length: 7 }, (_, di) => {
+      const noon = addDays(weekStart, di); noon.setHours(12, 0, 0, 0);
+      return zonedDateStr(noon, tz);
+    });
+    const todayKey = zonedDateStr(new Date(), tz);
+    const dayIndex = (d: Date | string) => dayKeys.indexOf(zonedDateStr(new Date(d), tz));
 
     const days: WeekDay[] = Array.from({ length: 7 }, (_, di) => {
       const date = addDays(weekStart, di);
       return {
         weekdayLabel: dayNames[di],
         dateLabel: `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`,
-        isToday: date.getTime() === todayD.getTime(),
+        isToday: dayKeys[di] === todayKey,
         events: [], allDay: [],
         summary: { freeMin: dailyCap, tasksDone: 0, tasksPlanned: 0, actualMin: 0, plannedMin: 0 },
       };
@@ -79,13 +86,14 @@ export default async function HomePage({
       let di = -1;
       if (inWeek(tk.scheduledAt)) {
         di = dayIndex(tk.scheduledAt!);
-        const s = new Date(tk.scheduledAt!);
-        const startMin = s.getHours() * 60 + s.getMinutes();
-        const dur = tk.plannedMinutes ?? 60;
-        days[di].events.push({ startMin, endMin: startMin + dur, title: tk.title, color, type: "task", href: `/tasks/${tk.id}`, done });
+        if (di >= 0) {
+          const startMin = zonedMinutes(new Date(tk.scheduledAt!), tz);
+          const dur = tk.plannedMinutes ?? 60;
+          days[di].events.push({ startMin, endMin: startMin + dur, title: tk.title, color, type: "task", href: `/tasks/${tk.id}`, done });
+        }
       } else if (inWeek(tk.dueDate)) {
         di = dayIndex(tk.dueDate!);
-        days[di].allDay.push({ title: tk.title, color, href: `/tasks/${tk.id}`, done });
+        if (di >= 0) days[di].allDay.push({ title: tk.title, color, href: `/tasks/${tk.id}`, done });
       }
       if (di >= 0 && di < 7) {
         const sm = days[di].summary;
@@ -96,9 +104,8 @@ export default async function HomePage({
     }
     for (const c of calls) {
       const di = dayIndex(c.scheduledAt);
-      if (di < 0 || di >= 7) continue;
-      const s = new Date(c.scheduledAt);
-      const startMin = s.getHours() * 60 + s.getMinutes();
+      if (di < 0) continue;
+      const startMin = zonedMinutes(new Date(c.scheduledAt), tz);
       days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#0ea5e9", type: "call" });
     }
     // события из Google Calendar пользователя (звонки/встречи); задачи-зеркала пропускаем
@@ -106,21 +113,19 @@ export default async function HomePage({
       if (g.fromApp) continue;
       if (g.start) {
         const di = dayIndex(new Date(g.start));
-        if (di < 0 || di >= 7) continue;
-        const s = new Date(g.start);
-        const startMin = s.getHours() * 60 + s.getMinutes();
-        let endMin = startMin + 30;
-        if (g.end) { const e = new Date(g.end); endMin = e.getHours() * 60 + e.getMinutes(); }
+        if (di < 0) continue;
+        const startMin = zonedMinutes(new Date(g.start), tz);
+        const endMin = g.end ? zonedMinutes(new Date(g.end), tz) : startMin + 30;
         days[di].events.push({ startMin, endMin: Math.max(endMin, startMin + 15), title: g.title, color: "#16a34a", type: "call", href: g.htmlLink ?? undefined });
       } else if (g.allDayDate) {
-        const di = dayIndex(new Date(`${g.allDayDate}T00:00:00`));
-        if (di < 0 || di >= 7) continue;
+        const di = dayKeys.indexOf(g.allDayDate); // g.allDayDate уже YYYY-MM-DD
+        if (di < 0) continue;
         days[di].allDay.push({ title: g.title, color: "#16a34a", href: g.htmlLink ?? undefined });
       }
     }
     for (const l of logs) {
       const di = dayIndex(l.loggedAt);
-      if (di >= 0 && di < 7) days[di].summary.actualMin += l.minutes;
+      if (di >= 0) days[di].summary.actualMin += l.minutes;
     }
     for (const d of days) d.summary.freeMin = Math.max(0, dailyCap - d.summary.plannedMin);
 

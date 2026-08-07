@@ -4,6 +4,7 @@ import { requireUser } from "@/server/dal";
 import { getTeamOverview } from "@/server/queries/team";
 import { getMyTasks, getAllTasks, getArchivedTasks, getRecentActivity } from "@/server/queries/tasks";
 import { getMyWeek } from "@/server/queries/calendar";
+import { zonedDateStr, zonedMinutes } from "@/lib/tz";
 import { getProjectsForUser } from "@/server/queries/projects";
 import { KanbanBoard } from "@/components/board/kanban-board";
 import { DayBoard } from "@/components/board/day-board";
@@ -54,17 +55,19 @@ function mapArchive(tasks: Awaited<ReturnType<typeof getArchivedTasks>>): Archiv
 async function buildWeek(userId: string, ws?: string): Promise<WeekData> {
   const weekStart = mondayOf(ws ? new Date(ws) : new Date());
   const weekEnd = addDays(weekStart, 7);
-  const { tasks, calls, logs, weeklyHours } = await getMyWeek(userId, weekStart);
+  const { tasks, calls, logs, weeklyHours, timezone } = await getMyWeek(userId, weekStart);
   const dailyCap = weeklyHours ? Math.round((weeklyHours / 5) * 60) : 480;
   const dayNames = ["пн", "вт", "ср", "чт", "пт", "сб", "нд"];
-  const todayD = new Date(); todayD.setHours(0, 0, 0, 0);
-  const dayIndex = (d: Date) => Math.floor((new Date(d).setHours(0, 0, 0, 0) - weekStart.getTime()) / 86400000);
+  const tz = timezone || "Europe/Kyiv";
+  const dayKeys = Array.from({ length: 7 }, (_, di) => { const noon = addDays(weekStart, di); noon.setHours(12, 0, 0, 0); return zonedDateStr(noon, tz); });
+  const todayKey = zonedDateStr(new Date(), tz);
+  const dayIndex = (d: Date | string) => dayKeys.indexOf(zonedDateStr(new Date(d), tz));
   const days: WeekDay[] = Array.from({ length: 7 }, (_, di) => {
     const date = addDays(weekStart, di);
     return {
       weekdayLabel: dayNames[di],
       dateLabel: `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`,
-      isToday: date.getTime() === todayD.getTime(),
+      isToday: dayKeys[di] === todayKey,
       events: [], allDay: [],
       summary: { freeMin: dailyCap, tasksDone: 0, tasksPlanned: 0, actualMin: 0, plannedMin: 0 },
     };
@@ -75,16 +78,18 @@ async function buildWeek(userId: string, ws?: string): Promise<WeekData> {
     const color = tk.project?.color ?? (done ? "#10b981" : "#4f46e5");
     let di = -1;
     if (inWeek(tk.scheduledAt)) {
-      di = dayIndex(tk.scheduledAt!); const s = new Date(tk.scheduledAt!);
-      const startMin = s.getHours() * 60 + s.getMinutes();
-      days[di].events.push({ startMin, endMin: startMin + (tk.plannedMinutes ?? 60), title: tk.title, color, type: "task", href: `/tasks/${tk.id}`, done });
+      di = dayIndex(tk.scheduledAt!);
+      if (di >= 0) {
+        const startMin = zonedMinutes(new Date(tk.scheduledAt!), tz);
+        days[di].events.push({ startMin, endMin: startMin + (tk.plannedMinutes ?? 60), title: tk.title, color, type: "task", href: `/tasks/${tk.id}`, done });
+      }
     } else if (inWeek(tk.dueDate)) {
-      di = dayIndex(tk.dueDate!); days[di].allDay.push({ title: tk.title, color, href: `/tasks/${tk.id}`, done });
+      di = dayIndex(tk.dueDate!); if (di >= 0) days[di].allDay.push({ title: tk.title, color, href: `/tasks/${tk.id}`, done });
     }
     if (di >= 0 && di < 7) { const sm = days[di].summary; sm.tasksPlanned++; if (done) sm.tasksDone++; sm.plannedMin += tk.plannedMinutes ?? 0; }
   }
-  for (const c of calls) { const di = dayIndex(c.scheduledAt); if (di < 0 || di >= 7) continue; const s = new Date(c.scheduledAt); const startMin = s.getHours() * 60 + s.getMinutes(); days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#0ea5e9", type: "call" }); }
-  for (const l of logs) { const di = dayIndex(l.loggedAt); if (di >= 0 && di < 7) days[di].summary.actualMin += l.minutes; }
+  for (const c of calls) { const di = dayIndex(c.scheduledAt); if (di < 0) continue; const startMin = zonedMinutes(new Date(c.scheduledAt), tz); days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#0ea5e9", type: "call" }); }
+  for (const l of logs) { const di = dayIndex(l.loggedAt); if (di >= 0) days[di].summary.actualMin += l.minutes; }
   for (const d of days) d.summary.freeMin = Math.max(0, dailyCap - d.summary.plannedMin);
   const fmt = (d: Date) => `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
   return {

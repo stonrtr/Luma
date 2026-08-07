@@ -47,9 +47,9 @@ export async function getMyWeek(userId: string, weekStart: Date) {
     }),
     db.call.findMany({ where: { userId, scheduledAt: { gte: from, lt: to } } }),
     db.timeLog.findMany({ where: { userId, loggedAt: { gte: from, lt: to } }, select: { minutes: true, loggedAt: true } }),
-    db.user.findUnique({ where: { id: userId }, select: { weeklyHours: true } }),
+    db.user.findUnique({ where: { id: userId }, select: { weeklyHours: true, timezone: true } }),
   ]);
-  return { tasks, calls, logs, weeklyHours: user?.weeklyHours ?? null };
+  return { tasks, calls, logs, weeklyHours: user?.weeklyHours ?? null, timezone: user?.timezone ?? "Europe/Kyiv" };
 }
 
 // Персональный календарь: задачи и звонки текущего пользователя за месяц
