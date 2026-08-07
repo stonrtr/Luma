@@ -67,6 +67,21 @@ model User {
   fileShares      FileShare[]
   callPointsAuthored CallPoint[]  @relation("CallPointAuthor")
   callPointsAbout    CallPoint[]  @relation("CallPointMember")
+  googleAccount      GoogleAccount?
+}
+
+// Подключение Google Calendar сотрудника (OAuth-токены)
+model GoogleAccount {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  googleEmail  String?
+  calendarId   String   @default("primary")
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime // когда истекает accessToken
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 // Поінти до дзвінка: что обсудить с конкретным членом команды перед созвоном
@@ -168,6 +183,7 @@ model Task {
   reviewRequestedAt DateTime? // «на проверку руководителю»
   assignedByManager Boolean  @default(false) // поставлена руководителем
   position        Int        @default(0)
+  googleEventId   String?    // id связанного события Google Calendar
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 

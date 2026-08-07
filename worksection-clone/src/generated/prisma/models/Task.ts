@@ -53,6 +53,7 @@ export type TaskMinAggregateOutputType = {
   reviewRequestedAt: Date | null
   assignedByManager: boolean | null
   position: number | null
+  googleEventId: string | null
   createdAt: Date | null
   updatedAt: Date | null
   projectId: string | null
@@ -77,6 +78,7 @@ export type TaskMaxAggregateOutputType = {
   reviewRequestedAt: Date | null
   assignedByManager: boolean | null
   position: number | null
+  googleEventId: string | null
   createdAt: Date | null
   updatedAt: Date | null
   projectId: string | null
@@ -101,6 +103,7 @@ export type TaskCountAggregateOutputType = {
   reviewRequestedAt: number
   assignedByManager: number
   position: number
+  googleEventId: number
   createdAt: number
   updatedAt: number
   projectId: number
@@ -139,6 +142,7 @@ export type TaskMinAggregateInputType = {
   reviewRequestedAt?: true
   assignedByManager?: true
   position?: true
+  googleEventId?: true
   createdAt?: true
   updatedAt?: true
   projectId?: true
@@ -163,6 +167,7 @@ export type TaskMaxAggregateInputType = {
   reviewRequestedAt?: true
   assignedByManager?: true
   position?: true
+  googleEventId?: true
   createdAt?: true
   updatedAt?: true
   projectId?: true
@@ -187,6 +192,7 @@ export type TaskCountAggregateInputType = {
   reviewRequestedAt?: true
   assignedByManager?: true
   position?: true
+  googleEventId?: true
   createdAt?: true
   updatedAt?: true
   projectId?: true
@@ -298,6 +304,7 @@ export type TaskGroupByOutputType = {
   reviewRequestedAt: Date | null
   assignedByManager: boolean
   position: number
+  googleEventId: string | null
   createdAt: Date
   updatedAt: Date
   projectId: string | null
@@ -345,6 +352,7 @@ export type TaskWhereInput = {
   reviewRequestedAt?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   assignedByManager?: Prisma.BoolFilter<"Task"> | boolean
   position?: Prisma.IntFilter<"Task"> | number
+  googleEventId?: Prisma.StringNullableFilter<"Task"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   projectId?: Prisma.StringNullableFilter<"Task"> | string | null
@@ -384,6 +392,7 @@ export type TaskOrderByWithRelationInput = {
   reviewRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedByManager?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -426,6 +435,7 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   reviewRequestedAt?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   assignedByManager?: Prisma.BoolFilter<"Task"> | boolean
   position?: Prisma.IntFilter<"Task"> | number
+  googleEventId?: Prisma.StringNullableFilter<"Task"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   projectId?: Prisma.StringNullableFilter<"Task"> | string | null
@@ -465,6 +475,7 @@ export type TaskOrderByWithAggregationInput = {
   reviewRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedByManager?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -497,6 +508,7 @@ export type TaskScalarWhereWithAggregatesInput = {
   reviewRequestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
   assignedByManager?: Prisma.BoolWithAggregatesFilter<"Task"> | boolean
   position?: Prisma.IntWithAggregatesFilter<"Task"> | number
+  googleEventId?: Prisma.StringNullableWithAggregatesFilter<"Task"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
   projectId?: Prisma.StringNullableWithAggregatesFilter<"Task"> | string | null
@@ -521,6 +533,7 @@ export type TaskCreateInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -555,6 +568,7 @@ export type TaskUncheckedCreateInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -589,6 +603,7 @@ export type TaskUpdateInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -623,6 +638,7 @@ export type TaskUncheckedUpdateInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -657,6 +673,7 @@ export type TaskCreateManyInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -681,6 +698,7 @@ export type TaskUpdateManyMutationInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -700,6 +718,7 @@ export type TaskUncheckedUpdateManyInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -739,6 +758,7 @@ export type TaskCountOrderByAggregateInput = {
   reviewRequestedAt?: Prisma.SortOrder
   assignedByManager?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -769,6 +789,7 @@ export type TaskMaxOrderByAggregateInput = {
   reviewRequestedAt?: Prisma.SortOrder
   assignedByManager?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -793,6 +814,7 @@ export type TaskMinOrderByAggregateInput = {
   reviewRequestedAt?: Prisma.SortOrder
   assignedByManager?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -1204,6 +1226,7 @@ export type TaskCreateWithoutCreatedByInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -1237,6 +1260,7 @@ export type TaskUncheckedCreateWithoutCreatedByInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -1298,6 +1322,7 @@ export type TaskScalarWhereInput = {
   reviewRequestedAt?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   assignedByManager?: Prisma.BoolFilter<"Task"> | boolean
   position?: Prisma.IntFilter<"Task"> | number
+  googleEventId?: Prisma.StringNullableFilter<"Task"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   projectId?: Prisma.StringNullableFilter<"Task"> | string | null
@@ -1322,6 +1347,7 @@ export type TaskCreateWithoutProjectInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parent?: Prisma.TaskCreateNestedOneWithoutSubtasksInput
@@ -1355,6 +1381,7 @@ export type TaskUncheckedCreateWithoutProjectInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parentId?: string | null
@@ -1413,6 +1440,7 @@ export type TaskCreateWithoutSubtasksInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -1446,6 +1474,7 @@ export type TaskUncheckedCreateWithoutSubtasksInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -1484,6 +1513,7 @@ export type TaskCreateWithoutParentInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -1517,6 +1547,7 @@ export type TaskUncheckedCreateWithoutParentInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -1570,6 +1601,7 @@ export type TaskUpdateWithoutSubtasksInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -1603,6 +1635,7 @@ export type TaskUncheckedUpdateWithoutSubtasksInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1652,6 +1685,7 @@ export type TaskCreateWithoutAssigneesInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -1685,6 +1719,7 @@ export type TaskUncheckedCreateWithoutAssigneesInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -1734,6 +1769,7 @@ export type TaskUpdateWithoutAssigneesInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -1767,6 +1803,7 @@ export type TaskUncheckedUpdateWithoutAssigneesInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1800,6 +1837,7 @@ export type TaskCreateWithoutDependedByInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -1833,6 +1871,7 @@ export type TaskUncheckedCreateWithoutDependedByInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -1871,6 +1910,7 @@ export type TaskCreateWithoutDependsOnInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -1904,6 +1944,7 @@ export type TaskUncheckedCreateWithoutDependsOnInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -1953,6 +1994,7 @@ export type TaskUpdateWithoutDependedByInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -1986,6 +2028,7 @@ export type TaskUncheckedUpdateWithoutDependedByInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2030,6 +2073,7 @@ export type TaskUpdateWithoutDependsOnInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -2063,6 +2107,7 @@ export type TaskUncheckedUpdateWithoutDependsOnInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2096,6 +2141,7 @@ export type TaskCreateWithoutMilestoneInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2129,6 +2175,7 @@ export type TaskUncheckedCreateWithoutMilestoneInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2187,6 +2234,7 @@ export type TaskCreateWithoutChecklistInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2220,6 +2268,7 @@ export type TaskUncheckedCreateWithoutChecklistInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2269,6 +2318,7 @@ export type TaskUpdateWithoutChecklistInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -2302,6 +2352,7 @@ export type TaskUncheckedUpdateWithoutChecklistInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2335,6 +2386,7 @@ export type TaskCreateWithoutRecurringTaskInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2368,6 +2420,7 @@ export type TaskUncheckedCreateWithoutRecurringTaskInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2426,6 +2479,7 @@ export type TaskCreateWithoutTagsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2459,6 +2513,7 @@ export type TaskUncheckedCreateWithoutTagsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2508,6 +2563,7 @@ export type TaskUpdateWithoutTagsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -2541,6 +2597,7 @@ export type TaskUncheckedUpdateWithoutTagsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2574,6 +2631,7 @@ export type TaskCreateWithoutCommentsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2607,6 +2665,7 @@ export type TaskUncheckedCreateWithoutCommentsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2656,6 +2715,7 @@ export type TaskUpdateWithoutCommentsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -2689,6 +2749,7 @@ export type TaskUncheckedUpdateWithoutCommentsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2722,6 +2783,7 @@ export type TaskCreateWithoutAttachmentsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2755,6 +2817,7 @@ export type TaskUncheckedCreateWithoutAttachmentsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2804,6 +2867,7 @@ export type TaskUpdateWithoutAttachmentsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -2837,6 +2901,7 @@ export type TaskUncheckedUpdateWithoutAttachmentsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2870,6 +2935,7 @@ export type TaskCreateWithoutTimeLogsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -2903,6 +2969,7 @@ export type TaskUncheckedCreateWithoutTimeLogsInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -2952,6 +3019,7 @@ export type TaskUpdateWithoutTimeLogsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -2985,6 +3053,7 @@ export type TaskUncheckedUpdateWithoutTimeLogsInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3018,6 +3087,7 @@ export type TaskCreateWithoutPlanItemInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -3051,6 +3121,7 @@ export type TaskUncheckedCreateWithoutPlanItemInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -3100,6 +3171,7 @@ export type TaskUpdateWithoutPlanItemInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -3133,6 +3205,7 @@ export type TaskUncheckedUpdateWithoutPlanItemInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3166,6 +3239,7 @@ export type TaskCreateManyCreatedByInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -3189,6 +3263,7 @@ export type TaskUpdateWithoutCreatedByInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -3222,6 +3297,7 @@ export type TaskUncheckedUpdateWithoutCreatedByInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3255,6 +3331,7 @@ export type TaskUncheckedUpdateManyWithoutCreatedByInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3278,6 +3355,7 @@ export type TaskCreateManyProjectInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parentId?: string | null
@@ -3301,6 +3379,7 @@ export type TaskUpdateWithoutProjectInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.TaskUpdateOneWithoutSubtasksNestedInput
@@ -3334,6 +3413,7 @@ export type TaskUncheckedUpdateWithoutProjectInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3367,6 +3447,7 @@ export type TaskUncheckedUpdateManyWithoutProjectInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3390,6 +3471,7 @@ export type TaskCreateManyParentInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -3413,6 +3495,7 @@ export type TaskUpdateWithoutParentInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -3446,6 +3529,7 @@ export type TaskUncheckedUpdateWithoutParentInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3479,6 +3563,7 @@ export type TaskUncheckedUpdateManyWithoutParentInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3502,6 +3587,7 @@ export type TaskCreateManyMilestoneInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -3525,6 +3611,7 @@ export type TaskUpdateWithoutMilestoneInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -3558,6 +3645,7 @@ export type TaskUncheckedUpdateWithoutMilestoneInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3591,6 +3679,7 @@ export type TaskUncheckedUpdateManyWithoutMilestoneInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3614,6 +3703,7 @@ export type TaskCreateManyRecurringTaskInput = {
   reviewRequestedAt?: Date | string | null
   assignedByManager?: boolean
   position?: number
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId?: string | null
@@ -3637,6 +3727,7 @@ export type TaskUpdateWithoutRecurringTaskInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutTasksNestedInput
@@ -3670,6 +3761,7 @@ export type TaskUncheckedUpdateWithoutRecurringTaskInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3703,6 +3795,7 @@ export type TaskUncheckedUpdateManyWithoutRecurringTaskInput = {
   reviewRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignedByManager?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3829,6 +3922,7 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reviewRequestedAt?: boolean
   assignedByManager?: boolean
   position?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -3869,6 +3963,7 @@ export type TaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   reviewRequestedAt?: boolean
   assignedByManager?: boolean
   position?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -3898,6 +3993,7 @@ export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   reviewRequestedAt?: boolean
   assignedByManager?: boolean
   position?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -3927,6 +4023,7 @@ export type TaskSelectScalar = {
   reviewRequestedAt?: boolean
   assignedByManager?: boolean
   position?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -3936,7 +4033,7 @@ export type TaskSelectScalar = {
   recurringTaskId?: boolean
 }
 
-export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "priority" | "startDate" | "dueDate" | "scheduledAt" | "plannedMinutes" | "completedAt" | "archivedAt" | "reviewRequestedAt" | "assignedByManager" | "position" | "createdAt" | "updatedAt" | "projectId" | "parentId" | "createdById" | "milestoneId" | "recurringTaskId", ExtArgs["result"]["task"]>
+export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "priority" | "startDate" | "dueDate" | "scheduledAt" | "plannedMinutes" | "completedAt" | "archivedAt" | "reviewRequestedAt" | "assignedByManager" | "position" | "googleEventId" | "createdAt" | "updatedAt" | "projectId" | "parentId" | "createdById" | "milestoneId" | "recurringTaskId", ExtArgs["result"]["task"]>
 export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.Task$projectArgs<ExtArgs>
   parent?: boolean | Prisma.Task$parentArgs<ExtArgs>
@@ -4004,6 +4101,7 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reviewRequestedAt: Date | null
     assignedByManager: boolean
     position: number
+    googleEventId: string | null
     createdAt: Date
     updatedAt: Date
     projectId: string | null
@@ -4463,6 +4561,7 @@ export interface TaskFieldRefs {
   readonly reviewRequestedAt: Prisma.FieldRef<"Task", 'DateTime'>
   readonly assignedByManager: Prisma.FieldRef<"Task", 'Boolean'>
   readonly position: Prisma.FieldRef<"Task", 'Int'>
+  readonly googleEventId: Prisma.FieldRef<"Task", 'String'>
   readonly createdAt: Prisma.FieldRef<"Task", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Task", 'DateTime'>
   readonly projectId: Prisma.FieldRef<"Task", 'String'>

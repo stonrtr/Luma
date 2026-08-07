@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model GoogleAccount
+ * 
+ */
+export type GoogleAccount = Prisma.GoogleAccountModel
+/**
  * Model CallPoint
  * 
  */

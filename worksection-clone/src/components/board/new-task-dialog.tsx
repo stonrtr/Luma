@@ -41,6 +41,13 @@ export function NewTaskDialog({
   lockedAssigneeId,
   defaultAssigneeId,
   projects,
+  initialTitle,
+  initialStatus,
+  initialDueDate,
+  headerTitle,
+  cancelLabel,
+  extraFooter,
+  onCreated,
 }: {
   projectId: string;
   members: BoardMember[];
@@ -49,16 +56,23 @@ export function NewTaskDialog({
   lockedAssigneeId?: string;
   defaultAssigneeId?: string;
   projects?: { id: string; name: string; color: string }[];
+  initialTitle?: string;
+  initialStatus?: TaskStatus;
+  initialDueDate?: string;
+  headerTitle?: string;
+  cancelLabel?: string;
+  extraFooter?: React.ReactNode;
+  onCreated?: () => void;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(initialTitle ?? "");
   const [priority, setPriority] = useState<number>(DEFAULT_PRIORITY);
-  const [taskStatus, setTaskStatus] = useState<TaskStatus>("TODO");
+  const [taskStatus, setTaskStatus] = useState<TaskStatus>(initialStatus ?? "TODO");
   const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
   const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? members[0]?.id ?? "");
   const [projectSel, setProjectSel] = useState<string>("base");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(initialDueDate ?? "");
   const [dueTime, setDueTime] = useState("");
 
   // выбор проекта показываем только в личном контексте (нет жёсткого проекта) и если проекты есть
@@ -95,9 +109,13 @@ export function NewTaskDialog({
           dueTime: dueTime || undefined,
         });
         toast.success("Задачу створено");
-        reset();
-        onClose();
-        router.refresh();
+        if (onCreated) {
+          onCreated();
+        } else {
+          reset();
+          onClose();
+          router.refresh();
+        }
       } catch {
         toast.error("Не вдалося створити задачу");
       }
@@ -106,9 +124,9 @@ export function NewTaskDialog({
 
   return (
     <Dialog open={status !== null} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg" onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); submit(); } }}>
         <DialogHeader>
-          <DialogTitle>Нова задача</DialogTitle>
+          <DialogTitle>{headerTitle ?? "Нова задача"}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">
@@ -231,9 +249,13 @@ export function NewTaskDialog({
           </div>
           <p className="text-xs text-muted-foreground">Якщо вказати дату та час — задача з&apos;явиться в календарі.</p>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={pending}>Скасувати</Button>
-          <Button onClick={submit} disabled={pending}>{pending ? "Створення…" : "Створити"}</Button>
+        <DialogFooter className="sm:flex-col sm:items-stretch sm:gap-2">
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={onClose} disabled={pending}>{cancelLabel ?? "Скасувати"}</Button>
+            {extraFooter}
+            <Button onClick={submit} disabled={pending}>{pending ? "Створення…" : "Створити"}</Button>
+          </div>
+          <span className="text-right text-[10px] text-muted-foreground">⌘/Ctrl + Enter — створити</span>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  GoogleAccount: 'GoogleAccount',
   CallPoint: 'CallPoint',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
+    modelProps: "user" | "googleAccount" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -512,6 +513,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    GoogleAccount: {
+      payload: Prisma.$GoogleAccountPayload<ExtArgs>
+      fields: Prisma.GoogleAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GoogleAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GoogleAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.GoogleAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GoogleAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>
+        }
+        findMany: {
+          args: Prisma.GoogleAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>[]
+        }
+        create: {
+          args: Prisma.GoogleAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>
+        }
+        createMany: {
+          args: Prisma.GoogleAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GoogleAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.GoogleAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>
+        }
+        update: {
+          args: Prisma.GoogleAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.GoogleAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GoogleAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GoogleAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.GoogleAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.GoogleAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGoogleAccount>
+        }
+        groupBy: {
+          args: Prisma.GoogleAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GoogleAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GoogleAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GoogleAccountCountAggregateOutputType> | number
         }
       }
     }
@@ -2354,6 +2429,21 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const GoogleAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  googleEmail: 'googleEmail',
+  calendarId: 'calendarId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GoogleAccountScalarFieldEnum = (typeof GoogleAccountScalarFieldEnum)[keyof typeof GoogleAccountScalarFieldEnum]
+
+
 export const CallPointScalarFieldEnum = {
   id: 'id',
   text: 'text',
@@ -2410,6 +2500,7 @@ export const TaskScalarFieldEnum = {
   reviewRequestedAt: 'reviewRequestedAt',
   assignedByManager: 'assignedByManager',
   position: 'position',
+  googleEventId: 'googleEventId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   projectId: 'projectId',
@@ -2913,6 +3004,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  googleAccount?: Prisma.GoogleAccountOmit
   callPoint?: Prisma.CallPointOmit
   project?: Prisma.ProjectOmit
   projectMember?: Prisma.ProjectMemberOmit

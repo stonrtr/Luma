@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  GoogleAccount: 'GoogleAccount',
   CallPoint: 'CallPoint',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
@@ -118,6 +119,21 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const GoogleAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  googleEmail: 'googleEmail',
+  calendarId: 'calendarId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GoogleAccountScalarFieldEnum = (typeof GoogleAccountScalarFieldEnum)[keyof typeof GoogleAccountScalarFieldEnum]
+
+
 export const CallPointScalarFieldEnum = {
   id: 'id',
   text: 'text',
@@ -174,6 +190,7 @@ export const TaskScalarFieldEnum = {
   reviewRequestedAt: 'reviewRequestedAt',
   assignedByManager: 'assignedByManager',
   position: 'position',
+  googleEventId: 'googleEventId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   projectId: 'projectId',

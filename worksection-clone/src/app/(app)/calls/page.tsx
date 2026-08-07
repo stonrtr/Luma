@@ -28,7 +28,7 @@ export default async function CallsPage() {
           <Sparkles className="size-4 text-primary" /> Задачі із саммарі дзвінка
         </h2>
         <div className="rounded-xl border bg-card p-5">
-          <SummaryExtractor />
+          <SummaryExtractor viewerId={user.id} />
         </div>
       </section>
     </div>

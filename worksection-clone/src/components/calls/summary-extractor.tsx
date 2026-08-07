@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
 import { extractTaskTitles } from "@/server/actions/calls";
-import { createTask } from "@/server/actions/tasks";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PRIORITY_VALUES, DEFAULT_PRIORITY, priorityStyle } from "@/lib/domain";
-import { cn } from "@/lib/utils";
+import { NewTaskDialog } from "@/components/board/new-task-dialog";
 
-export function SummaryExtractor() {
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export function SummaryExtractor({ viewerId }: { viewerId: string }) {
   const router = useRouter();
   const [summary, setSummary] = useState("");
   const [pending, start] = useTransition();
@@ -51,119 +51,39 @@ export function SummaryExtractor() {
       <Textarea
         value={summary}
         onChange={(e) => setSummary(e.target.value)}
+        onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); run(); } }}
         rows={8}
         placeholder="Вставте сюди повний текст саммарі созвону з керівником…"
       />
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-end justify-between gap-3">
         <p className="text-xs text-muted-foreground">
-          ШІ виокремить задачі. Для кожної задасте пріоритет і дедлайн та створите — далі одразу відкриється наступна.
+          ШІ виокремить задачі. Кожна відкриється у стандартній картці — задасте пріоритет, плановий час і дедлайн, створите, і одразу відкриється наступна.
         </p>
-        <Button onClick={run} disabled={pending} className="shrink-0">
-          <Sparkles className="size-4" /> {pending ? "Обробка…" : "Витягти задачі"}
-        </Button>
+        <div className="flex flex-col items-end gap-1">
+          <Button onClick={run} disabled={pending} className="shrink-0">
+            <Sparkles className="size-4" /> {pending ? "Обробка…" : "Витягти задачі"}
+          </Button>
+          <span className="text-[10px] text-muted-foreground">⌘/Ctrl + Enter</span>
+        </div>
       </div>
 
-      {queue && (
-        <ImportWizard
-          title={queue[index]}
-          index={index}
-          total={queue.length}
+      {queue && queue.length > 0 && (
+        <NewTaskDialog
+          key={index}
+          projectId=""
+          members={[]}
+          status="IDEA"
+          lockedAssigneeId={viewerId}
+          initialTitle={queue[index]}
+          initialStatus="IDEA"
+          initialDueDate={todayStr()}
+          headerTitle={`Задача ${index + 1} з ${queue.length}`}
+          cancelLabel="Зупинити імпорт"
+          extraFooter={<Button variant="outline" onClick={next}>Пропустити</Button>}
           onCreated={() => { setCreated((c) => c + 1); next(); }}
-          onSkip={next}
-          onStop={finish}
+          onClose={finish}
         />
       )}
     </div>
-  );
-}
-
-function ImportWizard({
-  title: initialTitle, index, total, onCreated, onSkip, onStop,
-}: {
-  title: string; index: number; total: number;
-  onCreated: () => void; onSkip: () => void; onStop: () => void;
-}) {
-  const [title, setTitle] = useState(initialTitle);
-  const [priority, setPriority] = useState(DEFAULT_PRIORITY);
-  const [dueDate, setDueDate] = useState("");
-  const [dueTime, setDueTime] = useState("");
-  const [pending, start] = useTransition();
-
-  // при переходе к следующей задаче сбрасываем поля
-  const stepKey = `${index}-${initialTitle}`;
-  const [key, setKey] = useState(stepKey);
-  if (key !== stepKey) {
-    setKey(stepKey);
-    setTitle(initialTitle);
-    setPriority(DEFAULT_PRIORITY);
-    setDueDate("");
-    setDueTime("");
-  }
-
-  function create() {
-    if (!title.trim()) return;
-    start(async () => {
-      await createTask({
-        title: title.trim(),
-        status: "IDEA",
-        priority,
-        dueDate: dueDate || undefined,
-        dueTime: dueTime || undefined,
-      });
-      onCreated();
-    });
-  }
-
-  return (
-    <Dialog open onOpenChange={(o) => !o && onStop()}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Задача {index + 1} з {total}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="wiz-title">Назва</Label>
-            <Input id="wiz-title" value={title} onChange={(e) => setTitle(e.target.value)} autoFocus />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Пріоритет</Label>
-            <div className="flex gap-1">
-              {PRIORITY_VALUES.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPriority(p)}
-                  className={cn(
-                    "flex h-8 flex-1 items-center justify-center rounded-md border text-sm font-medium transition-all",
-                    priority === p ? cn(priorityStyle(p), "border-transparent ring-2 ring-offset-1 ring-ring") : "border-border text-muted-foreground hover:bg-muted",
-                  )}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="wiz-date">Дедлайн</Label>
-              <Input id="wiz-date" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="wiz-time">Час</Label>
-              <Input id="wiz-time" type="time" value={dueTime} onChange={(e) => setDueTime(e.target.value)} />
-            </div>
-          </div>
-        </div>
-        <DialogFooter className="sm:justify-between">
-          <Button variant="ghost" onClick={onStop} disabled={pending}>Зупинити імпорт</Button>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={onSkip} disabled={pending}>Пропустити</Button>
-            <Button onClick={create} disabled={pending}>{pending ? "Створення…" : "Створити"}</Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 }
