@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  WeeklyPlanApproval: 'WeeklyPlanApproval',
   PushSubscription: 'PushSubscription',
   GoogleAccount: 'GoogleAccount',
   CallPoint: 'CallPoint',
@@ -118,6 +119,21 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const WeeklyPlanApprovalScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  weekStart: 'weekStart',
+  status: 'status',
+  comment: 'comment',
+  reviewerId: 'reviewerId',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WeeklyPlanApprovalScalarFieldEnum = (typeof WeeklyPlanApprovalScalarFieldEnum)[keyof typeof WeeklyPlanApprovalScalarFieldEnum]
 
 
 export const PushSubscriptionScalarFieldEnum = {

@@ -33,6 +33,16 @@ import {
 } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 
+const pad = (n: number) => String(n).padStart(2, "0");
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+function nowTimeStr(): string {
+  const d = new Date();
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export function NewTaskDialog({
   projectId,
   members,
@@ -72,8 +82,8 @@ export function NewTaskDialog({
   const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
   const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? members[0]?.id ?? "");
   const [projectSel, setProjectSel] = useState<string>("base");
-  const [dueDate, setDueDate] = useState(initialDueDate ?? "");
-  const [dueTime, setDueTime] = useState("");
+  const [dueDate, setDueDate] = useState(initialDueDate ?? todayStr());
+  const [dueTime, setDueTime] = useState(nowTimeStr());
 
   // выбор проекта показываем только в личном контексте (нет жёсткого проекта) и если проекты есть
   const showProjectSelect = !projectId && !!projects && projects.length > 0;
@@ -85,8 +95,8 @@ export function NewTaskDialog({
     setPlannedMinutes(30);
     setAssigneeId(defaultAssigneeId ?? members[0]?.id ?? "");
     setProjectSel("base");
-    setDueDate("");
-    setDueTime("");
+    setDueDate(initialDueDate ?? todayStr());
+    setDueTime(nowTimeStr());
   }
 
   function submit() {

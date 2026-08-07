@@ -19,6 +19,16 @@ export const SystemRole = {
 export type SystemRole = (typeof SystemRole)[keyof typeof SystemRole]
 
 
+export const PlanStatus = {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  RETURNED: 'RETURNED'
+} as const
+
+export type PlanStatus = (typeof PlanStatus)[keyof typeof PlanStatus]
+
+
 export const ProjectStatus = {
   ACTIVE: 'ACTIVE',
   ON_HOLD: 'ON_HOLD',

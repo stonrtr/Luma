@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  WeeklyPlanApproval: 'WeeklyPlanApproval',
   PushSubscription: 'PushSubscription',
   GoogleAccount: 'GoogleAccount',
   CallPoint: 'CallPoint',
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "pushSubscription" | "googleAccount" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
+    modelProps: "user" | "weeklyPlanApproval" | "pushSubscription" | "googleAccount" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -514,6 +515,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    WeeklyPlanApproval: {
+      payload: Prisma.$WeeklyPlanApprovalPayload<ExtArgs>
+      fields: Prisma.WeeklyPlanApprovalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WeeklyPlanApprovalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WeeklyPlanApprovalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>
+        }
+        findFirst: {
+          args: Prisma.WeeklyPlanApprovalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WeeklyPlanApprovalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>
+        }
+        findMany: {
+          args: Prisma.WeeklyPlanApprovalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>[]
+        }
+        create: {
+          args: Prisma.WeeklyPlanApprovalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>
+        }
+        createMany: {
+          args: Prisma.WeeklyPlanApprovalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WeeklyPlanApprovalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>[]
+        }
+        delete: {
+          args: Prisma.WeeklyPlanApprovalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>
+        }
+        update: {
+          args: Prisma.WeeklyPlanApprovalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>
+        }
+        deleteMany: {
+          args: Prisma.WeeklyPlanApprovalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WeeklyPlanApprovalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WeeklyPlanApprovalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>[]
+        }
+        upsert: {
+          args: Prisma.WeeklyPlanApprovalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyPlanApprovalPayload>
+        }
+        aggregate: {
+          args: Prisma.WeeklyPlanApprovalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWeeklyPlanApproval>
+        }
+        groupBy: {
+          args: Prisma.WeeklyPlanApprovalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WeeklyPlanApprovalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WeeklyPlanApprovalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WeeklyPlanApprovalCountAggregateOutputType> | number
         }
       }
     }
@@ -2504,6 +2579,21 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const WeeklyPlanApprovalScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  weekStart: 'weekStart',
+  status: 'status',
+  comment: 'comment',
+  reviewerId: 'reviewerId',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WeeklyPlanApprovalScalarFieldEnum = (typeof WeeklyPlanApprovalScalarFieldEnum)[keyof typeof WeeklyPlanApprovalScalarFieldEnum]
+
+
 export const PushSubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2899,6 +2989,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 
 
 /**
+ * Reference to a field of type 'PlanStatus'
+ */
+export type EnumPlanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanStatus'>
+    
+
+
+/**
  * Reference to a field of type 'ProjectStatus'
  */
 export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus'>
@@ -3091,6 +3188,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  weeklyPlanApproval?: Prisma.WeeklyPlanApprovalOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
   googleAccount?: Prisma.GoogleAccountOmit
   callPoint?: Prisma.CallPointOmit

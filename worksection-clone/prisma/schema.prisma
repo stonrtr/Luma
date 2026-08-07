@@ -69,6 +69,30 @@ model User {
   callPointsAbout    CallPoint[]  @relation("CallPointMember")
   googleAccount      GoogleAccount?
   pushSubscriptions  PushSubscription[]
+  planApprovals      WeeklyPlanApproval[] @relation("PlanApprovalOwner")
+}
+
+enum PlanStatus {
+  DRAFT     // черновик
+  PENDING   // отправлен руководителю
+  APPROVED  // утверждён
+  RETURNED  // возвращён на доработку
+}
+
+// Статус утверждения недельного плана сотрудника руководителем
+model WeeklyPlanApproval {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation("PlanApprovalOwner", fields: [userId], references: [id], onDelete: Cascade)
+  weekStart   DateTime
+  status      PlanStatus @default(DRAFT)
+  comment     String?    // комментарий при возврате
+  reviewerId  String?
+  submittedAt DateTime?
+  decidedAt   DateTime?
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([userId, weekStart])
 }
 
 // Подписка браузера на web-push

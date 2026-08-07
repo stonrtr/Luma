@@ -4,6 +4,7 @@ import { getPlanning, getPlanningTargets, ensureMonthlyKpis, getKpiArchive, getP
 import { getMyTasks } from "@/server/queries/tasks";
 import { KpiBlock } from "@/components/planning/kpi-block";
 import { WeeklyPlan } from "@/components/planning/weekly-plan";
+import { db } from "@/server/db";
 import { Gauge, ListChecks } from "lucide-react";
 import { monthLabel, weekLabel, isoWeekNumber } from "@/lib/week";
 import { priorityStyle } from "@/lib/domain";
@@ -24,6 +25,10 @@ export default async function PlanningPage({
   const [plan, myTasks, kpiArchive, planArchive] = await Promise.all([
     getPlanning(targetId), getMyTasks(targetId), getKpiArchive(targetId), getPlanArchive(targetId),
   ]);
+  const planApproval = await db.weeklyPlanApproval.findUnique({
+    where: { userId_weekStart: { userId: targetId, weekStart: plan.weekStart } },
+    select: { status: true, comment: true },
+  });
 
   // существующие задачи, которые ещё не в плане недели (для выбора «обрати наявну»)
   const planTaskIds = new Set(plan.planItems.map((i) => i.task?.id).filter(Boolean) as string[]);
@@ -80,6 +85,10 @@ export default async function PlanningPage({
             projects={plan.projects}
             availableTasks={availableTasks}
             canEdit={canEditPlan}
+            status={planApproval?.status ?? "DRAFT"}
+            comment={planApproval?.comment ?? null}
+            isSelf={isSelf}
+            canManage={canManage}
           />
         </div>
       </div>

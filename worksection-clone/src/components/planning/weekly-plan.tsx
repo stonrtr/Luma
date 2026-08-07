@@ -3,10 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ListChecks, Plus, X, CheckCheck } from "lucide-react";
+import { ListChecks, Plus, X, CheckCheck, Send, Undo2, Clock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import type { TaskStatus } from "@/generated/prisma/enums";
-import { addPlanItem, addExistingTaskToPlan, deletePlanItem, approvePlan } from "@/server/actions/planning";
+import { addPlanItem, addExistingTaskToPlan, deletePlanItem, approvePlan, submitPlanForApproval, returnPlan } from "@/server/actions/planning";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,10 +25,13 @@ type AvailableTask = { id: string; title: string; priority: number };
 
 const MIN_SLOTS = 3;
 
+type PlanStatus = "DRAFT" | "PENDING" | "APPROVED" | "RETURNED";
+
 export function WeeklyPlan({
-  userId, weekStart, items, projects, availableTasks, canEdit,
+  userId, weekStart, items, projects, availableTasks, canEdit, status = "DRAFT", comment = null, isSelf = false, canManage = false,
 }: {
   userId: string; weekStart: string; items: Item[]; projects: Project[]; availableTasks: AvailableTask[]; canEdit: boolean;
+  status?: PlanStatus; comment?: string | null; isSelf?: boolean; canManage?: boolean;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<"create" | "existing">("create");
@@ -66,18 +69,39 @@ export function WeeklyPlan({
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <h3 className="flex items-center gap-1.5 text-sm font-semibold">
           <ListChecks className="size-4 text-primary" /> Пріоритети тижня №{weekNo}
           <span className="text-xs font-normal text-muted-foreground">({items.length})</span>
+          <StatusBadge status={status} />
         </h3>
-        {canEdit && unapproved > 0 && (
-          <Button size="sm" onClick={() => start(async () => { await approvePlan({ userId, weekStart }); toast.success("План затверджено — задачі створено"); router.refresh(); })} disabled={pending}>
-            <CheckCheck className="size-4" /> Затвердити ({unapproved})
-          </Button>
-        )}
+        <div className="flex items-center gap-1.5">
+          {/* Сотрудник отправляет руководителю на утверждение */}
+          {isSelf && !canManage && (status === "DRAFT" || status === "RETURNED") && (
+            <Button size="sm" onClick={() => start(async () => { const r = await submitPlanForApproval({ weekStart }); if (r?.error) toast.error(r.error); else { toast.success("Надіслано керівнику"); router.refresh(); } })} disabled={pending}>
+              <Send className="size-4" /> Надіслати на затвердження
+            </Button>
+          )}
+          {/* Руководитель утверждает (создаёт задачи) */}
+          {canManage && unapproved > 0 && (
+            <Button size="sm" onClick={() => start(async () => { const r = await approvePlan({ userId, weekStart }); if (r?.error) toast.error(r.error); else { toast.success("План затверджено — задачі створено"); router.refresh(); } })} disabled={pending}>
+              <CheckCheck className="size-4" /> Затвердити ({unapproved})
+            </Button>
+          )}
+          {/* Руководитель возвращает на доработку */}
+          {canManage && !isSelf && status === "PENDING" && (
+            <Button size="sm" variant="outline" onClick={() => { const c = window.prompt("Коментар для співробітника (необовʼязково):") ?? undefined; start(async () => { const r = await returnPlan({ userId, weekStart, comment: c }); if (r?.error) toast.error(r.error); else { toast.success("Повернено на доопрацювання"); router.refresh(); } }); }} disabled={pending}>
+              <Undo2 className="size-4" /> Повернути
+            </Button>
+          )}
+        </div>
       </div>
       <p className="mb-2 text-xs text-muted-foreground">Заплануйте щонайменше {MIN_SLOTS} ключові задачі на тиждень за пріоритетом.</p>
+      {status === "RETURNED" && comment && (
+        <p className="mb-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+          Керівник повернув: {comment}
+        </p>
+      )}
 
       <ul className="space-y-1.5">
         {items.map((item) => (
@@ -175,4 +199,15 @@ export function WeeklyPlan({
       )}
     </div>
   );
+}
+
+function StatusBadge({ status }: { status: PlanStatus }) {
+  if (status === "DRAFT") return null;
+  const map = {
+    PENDING: { label: "На затвердженні", cls: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", Icon: Clock },
+    APPROVED: { label: "Затверджено", cls: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", Icon: CheckCircle2 },
+    RETURNED: { label: "Повернено", cls: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", Icon: Undo2 },
+  } as const;
+  const { label, cls, Icon } = map[status];
+  return <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium", cls)}><Icon className="size-3" /> {label}</span>;
 }

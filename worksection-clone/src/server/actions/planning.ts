@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { notify } from "@/server/notify";
 import { mondayOf } from "@/lib/week";
 
 // может ли viewer управлять целями/KPI пользователя target
@@ -154,10 +155,19 @@ export async function deletePlanItem(id: string) {
 }
 
 // Утверждение плана → создаём задачи в канбане и связываем
+// у кого нет руководителя (владелец/сам себе) — может утверждать свой план сам
+async function canApprove(viewer: { id: string; role: string }, targetId: string) {
+  if (await canManage(viewer.id, viewer.role, targetId)) return true;
+  if (viewer.id === targetId) {
+    const t = await db.user.findUnique({ where: { id: targetId }, select: { managerId: true } });
+    return !t?.managerId; // нет руководителя — утверждает сам
+  }
+  return false;
+}
+
 export async function approvePlan(input: { userId: string; weekStart: string }) {
   const viewer = await requireUser();
-  const canEdit = input.userId === viewer.id || (await canManage(viewer.id, viewer.role, input.userId));
-  if (!canEdit) return;
+  if (!(await canApprove(viewer, input.userId))) return { error: "Тільки керівник може затвердити" };
 
   const ws = mondayOf(new Date(input.weekStart));
   const items = await db.weeklyPlanItem.findMany({
@@ -183,19 +193,64 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
       },
     });
     await db.weeklyPlanItem.update({ where: { id: item.id }, data: { approved: true, taskId: task.id } });
-
-    if (viewer.id !== input.userId) {
-      await db.notification.create({
-        data: {
-          type: "assignment",
-          message: `${viewer.name} додав задачу з плану «${task.title}»`,
-          link: `/tasks/${task.id}`,
-          recipientId: input.userId,
-          actorId: viewer.id,
-        },
-      });
-    }
   }
 
+  await db.weeklyPlanApproval.upsert({
+    where: { userId_weekStart: { userId: input.userId, weekStart: ws } },
+    create: { userId: input.userId, weekStart: ws, status: "APPROVED", reviewerId: viewer.id, decidedAt: new Date() },
+    update: { status: "APPROVED", reviewerId: viewer.id, decidedAt: new Date(), comment: null },
+  });
+
+  if (viewer.id !== input.userId) {
+    await notify({ recipientId: input.userId, type: "assignment", message: `${viewer.name} затвердив ваш план тижня`, link: "/planning", actorId: viewer.id });
+  }
   revalidatePath("/planning");
+  return { error: null };
+}
+
+// Сотрудник отправляет план руководителю на утверждение
+export async function submitPlanForApproval(input: { weekStart: string }) {
+  const viewer = await requireUser();
+  const ws = mondayOf(new Date(input.weekStart));
+  const count = await db.weeklyPlanItem.count({ where: { userId: viewer.id, weekStart: ws } });
+  if (count === 0) return { error: "Додайте хоча б одну задачу" };
+
+  await db.weeklyPlanApproval.upsert({
+    where: { userId_weekStart: { userId: viewer.id, weekStart: ws } },
+    create: { userId: viewer.id, weekStart: ws, status: "PENDING", submittedAt: new Date() },
+    update: { status: "PENDING", submittedAt: new Date(), comment: null },
+  });
+
+  // уведомляем руководителя (или всех админов/владельцев)
+  const me = await db.user.findUnique({ where: { id: viewer.id }, select: { managerId: true, name: true } });
+  const managerIds = new Set<string>();
+  if (me?.managerId) managerIds.add(me.managerId);
+  else {
+    const admins = await db.user.findMany({ where: { role: { in: ["OWNER", "ADMIN"] } }, select: { id: true } });
+    for (const a of admins) managerIds.add(a.id);
+  }
+  managerIds.delete(viewer.id);
+  await Promise.all([...managerIds].map((rid) =>
+    notify({ recipientId: rid, type: "review", message: `${viewer.name} надіслав план тижня на затвердження`, link: `/planning?user=${viewer.id}`, actorId: viewer.id }),
+  ));
+
+  revalidatePath("/planning");
+  return { error: null };
+}
+
+// Руководитель возвращает план на доработку
+export async function returnPlan(input: { userId: string; weekStart: string; comment?: string }) {
+  const viewer = await requireUser();
+  if (!(await canManage(viewer.id, viewer.role, input.userId))) return { error: "Немає прав" };
+  const ws = mondayOf(new Date(input.weekStart));
+
+  await db.weeklyPlanApproval.upsert({
+    where: { userId_weekStart: { userId: input.userId, weekStart: ws } },
+    create: { userId: input.userId, weekStart: ws, status: "RETURNED", reviewerId: viewer.id, decidedAt: new Date(), comment: input.comment?.trim() || null },
+    update: { status: "RETURNED", reviewerId: viewer.id, decidedAt: new Date(), comment: input.comment?.trim() || null },
+  });
+
+  await notify({ recipientId: input.userId, type: "review", message: `${viewer.name} повернув план тижня на доопрацювання`, link: "/planning", actorId: viewer.id });
+  revalidatePath("/planning");
+  return { error: null };
 }
