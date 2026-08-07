@@ -68,6 +68,20 @@ model User {
   callPointsAuthored CallPoint[]  @relation("CallPointAuthor")
   callPointsAbout    CallPoint[]  @relation("CallPointMember")
   googleAccount      GoogleAccount?
+  pushSubscriptions  PushSubscription[]
+}
+
+// Подписка браузера на web-push
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 // Подключение Google Calendar сотрудника (OAuth-токены)

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 import { isNotificationEnabled } from "@/server/queries/notification-settings";
+import { notify } from "@/server/notify";
 
 const schema = z.object({
   taskId: z.string(),
@@ -51,14 +52,10 @@ export async function addComment(input: z.infer<typeof schema>) {
 
   await Promise.all([
     ...[...mentionSet].map((rid) =>
-      db.notification.create({
-        data: { type: "mention", message: `${user.name} згадав вас у коментарі до «${task.title}»`, link: `/tasks/${task.id}`, recipientId: rid, actorId: user.id },
-      }),
+      notify({ recipientId: rid, type: "mention", message: `${user.name} згадав вас у коментарі до «${task.title}»`, link: `/tasks/${task.id}`, actorId: user.id }),
     ),
     ...[...commentSet].map((rid) =>
-      db.notification.create({
-        data: { type: "comment", message: `${user.name} прокоментував «${task.title}»`, link: `/tasks/${task.id}`, recipientId: rid, actorId: user.id },
-      }),
+      notify({ recipientId: rid, type: "comment", message: `${user.name} прокоментував «${task.title}»`, link: `/tasks/${task.id}`, actorId: user.id }),
     ),
   ]);
 

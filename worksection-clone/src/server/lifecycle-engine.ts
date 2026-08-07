@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/server/db";
 import { isNotificationEnabled } from "@/server/queries/notification-settings";
+import { notify } from "@/server/notify";
 
 const MONTHS_UK = ["січень", "лютий", "березень", "квітень", "травень", "червень", "липень", "серпень", "вересень", "жовтень", "листопад", "грудень"];
 
@@ -42,7 +43,7 @@ export async function remindUser(
       const link = `/tasks/${t.id}`;
       const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "overdue", link, readAt: null } });
       if (!exists) {
-        await db.notification.create({ data: { type: "overdue", message: `Задача прострочена: «${t.title}»`, link, recipientId: userId } });
+        await notify({ recipientId: userId, type: "overdue", message: `Задача прострочена: «${t.title}»`, link });
       }
     }
   }
@@ -59,7 +60,7 @@ export async function remindUser(
       const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "manager_overdue", link, readAt: null } });
       if (!exists) {
         const who = t.assignees[0]?.user.name ?? "виконавець";
-        await db.notification.create({ data: { type: "manager_overdue", message: `Прострочено у «${who}»: «${t.title}»`, link, recipientId: userId } });
+        await notify({ recipientId: userId, type: "manager_overdue", message: `Прострочено у «${who}»: «${t.title}»`, link });
       }
     }
   }
@@ -72,9 +73,7 @@ export async function remindUser(
       const tag = `kpi:${prev.getFullYear()}-${prev.getMonth()}`;
       const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "kpi_reminder", message: { contains: tag } } });
       if (!exists) {
-        await db.notification.create({
-          data: { type: "kpi_reminder", message: `Заповніть виконання KPI за ${MONTHS_UK[prev.getMonth()]} · ${tag}`, link: "/planning", recipientId: userId },
-        });
+        await notify({ recipientId: userId, type: "kpi_reminder", message: `Заповніть виконання KPI за ${MONTHS_UK[prev.getMonth()]} · ${tag}`, link: "/planning" });
       }
     }
   }

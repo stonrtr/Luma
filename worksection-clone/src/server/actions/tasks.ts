@@ -6,6 +6,7 @@ import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 import { isNotificationEnabled } from "@/server/queries/notification-settings";
 import { syncTaskToGoogle } from "@/server/google/calendar";
+import { notify } from "@/server/notify";
 import type { TaskStatus } from "@/generated/prisma/enums";
 
 const createTaskSchema = z.object({
@@ -74,15 +75,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
 
   // уведомление исполнителю о поставленной задаче
   if (assignedByManager && (await isNotificationEnabled("assignment"))) {
-    await db.notification.create({
-      data: {
-        type: "assignment",
-        message: `${user.name} поставив вам задачу «${task.title}»`,
-        link: `/tasks/${task.id}`,
-        recipientId: assigneeId,
-        actorId: user.id,
-      },
-    });
+    await notify({ recipientId: assigneeId, type: "assignment", message: `${user.name} поставив вам задачу «${task.title}»`, link: `/tasks/${task.id}`, actorId: user.id });
   }
 
   await syncTaskToGoogle(task.id); // best-effort: событие в Google Calendar исполнителя
@@ -217,9 +210,7 @@ export async function sendForReview(taskId: string) {
   if (await isNotificationEnabled("review")) {
     await Promise.all(
       [...managerIds].map((rid) =>
-        db.notification.create({
-          data: { type: "review", message: `${user.name} відправив на перевірку «${task.title}»`, link: `/tasks/${task.id}`, recipientId: rid, actorId: user.id },
-        }),
+        notify({ recipientId: rid, type: "review", message: `${user.name} відправив на перевірку «${task.title}»`, link: `/tasks/${task.id}`, actorId: user.id }),
       ),
     );
   }

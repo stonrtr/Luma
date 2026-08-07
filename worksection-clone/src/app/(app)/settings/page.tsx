@@ -3,6 +3,7 @@ import { getRecurringForUser } from "@/server/queries/planning";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { RecurringBlock } from "@/components/planning/recurring-block";
 import { GoogleCalendarCard } from "@/components/settings/google-calendar-card";
+import { PushToggle } from "@/components/settings/push-toggle";
 import { db } from "@/server/db";
 import { isGoogleConfigured } from "@/server/google/oauth";
 import { t } from "@/lib/i18n";
@@ -30,6 +31,8 @@ export default async function SettingsPage() {
           weekStartsMon: user.weekStartsMon,
         }}
       />
+
+      <PushToggle />
 
       <GoogleCalendarCard configured={isGoogleConfigured()} connected={!!googleAcc} email={googleAcc?.googleEmail ?? null} />
 

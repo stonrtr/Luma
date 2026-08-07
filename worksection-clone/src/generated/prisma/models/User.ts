@@ -372,6 +372,7 @@ export type UserWhereInput = {
   callPointsAuthored?: Prisma.CallPointListRelationFilter
   callPointsAbout?: Prisma.CallPointListRelationFilter
   googleAccount?: Prisma.XOR<Prisma.GoogleAccountNullableScalarRelationFilter, Prisma.GoogleAccountWhereInput> | null
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -420,6 +421,7 @@ export type UserOrderByWithRelationInput = {
   callPointsAuthored?: Prisma.CallPointOrderByRelationAggregateInput
   callPointsAbout?: Prisma.CallPointOrderByRelationAggregateInput
   googleAccount?: Prisma.GoogleAccountOrderByWithRelationInput
+  pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -471,6 +473,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   callPointsAuthored?: Prisma.CallPointListRelationFilter
   callPointsAbout?: Prisma.CallPointListRelationFilter
   googleAccount?: Prisma.XOR<Prisma.GoogleAccountNullableScalarRelationFilter, Prisma.GoogleAccountWhereInput> | null
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -574,6 +577,7 @@ export type UserCreateInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -621,6 +625,7 @@ export type UserUncheckedCreateInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -668,6 +673,7 @@ export type UserUpdateInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -715,6 +721,7 @@ export type UserUncheckedUpdateInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -974,6 +981,20 @@ export type UserUncheckedUpdateManyWithoutManagerNestedInput = {
   update?: Prisma.UserUpdateWithWhereUniqueWithoutManagerInput | Prisma.UserUpdateWithWhereUniqueWithoutManagerInput[]
   updateMany?: Prisma.UserUpdateManyWithWhereWithoutManagerInput | Prisma.UserUpdateManyWithWhereWithoutManagerInput[]
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedOneWithoutPushSubscriptionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPushSubscriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  upsert?: Prisma.UserUpsertWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPushSubscriptionsInput, Prisma.UserUpdateWithoutPushSubscriptionsInput>, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
 }
 
 export type UserCreateNestedOneWithoutGoogleAccountInput = {
@@ -1330,6 +1351,7 @@ export type UserCreateWithoutReportsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -1376,6 +1398,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -1427,6 +1450,7 @@ export type UserCreateWithoutManagerInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagerInput = {
@@ -1473,6 +1497,7 @@ export type UserUncheckedCreateWithoutManagerInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagerInput = {
@@ -1539,6 +1564,7 @@ export type UserUpdateWithoutReportsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -1585,6 +1611,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -1628,6 +1655,210 @@ export type UserScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+}
+
+export type UserCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
+  googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
+  googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpsertWithoutPushSubscriptionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPushSubscriptionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
+  googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
+  googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoogleAccountInput = {
@@ -1674,6 +1905,7 @@ export type UserCreateWithoutGoogleAccountInput = {
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoogleAccountInput = {
@@ -1720,6 +1952,7 @@ export type UserUncheckedCreateWithoutGoogleAccountInput = {
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoogleAccountInput = {
@@ -1782,6 +2015,7 @@ export type UserUpdateWithoutGoogleAccountInput = {
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoogleAccountInput = {
@@ -1828,6 +2062,7 @@ export type UserUncheckedUpdateWithoutGoogleAccountInput = {
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCallPointsAuthoredInput = {
@@ -1874,6 +2109,7 @@ export type UserCreateWithoutCallPointsAuthoredInput = {
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
@@ -1920,6 +2156,7 @@ export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCallPointsAuthoredInput = {
@@ -1971,6 +2208,7 @@ export type UserCreateWithoutCallPointsAboutInput = {
   fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCallPointsAboutInput = {
@@ -2017,6 +2255,7 @@ export type UserUncheckedCreateWithoutCallPointsAboutInput = {
   fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCallPointsAboutInput = {
@@ -2079,6 +2318,7 @@ export type UserUpdateWithoutCallPointsAuthoredInput = {
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
@@ -2125,6 +2365,7 @@ export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutCallPointsAboutInput = {
@@ -2182,6 +2423,7 @@ export type UserUpdateWithoutCallPointsAboutInput = {
   fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
@@ -2228,6 +2470,7 @@ export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
   fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedProjectsInput = {
@@ -2274,6 +2517,7 @@ export type UserCreateWithoutCreatedProjectsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedProjectsInput = {
@@ -2320,6 +2564,7 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedProjectsInput = {
@@ -2382,6 +2627,7 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
@@ -2428,6 +2674,7 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectMembersInput = {
@@ -2474,6 +2721,7 @@ export type UserCreateWithoutProjectMembersInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectMembersInput = {
@@ -2520,6 +2768,7 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectMembersInput = {
@@ -2582,6 +2831,7 @@ export type UserUpdateWithoutProjectMembersInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectMembersInput = {
@@ -2628,6 +2878,7 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTasksInput = {
@@ -2674,6 +2925,7 @@ export type UserCreateWithoutCreatedTasksInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTasksInput = {
@@ -2720,6 +2972,7 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -2782,6 +3035,7 @@ export type UserUpdateWithoutCreatedTasksInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTasksInput = {
@@ -2828,6 +3082,7 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssignedTasksInput = {
@@ -2874,6 +3129,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -2920,6 +3176,7 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -2982,6 +3239,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -3028,6 +3286,7 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRecurringAssignedInput = {
@@ -3074,6 +3333,7 @@ export type UserCreateWithoutRecurringAssignedInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRecurringAssignedInput = {
@@ -3120,6 +3380,7 @@ export type UserUncheckedCreateWithoutRecurringAssignedInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRecurringAssignedInput = {
@@ -3171,6 +3432,7 @@ export type UserCreateWithoutRecurringCreatedInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRecurringCreatedInput = {
@@ -3217,6 +3479,7 @@ export type UserUncheckedCreateWithoutRecurringCreatedInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRecurringCreatedInput = {
@@ -3279,6 +3542,7 @@ export type UserUpdateWithoutRecurringAssignedInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
@@ -3325,6 +3589,7 @@ export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutRecurringCreatedInput = {
@@ -3382,6 +3647,7 @@ export type UserUpdateWithoutRecurringCreatedInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
@@ -3428,6 +3694,7 @@ export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -3474,6 +3741,7 @@ export type UserCreateWithoutCommentsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -3520,6 +3788,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -3582,6 +3851,7 @@ export type UserUpdateWithoutCommentsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -3628,6 +3898,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMentionsInput = {
@@ -3674,6 +3945,7 @@ export type UserCreateWithoutMentionsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMentionsInput = {
@@ -3720,6 +3992,7 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMentionsInput = {
@@ -3782,6 +4055,7 @@ export type UserUpdateWithoutMentionsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMentionsInput = {
@@ -3828,6 +4102,7 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedFilesInput = {
@@ -3874,6 +4149,7 @@ export type UserCreateWithoutUploadedFilesInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedFilesInput = {
@@ -3920,6 +4196,7 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedFilesInput = {
@@ -3982,6 +4259,7 @@ export type UserUpdateWithoutUploadedFilesInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedFilesInput = {
@@ -4028,6 +4306,7 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOwnedFilesInput = {
@@ -4074,6 +4353,7 @@ export type UserCreateWithoutOwnedFilesInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedFilesInput = {
@@ -4120,6 +4400,7 @@ export type UserUncheckedCreateWithoutOwnedFilesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedFilesInput = {
@@ -4182,6 +4463,7 @@ export type UserUpdateWithoutOwnedFilesInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedFilesInput = {
@@ -4228,6 +4510,7 @@ export type UserUncheckedUpdateWithoutOwnedFilesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFileSharesInput = {
@@ -4274,6 +4557,7 @@ export type UserCreateWithoutFileSharesInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFileSharesInput = {
@@ -4320,6 +4604,7 @@ export type UserUncheckedCreateWithoutFileSharesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFileSharesInput = {
@@ -4382,6 +4667,7 @@ export type UserUpdateWithoutFileSharesInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFileSharesInput = {
@@ -4428,6 +4714,7 @@ export type UserUncheckedUpdateWithoutFileSharesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTimeLogsInput = {
@@ -4474,6 +4761,7 @@ export type UserCreateWithoutTimeLogsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTimeLogsInput = {
@@ -4520,6 +4808,7 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTimeLogsInput = {
@@ -4582,6 +4871,7 @@ export type UserUpdateWithoutTimeLogsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTimeLogsInput = {
@@ -4628,6 +4918,7 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCallsInput = {
@@ -4674,6 +4965,7 @@ export type UserCreateWithoutCallsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCallsInput = {
@@ -4720,6 +5012,7 @@ export type UserUncheckedCreateWithoutCallsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCallsInput = {
@@ -4782,6 +5075,7 @@ export type UserUpdateWithoutCallsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallsInput = {
@@ -4828,6 +5122,7 @@ export type UserUncheckedUpdateWithoutCallsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMonthlyGoalsInput = {
@@ -4874,6 +5169,7 @@ export type UserCreateWithoutMonthlyGoalsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
@@ -4920,6 +5216,7 @@ export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMonthlyGoalsInput = {
@@ -4982,6 +5279,7 @@ export type UserUpdateWithoutMonthlyGoalsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
@@ -5028,6 +5326,7 @@ export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutKpisInput = {
@@ -5074,6 +5373,7 @@ export type UserCreateWithoutKpisInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutKpisInput = {
@@ -5120,6 +5420,7 @@ export type UserUncheckedCreateWithoutKpisInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutKpisInput = {
@@ -5182,6 +5483,7 @@ export type UserUpdateWithoutKpisInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutKpisInput = {
@@ -5228,6 +5530,7 @@ export type UserUncheckedUpdateWithoutKpisInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWeeklyPlanItemsInput = {
@@ -5274,6 +5577,7 @@ export type UserCreateWithoutWeeklyPlanItemsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
@@ -5320,6 +5624,7 @@ export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWeeklyPlanItemsInput = {
@@ -5382,6 +5687,7 @@ export type UserUpdateWithoutWeeklyPlanItemsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
@@ -5428,6 +5734,7 @@ export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -5474,6 +5781,7 @@ export type UserCreateWithoutActivitiesInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -5520,6 +5828,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -5582,6 +5891,7 @@ export type UserUpdateWithoutActivitiesInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -5628,6 +5938,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -5674,6 +5985,7 @@ export type UserCreateWithoutNotificationsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -5720,6 +6032,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -5771,6 +6084,7 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
@@ -5817,6 +6131,7 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTriggeredNotifsInput = {
@@ -5879,6 +6194,7 @@ export type UserUpdateWithoutNotificationsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -5925,6 +6241,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTriggeredNotifsInput = {
@@ -5982,6 +6299,7 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
@@ -6028,6 +6346,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyManagerInput = {
@@ -6097,6 +6416,7 @@ export type UserUpdateWithoutManagerInput = {
   callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerInput = {
@@ -6143,6 +6463,7 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -6196,6 +6517,7 @@ export type UserCountOutputType = {
   fileShares: number
   callPointsAuthored: number
   callPointsAbout: number
+  pushSubscriptions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6221,6 +6543,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   fileShares?: boolean | UserCountOutputTypeCountFileSharesArgs
   callPointsAuthored?: boolean | UserCountOutputTypeCountCallPointsAuthoredArgs
   callPointsAbout?: boolean | UserCountOutputTypeCountCallPointsAboutArgs
+  pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
 }
 
 /**
@@ -6387,6 +6710,13 @@ export type UserCountOutputTypeCountCallPointsAboutArgs<ExtArgs extends runtime.
   where?: Prisma.CallPointWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PushSubscriptionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6434,6 +6764,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   callPointsAuthored?: boolean | Prisma.User$callPointsAuthoredArgs<ExtArgs>
   callPointsAbout?: boolean | Prisma.User$callPointsAboutArgs<ExtArgs>
   googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -6537,6 +6868,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   callPointsAuthored?: boolean | Prisma.User$callPointsAuthoredArgs<ExtArgs>
   callPointsAbout?: boolean | Prisma.User$callPointsAboutArgs<ExtArgs>
   googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6573,6 +6905,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     callPointsAuthored: Prisma.$CallPointPayload<ExtArgs>[]
     callPointsAbout: Prisma.$CallPointPayload<ExtArgs>[]
     googleAccount: Prisma.$GoogleAccountPayload<ExtArgs> | null
+    pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7014,6 +7347,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   callPointsAuthored<T extends Prisma.User$callPointsAuthoredArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$callPointsAuthoredArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CallPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   callPointsAbout<T extends Prisma.User$callPointsAboutArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$callPointsAboutArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CallPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   googleAccount<T extends Prisma.User$googleAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$googleAccountArgs<ExtArgs>>): Prisma.Prisma__GoogleAccountClient<runtime.Types.Result.GetResult<Prisma.$GoogleAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  pushSubscriptions<T extends Prisma.User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8026,6 +8360,30 @@ export type User$googleAccountArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.GoogleAccountInclude<ExtArgs> | null
   where?: Prisma.GoogleAccountWhereInput
+}
+
+/**
+ * User.pushSubscriptions
+ */
+export type User$pushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PushSubscription
+   */
+  select?: Prisma.PushSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PushSubscription
+   */
+  omit?: Prisma.PushSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PushSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.PushSubscriptionWhereInput
+  orderBy?: Prisma.PushSubscriptionOrderByWithRelationInput | Prisma.PushSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.PushSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PushSubscriptionScalarFieldEnum | Prisma.PushSubscriptionScalarFieldEnum[]
 }
 
 /**
