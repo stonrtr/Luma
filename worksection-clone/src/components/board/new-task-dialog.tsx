@@ -38,10 +38,7 @@ function todayStr(): string {
   const d = new Date();
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
-function nowTimeStr(): string {
-  const d = new Date();
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+const DEFAULT_TIME = "09:00"; // время по умолчанию для нової задачі
 
 export function NewTaskDialog({
   projectId,
@@ -83,7 +80,7 @@ export function NewTaskDialog({
   const [assigneeId, setAssigneeId] = useState<string>(defaultAssigneeId ?? members[0]?.id ?? "");
   const [projectSel, setProjectSel] = useState<string>("base");
   const [dueDate, setDueDate] = useState(initialDueDate ?? todayStr());
-  const [dueTime, setDueTime] = useState(nowTimeStr());
+  const [dueTime, setDueTime] = useState(DEFAULT_TIME);
 
   // выбор проекта показываем только в личном контексте (нет жёсткого проекта) и если проекты есть
   const showProjectSelect = !projectId && !!projects && projects.length > 0;
@@ -96,7 +93,7 @@ export function NewTaskDialog({
     setAssigneeId(defaultAssigneeId ?? members[0]?.id ?? "");
     setProjectSel("base");
     setDueDate(initialDueDate ?? todayStr());
-    setDueTime(nowTimeStr());
+    setDueTime(DEFAULT_TIME);
   }
 
   function submit() {
@@ -195,6 +192,21 @@ export function NewTaskDialog({
             </div>
           </div>
 
+          {showProjectSelect && (
+            <div className="space-y-1.5">
+              <Label>Проєкт</Label>
+              <Select value={projectSel} onValueChange={setProjectSel}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="base">Ні</SelectItem>
+                  {projects!.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           {/* Плановое время */}
           <div className="space-y-1.5">
             <Label>Планований час</Label>
@@ -216,21 +228,6 @@ export function NewTaskDialog({
               ))}
             </div>
           </div>
-
-          {showProjectSelect && (
-            <div className="space-y-1.5">
-              <Label>Проєкт</Label>
-              <Select value={projectSel} onValueChange={setProjectSel}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="base">Ні</SelectItem>
-                  {projects!.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
 
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-2">
