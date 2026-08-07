@@ -24,6 +24,9 @@ function describe(item: HistoryItem): { text: string; title: string | null } {
   if (item.type === "task.created") {
     return { text: "створив(ла) задачу", title: item.meta };
   }
+  if (item.type === "comment.added") {
+    return { text: "прокоментував(ла)", title: item.meta };
+  }
   if (item.type === "task.status") {
     try {
       const m = JSON.parse(item.meta ?? "{}") as { title?: string; to?: TaskStatus };
