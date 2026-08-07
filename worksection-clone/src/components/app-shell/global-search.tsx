@@ -53,6 +53,7 @@ export function GlobalSearch() {
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 rounded-lg border bg-card px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted"
         title="Пошук (⌘K)"
+        aria-label="Пошук"
       >
         <Search className="size-4" />
         <span className="hidden lg:inline">Пошук…</span>
