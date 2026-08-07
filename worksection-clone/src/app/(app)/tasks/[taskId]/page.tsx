@@ -4,7 +4,6 @@ import { BackButton } from "@/components/task/back-button";
 import { requireUser } from "@/server/dal";
 import { getTaskDetail } from "@/server/queries/tasks";
 import { isProjectMember } from "@/server/queries/projects";
-import { TaskControls } from "@/components/task/task-controls";
 import { CommentForm } from "@/components/task/comment-form";
 import { EditableTaskHeader } from "@/components/task/editable-task-header";
 import { TagPicker } from "@/components/task/tag-picker";
@@ -37,8 +36,7 @@ export default async function TaskDetailPage({
 
   const members = task.project?.members.map((m) => ({ id: m.user.id, name: m.user.name })) ?? [];
   const assignee = task.assignees[0]?.user ?? null;
-  const assigneeId = assignee?.id ?? null;
-  const overdue = !!(task.status !== "DONE" && task.dueDate && new Date(task.dueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
+  const overdue =!!(task.status !== "DONE" && task.dueDate && new Date(task.dueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-6">
@@ -134,8 +132,7 @@ export default async function TaskDetailPage({
         {/* Правая колонка — минимум полей */}
         <aside className="space-y-4">
           <div className="space-y-4 rounded-xl border bg-card p-4">
-            <TaskControls taskId={task.id} assigneeId={assigneeId} members={members} />
-            <div className="flex justify-between gap-4 border-t pt-3 text-sm">
+            <div className="flex justify-between gap-4 text-sm">
               <span className="text-muted-foreground">Срок</span>
               <span className="text-right font-medium">{formatDate(task.dueDate)}</span>
             </div>
