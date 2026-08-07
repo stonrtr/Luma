@@ -129,36 +129,14 @@ async function aiExtract(summary: string): Promise<string[] | null> {
   }
 }
 
-export async function extractTasksFromSummary(input: { summary: string }) {
-  const user = await requireUser();
+// Только извлекаем задачи из саммари (без создания) — далее сотрудник
+// проходит их мастером по одной, задаёт приоритет и дедлайн.
+export async function extractTaskTitles(input: { summary: string }): Promise<{ error: string | null; titles: string[] }> {
+  await requireUser();
   const summary = input.summary.trim();
-  if (summary.length < 10) return { error: "Замало тексту", created: 0 };
+  if (summary.length < 10) return { error: "Замало тексту", titles: [] };
 
-  const titles = (await aiExtract(summary)) ?? heuristicExtract(summary);
-  if (titles.length === 0) return { error: "Не вдалося виокремити задачі", created: 0 };
-
-  // берём последнюю позицию в колонке «Ідеї»
-  const last = await db.task.findFirst({
-    where: { status: "IDEA", parentId: null, assignees: { some: { userId: user.id } } },
-    orderBy: { position: "desc" },
-    select: { position: true },
-  });
-  let pos = (last?.position ?? -1) + 1;
-
-  for (const title of titles) {
-    await db.task.create({
-      data: {
-        title: title.slice(0, 200),
-        status: "IDEA",
-        priority: 5,
-        createdById: user.id,
-        position: pos++,
-        assignees: { create: [{ userId: user.id }] },
-      },
-    });
-  }
-
-  revalidatePath("/");
-  revalidatePath("/calls");
-  return { error: null, created: titles.length };
+  const titles = ((await aiExtract(summary)) ?? heuristicExtract(summary)).map((t) => t.slice(0, 200));
+  if (titles.length === 0) return { error: "Не вдалося виокремити задачі", titles: [] };
+  return { error: null, titles };
 }

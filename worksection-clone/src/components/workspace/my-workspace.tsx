@@ -2,6 +2,7 @@ import Link from "next/link";
 import { KanbanBoard } from "@/components/board/kanban-board";
 import { DayBoard } from "@/components/board/day-board";
 import { WeekCalendar, type WeekData } from "@/components/calendar/week-calendar";
+import { ArchiveList, type ArchiveRow } from "@/components/board/archive-list";
 import type { BoardTask } from "@/components/board/types";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -10,12 +11,13 @@ const VIEWS = [
   { key: "board", i18n: "view.board" },
   { key: "day", i18n: "view.day" },
   { key: "calendar", i18n: "nav.calendar" },
+  { key: "archive", i18n: "view.archive" },
 ];
 
 export function MyWorkspace({
-  tasks, userId, view, locale, calendar, projects,
+  tasks, userId, view, locale, calendar, projects, archive,
 }: {
-  tasks: BoardTask[]; userId: string; view: string; locale: string; calendar?: WeekData; projects?: { id: string; name: string; color: string }[];
+  tasks: BoardTask[]; userId: string; view: string; locale: string; calendar?: WeekData; projects?: { id: string; name: string; color: string }[]; archive?: ArchiveRow[];
 }) {
   return (
     <div className="flex flex-col">
@@ -34,7 +36,9 @@ export function MyWorkspace({
         ))}
       </div>
       <div className="px-6 py-4">
-        {view === "calendar" && calendar ? (
+        {view === "archive" ? (
+          <ArchiveList rows={archive ?? []} />
+        ) : view === "calendar" && calendar ? (
           <WeekCalendar data={calendar} />
         ) : view === "day" ? (
           <DayBoard initialTasks={tasks} />

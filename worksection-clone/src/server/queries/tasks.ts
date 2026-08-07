@@ -45,6 +45,28 @@ export async function getAllTasks() {
   });
 }
 
+// Архив: завершённые задачи, от последней выполненной вниз
+export async function getArchivedTasks(userId?: string) {
+  return db.task.findMany({
+    where: { status: "DONE", parentId: null, ...(userId ? { assignees: { some: { userId } } } : {}) },
+    orderBy: [{ completedAt: "desc" }, { updatedAt: "desc" }],
+    take: 200,
+    include: {
+      project: { select: { name: true, color: true } },
+      assignees: { include: { user: { select: { id: true, name: true } } } },
+    },
+  });
+}
+
+// История: последние действия команды
+export async function getRecentActivity(limit = 60) {
+  return db.activity.findMany({
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    include: { actor: { select: { id: true, name: true } } },
+  });
+}
+
 export async function getTaskDetail(taskId: string) {
   return db.task.findUnique({
     where: { id: taskId },

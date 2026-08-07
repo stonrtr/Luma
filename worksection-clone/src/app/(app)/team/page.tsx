@@ -2,12 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/server/dal";
 import { getTeamOverview } from "@/server/queries/team";
-import { getMyTasks, getAllTasks } from "@/server/queries/tasks";
+import { getMyTasks, getAllTasks, getArchivedTasks, getRecentActivity } from "@/server/queries/tasks";
 import { getMyWeek } from "@/server/queries/calendar";
 import { getProjectsForUser } from "@/server/queries/projects";
 import { KanbanBoard } from "@/components/board/kanban-board";
 import { DayBoard } from "@/components/board/day-board";
 import { WeekCalendar, type WeekData, type WeekDay } from "@/components/calendar/week-calendar";
+import { ArchiveList, type ArchiveRow } from "@/components/board/archive-list";
+import { HistoryFeed } from "@/components/team/history-feed";
 import type { BoardTask, BoardMember } from "@/components/board/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials } from "@/lib/format";
@@ -35,6 +37,17 @@ function mapTasks(tasks: AnyTask[]): BoardTask[] {
     commentCount: t._count.comments,
     checklistTotal: t._count.checklist,
     checklistDone: t.checklist.filter((c) => c.done).length,
+  }));
+}
+
+function mapArchive(tasks: Awaited<ReturnType<typeof getArchivedTasks>>): ArchiveRow[] {
+  return tasks.map((t) => ({
+    id: t.id,
+    title: t.title,
+    projectName: t.project?.name ?? null,
+    projectColor: t.project?.color ?? null,
+    completedAt: (t.completedAt ?? t.updatedAt).toISOString(),
+    assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
   }));
 }
 
@@ -150,18 +163,25 @@ export default async function TeamPage({
       ) : (
         <MemberView memberId={member} view={view} ws={sp.ws} />
       )}
+
+      <HistoryFeed
+        items={(await getRecentActivity(60)).map((a) => ({
+          id: a.id, type: a.type, actorName: a.actor.name, taskId: a.taskId, meta: a.meta, createdAt: a.createdAt.toISOString(),
+        }))}
+      />
     </div>
   );
 }
 
 // Переключатель видов для агрегата всех сотрудников
 async function AllView({ view, members, viewerId }: { view: string; members: BoardMember[]; viewerId: string }) {
-  const [allTasks, projects] = await Promise.all([getAllTasks(), getProjectsForUser(viewerId)]);
-  const tasks = mapTasks(allTasks);
   const tabs = [
     { key: "day", label: "По днях" },
     { key: "board", label: "Канбан" },
+    { key: "archive", label: "Архів" },
   ];
+  const active = tabs.some((t) => t.key === view) ? view : "day";
+
   return (
     <div>
       <div className="mb-4 flex gap-1">
@@ -169,18 +189,33 @@ async function AllView({ view, members, viewerId }: { view: string; members: Boa
           <Link
             key={t.key}
             href={`/team?view=${t.key}`}
-            className={cn("rounded-md px-3 py-1 text-sm font-medium transition-colors", (view === t.key || (t.key === "day" && view !== "board")) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted")}
+            className={cn("rounded-md px-3 py-1 text-sm font-medium transition-colors", active === t.key ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted")}
           >
             {t.label}
           </Link>
         ))}
       </div>
-      {view === "board" ? (
-        <KanbanBoard projectId="" initialTasks={tasks} members={members} projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))} collapseIdeaByDefault />
+      {active === "archive" ? (
+        <ArchiveList rows={mapArchive(await getArchivedTasks())} />
+      ) : active === "board" ? (
+        <AllBoardView members={members} viewerId={viewerId} />
       ) : (
-        <DayBoard initialTasks={tasks} />
+        <DayBoard initialTasks={mapTasks(await getAllTasks())} />
       )}
     </div>
+  );
+}
+
+async function AllBoardView({ members, viewerId }: { members: BoardMember[]; viewerId: string }) {
+  const [allTasks, projects] = await Promise.all([getAllTasks(), getProjectsForUser(viewerId)]);
+  return (
+    <KanbanBoard
+      projectId=""
+      initialTasks={mapTasks(allTasks)}
+      members={members}
+      projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))}
+      collapseIdeaByDefault
+    />
   );
 }
 
@@ -191,6 +226,7 @@ async function MemberView({ memberId, view, ws }: { memberId: string; view: stri
     { key: "day", label: "По днях" },
     { key: "board", label: "Канбан" },
     { key: "calendar", label: "Календар" },
+    { key: "archive", label: "Архів" },
   ];
 
   let calendar: WeekData | undefined;
@@ -216,7 +252,9 @@ async function MemberView({ memberId, view, ws }: { memberId: string; view: stri
           </Link>
         ))}
       </div>
-      {view === "calendar" && calendar ? (
+      {view === "archive" ? (
+        <ArchiveList rows={mapArchive(await getArchivedTasks(memberId))} />
+      ) : view === "calendar" && calendar ? (
         <WeekCalendar data={calendar} />
       ) : view === "board" ? (
         <KanbanBoard projectId="" initialTasks={tasks} members={[]} lockedAssigneeId={memberId} />

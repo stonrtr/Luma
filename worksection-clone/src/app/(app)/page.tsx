@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
-import { getMyTasks } from "@/server/queries/tasks";
+import { getMyTasks, getArchivedTasks } from "@/server/queries/tasks";
 import { getMonthlyKpis } from "@/server/queries/planning";
 import { getProjectsForUser } from "@/server/queries/projects";
 import { getMyWeek } from "@/server/queries/calendar";
@@ -38,6 +38,14 @@ export default async function HomePage({
   const { view, ws } = await searchParams;
   const tasks = await getMyTasks(user.id);
   const kpis = await getMonthlyKpis(user.id);
+  const archiveRows = view === "archive"
+    ? (await getArchivedTasks(user.id)).map((t) => ({
+        id: t.id, title: t.title,
+        projectName: t.project?.name ?? null, projectColor: t.project?.color ?? null,
+        completedAt: (t.completedAt ?? t.updatedAt).toISOString(),
+        assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
+      }))
+    : [];
   const myProjects = (await getProjectsForUser(user.id)).map((p) => ({ id: p.id, name: p.name, color: p.color }));
 
   // Данные для вида «Календар» — недельный тайм-грид
@@ -158,7 +166,7 @@ export default async function HomePage({
         </div>
       </header>
       <div>
-        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} projects={myProjects} />
+        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} projects={myProjects} archive={archiveRows} />
       </div>
     </div>
   );

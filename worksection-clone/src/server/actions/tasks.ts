@@ -68,7 +68,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
   });
 
   await db.activity.create({
-    data: { type: "task.created", actorId: user.id, projectId, meta: task.title },
+    data: { type: "task.created", actorId: user.id, projectId, taskId: task.id, meta: task.title },
   });
 
   // уведомление исполнителю о поставленной задаче
@@ -96,7 +96,7 @@ export async function moveTask(input: {
   toStatus: TaskStatus;
   toIndex: number;
 }) {
-  await requireUser();
+  const user = await requireUser();
   const { taskId, toStatus, toIndex } = input;
 
   const task = await db.task.findUnique({ where: { id: taskId } });
@@ -124,6 +124,12 @@ export async function moveTask(input: {
     ),
   ]);
 
+  if (task.status !== toStatus) {
+    await db.activity.create({
+      data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId, meta: JSON.stringify({ title: task.title, to: toStatus }) },
+    });
+  }
+
   if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
   revalidatePath("/");
 }
@@ -139,9 +145,11 @@ const updateTaskSchema = z.object({
 });
 
 export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
-  await requireUser();
+  const user = await requireUser();
   const data = updateTaskSchema.parse(input);
   const { taskId, dueDate, status, ...rest } = data;
+
+  const prev = status ? await db.task.findUnique({ where: { id: taskId }, select: { status: true } }) : null;
 
   const task = await db.task.update({
     where: { id: taskId },
@@ -152,18 +160,32 @@ export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
     },
   });
 
+  if (status && prev && prev.status !== status) {
+    await db.activity.create({
+      data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId, meta: JSON.stringify({ title: task.title, to: status }) },
+    });
+  }
+
   revalidatePath(`/tasks/${taskId}`);
   revalidatePath(`/projects/${task.projectId}`);
+  revalidatePath("/");
 }
 
 // Массовая смена статуса выбранных задач
 export async function bulkSetStatus(input: { taskIds: string[]; status: TaskStatus }) {
-  await requireUser();
+  const user = await requireUser();
   const ids = [...new Set(input.taskIds)].filter(Boolean);
   if (ids.length === 0) return;
+  const tasks = await db.task.findMany({ where: { id: { in: ids } }, select: { id: true, title: true, projectId: true, status: true } });
   await db.task.updateMany({
     where: { id: { in: ids } },
     data: { status: input.status, completedAt: input.status === "DONE" ? new Date() : null },
+  });
+  await db.activity.createMany({
+    data: tasks.filter((t) => t.status !== input.status).map((t) => ({
+      type: "task.status", actorId: user.id, projectId: t.projectId, taskId: t.id,
+      meta: JSON.stringify({ title: t.title, to: input.status }),
+    })),
   });
   revalidatePath("/", "layout");
 }

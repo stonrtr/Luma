@@ -28,6 +28,7 @@ export type ActivityMinAggregateOutputType = {
   id: string | null
   type: string | null
   meta: string | null
+  taskId: string | null
   createdAt: Date | null
   actorId: string | null
   projectId: string | null
@@ -37,6 +38,7 @@ export type ActivityMaxAggregateOutputType = {
   id: string | null
   type: string | null
   meta: string | null
+  taskId: string | null
   createdAt: Date | null
   actorId: string | null
   projectId: string | null
@@ -46,6 +48,7 @@ export type ActivityCountAggregateOutputType = {
   id: number
   type: number
   meta: number
+  taskId: number
   createdAt: number
   actorId: number
   projectId: number
@@ -57,6 +60,7 @@ export type ActivityMinAggregateInputType = {
   id?: true
   type?: true
   meta?: true
+  taskId?: true
   createdAt?: true
   actorId?: true
   projectId?: true
@@ -66,6 +70,7 @@ export type ActivityMaxAggregateInputType = {
   id?: true
   type?: true
   meta?: true
+  taskId?: true
   createdAt?: true
   actorId?: true
   projectId?: true
@@ -75,6 +80,7 @@ export type ActivityCountAggregateInputType = {
   id?: true
   type?: true
   meta?: true
+  taskId?: true
   createdAt?: true
   actorId?: true
   projectId?: true
@@ -157,6 +163,7 @@ export type ActivityGroupByOutputType = {
   id: string
   type: string
   meta: string | null
+  taskId: string | null
   createdAt: Date
   actorId: string
   projectId: string | null
@@ -187,6 +194,7 @@ export type ActivityWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   type?: Prisma.StringFilter<"Activity"> | string
   meta?: Prisma.StringNullableFilter<"Activity"> | string | null
+  taskId?: Prisma.StringNullableFilter<"Activity"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   actorId?: Prisma.StringFilter<"Activity"> | string
   projectId?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -198,6 +206,7 @@ export type ActivityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   meta?: Prisma.SortOrderInput | Prisma.SortOrder
+  taskId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -212,6 +221,7 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   type?: Prisma.StringFilter<"Activity"> | string
   meta?: Prisma.StringNullableFilter<"Activity"> | string | null
+  taskId?: Prisma.StringNullableFilter<"Activity"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   actorId?: Prisma.StringFilter<"Activity"> | string
   projectId?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -223,6 +233,7 @@ export type ActivityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   meta?: Prisma.SortOrderInput | Prisma.SortOrder
+  taskId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -238,6 +249,7 @@ export type ActivityScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   type?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   meta?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
+  taskId?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Activity"> | Date | string
   actorId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   projectId?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
@@ -247,6 +259,7 @@ export type ActivityCreateInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   actor: Prisma.UserCreateNestedOneWithoutActivitiesInput
   project?: Prisma.ProjectCreateNestedOneWithoutActivitiesInput
@@ -256,6 +269,7 @@ export type ActivityUncheckedCreateInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   actorId: string
   projectId?: string | null
@@ -265,6 +279,7 @@ export type ActivityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actor?: Prisma.UserUpdateOneRequiredWithoutActivitiesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutActivitiesNestedInput
@@ -274,6 +289,7 @@ export type ActivityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actorId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -283,6 +299,7 @@ export type ActivityCreateManyInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   actorId: string
   projectId?: string | null
@@ -292,6 +309,7 @@ export type ActivityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -299,6 +317,7 @@ export type ActivityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actorId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -318,6 +337,7 @@ export type ActivityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   meta?: Prisma.SortOrder
+  taskId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -327,6 +347,7 @@ export type ActivityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   meta?: Prisma.SortOrder
+  taskId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -336,6 +357,7 @@ export type ActivityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   meta?: Prisma.SortOrder
+  taskId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -429,6 +451,7 @@ export type ActivityCreateWithoutActorInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutActivitiesInput
 }
@@ -437,6 +460,7 @@ export type ActivityUncheckedCreateWithoutActorInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   projectId?: string | null
 }
@@ -473,6 +497,7 @@ export type ActivityScalarWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   type?: Prisma.StringFilter<"Activity"> | string
   meta?: Prisma.StringNullableFilter<"Activity"> | string | null
+  taskId?: Prisma.StringNullableFilter<"Activity"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   actorId?: Prisma.StringFilter<"Activity"> | string
   projectId?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -482,6 +507,7 @@ export type ActivityCreateWithoutProjectInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   actor: Prisma.UserCreateNestedOneWithoutActivitiesInput
 }
@@ -490,6 +516,7 @@ export type ActivityUncheckedCreateWithoutProjectInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   actorId: string
 }
@@ -523,6 +550,7 @@ export type ActivityCreateManyActorInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   projectId?: string | null
 }
@@ -531,6 +559,7 @@ export type ActivityUpdateWithoutActorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutActivitiesNestedInput
 }
@@ -539,6 +568,7 @@ export type ActivityUncheckedUpdateWithoutActorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -547,6 +577,7 @@ export type ActivityUncheckedUpdateManyWithoutActorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -555,6 +586,7 @@ export type ActivityCreateManyProjectInput = {
   id?: string
   type: string
   meta?: string | null
+  taskId?: string | null
   createdAt?: Date | string
   actorId: string
 }
@@ -563,6 +595,7 @@ export type ActivityUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actor?: Prisma.UserUpdateOneRequiredWithoutActivitiesNestedInput
 }
@@ -571,6 +604,7 @@ export type ActivityUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actorId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -579,6 +613,7 @@ export type ActivityUncheckedUpdateManyWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   meta?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actorId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -589,6 +624,7 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   type?: boolean
   meta?: boolean
+  taskId?: boolean
   createdAt?: boolean
   actorId?: boolean
   projectId?: boolean
@@ -600,6 +636,7 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   type?: boolean
   meta?: boolean
+  taskId?: boolean
   createdAt?: boolean
   actorId?: boolean
   projectId?: boolean
@@ -611,6 +648,7 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   type?: boolean
   meta?: boolean
+  taskId?: boolean
   createdAt?: boolean
   actorId?: boolean
   projectId?: boolean
@@ -622,12 +660,13 @@ export type ActivitySelectScalar = {
   id?: boolean
   type?: boolean
   meta?: boolean
+  taskId?: boolean
   createdAt?: boolean
   actorId?: boolean
   projectId?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "meta" | "createdAt" | "actorId" | "projectId", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "meta" | "taskId" | "createdAt" | "actorId" | "projectId", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   project?: boolean | Prisma.Activity$projectArgs<ExtArgs>
@@ -651,6 +690,7 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     type: string
     meta: string | null
+    taskId: string | null
     createdAt: Date
     actorId: string
     projectId: string | null
@@ -1082,6 +1122,7 @@ export interface ActivityFieldRefs {
   readonly id: Prisma.FieldRef<"Activity", 'String'>
   readonly type: Prisma.FieldRef<"Activity", 'String'>
   readonly meta: Prisma.FieldRef<"Activity", 'String'>
+  readonly taskId: Prisma.FieldRef<"Activity", 'String'>
   readonly createdAt: Prisma.FieldRef<"Activity", 'DateTime'>
   readonly actorId: Prisma.FieldRef<"Activity", 'String'>
   readonly projectId: Prisma.FieldRef<"Activity", 'String'>

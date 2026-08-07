@@ -396,6 +396,7 @@ export const ActivityScalarFieldEnum = {
   id: 'id',
   type: 'type',
   meta: 'meta',
+  taskId: 'taskId',
   createdAt: 'createdAt',
   actorId: 'actorId',
   projectId: 'projectId'
