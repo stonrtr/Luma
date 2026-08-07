@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Mail } from "lucide-react";
 import { updateOrgUser } from "@/server/actions/org";
 import { deleteUser } from "@/server/actions/users";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ import {
 type OrgUser = {
   id: string; name: string; title: string | null; functions: string | null;
   weeklyHours: number | null; managerId: string | null; driveFolderUrl: string | null;
-  role?: string; isActive?: boolean;
+  role?: string; isActive?: boolean; email?: string;
 };
 
 const ROLE_OPTIONS = [
@@ -28,6 +28,7 @@ const ROLE_OPTIONS = [
   { value: "MEMBER", label: "Співробітник" },
   { value: "CLIENT", label: "Клієнт" },
 ];
+const ROLE_LABEL: Record<string, string> = { OWNER: "Власник", ADMIN: "Адміністратор", MEMBER: "Співробітник", CLIENT: "Клієнт" };
 
 export function OrgEditDialog({
   user, candidates, isAdmin, canDelete, canManageAccess,
@@ -43,7 +44,6 @@ export function OrgEditDialog({
   const [drive, setDrive] = useState(user.driveFolderUrl ?? "");
   const [managerId, setManagerId] = useState(user.managerId ?? "none");
   const [role, setRole] = useState(user.role ?? "MEMBER");
-  const [active, setActive] = useState(user.isActive ?? true);
   const [pending, start] = useTransition();
 
   function save() {
@@ -58,7 +58,6 @@ export function OrgEditDialog({
         driveFolderUrl: drive.trim(),
         managerId: isAdmin ? (managerId === "none" ? null : managerId) : undefined,
         role: canManageAccess ? (role as "ADMIN" | "MEMBER" | "CLIENT") : undefined,
-        isActive: canManageAccess ? active : undefined,
       });
       if (res?.error) toast.error(res.error);
       else { toast.success("Збережено"); setOpen(false); router.refresh(); }
@@ -73,6 +72,12 @@ export function OrgEditDialog({
       <DialogContent>
         <DialogHeader><DialogTitle>{user.name}</DialogTitle></DialogHeader>
         <div className="space-y-4">
+          {user.email && (
+            <p className="-mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Mail className="size-3.5" /> {user.email}
+              <span className="ml-auto rounded bg-muted px-1.5 py-0.5 font-medium">{ROLE_LABEL[user.role ?? "MEMBER"]}</span>
+            </p>
+          )}
           <div className="space-y-2">
             <Label htmlFor="org-name">Ім&apos;я</Label>
             <Input id="org-name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -114,26 +119,14 @@ export function OrgEditDialog({
           </div>
 
           {canManageAccess && (
-            <div className="grid grid-cols-2 gap-3 border-t pt-4">
-              <div className="space-y-2">
-                <Label>Роль / доступ</Label>
-                <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {ROLE_OPTIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Обліковий запис</Label>
-                <Select value={active ? "1" : "0"} onValueChange={(v) => setActive(v === "1")}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Активний</SelectItem>
-                    <SelectItem value="0">Деактивований</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2 border-t pt-4">
+              <Label>Роль / доступ</Label>
+              <Select value={role} onValueChange={setRole}>
+                <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {ROLE_OPTIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>
