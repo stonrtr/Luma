@@ -41,7 +41,8 @@ export async function remindUser(
     });
     for (const t of overdue) {
       const link = `/tasks/${t.id}`;
-      const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "overdue", link, readAt: null } });
+      // одно напоминание на задачу (в т.ч. если уже прочитано) — чтобы не пересоздавать при каждом заходе
+      const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "overdue", link } });
       if (!exists) {
         await notify({ recipientId: userId, type: "overdue", message: `Задача прострочена: «${t.title}»`, link });
       }
@@ -57,7 +58,7 @@ export async function remindUser(
     });
     for (const t of managerOverdue) {
       const link = `/tasks/${t.id}`;
-      const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "manager_overdue", link, readAt: null } });
+      const exists = await db.notification.findFirst({ where: { recipientId: userId, type: "manager_overdue", link } });
       if (!exists) {
         const who = t.assignees[0]?.user.name ?? "виконавець";
         await notify({ recipientId: userId, type: "manager_overdue", message: `Прострочено у «${who}»: «${t.title}»`, link });

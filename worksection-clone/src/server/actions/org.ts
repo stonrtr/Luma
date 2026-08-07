@@ -19,7 +19,7 @@ const schema = z.object({
   weeklyHours: z.number().min(0).max(168).nullable().optional(),
   driveFolderUrl: z.string().max(500).nullable().optional(),
   managerId: z.string().nullable().optional(),
-  role: z.enum(["ADMIN", "MEMBER", "CLIENT"]).optional(),
+  role: z.enum(["ADMIN", "MEMBER"]).optional(),
   isActive: z.boolean().optional(),
 });
 

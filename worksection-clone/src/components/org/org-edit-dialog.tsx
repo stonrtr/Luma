@@ -26,7 +26,6 @@ type OrgUser = {
 const ROLE_OPTIONS = [
   { value: "ADMIN", label: "Адміністратор" },
   { value: "MEMBER", label: "Співробітник" },
-  { value: "CLIENT", label: "Клієнт" },
 ];
 const ROLE_LABEL: Record<string, string> = { OWNER: "Власник", ADMIN: "Адміністратор", MEMBER: "Співробітник", CLIENT: "Клієнт" };
 
@@ -57,7 +56,7 @@ export function OrgEditDialog({
         weeklyHours: hours.trim() ? parseFloat(hours) * 5 : null,
         driveFolderUrl: drive.trim(),
         managerId: isAdmin ? (managerId === "none" ? null : managerId) : undefined,
-        role: canManageAccess ? (role as "ADMIN" | "MEMBER" | "CLIENT") : undefined,
+        role: canManageAccess ? (role as "ADMIN" | "MEMBER") : undefined,
       });
       if (res?.error) toast.error(res.error);
       else { toast.success("Збережено"); setOpen(false); router.refresh(); }
