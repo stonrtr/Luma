@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NotificationBell } from "./notification-bell";
 import { TopNavLinks } from "./top-nav-links";
 import { UserMenu } from "./user-menu";
+import { GlobalSearch } from "./global-search";
 
 type Notif = { id: string; message: string; link: string | null; readAt: string | null; createdAt: string };
 
@@ -22,6 +23,7 @@ export function TopNav({
         <TopNavLinks locale={user.locale} isAdmin={isAdmin} />
       </div>
       <div className="flex shrink-0 items-center gap-1">
+        <GlobalSearch />
         <NotificationBell items={notifications.items} unread={notifications.unread} />
         <UserMenu name={user.name} title={user.title} email={user.email} avatarUrl={user.avatarUrl} locale={user.locale} />
       </div>
