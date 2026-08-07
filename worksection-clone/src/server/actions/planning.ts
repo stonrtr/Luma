@@ -5,14 +5,12 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 import { notify } from "@/server/notify";
+import { canManageUser } from "@/server/authz";
 import { mondayOf } from "@/lib/week";
 
-// может ли viewer управлять целями/KPI пользователя target
+// тонкая обёртка над общим слоем прав (совместимость с вызовами ниже)
 async function canManage(viewerId: string, viewerRole: string, targetId: string) {
-  if (viewerRole === "OWNER" || viewerRole === "ADMIN") return true;
-  if (viewerId === targetId) return false; // цели/KPI ставит руководитель, не сам
-  const t = await db.user.findUnique({ where: { id: targetId }, select: { managerId: true } });
-  return t?.managerId === viewerId;
+  return canManageUser({ id: viewerId, role: viewerRole }, targetId);
 }
 
 // --- Цели месяца (ставит руководитель) ---

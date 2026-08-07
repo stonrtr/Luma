@@ -4,12 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
-
-async function canEdit(viewerId: string, viewerRole: string, targetId: string) {
-  if (viewerRole === "OWNER" || viewerRole === "ADMIN") return true;
-  const t = await db.user.findUnique({ where: { id: targetId }, select: { managerId: true } });
-  return t?.managerId === viewerId;
-}
+import { isAdmin, canManageUser } from "@/server/authz";
 
 const schema = z.object({
   userId: z.string(),
@@ -26,14 +21,14 @@ const schema = z.object({
 export async function updateOrgUser(input: z.infer<typeof schema>) {
   const viewer = await requireUser();
   const data = schema.parse(input);
-  if (!(await canEdit(viewer.id, viewer.role, data.userId))) return { error: "Немає прав" };
+  if (!(await canManageUser(viewer, data.userId))) return { error: "Немає прав" };
 
-  const isAdmin = viewer.role === "OWNER" || viewer.role === "ADMIN";
+  const admin = isAdmin(viewer.role);
   const target = await db.user.findUnique({ where: { id: data.userId }, select: { role: true } });
   if (!target) return { error: "Користувача не знайдено" };
 
   // роль/активность/менеджер меняет только админ; владельца и себя не трогаем
-  const canChangeAccess = isAdmin && target.role !== "OWNER" && data.userId !== viewer.id;
+  const canChangeAccess = admin && target.role !== "OWNER" && data.userId !== viewer.id;
 
   await db.user.update({
     where: { id: data.userId },
@@ -43,7 +38,7 @@ export async function updateOrgUser(input: z.infer<typeof schema>) {
       functions: data.functions,
       weeklyHours: data.weeklyHours ?? null,
       ...(data.driveFolderUrl !== undefined ? { driveFolderUrl: data.driveFolderUrl || null } : {}),
-      ...(isAdmin && data.managerId !== undefined ? { managerId: data.managerId } : {}),
+      ...(admin && data.managerId !== undefined ? { managerId: data.managerId } : {}),
       ...(canChangeAccess && data.role !== undefined ? { role: data.role } : {}),
       ...(canChangeAccess && data.isActive !== undefined ? { isActive: data.isActive } : {}),
     },
