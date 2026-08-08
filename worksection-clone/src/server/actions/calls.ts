@@ -105,21 +105,35 @@ function parseTitles(text: string): string[] | null {
   } catch { return null; }
 }
 
-// Google Gemini (OpenAI-совместимый эндпоинт)
-async function geminiExtract(summary: string): Promise<string[] | null> {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return null;
-  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-pro";
+// Один вызов Gemini конкретной моделью. status=429 → лимит (пробуем следующую модель).
+async function geminiCall(key: string, model: string, summary: string): Promise<{ titles: string[] | null; rateLimited: boolean }> {
   try {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
       body: JSON.stringify({ model, temperature: 0.2, messages: [{ role: "user", content: EXTRACT_PROMPT + summary }] }),
     });
-    if (!res.ok) return null;
+    if (res.status === 429) return { titles: null, rateLimited: true };
+    if (!res.ok) return { titles: null, rateLimited: false };
     const data = await res.json();
-    return parseTitles(data?.choices?.[0]?.message?.content ?? "");
-  } catch { return null; }
+    return { titles: parseTitles(data?.choices?.[0]?.message?.content ?? ""), rateLimited: false };
+  } catch { return { titles: null, rateLimited: false }; }
+}
+
+// Google Gemini с авто-переключением моделей при исчерпании лимита.
+async function geminiExtract(summary: string): Promise<string[] | null> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  const primary = process.env.GEMINI_MODEL ?? "gemini-2.5-pro";
+  // при лимите переходим на модели с более щедрими квотами
+  const chain = [...new Set([primary, "gemini-2.5-flash", "gemini-2.0-flash"])];
+  for (const model of chain) {
+    const { titles, rateLimited } = await geminiCall(key, model, summary);
+    if (titles && titles.length) return titles;
+    if (!rateLimited && titles !== null) return titles; // модель ответила (пусть и пусто) — не лимит
+    // rateLimited или ошибка → пробуем следующую модель
+  }
+  return null;
 }
 
 // Anthropic Claude (если задан ключ)
