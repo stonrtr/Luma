@@ -23,12 +23,10 @@ const PRIORITY_KB = { reply_markup: { keyboard: [
   [6, 7, 8, 9, 10].map((n) => ({ text: String(n) })),
   [{ text: CANCEL }],
 ], resize_keyboard: true } };
-const DL = { today: "Сьогодні", tomorrow: "Завтра", friday: "Ця п'ятниця", d7: "+7 днів", d14: "+14 днів", d30: "+30 днів" };
+const DL = { today: "Сьогодні до кінця дня", tomorrow: "Завтра до кінця дня", weekEnd: "До кінця тижня" };
 const DEADLINE_KB = { reply_markup: { keyboard: [
   [{ text: DL.today }, { text: DL.tomorrow }],
-  [{ text: DL.friday }],
-  [{ text: DL.d7 }, { text: DL.d14 }],
-  [{ text: DL.d30 }],
+  [{ text: DL.weekEnd }],
   [{ text: CANCEL }],
 ], resize_keyboard: true } };
 
@@ -51,10 +49,7 @@ function parseDeadline(text: string): Date | null {
   switch (text) {
     case DL.today: return endOfDay(new Date());
     case DL.tomorrow: return endOfDay(new Date(Date.now() + day));
-    case DL.friday: { const now = new Date(); let add = (5 - now.getDay() + 7) % 7; if (add === 0) add = 7; return endOfDay(new Date(Date.now() + add * day)); }
-    case DL.d7: return endOfDay(new Date(Date.now() + 7 * day));
-    case DL.d14: return endOfDay(new Date(Date.now() + 14 * day));
-    case DL.d30: return endOfDay(new Date(Date.now() + 30 * day));
+    case DL.weekEnd: { const now = new Date(); const add = (7 - now.getDay()) % 7; return endOfDay(new Date(Date.now() + add * day)); } // до неділі включно
     default: return null;
   }
 }
