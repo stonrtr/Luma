@@ -14,7 +14,8 @@ const HELP = [
   "/today — задачі на сьогодні",
   "/inbox — непрочитані сповіщення",
   "/tasks — мої відкриті задачі",
-  "/new назва задачі — створити задачу собі (дедлайн сьогодні)",
+  "/new назва — створити задачу собі (дедлайн сьогодні)",
+  "/idea назва — додати ідею (колонка «Ідеї»)",
   "/help — ця довідка",
 ].join("\n");
 
@@ -114,6 +115,21 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
       },
     });
     await sendTelegram(chat, `✅ Задачу створено: <b>${esc(title)}</b> (дедлайн сьогодні)`);
+    return;
+  }
+
+  if (text.startsWith("/idea")) {
+    const title = text.slice(5).trim();
+    if (!title) { await sendTelegram(chat, "Вкажіть назву: /idea Нова фіча"); return; }
+    const last = await db.task.findFirst({ where: { status: "IDEA", parentId: null, assignees: { some: { userId } } }, orderBy: { position: "desc" }, select: { position: true } });
+    await db.task.create({
+      data: {
+        title: title.slice(0, 200), status: "IDEA", priority: 5,
+        createdById: userId, position: (last?.position ?? -1) + 1,
+        assignees: { create: [{ userId }] },
+      },
+    });
+    await sendTelegram(chat, `💡 Ідею додано: <b>${esc(title)}</b> (колонка «Ідеї»)`);
     return;
   }
 
