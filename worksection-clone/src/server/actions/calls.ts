@@ -109,7 +109,7 @@ function parseTitles(text: string): string[] | null {
 async function geminiExtract(summary: string): Promise<string[] | null> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return null;
-  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-pro";
   try {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
