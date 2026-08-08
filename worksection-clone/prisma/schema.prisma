@@ -76,12 +76,13 @@ model User {
 
 // Привязка Telegram-аккаунта сотрудника к его учётке
 model TelegramAccount {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chatId    String   @unique // id чата Telegram
-  username  String?
-  createdAt DateTime @default(now())
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatId        String   @unique // id чата Telegram
+  username      String?
+  pendingAction String?  // ожидание ввода: "task" | "idea"
+  createdAt     DateTime @default(now())
 }
 
 enum PlanStatus {
