@@ -40,7 +40,6 @@ export type ProjectMinAggregateOutputType = {
   description: string | null
   color: string | null
   status: $Enums.ProjectStatus | null
-  isPersonal: boolean | null
   startDate: Date | null
   dueDate: Date | null
   budget: number | null
@@ -56,7 +55,6 @@ export type ProjectMaxAggregateOutputType = {
   description: string | null
   color: string | null
   status: $Enums.ProjectStatus | null
-  isPersonal: boolean | null
   startDate: Date | null
   dueDate: Date | null
   budget: number | null
@@ -72,7 +70,6 @@ export type ProjectCountAggregateOutputType = {
   description: number
   color: number
   status: number
-  isPersonal: number
   startDate: number
   dueDate: number
   budget: number
@@ -98,7 +95,6 @@ export type ProjectMinAggregateInputType = {
   description?: true
   color?: true
   status?: true
-  isPersonal?: true
   startDate?: true
   dueDate?: true
   budget?: true
@@ -114,7 +110,6 @@ export type ProjectMaxAggregateInputType = {
   description?: true
   color?: true
   status?: true
-  isPersonal?: true
   startDate?: true
   dueDate?: true
   budget?: true
@@ -130,7 +125,6 @@ export type ProjectCountAggregateInputType = {
   description?: true
   color?: true
   status?: true
-  isPersonal?: true
   startDate?: true
   dueDate?: true
   budget?: true
@@ -233,7 +227,6 @@ export type ProjectGroupByOutputType = {
   description: string | null
   color: string
   status: $Enums.ProjectStatus
-  isPersonal: boolean
   startDate: Date | null
   dueDate: Date | null
   budget: number | null
@@ -272,7 +265,6 @@ export type ProjectWhereInput = {
   description?: Prisma.StringNullableFilter<"Project"> | string | null
   color?: Prisma.StringFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFilter<"Project"> | boolean
   startDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableFilter<"Project"> | number | null
@@ -295,7 +287,6 @@ export type ProjectOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  isPersonal?: Prisma.SortOrder
   startDate?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   budget?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -321,7 +312,6 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Project"> | string | null
   color?: Prisma.StringFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFilter<"Project"> | boolean
   startDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableFilter<"Project"> | number | null
@@ -344,7 +334,6 @@ export type ProjectOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  isPersonal?: Prisma.SortOrder
   startDate?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   budget?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -368,7 +357,6 @@ export type ProjectScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   color?: Prisma.StringWithAggregatesFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
   startDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableWithAggregatesFilter<"Project"> | number | null
@@ -384,7 +372,6 @@ export type ProjectCreateInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -406,7 +393,6 @@ export type ProjectUncheckedCreateInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -428,7 +414,6 @@ export type ProjectUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -450,7 +435,6 @@ export type ProjectUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -472,7 +456,6 @@ export type ProjectCreateManyInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -488,7 +471,6 @@ export type ProjectUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -503,7 +485,6 @@ export type ProjectUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -529,7 +510,6 @@ export type ProjectCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   color?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  isPersonal?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   budget?: Prisma.SortOrder
@@ -549,7 +529,6 @@ export type ProjectMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   color?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  isPersonal?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   budget?: Prisma.SortOrder
@@ -565,7 +544,6 @@ export type ProjectMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   color?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  isPersonal?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   budget?: Prisma.SortOrder
@@ -731,7 +709,6 @@ export type ProjectCreateWithoutCreatedByInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -752,7 +729,6 @@ export type ProjectUncheckedCreateWithoutCreatedByInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -801,7 +777,6 @@ export type ProjectScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Project"> | string | null
   color?: Prisma.StringFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFilter<"Project"> | boolean
   startDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   dueDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   budget?: Prisma.FloatNullableFilter<"Project"> | number | null
@@ -817,7 +792,6 @@ export type ProjectCreateWithoutMembersInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -838,7 +812,6 @@ export type ProjectUncheckedCreateWithoutMembersInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -875,7 +848,6 @@ export type ProjectUpdateWithoutMembersInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -896,7 +868,6 @@ export type ProjectUncheckedUpdateWithoutMembersInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -917,7 +888,6 @@ export type ProjectCreateWithoutTasksInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -938,7 +908,6 @@ export type ProjectUncheckedCreateWithoutTasksInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -975,7 +944,6 @@ export type ProjectUpdateWithoutTasksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -996,7 +964,6 @@ export type ProjectUncheckedUpdateWithoutTasksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1017,7 +984,6 @@ export type ProjectCreateWithoutMilestonesInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1038,7 +1004,6 @@ export type ProjectUncheckedCreateWithoutMilestonesInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1075,7 +1040,6 @@ export type ProjectUpdateWithoutMilestonesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1096,7 +1060,6 @@ export type ProjectUncheckedUpdateWithoutMilestonesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1117,7 +1080,6 @@ export type ProjectCreateWithoutRecurringTasksInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1138,7 +1100,6 @@ export type ProjectUncheckedCreateWithoutRecurringTasksInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1175,7 +1136,6 @@ export type ProjectUpdateWithoutRecurringTasksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1196,7 +1156,6 @@ export type ProjectUncheckedUpdateWithoutRecurringTasksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1217,7 +1176,6 @@ export type ProjectCreateWithoutTagsInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1238,7 +1196,6 @@ export type ProjectUncheckedCreateWithoutTagsInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1275,7 +1232,6 @@ export type ProjectUpdateWithoutTagsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1296,7 +1252,6 @@ export type ProjectUncheckedUpdateWithoutTagsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1317,7 +1272,6 @@ export type ProjectCreateWithoutActivitiesInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1338,7 +1292,6 @@ export type ProjectUncheckedCreateWithoutActivitiesInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1375,7 +1328,6 @@ export type ProjectUpdateWithoutActivitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1396,7 +1348,6 @@ export type ProjectUncheckedUpdateWithoutActivitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1417,7 +1368,6 @@ export type ProjectCreateManyCreatedByInput = {
   description?: string | null
   color?: string
   status?: $Enums.ProjectStatus
-  isPersonal?: boolean
   startDate?: Date | string | null
   dueDate?: Date | string | null
   budget?: number | null
@@ -1432,7 +1382,6 @@ export type ProjectUpdateWithoutCreatedByInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1453,7 +1402,6 @@ export type ProjectUncheckedUpdateWithoutCreatedByInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1474,7 +1422,6 @@ export type ProjectUncheckedUpdateManyWithoutCreatedByInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-  isPersonal?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1565,7 +1512,6 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   description?: boolean
   color?: boolean
   status?: boolean
-  isPersonal?: boolean
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
@@ -1589,7 +1535,6 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   color?: boolean
   status?: boolean
-  isPersonal?: boolean
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
@@ -1606,7 +1551,6 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   color?: boolean
   status?: boolean
-  isPersonal?: boolean
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
@@ -1623,7 +1567,6 @@ export type ProjectSelectScalar = {
   description?: boolean
   color?: boolean
   status?: boolean
-  isPersonal?: boolean
   startDate?: boolean
   dueDate?: boolean
   budget?: boolean
@@ -1633,7 +1576,7 @@ export type ProjectSelectScalar = {
   createdById?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "color" | "status" | "isPersonal" | "startDate" | "dueDate" | "budget" | "archivedAt" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "color" | "status" | "startDate" | "dueDate" | "budget" | "archivedAt" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   members?: boolean | Prisma.Project$membersArgs<ExtArgs>
@@ -1668,7 +1611,6 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     description: string | null
     color: string
     status: $Enums.ProjectStatus
-    isPersonal: boolean
     startDate: Date | null
     dueDate: Date | null
     budget: number | null
@@ -2111,7 +2053,6 @@ export interface ProjectFieldRefs {
   readonly description: Prisma.FieldRef<"Project", 'String'>
   readonly color: Prisma.FieldRef<"Project", 'String'>
   readonly status: Prisma.FieldRef<"Project", 'ProjectStatus'>
-  readonly isPersonal: Prisma.FieldRef<"Project", 'Boolean'>
   readonly startDate: Prisma.FieldRef<"Project", 'DateTime'>
   readonly dueDate: Prisma.FieldRef<"Project", 'DateTime'>
   readonly budget: Prisma.FieldRef<"Project", 'Float'>

@@ -17,12 +17,12 @@ export async function getPlanning(userId: string, ref: Date = new Date()) {
       include: { task: { select: { id: true, status: true } } },
     }),
     db.project.findMany({
-      where: { members: { some: { userId } }, status: { not: "ARCHIVED" }, isPersonal: false },
+      where: { members: { some: { userId } }, status: { not: "ARCHIVED" } },
       select: { id: true, name: true, color: true },
       orderBy: { name: "asc" },
     }),
     db.recurringTask.findMany({
-      where: { assigneeId: userId, NOT: { project: { is: { isPersonal: true } } } },
+      where: { assigneeId: userId },
       orderBy: { createdAt: "asc" },
     }),
   ]);

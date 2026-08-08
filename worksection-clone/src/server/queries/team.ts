@@ -50,7 +50,7 @@ export async function getTeamOverview() {
       select: { id: true, name: true, title: true, weeklyHours: true },
     }),
     db.task.findMany({
-      where: { parentId: null, archivedAt: null, status: { not: "DONE" }, NOT: { project: { is: { isPersonal: true } } } },
+      where: { parentId: null, archivedAt: null, status: { not: "DONE" } },
       orderBy: [{ priority: "desc" }, { position: "asc" }],
       include: {
         project: { select: { name: true, color: true } },
@@ -59,7 +59,7 @@ export async function getTeamOverview() {
     }),
     // задачи, закрытые на этой неделе (для счётчика «закрито за тиждень»)
     db.task.findMany({
-      where: { parentId: null, status: "DONE", completedAt: { gte: weekStart, lt: weekEnd }, NOT: { project: { is: { isPersonal: true } } } },
+      where: { parentId: null, status: "DONE", completedAt: { gte: weekStart, lt: weekEnd } },
       select: { id: true, title: true, assignees: { select: { userId: true } } },
     }),
   ]);

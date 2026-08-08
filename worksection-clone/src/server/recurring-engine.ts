@@ -40,8 +40,6 @@ export async function generateDueRecurringTasks(): Promise<number> {
         dueDate,
         position: (last?.position ?? -1) + 1,
         assignees: { create: [{ userId: r.assigneeId }] },
-        // сфера жизни (для личного планера)
-        ...(r.tagId ? { tags: { create: [{ tagId: r.tagId }] } } : {}),
       },
     });
     await db.recurringTask.update({ where: { id: r.id }, data: { lastGeneratedAt: now } });

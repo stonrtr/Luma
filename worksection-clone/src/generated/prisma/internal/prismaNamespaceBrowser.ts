@@ -194,7 +194,6 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   color: 'color',
   status: 'status',
-  isPersonal: 'isPersonal',
   startDate: 'startDate',
   dueDate: 'dueDate',
   budget: 'budget',
@@ -298,8 +297,7 @@ export const RecurringTaskScalarFieldEnum = {
   createdAt: 'createdAt',
   assigneeId: 'assigneeId',
   createdById: 'createdById',
-  projectId: 'projectId',
-  tagId: 'tagId'
+  projectId: 'projectId'
 } as const
 
 export type RecurringTaskScalarFieldEnum = (typeof RecurringTaskScalarFieldEnum)[keyof typeof RecurringTaskScalarFieldEnum]

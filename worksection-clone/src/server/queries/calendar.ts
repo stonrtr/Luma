@@ -12,7 +12,6 @@ export async function getCalendarData(year: number, month: number) {
       where: {
         parentId: null,
         archivedAt: null,
-        NOT: { project: { is: { isPersonal: true } } },
         OR: [
           { scheduledAt: { gte: from, lt: to } },
           { dueDate: { gte: from, lt: to }, scheduledAt: null },
@@ -42,7 +41,6 @@ export async function getMyWeek(userId: string, weekStart: Date) {
     db.task.findMany({
       where: {
         parentId: null, archivedAt: null, assignees: { some: { userId } },
-        NOT: { project: { is: { isPersonal: true } } },
         OR: [{ scheduledAt: { gte: from, lt: to } }, { dueDate: { gte: from, lt: to } }],
       },
       include: { project: { select: { color: true } } },
@@ -64,7 +62,6 @@ export async function getMyCalendar(userId: string, year: number, month: number)
         parentId: null,
         archivedAt: null,
         assignees: { some: { userId } },
-        NOT: { project: { is: { isPersonal: true } } },
         OR: [
           { scheduledAt: { gte: from, lt: to } },
           { dueDate: { gte: from, lt: to }, scheduledAt: null },

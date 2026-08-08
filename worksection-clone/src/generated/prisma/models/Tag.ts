@@ -176,7 +176,6 @@ export type TagWhereInput = {
   projectId?: Prisma.StringFilter<"Tag"> | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   tasks?: Prisma.TaskTagListRelationFilter
-  recurringTasks?: Prisma.RecurringTaskListRelationFilter
 }
 
 export type TagOrderByWithRelationInput = {
@@ -186,7 +185,6 @@ export type TagOrderByWithRelationInput = {
   projectId?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
   tasks?: Prisma.TaskTagOrderByRelationAggregateInput
-  recurringTasks?: Prisma.RecurringTaskOrderByRelationAggregateInput
 }
 
 export type TagWhereUniqueInput = Prisma.AtLeast<{
@@ -200,7 +198,6 @@ export type TagWhereUniqueInput = Prisma.AtLeast<{
   projectId?: Prisma.StringFilter<"Tag"> | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   tasks?: Prisma.TaskTagListRelationFilter
-  recurringTasks?: Prisma.RecurringTaskListRelationFilter
 }, "id" | "projectId_name">
 
 export type TagOrderByWithAggregationInput = {
@@ -229,7 +226,6 @@ export type TagCreateInput = {
   color?: string
   project: Prisma.ProjectCreateNestedOneWithoutTagsInput
   tasks?: Prisma.TaskTagCreateNestedManyWithoutTagInput
-  recurringTasks?: Prisma.RecurringTaskCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateInput = {
@@ -238,7 +234,6 @@ export type TagUncheckedCreateInput = {
   color?: string
   projectId: string
   tasks?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTagInput
-  recurringTasks?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagUpdateInput = {
@@ -247,7 +242,6 @@ export type TagUpdateInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutTagsNestedInput
   tasks?: Prisma.TaskTagUpdateManyWithoutTagNestedInput
-  recurringTasks?: Prisma.RecurringTaskUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateInput = {
@@ -256,7 +250,6 @@ export type TagUncheckedUpdateInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskTagUncheckedUpdateManyWithoutTagNestedInput
-  recurringTasks?: Prisma.RecurringTaskUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagCreateManyInput = {
@@ -287,11 +280,6 @@ export type TagListRelationFilter = {
 
 export type TagOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type TagNullableScalarRelationFilter = {
-  is?: Prisma.TagWhereInput | null
-  isNot?: Prisma.TagWhereInput | null
 }
 
 export type TagProjectIdNameCompoundUniqueInput = {
@@ -367,22 +355,6 @@ export type TagUncheckedUpdateManyWithoutProjectNestedInput = {
   deleteMany?: Prisma.TagScalarWhereInput | Prisma.TagScalarWhereInput[]
 }
 
-export type TagCreateNestedOneWithoutRecurringTasksInput = {
-  create?: Prisma.XOR<Prisma.TagCreateWithoutRecurringTasksInput, Prisma.TagUncheckedCreateWithoutRecurringTasksInput>
-  connectOrCreate?: Prisma.TagCreateOrConnectWithoutRecurringTasksInput
-  connect?: Prisma.TagWhereUniqueInput
-}
-
-export type TagUpdateOneWithoutRecurringTasksNestedInput = {
-  create?: Prisma.XOR<Prisma.TagCreateWithoutRecurringTasksInput, Prisma.TagUncheckedCreateWithoutRecurringTasksInput>
-  connectOrCreate?: Prisma.TagCreateOrConnectWithoutRecurringTasksInput
-  upsert?: Prisma.TagUpsertWithoutRecurringTasksInput
-  disconnect?: Prisma.TagWhereInput | boolean
-  delete?: Prisma.TagWhereInput | boolean
-  connect?: Prisma.TagWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TagUpdateToOneWithWhereWithoutRecurringTasksInput, Prisma.TagUpdateWithoutRecurringTasksInput>, Prisma.TagUncheckedUpdateWithoutRecurringTasksInput>
-}
-
 export type TagCreateNestedOneWithoutTasksInput = {
   create?: Prisma.XOR<Prisma.TagCreateWithoutTasksInput, Prisma.TagUncheckedCreateWithoutTasksInput>
   connectOrCreate?: Prisma.TagCreateOrConnectWithoutTasksInput
@@ -402,7 +374,6 @@ export type TagCreateWithoutProjectInput = {
   name: string
   color?: string
   tasks?: Prisma.TaskTagCreateNestedManyWithoutTagInput
-  recurringTasks?: Prisma.RecurringTaskCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateWithoutProjectInput = {
@@ -410,7 +381,6 @@ export type TagUncheckedCreateWithoutProjectInput = {
   name: string
   color?: string
   tasks?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTagInput
-  recurringTasks?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagCreateOrConnectWithoutProjectInput = {
@@ -448,60 +418,11 @@ export type TagScalarWhereInput = {
   projectId?: Prisma.StringFilter<"Tag"> | string
 }
 
-export type TagCreateWithoutRecurringTasksInput = {
-  id?: string
-  name: string
-  color?: string
-  project: Prisma.ProjectCreateNestedOneWithoutTagsInput
-  tasks?: Prisma.TaskTagCreateNestedManyWithoutTagInput
-}
-
-export type TagUncheckedCreateWithoutRecurringTasksInput = {
-  id?: string
-  name: string
-  color?: string
-  projectId: string
-  tasks?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTagInput
-}
-
-export type TagCreateOrConnectWithoutRecurringTasksInput = {
-  where: Prisma.TagWhereUniqueInput
-  create: Prisma.XOR<Prisma.TagCreateWithoutRecurringTasksInput, Prisma.TagUncheckedCreateWithoutRecurringTasksInput>
-}
-
-export type TagUpsertWithoutRecurringTasksInput = {
-  update: Prisma.XOR<Prisma.TagUpdateWithoutRecurringTasksInput, Prisma.TagUncheckedUpdateWithoutRecurringTasksInput>
-  create: Prisma.XOR<Prisma.TagCreateWithoutRecurringTasksInput, Prisma.TagUncheckedCreateWithoutRecurringTasksInput>
-  where?: Prisma.TagWhereInput
-}
-
-export type TagUpdateToOneWithWhereWithoutRecurringTasksInput = {
-  where?: Prisma.TagWhereInput
-  data: Prisma.XOR<Prisma.TagUpdateWithoutRecurringTasksInput, Prisma.TagUncheckedUpdateWithoutRecurringTasksInput>
-}
-
-export type TagUpdateWithoutRecurringTasksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  color?: Prisma.StringFieldUpdateOperationsInput | string
-  project?: Prisma.ProjectUpdateOneRequiredWithoutTagsNestedInput
-  tasks?: Prisma.TaskTagUpdateManyWithoutTagNestedInput
-}
-
-export type TagUncheckedUpdateWithoutRecurringTasksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  color?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  tasks?: Prisma.TaskTagUncheckedUpdateManyWithoutTagNestedInput
-}
-
 export type TagCreateWithoutTasksInput = {
   id?: string
   name: string
   color?: string
   project: Prisma.ProjectCreateNestedOneWithoutTagsInput
-  recurringTasks?: Prisma.RecurringTaskCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateWithoutTasksInput = {
@@ -509,7 +430,6 @@ export type TagUncheckedCreateWithoutTasksInput = {
   name: string
   color?: string
   projectId: string
-  recurringTasks?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagCreateOrConnectWithoutTasksInput = {
@@ -533,7 +453,6 @@ export type TagUpdateWithoutTasksInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutTagsNestedInput
-  recurringTasks?: Prisma.RecurringTaskUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateWithoutTasksInput = {
@@ -541,7 +460,6 @@ export type TagUncheckedUpdateWithoutTasksInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  recurringTasks?: Prisma.RecurringTaskUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagCreateManyProjectInput = {
@@ -555,7 +473,6 @@ export type TagUpdateWithoutProjectInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskTagUpdateManyWithoutTagNestedInput
-  recurringTasks?: Prisma.RecurringTaskUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateWithoutProjectInput = {
@@ -563,7 +480,6 @@ export type TagUncheckedUpdateWithoutProjectInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskTagUncheckedUpdateManyWithoutTagNestedInput
-  recurringTasks?: Prisma.RecurringTaskUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateManyWithoutProjectInput = {
@@ -579,12 +495,10 @@ export type TagUncheckedUpdateManyWithoutProjectInput = {
 
 export type TagCountOutputType = {
   tasks: number
-  recurringTasks: number
 }
 
 export type TagCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | TagCountOutputTypeCountTasksArgs
-  recurringTasks?: boolean | TagCountOutputTypeCountRecurringTasksArgs
 }
 
 /**
@@ -604,13 +518,6 @@ export type TagCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Exten
   where?: Prisma.TaskTagWhereInput
 }
 
-/**
- * TagCountOutputType without action
- */
-export type TagCountOutputTypeCountRecurringTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RecurringTaskWhereInput
-}
-
 
 export type TagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -619,7 +526,6 @@ export type TagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   projectId?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Tag$tasksArgs<ExtArgs>
-  recurringTasks?: boolean | Prisma.Tag$recurringTasksArgs<ExtArgs>
   _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tag"]>
 
@@ -650,7 +556,6 @@ export type TagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
 export type TagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Tag$tasksArgs<ExtArgs>
-  recurringTasks?: boolean | Prisma.Tag$recurringTasksArgs<ExtArgs>
   _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TagIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -665,7 +570,6 @@ export type $TagPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objects: {
     project: Prisma.$ProjectPayload<ExtArgs>
     tasks: Prisma.$TaskTagPayload<ExtArgs>[]
-    recurringTasks: Prisma.$RecurringTaskPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1068,7 +972,6 @@ export interface Prisma__TagClient<T, Null = never, ExtArgs extends runtime.Type
   readonly [Symbol.toStringTag]: "PrismaPromise"
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tasks<T extends Prisma.Tag$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  recurringTasks<T extends Prisma.Tag$recurringTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$recurringTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecurringTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1522,30 +1425,6 @@ export type Tag$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   take?: number
   skip?: number
   distinct?: Prisma.TaskTagScalarFieldEnum | Prisma.TaskTagScalarFieldEnum[]
-}
-
-/**
- * Tag.recurringTasks
- */
-export type Tag$recurringTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RecurringTask
-   */
-  select?: Prisma.RecurringTaskSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RecurringTask
-   */
-  omit?: Prisma.RecurringTaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RecurringTaskInclude<ExtArgs> | null
-  where?: Prisma.RecurringTaskWhereInput
-  orderBy?: Prisma.RecurringTaskOrderByWithRelationInput | Prisma.RecurringTaskOrderByWithRelationInput[]
-  cursor?: Prisma.RecurringTaskWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RecurringTaskScalarFieldEnum | Prisma.RecurringTaskScalarFieldEnum[]
 }
 
 /**

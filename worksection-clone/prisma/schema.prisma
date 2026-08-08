@@ -166,7 +166,6 @@ model Project {
   description String?
   color       String        @default("#4f46e5")
   status      ProjectStatus @default(ACTIVE)
-  isPersonal  Boolean       @default(false) // личный проект-планер «Моя жизнь» (виден только владельцу)
   startDate   DateTime?
   dueDate     DateTime?
   budget      Float?
@@ -347,10 +346,6 @@ model RecurringTask {
   projectId String?
   project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
-  // сфера жизни (тег), к которой относится генерируемая задача — для личного планера
-  tagId String?
-  tag   Tag?    @relation(fields: [tagId], references: [id], onDelete: SetNull)
-
   tasks Task[]
 
   @@index([assigneeId, active])
@@ -368,8 +363,7 @@ model Tag {
   projectId String
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  tasks          TaskTag[]
-  recurringTasks RecurringTask[]
+  tasks TaskTag[]
 
   @@unique([projectId, name])
 }

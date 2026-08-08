@@ -24,13 +24,13 @@ export async function searchEverything(userId: string, role: SystemRole, q: stri
 
   const [tasks, projects, people] = await Promise.all([
     db.task.findMany({
-      where: { archivedAt: null, NOT: { project: { is: { isPersonal: true } } }, ...visTask },
+      where: { archivedAt: null, ...visTask },
       select: { id: true, title: true, status: true, project: { select: { name: true } } },
       orderBy: { updatedAt: "desc" },
       take: 400,
     }),
     db.project.findMany({
-      where: { archivedAt: null, isPersonal: false, ...visProject },
+      where: { archivedAt: null, ...visProject },
       select: { id: true, name: true, color: true },
       take: 200,
     }),
