@@ -45,6 +45,7 @@ export type UserMinAggregateOutputType = {
   passwordHash: string | null
   avatarUrl: string | null
   title: string | null
+  phone: string | null
   functions: string | null
   role: $Enums.SystemRole | null
   hourlyRate: number | null
@@ -70,6 +71,7 @@ export type UserMaxAggregateOutputType = {
   passwordHash: string | null
   avatarUrl: string | null
   title: string | null
+  phone: string | null
   functions: string | null
   role: $Enums.SystemRole | null
   hourlyRate: number | null
@@ -95,6 +97,7 @@ export type UserCountAggregateOutputType = {
   passwordHash: number
   avatarUrl: number
   title: number
+  phone: number
   functions: number
   role: number
   hourlyRate: number
@@ -132,6 +135,7 @@ export type UserMinAggregateInputType = {
   passwordHash?: true
   avatarUrl?: true
   title?: true
+  phone?: true
   functions?: true
   role?: true
   hourlyRate?: true
@@ -157,6 +161,7 @@ export type UserMaxAggregateInputType = {
   passwordHash?: true
   avatarUrl?: true
   title?: true
+  phone?: true
   functions?: true
   role?: true
   hourlyRate?: true
@@ -182,6 +187,7 @@ export type UserCountAggregateInputType = {
   passwordHash?: true
   avatarUrl?: true
   title?: true
+  phone?: true
   functions?: true
   role?: true
   hourlyRate?: true
@@ -294,6 +300,7 @@ export type UserGroupByOutputType = {
   passwordHash: string
   avatarUrl: string | null
   title: string | null
+  phone: string | null
   functions: string | null
   role: $Enums.SystemRole
   hourlyRate: number | null
@@ -342,6 +349,7 @@ export type UserWhereInput = {
   passwordHash?: Prisma.StringFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   title?: Prisma.StringNullableFilter<"User"> | string | null
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
   functions?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
@@ -394,6 +402,7 @@ export type UserOrderByWithRelationInput = {
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
   functions?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -449,6 +458,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   passwordHash?: Prisma.StringFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   title?: Prisma.StringNullableFilter<"User"> | string | null
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
   functions?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
@@ -501,6 +511,7 @@ export type UserOrderByWithAggregationInput = {
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
   functions?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -534,6 +545,7 @@ export type UserScalarWhereWithAggregatesInput = {
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   title?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   functions?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleWithAggregatesFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
@@ -559,6 +571,7 @@ export type UserCreateInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -610,6 +623,7 @@ export type UserUncheckedCreateInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -661,6 +675,7 @@ export type UserUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -712,6 +727,7 @@ export type UserUncheckedUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -763,6 +779,7 @@ export type UserCreateManyInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -788,6 +805,7 @@ export type UserUpdateManyMutationInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -812,6 +830,7 @@ export type UserUncheckedUpdateManyInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -852,6 +871,7 @@ export type UserCountOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   functions?: Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
@@ -882,6 +902,7 @@ export type UserMaxOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   functions?: Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
@@ -907,6 +928,7 @@ export type UserMinOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   functions?: Prisma.SortOrder
   role?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
@@ -1380,6 +1402,7 @@ export type UserCreateWithoutReportsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -1430,6 +1453,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -1485,6 +1509,7 @@ export type UserCreateWithoutManagerInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -1535,6 +1560,7 @@ export type UserUncheckedCreateWithoutManagerInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -1605,6 +1631,7 @@ export type UserUpdateWithoutReportsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1655,6 +1682,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1724,6 +1752,7 @@ export type UserScalarWhereInput = {
   passwordHash?: Prisma.StringFilter<"User"> | string
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   title?: Prisma.StringNullableFilter<"User"> | string | null
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
   functions?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   hourlyRate?: Prisma.FloatNullableFilter<"User"> | number | null
@@ -1749,6 +1778,7 @@ export type UserCreateWithoutTelegramAccountInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -1799,6 +1829,7 @@ export type UserUncheckedCreateWithoutTelegramAccountInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -1865,6 +1896,7 @@ export type UserUpdateWithoutTelegramAccountInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1915,6 +1947,7 @@ export type UserUncheckedUpdateWithoutTelegramAccountInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1965,6 +1998,7 @@ export type UserCreateWithoutPlanApprovalsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2015,6 +2049,7 @@ export type UserUncheckedCreateWithoutPlanApprovalsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2081,6 +2116,7 @@ export type UserUpdateWithoutPlanApprovalsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2131,6 +2167,7 @@ export type UserUncheckedUpdateWithoutPlanApprovalsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2181,6 +2218,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2231,6 +2269,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2297,6 +2336,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2347,6 +2387,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2397,6 +2438,7 @@ export type UserCreateWithoutGoogleAccountInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2447,6 +2489,7 @@ export type UserUncheckedCreateWithoutGoogleAccountInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2513,6 +2556,7 @@ export type UserUpdateWithoutGoogleAccountInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2563,6 +2607,7 @@ export type UserUncheckedUpdateWithoutGoogleAccountInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2613,6 +2658,7 @@ export type UserCreateWithoutCallPointsAuthoredInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2663,6 +2709,7 @@ export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2718,6 +2765,7 @@ export type UserCreateWithoutCallPointsAboutInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2768,6 +2816,7 @@ export type UserUncheckedCreateWithoutCallPointsAboutInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -2834,6 +2883,7 @@ export type UserUpdateWithoutCallPointsAuthoredInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2884,6 +2934,7 @@ export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2945,6 +2996,7 @@ export type UserUpdateWithoutCallPointsAboutInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2995,6 +3047,7 @@ export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3045,6 +3098,7 @@ export type UserCreateWithoutCreatedProjectsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3095,6 +3149,7 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3161,6 +3216,7 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3211,6 +3267,7 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3261,6 +3318,7 @@ export type UserCreateWithoutProjectMembersInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3311,6 +3369,7 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3377,6 +3436,7 @@ export type UserUpdateWithoutProjectMembersInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3427,6 +3487,7 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3477,6 +3538,7 @@ export type UserCreateWithoutCreatedTasksInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3527,6 +3589,7 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3593,6 +3656,7 @@ export type UserUpdateWithoutCreatedTasksInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3643,6 +3707,7 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3693,6 +3758,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3743,6 +3809,7 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3809,6 +3876,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3859,6 +3927,7 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3909,6 +3978,7 @@ export type UserCreateWithoutRecurringAssignedInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -3959,6 +4029,7 @@ export type UserUncheckedCreateWithoutRecurringAssignedInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4014,6 +4085,7 @@ export type UserCreateWithoutRecurringCreatedInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4064,6 +4136,7 @@ export type UserUncheckedCreateWithoutRecurringCreatedInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4130,6 +4203,7 @@ export type UserUpdateWithoutRecurringAssignedInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4180,6 +4254,7 @@ export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4241,6 +4316,7 @@ export type UserUpdateWithoutRecurringCreatedInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4291,6 +4367,7 @@ export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4341,6 +4418,7 @@ export type UserCreateWithoutCommentsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4391,6 +4469,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4457,6 +4536,7 @@ export type UserUpdateWithoutCommentsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4507,6 +4587,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4557,6 +4638,7 @@ export type UserCreateWithoutMentionsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4607,6 +4689,7 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4673,6 +4756,7 @@ export type UserUpdateWithoutMentionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4723,6 +4807,7 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4773,6 +4858,7 @@ export type UserCreateWithoutUploadedFilesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4823,6 +4909,7 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -4889,6 +4976,7 @@ export type UserUpdateWithoutUploadedFilesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4939,6 +5027,7 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4989,6 +5078,7 @@ export type UserCreateWithoutOwnedFilesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5039,6 +5129,7 @@ export type UserUncheckedCreateWithoutOwnedFilesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5105,6 +5196,7 @@ export type UserUpdateWithoutOwnedFilesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5155,6 +5247,7 @@ export type UserUncheckedUpdateWithoutOwnedFilesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5205,6 +5298,7 @@ export type UserCreateWithoutFileSharesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5255,6 +5349,7 @@ export type UserUncheckedCreateWithoutFileSharesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5321,6 +5416,7 @@ export type UserUpdateWithoutFileSharesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5371,6 +5467,7 @@ export type UserUncheckedUpdateWithoutFileSharesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5421,6 +5518,7 @@ export type UserCreateWithoutTimeLogsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5471,6 +5569,7 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5537,6 +5636,7 @@ export type UserUpdateWithoutTimeLogsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5587,6 +5687,7 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5637,6 +5738,7 @@ export type UserCreateWithoutCallsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5687,6 +5789,7 @@ export type UserUncheckedCreateWithoutCallsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5753,6 +5856,7 @@ export type UserUpdateWithoutCallsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5803,6 +5907,7 @@ export type UserUncheckedUpdateWithoutCallsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5853,6 +5958,7 @@ export type UserCreateWithoutMonthlyGoalsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5903,6 +6009,7 @@ export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -5969,6 +6076,7 @@ export type UserUpdateWithoutMonthlyGoalsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6019,6 +6127,7 @@ export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6069,6 +6178,7 @@ export type UserCreateWithoutKpisInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6119,6 +6229,7 @@ export type UserUncheckedCreateWithoutKpisInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6185,6 +6296,7 @@ export type UserUpdateWithoutKpisInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6235,6 +6347,7 @@ export type UserUncheckedUpdateWithoutKpisInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6285,6 +6398,7 @@ export type UserCreateWithoutWeeklyPlanItemsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6335,6 +6449,7 @@ export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6401,6 +6516,7 @@ export type UserUpdateWithoutWeeklyPlanItemsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6451,6 +6567,7 @@ export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6501,6 +6618,7 @@ export type UserCreateWithoutActivitiesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6551,6 +6669,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6617,6 +6736,7 @@ export type UserUpdateWithoutActivitiesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6667,6 +6787,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6717,6 +6838,7 @@ export type UserCreateWithoutNotificationsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6767,6 +6889,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6822,6 +6945,7 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6872,6 +6996,7 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -6938,6 +7063,7 @@ export type UserUpdateWithoutNotificationsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6988,6 +7114,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -7049,6 +7176,7 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -7099,6 +7227,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -7149,6 +7278,7 @@ export type UserCreateManyManagerInput = {
   passwordHash: string
   avatarUrl?: string | null
   title?: string | null
+  phone?: string | null
   functions?: string | null
   role?: $Enums.SystemRole
   hourlyRate?: number | null
@@ -7173,6 +7303,7 @@ export type UserUpdateWithoutManagerInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -7223,6 +7354,7 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -7273,6 +7405,7 @@ export type UserUncheckedUpdateManyWithoutManagerInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -7535,6 +7668,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  phone?: boolean
   functions?: boolean
   role?: boolean
   hourlyRate?: boolean
@@ -7588,6 +7722,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  phone?: boolean
   functions?: boolean
   role?: boolean
   hourlyRate?: boolean
@@ -7614,6 +7749,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  phone?: boolean
   functions?: boolean
   role?: boolean
   hourlyRate?: boolean
@@ -7640,6 +7776,7 @@ export type UserSelectScalar = {
   passwordHash?: boolean
   avatarUrl?: boolean
   title?: boolean
+  phone?: boolean
   functions?: boolean
   role?: boolean
   hourlyRate?: boolean
@@ -7656,7 +7793,7 @@ export type UserSelectScalar = {
   telegramLinkCode?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "driveFolderUrl" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId" | "telegramLinkCode", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "phone" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "driveFolderUrl" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId" | "telegramLinkCode", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
@@ -7734,6 +7871,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     passwordHash: string
     avatarUrl: string | null
     title: string | null
+    phone: string | null
     functions: string | null
     role: $Enums.SystemRole
     hourlyRate: number | null
@@ -8206,6 +8344,7 @@ export interface UserFieldRefs {
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly title: Prisma.FieldRef<"User", 'String'>
+  readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly functions: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'SystemRole'>
   readonly hourlyRate: Prisma.FieldRef<"User", 'Float'>

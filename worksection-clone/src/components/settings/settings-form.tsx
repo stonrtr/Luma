@@ -15,7 +15,7 @@ import { LOCALES, LOCALE_LABEL, t } from "@/lib/i18n";
 import { initials } from "@/lib/format";
 
 type Initial = {
-  firstName: string; lastName: string; name: string; email: string; title: string | null;
+  firstName: string; lastName: string; name: string; email: string; title: string | null; phone: string | null;
   avatarUrl: string | null; locale: string; theme: string; timezone: string; weekStartsMon: boolean;
 };
 
@@ -27,6 +27,7 @@ export function SettingsForm({ initial }: { initial: Initial }) {
 
   const [firstName, setFirstName] = useState(initial.firstName);
   const [lastName, setLastName] = useState(initial.lastName);
+  const [phone, setPhone] = useState(initial.phone ?? "");
   const [avatarUrl, setAvatarUrl] = useState(initial.avatarUrl);
 
   const [locale, setLocale] = useState(initial.locale);
@@ -39,7 +40,7 @@ export function SettingsForm({ initial }: { initial: Initial }) {
 
   function saveProfile() {
     start(async () => {
-      await updateProfile({ firstName, lastName, avatarUrl });
+      await updateProfile({ firstName, lastName, phone, avatarUrl });
       toast.success(tr("settings.saved"));
       router.refresh();
     });
@@ -91,6 +92,7 @@ export function SettingsForm({ initial }: { initial: Initial }) {
           <div className="space-y-2"><Label>{tr("settings.firstName")}</Label><Input value={firstName} onChange={(e) => setFirstName(e.target.value)} /></div>
           <div className="space-y-2"><Label>{tr("settings.lastName")}</Label><Input value={lastName} onChange={(e) => setLastName(e.target.value)} /></div>
           <div className="space-y-2"><Label>Email</Label><Input value={initial.email} disabled /></div>
+          <div className="space-y-2"><Label>Телефон</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+380..." /></div>
           <div className="space-y-2"><Label>{initial.title ? "Посада" : "—"}</Label><Input value={initial.title ?? ""} disabled /></div>
         </div>
         <div className="mt-4"><Button size="sm" onClick={saveProfile}>{tr("settings.save")}</Button></div>

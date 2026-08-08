@@ -29,6 +29,7 @@ export type TelegramAccountMinAggregateOutputType = {
   userId: string | null
   chatId: string | null
   username: string | null
+  pendingAction: string | null
   createdAt: Date | null
 }
 
@@ -37,6 +38,7 @@ export type TelegramAccountMaxAggregateOutputType = {
   userId: string | null
   chatId: string | null
   username: string | null
+  pendingAction: string | null
   createdAt: Date | null
 }
 
@@ -45,6 +47,7 @@ export type TelegramAccountCountAggregateOutputType = {
   userId: number
   chatId: number
   username: number
+  pendingAction: number
   createdAt: number
   _all: number
 }
@@ -55,6 +58,7 @@ export type TelegramAccountMinAggregateInputType = {
   userId?: true
   chatId?: true
   username?: true
+  pendingAction?: true
   createdAt?: true
 }
 
@@ -63,6 +67,7 @@ export type TelegramAccountMaxAggregateInputType = {
   userId?: true
   chatId?: true
   username?: true
+  pendingAction?: true
   createdAt?: true
 }
 
@@ -71,6 +76,7 @@ export type TelegramAccountCountAggregateInputType = {
   userId?: true
   chatId?: true
   username?: true
+  pendingAction?: true
   createdAt?: true
   _all?: true
 }
@@ -152,6 +158,7 @@ export type TelegramAccountGroupByOutputType = {
   userId: string
   chatId: string
   username: string | null
+  pendingAction: string | null
   createdAt: Date
   _count: TelegramAccountCountAggregateOutputType | null
   _min: TelegramAccountMinAggregateOutputType | null
@@ -181,6 +188,7 @@ export type TelegramAccountWhereInput = {
   userId?: Prisma.StringFilter<"TelegramAccount"> | string
   chatId?: Prisma.StringFilter<"TelegramAccount"> | string
   username?: Prisma.StringNullableFilter<"TelegramAccount"> | string | null
+  pendingAction?: Prisma.StringNullableFilter<"TelegramAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TelegramAccount"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -190,6 +198,7 @@ export type TelegramAccountOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   chatId?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
+  pendingAction?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -202,6 +211,7 @@ export type TelegramAccountWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TelegramAccountWhereInput[]
   NOT?: Prisma.TelegramAccountWhereInput | Prisma.TelegramAccountWhereInput[]
   username?: Prisma.StringNullableFilter<"TelegramAccount"> | string | null
+  pendingAction?: Prisma.StringNullableFilter<"TelegramAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TelegramAccount"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId" | "chatId">
@@ -211,6 +221,7 @@ export type TelegramAccountOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   chatId?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
+  pendingAction?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TelegramAccountCountOrderByAggregateInput
   _max?: Prisma.TelegramAccountMaxOrderByAggregateInput
@@ -225,6 +236,7 @@ export type TelegramAccountScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"TelegramAccount"> | string
   chatId?: Prisma.StringWithAggregatesFilter<"TelegramAccount"> | string
   username?: Prisma.StringNullableWithAggregatesFilter<"TelegramAccount"> | string | null
+  pendingAction?: Prisma.StringNullableWithAggregatesFilter<"TelegramAccount"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TelegramAccount"> | Date | string
 }
 
@@ -232,6 +244,7 @@ export type TelegramAccountCreateInput = {
   id?: string
   chatId: string
   username?: string | null
+  pendingAction?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTelegramAccountInput
 }
@@ -241,6 +254,7 @@ export type TelegramAccountUncheckedCreateInput = {
   userId: string
   chatId: string
   username?: string | null
+  pendingAction?: string | null
   createdAt?: Date | string
 }
 
@@ -248,6 +262,7 @@ export type TelegramAccountUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   chatId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pendingAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTelegramAccountNestedInput
 }
@@ -257,6 +272,7 @@ export type TelegramAccountUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   chatId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pendingAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -265,6 +281,7 @@ export type TelegramAccountCreateManyInput = {
   userId: string
   chatId: string
   username?: string | null
+  pendingAction?: string | null
   createdAt?: Date | string
 }
 
@@ -272,6 +289,7 @@ export type TelegramAccountUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   chatId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pendingAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -280,6 +298,7 @@ export type TelegramAccountUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   chatId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pendingAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -293,6 +312,7 @@ export type TelegramAccountCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   chatId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  pendingAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -301,6 +321,7 @@ export type TelegramAccountMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   chatId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  pendingAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -309,6 +330,7 @@ export type TelegramAccountMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   chatId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  pendingAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -348,6 +370,7 @@ export type TelegramAccountCreateWithoutUserInput = {
   id?: string
   chatId: string
   username?: string | null
+  pendingAction?: string | null
   createdAt?: Date | string
 }
 
@@ -355,6 +378,7 @@ export type TelegramAccountUncheckedCreateWithoutUserInput = {
   id?: string
   chatId: string
   username?: string | null
+  pendingAction?: string | null
   createdAt?: Date | string
 }
 
@@ -378,6 +402,7 @@ export type TelegramAccountUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   chatId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pendingAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -385,6 +410,7 @@ export type TelegramAccountUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   chatId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pendingAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -395,6 +421,7 @@ export type TelegramAccountSelect<ExtArgs extends runtime.Types.Extensions.Inter
   userId?: boolean
   chatId?: boolean
   username?: boolean
+  pendingAction?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["telegramAccount"]>
@@ -404,6 +431,7 @@ export type TelegramAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   userId?: boolean
   chatId?: boolean
   username?: boolean
+  pendingAction?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["telegramAccount"]>
@@ -413,6 +441,7 @@ export type TelegramAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   userId?: boolean
   chatId?: boolean
   username?: boolean
+  pendingAction?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["telegramAccount"]>
@@ -422,10 +451,11 @@ export type TelegramAccountSelectScalar = {
   userId?: boolean
   chatId?: boolean
   username?: boolean
+  pendingAction?: boolean
   createdAt?: boolean
 }
 
-export type TelegramAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "chatId" | "username" | "createdAt", ExtArgs["result"]["telegramAccount"]>
+export type TelegramAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "chatId" | "username" | "pendingAction" | "createdAt", ExtArgs["result"]["telegramAccount"]>
 export type TelegramAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -446,6 +476,7 @@ export type $TelegramAccountPayload<ExtArgs extends runtime.Types.Extensions.Int
     userId: string
     chatId: string
     username: string | null
+    pendingAction: string | null
     createdAt: Date
   }, ExtArgs["result"]["telegramAccount"]>
   composites: {}
@@ -875,6 +906,7 @@ export interface TelegramAccountFieldRefs {
   readonly userId: Prisma.FieldRef<"TelegramAccount", 'String'>
   readonly chatId: Prisma.FieldRef<"TelegramAccount", 'String'>
   readonly username: Prisma.FieldRef<"TelegramAccount", 'String'>
+  readonly pendingAction: Prisma.FieldRef<"TelegramAccount", 'String'>
   readonly createdAt: Prisma.FieldRef<"TelegramAccount", 'DateTime'>
 }
     

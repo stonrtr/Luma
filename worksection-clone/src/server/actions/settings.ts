@@ -12,6 +12,7 @@ import { requireUser } from "@/server/dal";
 const profileSchema = z.object({
   firstName: z.string().max(80).optional(),
   lastName: z.string().max(80).optional(),
+  phone: z.string().max(32).optional(),
   avatarUrl: z.string().max(500).optional().nullable(),
 });
 
@@ -23,7 +24,7 @@ export async function updateProfile(input: z.infer<typeof profileSchema>) {
   const name = `${firstName} ${lastName}`.trim() || user.name;
   await db.user.update({
     where: { id: user.id },
-    data: { firstName: firstName || null, lastName: lastName || null, name, avatarUrl: data.avatarUrl ?? undefined },
+    data: { firstName: firstName || null, lastName: lastName || null, name, avatarUrl: data.avatarUrl ?? undefined, ...(data.phone !== undefined ? { phone: data.phone.trim() || null } : {}) },
   });
   revalidatePath("/", "layout");
   return { error: null };

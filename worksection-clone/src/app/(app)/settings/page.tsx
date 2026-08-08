@@ -30,6 +30,7 @@ export default async function SettingsPage() {
           name: user.name,
           email: user.email,
           title: user.title,
+          phone: user.phone,
           avatarUrl: user.avatarUrl,
           locale: user.locale,
           theme: user.theme,

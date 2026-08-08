@@ -104,6 +104,7 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   avatarUrl: 'avatarUrl',
   title: 'title',
+  phone: 'phone',
   functions: 'functions',
   role: 'role',
   hourlyRate: 'hourlyRate',
@@ -128,6 +129,7 @@ export const TelegramAccountScalarFieldEnum = {
   userId: 'userId',
   chatId: 'chatId',
   username: 'username',
+  pendingAction: 'pendingAction',
   createdAt: 'createdAt'
 } as const
 

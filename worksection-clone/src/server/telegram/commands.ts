@@ -41,6 +41,10 @@ const HELP = [
   "/today · /tasks · /inbox · /help",
 ].join("\n");
 
+const REQUEST_CONTACT_KB = { reply_markup: { keyboard: [[{ text: "📱 Поділитися номером", request_contact: true }]], resize_keyboard: true, one_time_keyboard: true } };
+const normPhone = (s: string) => s.replace(/\D/g, "");
+const sameLast10 = (a: string, b: string) => a.length >= 10 && a.slice(-10) === b.slice(-10);
+
 function endOfDay(d: Date): Date { d.setHours(23, 59, 0, 0); return d; }
 function parseDeadline(text: string): Date | null {
   const day = 86400000;
@@ -75,15 +79,36 @@ function readState(raw: string | null): State | null {
   try { const s = JSON.parse(raw); return s && s.flow ? s : null; } catch { return null; }
 }
 
-type Update = { message?: { chat?: { id?: number | string }; from?: { username?: string }; text?: string } };
+type Update = { message?: { chat?: { id?: number | string }; from?: { username?: string }; text?: string; contact?: { phone_number?: string } } };
 
 export async function handleTelegramUpdate(update: Update): Promise<void> {
   const msg = update.message;
   const chatId = msg?.chat?.id;
-  const text = (msg?.text ?? "").trim();
-  if (chatId == null || !text) return;
+  if (chatId == null) return;
   const chat = String(chatId);
   const reply = (t: string, kb: Record<string, unknown> = MAIN_KB) => sendTelegram(chat, t, kb);
+
+  // --- привязка по номеру телефона (пользователь поделился контактом) ---
+  const contactPhone = msg?.contact?.phone_number;
+  if (contactPhone) {
+    const digits = normPhone(contactPhone);
+    const users = await db.user.findMany({ where: { phone: { not: null }, isActive: true }, select: { id: true, name: true, phone: true } });
+    const match = users.find((u) => u.phone && sameLast10(normPhone(u.phone), digits));
+    if (match) {
+      await db.telegramAccount.upsert({
+        where: { userId: match.id },
+        create: { userId: match.id, chatId: chat, username: msg?.from?.username ?? null },
+        update: { chatId: chat, username: msg?.from?.username ?? null },
+      });
+      await reply(`✅ Підключено за номером до акаунта <b>${esc(match.name)}</b>.\n\n${HELP}`);
+    } else {
+      await reply("Номер не знайдено серед співробітників. Впишіть цей номер у профіль (Налаштування → Профіль) і спробуйте ще раз.");
+    }
+    return;
+  }
+
+  const text = (msg?.text ?? "").trim();
+  if (!text) return;
   const setState = (s: State | null) => db.telegramAccount.update({ where: { chatId: chat }, data: { pendingAction: s ? JSON.stringify(s) : null } });
 
   // /start <code> — привязка
@@ -109,7 +134,7 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
   }
 
   const acc = await db.telegramAccount.findUnique({ where: { chatId: chat }, select: { userId: true, pendingAction: true } });
-  if (!acc) { await sendTelegram(chat, "Акаунт не підключено. Відкрийте застосунок: Налаштування → Telegram."); return; }
+  if (!acc) { await sendTelegram(chat, "Акаунт не підключено. Поділіться номером телефону, вказаним у вашому профілі 👇 (або підключіть у застосунку: Налаштування → Telegram).", REQUEST_CONTACT_KB); return; }
   const userId = acc.userId;
   const state = readState(acc.pendingAction);
 

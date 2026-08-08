@@ -28,6 +28,7 @@ model User {
   passwordHash String
   avatarUrl    String?
   title        String?    // должность
+  phone        String?    // телефон (для привязки Telegram по номеру)
   functions    String?    // функции/обязанности (оргсхема)
   role         SystemRole @default(MEMBER)
   hourlyRate   Float?
