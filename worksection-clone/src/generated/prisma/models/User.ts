@@ -58,6 +58,7 @@ export type UserMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   managerId: string | null
+  telegramLinkCode: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -82,6 +83,7 @@ export type UserMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   managerId: string | null
+  telegramLinkCode: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -106,6 +108,7 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   managerId: number
+  telegramLinkCode: number
   _all: number
 }
 
@@ -142,6 +145,7 @@ export type UserMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   managerId?: true
+  telegramLinkCode?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -166,6 +170,7 @@ export type UserMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   managerId?: true
+  telegramLinkCode?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -190,6 +195,7 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   managerId?: true
+  telegramLinkCode?: true
   _all?: true
 }
 
@@ -301,6 +307,7 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   managerId: string | null
+  telegramLinkCode: string | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -348,6 +355,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  telegramLinkCode?: Prisma.StringNullableFilter<"User"> | string | null
   manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reports?: Prisma.UserListRelationFilter
   createdProjects?: Prisma.ProjectListRelationFilter
@@ -374,6 +382,7 @@ export type UserWhereInput = {
   googleAccount?: Prisma.XOR<Prisma.GoogleAccountNullableScalarRelationFilter, Prisma.GoogleAccountWhereInput> | null
   pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
   planApprovals?: Prisma.WeeklyPlanApprovalListRelationFilter
+  telegramAccount?: Prisma.XOR<Prisma.TelegramAccountNullableScalarRelationFilter, Prisma.TelegramAccountWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -398,6 +407,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  telegramLinkCode?: Prisma.SortOrderInput | Prisma.SortOrder
   manager?: Prisma.UserOrderByWithRelationInput
   reports?: Prisma.UserOrderByRelationAggregateInput
   createdProjects?: Prisma.ProjectOrderByRelationAggregateInput
@@ -424,6 +434,7 @@ export type UserOrderByWithRelationInput = {
   googleAccount?: Prisma.GoogleAccountOrderByWithRelationInput
   pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
   planApprovals?: Prisma.WeeklyPlanApprovalOrderByRelationAggregateInput
+  telegramAccount?: Prisma.TelegramAccountOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -451,6 +462,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  telegramLinkCode?: Prisma.StringNullableFilter<"User"> | string | null
   manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reports?: Prisma.UserListRelationFilter
   createdProjects?: Prisma.ProjectListRelationFilter
@@ -477,6 +489,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   googleAccount?: Prisma.XOR<Prisma.GoogleAccountNullableScalarRelationFilter, Prisma.GoogleAccountWhereInput> | null
   pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
   planApprovals?: Prisma.WeeklyPlanApprovalListRelationFilter
+  telegramAccount?: Prisma.XOR<Prisma.TelegramAccountNullableScalarRelationFilter, Prisma.TelegramAccountWhereInput> | null
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -501,6 +514,7 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  telegramLinkCode?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -533,6 +547,7 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  telegramLinkCode?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -556,6 +571,7 @@ export type UserCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -582,6 +598,7 @@ export type UserCreateInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -606,6 +623,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -631,6 +649,7 @@ export type UserUncheckedCreateInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -654,6 +673,7 @@ export type UserUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -680,6 +700,7 @@ export type UserUpdateInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -704,6 +725,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -729,6 +751,7 @@ export type UserUncheckedUpdateInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -753,6 +776,7 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -776,6 +800,7 @@ export type UserUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -800,6 +825,7 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -839,6 +865,7 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
+  telegramLinkCode?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -868,6 +895,7 @@ export type UserMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
+  telegramLinkCode?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -892,6 +920,7 @@ export type UserMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
+  telegramLinkCode?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -988,6 +1017,20 @@ export type UserUncheckedUpdateManyWithoutManagerNestedInput = {
   update?: Prisma.UserUpdateWithWhereUniqueWithoutManagerInput | Prisma.UserUpdateWithWhereUniqueWithoutManagerInput[]
   updateMany?: Prisma.UserUpdateManyWithWhereWithoutManagerInput | Prisma.UserUpdateManyWithWhereWithoutManagerInput[]
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedOneWithoutTelegramAccountInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTelegramAccountInput, Prisma.UserUncheckedCreateWithoutTelegramAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTelegramAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTelegramAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTelegramAccountInput, Prisma.UserUncheckedCreateWithoutTelegramAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTelegramAccountInput
+  upsert?: Prisma.UserUpsertWithoutTelegramAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTelegramAccountInput, Prisma.UserUpdateWithoutTelegramAccountInput>, Prisma.UserUncheckedUpdateWithoutTelegramAccountInput>
 }
 
 export type UserCreateNestedOneWithoutPlanApprovalsInput = {
@@ -1349,6 +1392,7 @@ export type UserCreateWithoutReportsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
@@ -1374,6 +1418,7 @@ export type UserCreateWithoutReportsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -1398,6 +1443,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1422,6 +1468,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -1450,6 +1497,7 @@ export type UserCreateWithoutManagerInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
@@ -1475,6 +1523,7 @@ export type UserCreateWithoutManagerInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagerInput = {
@@ -1498,6 +1547,7 @@ export type UserUncheckedCreateWithoutManagerInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1523,6 +1573,7 @@ export type UserUncheckedCreateWithoutManagerInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagerInput = {
@@ -1566,6 +1617,7 @@ export type UserUpdateWithoutReportsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
@@ -1591,6 +1643,7 @@ export type UserUpdateWithoutReportsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -1615,6 +1668,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1639,6 +1693,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -1682,9 +1737,10 @@ export type UserScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  telegramLinkCode?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
-export type UserCreateWithoutPlanApprovalsInput = {
+export type UserCreateWithoutTelegramAccountInput = {
   id?: string
   name: string
   firstName?: string | null
@@ -1705,6 +1761,7 @@ export type UserCreateWithoutPlanApprovalsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -1730,9 +1787,10 @@ export type UserCreateWithoutPlanApprovalsInput = {
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutPlanApprovalsInput = {
+export type UserUncheckedCreateWithoutTelegramAccountInput = {
   id?: string
   name: string
   firstName?: string | null
@@ -1754,6 +1812,7 @@ export type UserUncheckedCreateWithoutPlanApprovalsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1778,6 +1837,223 @@ export type UserUncheckedCreateWithoutPlanApprovalsInput = {
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutTelegramAccountInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTelegramAccountInput, Prisma.UserUncheckedCreateWithoutTelegramAccountInput>
+}
+
+export type UserUpsertWithoutTelegramAccountInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTelegramAccountInput, Prisma.UserUncheckedUpdateWithoutTelegramAccountInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTelegramAccountInput, Prisma.UserUncheckedCreateWithoutTelegramAccountInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTelegramAccountInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTelegramAccountInput, Prisma.UserUncheckedUpdateWithoutTelegramAccountInput>
+}
+
+export type UserUpdateWithoutTelegramAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
+  reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
+  googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTelegramAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  functions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  driveFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStartsMon?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
+  createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  timeLogs?: Prisma.TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutActorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  triggeredNotifs?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  uploadedFiles?: Prisma.AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  mentions?: Prisma.MentionUncheckedUpdateManyWithoutUserNestedInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedUpdateManyWithoutUserNestedInput
+  kpis?: Prisma.KpiUncheckedUpdateManyWithoutUserNestedInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  calls?: Prisma.CallUncheckedUpdateManyWithoutUserNestedInput
+  ownedFiles?: Prisma.FileLinkUncheckedUpdateManyWithoutOwnerNestedInput
+  fileShares?: Prisma.FileShareUncheckedUpdateManyWithoutUserNestedInput
+  callPointsAuthored?: Prisma.CallPointUncheckedUpdateManyWithoutAuthorNestedInput
+  callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
+  googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPlanApprovalsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  telegramLinkCode?: string | null
+  manager?: Prisma.UserCreateNestedOneWithoutReportsInput
+  reports?: Prisma.UserCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
+  googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPlanApprovalsInput = {
+  id?: string
+  name: string
+  firstName?: string | null
+  lastName?: string | null
+  email: string
+  passwordHash: string
+  avatarUrl?: string | null
+  title?: string | null
+  functions?: string | null
+  role?: $Enums.SystemRole
+  hourlyRate?: number | null
+  weeklyHours?: number | null
+  driveFolderUrl?: string | null
+  locale?: string
+  timezone?: string
+  theme?: string
+  weekStartsMon?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerId?: string | null
+  telegramLinkCode?: string | null
+  reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
+  createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
+  assignedTasks?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  timeLogs?: Prisma.TimeLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutActorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  triggeredNotifs?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  uploadedFiles?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  mentions?: Prisma.MentionUncheckedCreateNestedManyWithoutUserInput
+  monthlyGoals?: Prisma.MonthlyGoalUncheckedCreateNestedManyWithoutUserInput
+  kpis?: Prisma.KpiUncheckedCreateNestedManyWithoutUserInput
+  weeklyPlanItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutUserInput
+  recurringAssigned?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  recurringCreated?: Prisma.RecurringTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  calls?: Prisma.CallUncheckedCreateNestedManyWithoutUserInput
+  ownedFiles?: Prisma.FileLinkUncheckedCreateNestedManyWithoutOwnerInput
+  fileShares?: Prisma.FileShareUncheckedCreateNestedManyWithoutUserInput
+  callPointsAuthored?: Prisma.CallPointUncheckedCreateNestedManyWithoutAuthorInput
+  callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
+  googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPlanApprovalsInput = {
@@ -1817,6 +2093,7 @@ export type UserUpdateWithoutPlanApprovalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -1842,6 +2119,7 @@ export type UserUpdateWithoutPlanApprovalsInput = {
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPlanApprovalsInput = {
@@ -1866,6 +2144,7 @@ export type UserUncheckedUpdateWithoutPlanApprovalsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1890,6 +2169,7 @@ export type UserUncheckedUpdateWithoutPlanApprovalsInput = {
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPushSubscriptionsInput = {
@@ -1913,6 +2193,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -1938,6 +2219,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
@@ -1962,6 +2244,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1986,6 +2269,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
@@ -2025,6 +2309,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -2050,6 +2335,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
@@ -2074,6 +2360,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2098,6 +2385,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoogleAccountInput = {
@@ -2121,6 +2409,7 @@ export type UserCreateWithoutGoogleAccountInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -2146,6 +2435,7 @@ export type UserCreateWithoutGoogleAccountInput = {
   callPointsAbout?: Prisma.CallPointCreateNestedManyWithoutMemberInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoogleAccountInput = {
@@ -2170,6 +2460,7 @@ export type UserUncheckedCreateWithoutGoogleAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2194,6 +2485,7 @@ export type UserUncheckedCreateWithoutGoogleAccountInput = {
   callPointsAbout?: Prisma.CallPointUncheckedCreateNestedManyWithoutMemberInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoogleAccountInput = {
@@ -2233,6 +2525,7 @@ export type UserUpdateWithoutGoogleAccountInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -2258,6 +2551,7 @@ export type UserUpdateWithoutGoogleAccountInput = {
   callPointsAbout?: Prisma.CallPointUpdateManyWithoutMemberNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoogleAccountInput = {
@@ -2282,6 +2576,7 @@ export type UserUncheckedUpdateWithoutGoogleAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2306,6 +2601,7 @@ export type UserUncheckedUpdateWithoutGoogleAccountInput = {
   callPointsAbout?: Prisma.CallPointUncheckedUpdateManyWithoutMemberNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCallPointsAuthoredInput = {
@@ -2329,6 +2625,7 @@ export type UserCreateWithoutCallPointsAuthoredInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -2354,6 +2651,7 @@ export type UserCreateWithoutCallPointsAuthoredInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
@@ -2378,6 +2676,7 @@ export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2402,6 +2701,7 @@ export type UserUncheckedCreateWithoutCallPointsAuthoredInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCallPointsAuthoredInput = {
@@ -2430,6 +2730,7 @@ export type UserCreateWithoutCallPointsAboutInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -2455,6 +2756,7 @@ export type UserCreateWithoutCallPointsAboutInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCallPointsAboutInput = {
@@ -2479,6 +2781,7 @@ export type UserUncheckedCreateWithoutCallPointsAboutInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2503,6 +2806,7 @@ export type UserUncheckedCreateWithoutCallPointsAboutInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCallPointsAboutInput = {
@@ -2542,6 +2846,7 @@ export type UserUpdateWithoutCallPointsAuthoredInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -2567,6 +2872,7 @@ export type UserUpdateWithoutCallPointsAuthoredInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
@@ -2591,6 +2897,7 @@ export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2615,6 +2922,7 @@ export type UserUncheckedUpdateWithoutCallPointsAuthoredInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutCallPointsAboutInput = {
@@ -2649,6 +2957,7 @@ export type UserUpdateWithoutCallPointsAboutInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -2674,6 +2983,7 @@ export type UserUpdateWithoutCallPointsAboutInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
@@ -2698,6 +3008,7 @@ export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2722,6 +3033,7 @@ export type UserUncheckedUpdateWithoutCallPointsAboutInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedProjectsInput = {
@@ -2745,6 +3057,7 @@ export type UserCreateWithoutCreatedProjectsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   projectMembers?: Prisma.ProjectMemberCreateNestedManyWithoutUserInput
@@ -2770,6 +3083,7 @@ export type UserCreateWithoutCreatedProjectsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedProjectsInput = {
@@ -2794,6 +3108,7 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2818,6 +3133,7 @@ export type UserUncheckedCreateWithoutCreatedProjectsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedProjectsInput = {
@@ -2857,6 +3173,7 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
@@ -2882,6 +3199,7 @@ export type UserUpdateWithoutCreatedProjectsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
@@ -2906,6 +3224,7 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2930,6 +3249,7 @@ export type UserUncheckedUpdateWithoutCreatedProjectsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectMembersInput = {
@@ -2953,6 +3273,7 @@ export type UserCreateWithoutProjectMembersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -2978,6 +3299,7 @@ export type UserCreateWithoutProjectMembersInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectMembersInput = {
@@ -3002,6 +3324,7 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   createdTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3026,6 +3349,7 @@ export type UserUncheckedCreateWithoutProjectMembersInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectMembersInput = {
@@ -3065,6 +3389,7 @@ export type UserUpdateWithoutProjectMembersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -3090,6 +3415,7 @@ export type UserUpdateWithoutProjectMembersInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectMembersInput = {
@@ -3114,6 +3440,7 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   createdTasks?: Prisma.TaskUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3138,6 +3465,7 @@ export type UserUncheckedUpdateWithoutProjectMembersInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTasksInput = {
@@ -3161,6 +3489,7 @@ export type UserCreateWithoutCreatedTasksInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -3186,6 +3515,7 @@ export type UserCreateWithoutCreatedTasksInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTasksInput = {
@@ -3210,6 +3540,7 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3234,6 +3565,7 @@ export type UserUncheckedCreateWithoutCreatedTasksInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -3273,6 +3605,7 @@ export type UserUpdateWithoutCreatedTasksInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -3298,6 +3631,7 @@ export type UserUpdateWithoutCreatedTasksInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTasksInput = {
@@ -3322,6 +3656,7 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3346,6 +3681,7 @@ export type UserUncheckedUpdateWithoutCreatedTasksInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssignedTasksInput = {
@@ -3369,6 +3705,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -3394,6 +3731,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -3418,6 +3756,7 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3442,6 +3781,7 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -3481,6 +3821,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -3506,6 +3847,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -3530,6 +3872,7 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3554,6 +3897,7 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRecurringAssignedInput = {
@@ -3577,6 +3921,7 @@ export type UserCreateWithoutRecurringAssignedInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -3602,6 +3947,7 @@ export type UserCreateWithoutRecurringAssignedInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRecurringAssignedInput = {
@@ -3626,6 +3972,7 @@ export type UserUncheckedCreateWithoutRecurringAssignedInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3650,6 +3997,7 @@ export type UserUncheckedCreateWithoutRecurringAssignedInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRecurringAssignedInput = {
@@ -3678,6 +4026,7 @@ export type UserCreateWithoutRecurringCreatedInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -3703,6 +4052,7 @@ export type UserCreateWithoutRecurringCreatedInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRecurringCreatedInput = {
@@ -3727,6 +4077,7 @@ export type UserUncheckedCreateWithoutRecurringCreatedInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3751,6 +4102,7 @@ export type UserUncheckedCreateWithoutRecurringCreatedInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRecurringCreatedInput = {
@@ -3790,6 +4142,7 @@ export type UserUpdateWithoutRecurringAssignedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -3815,6 +4168,7 @@ export type UserUpdateWithoutRecurringAssignedInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
@@ -3839,6 +4193,7 @@ export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3863,6 +4218,7 @@ export type UserUncheckedUpdateWithoutRecurringAssignedInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutRecurringCreatedInput = {
@@ -3897,6 +4253,7 @@ export type UserUpdateWithoutRecurringCreatedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -3922,6 +4279,7 @@ export type UserUpdateWithoutRecurringCreatedInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
@@ -3946,6 +4304,7 @@ export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3970,6 +4329,7 @@ export type UserUncheckedUpdateWithoutRecurringCreatedInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -3993,6 +4353,7 @@ export type UserCreateWithoutCommentsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -4018,6 +4379,7 @@ export type UserCreateWithoutCommentsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -4042,6 +4404,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4066,6 +4429,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -4105,6 +4469,7 @@ export type UserUpdateWithoutCommentsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -4130,6 +4495,7 @@ export type UserUpdateWithoutCommentsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -4154,6 +4520,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4178,6 +4545,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMentionsInput = {
@@ -4201,6 +4569,7 @@ export type UserCreateWithoutMentionsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -4226,6 +4595,7 @@ export type UserCreateWithoutMentionsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMentionsInput = {
@@ -4250,6 +4620,7 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4274,6 +4645,7 @@ export type UserUncheckedCreateWithoutMentionsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMentionsInput = {
@@ -4313,6 +4685,7 @@ export type UserUpdateWithoutMentionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -4338,6 +4711,7 @@ export type UserUpdateWithoutMentionsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMentionsInput = {
@@ -4362,6 +4736,7 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4386,6 +4761,7 @@ export type UserUncheckedUpdateWithoutMentionsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedFilesInput = {
@@ -4409,6 +4785,7 @@ export type UserCreateWithoutUploadedFilesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -4434,6 +4811,7 @@ export type UserCreateWithoutUploadedFilesInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedFilesInput = {
@@ -4458,6 +4836,7 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4482,6 +4861,7 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedFilesInput = {
@@ -4521,6 +4901,7 @@ export type UserUpdateWithoutUploadedFilesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -4546,6 +4927,7 @@ export type UserUpdateWithoutUploadedFilesInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedFilesInput = {
@@ -4570,6 +4952,7 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4594,6 +4977,7 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOwnedFilesInput = {
@@ -4617,6 +5001,7 @@ export type UserCreateWithoutOwnedFilesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -4642,6 +5027,7 @@ export type UserCreateWithoutOwnedFilesInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedFilesInput = {
@@ -4666,6 +5052,7 @@ export type UserUncheckedCreateWithoutOwnedFilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4690,6 +5077,7 @@ export type UserUncheckedCreateWithoutOwnedFilesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedFilesInput = {
@@ -4729,6 +5117,7 @@ export type UserUpdateWithoutOwnedFilesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -4754,6 +5143,7 @@ export type UserUpdateWithoutOwnedFilesInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedFilesInput = {
@@ -4778,6 +5168,7 @@ export type UserUncheckedUpdateWithoutOwnedFilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4802,6 +5193,7 @@ export type UserUncheckedUpdateWithoutOwnedFilesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFileSharesInput = {
@@ -4825,6 +5217,7 @@ export type UserCreateWithoutFileSharesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -4850,6 +5243,7 @@ export type UserCreateWithoutFileSharesInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFileSharesInput = {
@@ -4874,6 +5268,7 @@ export type UserUncheckedCreateWithoutFileSharesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4898,6 +5293,7 @@ export type UserUncheckedCreateWithoutFileSharesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFileSharesInput = {
@@ -4937,6 +5333,7 @@ export type UserUpdateWithoutFileSharesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -4962,6 +5359,7 @@ export type UserUpdateWithoutFileSharesInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFileSharesInput = {
@@ -4986,6 +5384,7 @@ export type UserUncheckedUpdateWithoutFileSharesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5010,6 +5409,7 @@ export type UserUncheckedUpdateWithoutFileSharesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTimeLogsInput = {
@@ -5033,6 +5433,7 @@ export type UserCreateWithoutTimeLogsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -5058,6 +5459,7 @@ export type UserCreateWithoutTimeLogsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTimeLogsInput = {
@@ -5082,6 +5484,7 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5106,6 +5509,7 @@ export type UserUncheckedCreateWithoutTimeLogsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTimeLogsInput = {
@@ -5145,6 +5549,7 @@ export type UserUpdateWithoutTimeLogsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -5170,6 +5575,7 @@ export type UserUpdateWithoutTimeLogsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTimeLogsInput = {
@@ -5194,6 +5600,7 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5218,6 +5625,7 @@ export type UserUncheckedUpdateWithoutTimeLogsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCallsInput = {
@@ -5241,6 +5649,7 @@ export type UserCreateWithoutCallsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -5266,6 +5675,7 @@ export type UserCreateWithoutCallsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCallsInput = {
@@ -5290,6 +5700,7 @@ export type UserUncheckedCreateWithoutCallsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5314,6 +5725,7 @@ export type UserUncheckedCreateWithoutCallsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCallsInput = {
@@ -5353,6 +5765,7 @@ export type UserUpdateWithoutCallsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -5378,6 +5791,7 @@ export type UserUpdateWithoutCallsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCallsInput = {
@@ -5402,6 +5816,7 @@ export type UserUncheckedUpdateWithoutCallsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5426,6 +5841,7 @@ export type UserUncheckedUpdateWithoutCallsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMonthlyGoalsInput = {
@@ -5449,6 +5865,7 @@ export type UserCreateWithoutMonthlyGoalsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -5474,6 +5891,7 @@ export type UserCreateWithoutMonthlyGoalsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
@@ -5498,6 +5916,7 @@ export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5522,6 +5941,7 @@ export type UserUncheckedCreateWithoutMonthlyGoalsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMonthlyGoalsInput = {
@@ -5561,6 +5981,7 @@ export type UserUpdateWithoutMonthlyGoalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -5586,6 +6007,7 @@ export type UserUpdateWithoutMonthlyGoalsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
@@ -5610,6 +6032,7 @@ export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5634,6 +6057,7 @@ export type UserUncheckedUpdateWithoutMonthlyGoalsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutKpisInput = {
@@ -5657,6 +6081,7 @@ export type UserCreateWithoutKpisInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -5682,6 +6107,7 @@ export type UserCreateWithoutKpisInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutKpisInput = {
@@ -5706,6 +6132,7 @@ export type UserUncheckedCreateWithoutKpisInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5730,6 +6157,7 @@ export type UserUncheckedCreateWithoutKpisInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutKpisInput = {
@@ -5769,6 +6197,7 @@ export type UserUpdateWithoutKpisInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -5794,6 +6223,7 @@ export type UserUpdateWithoutKpisInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutKpisInput = {
@@ -5818,6 +6248,7 @@ export type UserUncheckedUpdateWithoutKpisInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5842,6 +6273,7 @@ export type UserUncheckedUpdateWithoutKpisInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWeeklyPlanItemsInput = {
@@ -5865,6 +6297,7 @@ export type UserCreateWithoutWeeklyPlanItemsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -5890,6 +6323,7 @@ export type UserCreateWithoutWeeklyPlanItemsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
@@ -5914,6 +6348,7 @@ export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5938,6 +6373,7 @@ export type UserUncheckedCreateWithoutWeeklyPlanItemsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWeeklyPlanItemsInput = {
@@ -5977,6 +6413,7 @@ export type UserUpdateWithoutWeeklyPlanItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -6002,6 +6439,7 @@ export type UserUpdateWithoutWeeklyPlanItemsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
@@ -6026,6 +6464,7 @@ export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6050,6 +6489,7 @@ export type UserUncheckedUpdateWithoutWeeklyPlanItemsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -6073,6 +6513,7 @@ export type UserCreateWithoutActivitiesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -6098,6 +6539,7 @@ export type UserCreateWithoutActivitiesInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -6122,6 +6564,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -6146,6 +6589,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -6185,6 +6629,7 @@ export type UserUpdateWithoutActivitiesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -6210,6 +6655,7 @@ export type UserUpdateWithoutActivitiesInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -6234,6 +6680,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6258,6 +6705,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -6281,6 +6729,7 @@ export type UserCreateWithoutNotificationsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -6306,6 +6755,7 @@ export type UserCreateWithoutNotificationsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -6330,6 +6780,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -6354,6 +6805,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -6382,6 +6834,7 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
   manager?: Prisma.UserCreateNestedOneWithoutReportsInput
   reports?: Prisma.UserCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
@@ -6407,6 +6860,7 @@ export type UserCreateWithoutTriggeredNotifsInput = {
   googleAccount?: Prisma.GoogleAccountCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
@@ -6431,6 +6885,7 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  telegramLinkCode?: string | null
   reports?: Prisma.UserUncheckedCreateNestedManyWithoutManagerInput
   createdProjects?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   projectMembers?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutUserInput
@@ -6455,6 +6910,7 @@ export type UserUncheckedCreateWithoutTriggeredNotifsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedCreateNestedOneWithoutUserInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedCreateNestedManyWithoutUserInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTriggeredNotifsInput = {
@@ -6494,6 +6950,7 @@ export type UserUpdateWithoutNotificationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -6519,6 +6976,7 @@ export type UserUpdateWithoutNotificationsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -6543,6 +7001,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6567,6 +7026,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTriggeredNotifsInput = {
@@ -6601,6 +7061,7 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manager?: Prisma.UserUpdateOneWithoutReportsNestedInput
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
@@ -6626,6 +7087,7 @@ export type UserUpdateWithoutTriggeredNotifsInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
@@ -6650,6 +7112,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6674,6 +7137,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotifsInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyManagerInput = {
@@ -6697,6 +7161,7 @@ export type UserCreateManyManagerInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramLinkCode?: string | null
 }
 
 export type UserUpdateWithoutManagerInput = {
@@ -6720,6 +7185,7 @@ export type UserUpdateWithoutManagerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUpdateManyWithoutUserNestedInput
@@ -6745,6 +7211,7 @@ export type UserUpdateWithoutManagerInput = {
   googleAccount?: Prisma.GoogleAccountUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerInput = {
@@ -6768,6 +7235,7 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.UserUncheckedUpdateManyWithoutManagerNestedInput
   createdProjects?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   projectMembers?: Prisma.ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6793,6 +7261,7 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   googleAccount?: Prisma.GoogleAccountUncheckedUpdateOneWithoutUserNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   planApprovals?: Prisma.WeeklyPlanApprovalUncheckedUpdateManyWithoutUserNestedInput
+  telegramAccount?: Prisma.TelegramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -6816,6 +7285,7 @@ export type UserUncheckedUpdateManyWithoutManagerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -7078,6 +7548,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  telegramLinkCode?: boolean
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
   createdProjects?: boolean | Prisma.User$createdProjectsArgs<ExtArgs>
@@ -7104,6 +7575,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
   pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   planApprovals?: boolean | Prisma.User$planApprovalsArgs<ExtArgs>
+  telegramAccount?: boolean | Prisma.User$telegramAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -7129,6 +7601,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  telegramLinkCode?: boolean
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -7154,6 +7627,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  telegramLinkCode?: boolean
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -7179,9 +7653,10 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  telegramLinkCode?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "driveFolderUrl" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "firstName" | "lastName" | "email" | "passwordHash" | "avatarUrl" | "title" | "functions" | "role" | "hourlyRate" | "weeklyHours" | "driveFolderUrl" | "locale" | "timezone" | "theme" | "weekStartsMon" | "isActive" | "createdAt" | "updatedAt" | "managerId" | "telegramLinkCode", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
@@ -7209,6 +7684,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
   pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   planApprovals?: boolean | Prisma.User$planApprovalsArgs<ExtArgs>
+  telegramAccount?: boolean | Prisma.User$telegramAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -7247,6 +7723,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     googleAccount: Prisma.$GoogleAccountPayload<ExtArgs> | null
     pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
     planApprovals: Prisma.$WeeklyPlanApprovalPayload<ExtArgs>[]
+    telegramAccount: Prisma.$TelegramAccountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7270,6 +7747,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     managerId: string | null
+    telegramLinkCode: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -7690,6 +8168,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   googleAccount<T extends Prisma.User$googleAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$googleAccountArgs<ExtArgs>>): Prisma.Prisma__GoogleAccountClient<runtime.Types.Result.GetResult<Prisma.$GoogleAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pushSubscriptions<T extends Prisma.User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   planApprovals<T extends Prisma.User$planApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$planApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WeeklyPlanApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  telegramAccount<T extends Prisma.User$telegramAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$telegramAccountArgs<ExtArgs>>): Prisma.Prisma__TelegramAccountClient<runtime.Types.Result.GetResult<Prisma.$TelegramAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7740,6 +8219,7 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly managerId: Prisma.FieldRef<"User", 'String'>
+  readonly telegramLinkCode: Prisma.FieldRef<"User", 'String'>
 }
     
 
@@ -8750,6 +9230,25 @@ export type User$planApprovalsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.WeeklyPlanApprovalScalarFieldEnum | Prisma.WeeklyPlanApprovalScalarFieldEnum[]
+}
+
+/**
+ * User.telegramAccount
+ */
+export type User$telegramAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TelegramAccount
+   */
+  select?: Prisma.TelegramAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TelegramAccount
+   */
+  omit?: Prisma.TelegramAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TelegramAccountInclude<ExtArgs> | null
+  where?: Prisma.TelegramAccountWhereInput
 }
 
 /**

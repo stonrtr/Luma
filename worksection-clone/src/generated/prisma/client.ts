@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model TelegramAccount
+ * 
+ */
+export type TelegramAccount = Prisma.TelegramAccountModel
+/**
  * Model WeeklyPlanApproval
  * 
  */

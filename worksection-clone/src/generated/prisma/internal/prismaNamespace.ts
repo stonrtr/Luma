@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  TelegramAccount: 'TelegramAccount',
   WeeklyPlanApproval: 'WeeklyPlanApproval',
   PushSubscription: 'PushSubscription',
   GoogleAccount: 'GoogleAccount',
@@ -440,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "weeklyPlanApproval" | "pushSubscription" | "googleAccount" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
+    modelProps: "user" | "telegramAccount" | "weeklyPlanApproval" | "pushSubscription" | "googleAccount" | "callPoint" | "project" | "projectMember" | "task" | "taskAssignee" | "taskDependency" | "milestone" | "checklistItem" | "recurringTask" | "tag" | "taskTag" | "comment" | "mention" | "attachment" | "fileLink" | "fileShare" | "timeLog" | "call" | "monthlyGoal" | "kpi" | "weeklyPlanItem" | "activity" | "notificationSetting" | "notification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -515,6 +516,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    TelegramAccount: {
+      payload: Prisma.$TelegramAccountPayload<ExtArgs>
+      fields: Prisma.TelegramAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        update: {
+          args: Prisma.TelegramAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramAccount>
+        }
+        groupBy: {
+          args: Prisma.TelegramAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramAccountCountAggregateOutputType> | number
         }
       }
     }
@@ -2573,10 +2648,22 @@ export const UserScalarFieldEnum = {
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  managerId: 'managerId'
+  managerId: 'managerId',
+  telegramLinkCode: 'telegramLinkCode'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const TelegramAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  chatId: 'chatId',
+  username: 'username',
+  createdAt: 'createdAt'
+} as const
+
+export type TelegramAccountScalarFieldEnum = (typeof TelegramAccountScalarFieldEnum)[keyof typeof TelegramAccountScalarFieldEnum]
 
 
 export const WeeklyPlanApprovalScalarFieldEnum = {
@@ -2639,6 +2726,7 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   color: 'color',
   status: 'status',
+  isPersonal: 'isPersonal',
   startDate: 'startDate',
   dueDate: 'dueDate',
   budget: 'budget',
@@ -2742,7 +2830,8 @@ export const RecurringTaskScalarFieldEnum = {
   createdAt: 'createdAt',
   assigneeId: 'assigneeId',
   createdById: 'createdById',
-  projectId: 'projectId'
+  projectId: 'projectId',
+  tagId: 'tagId'
 } as const
 
 export type RecurringTaskScalarFieldEnum = (typeof RecurringTaskScalarFieldEnum)[keyof typeof RecurringTaskScalarFieldEnum]
@@ -3188,6 +3277,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  telegramAccount?: Prisma.TelegramAccountOmit
   weeklyPlanApproval?: Prisma.WeeklyPlanApprovalOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
   googleAccount?: Prisma.GoogleAccountOmit

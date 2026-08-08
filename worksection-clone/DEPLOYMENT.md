@@ -64,7 +64,22 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://APP/api/cron/run
 
 `ANTHROPIC_API_KEY` (+ опц. `ANTHROPIC_MODEL`). Без ключа — евристичний розбір.
 
-## 8. Файли (на майбутнє)
+## 8. Telegram-бот (опційно) 🔑
+
+Дозволяє отримувати сповіщення в Telegram і керувати задачами з телефона.
+
+1. Створіть бота у **@BotFather** → отримайте `TELEGRAM_BOT_TOKEN` і username → `TELEGRAM_BOT_USERNAME`.
+2. Придумайте `TELEGRAM_WEBHOOK_SECRET` (будь-який рядок).
+3. Зареєструйте вебхук (потрібен публічний HTTPS URL; для локалки — тунель типу ngrok):
+   ```bash
+   curl "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook?url=$APP_URL/api/telegram/webhook&secret_token=$TELEGRAM_WEBHOOK_SECRET"
+   ```
+4. У застосунку: Налаштування → Telegram → «Підключити» (відкриє бота з кодом прив'язки).
+
+Команди бота: `/today`, `/inbox`, `/tasks`, `/new назва`, `/help`.
+Сповіщення застосунку дублюються в Telegram автоматично після прив'язки.
+
+## 9. Файли (на майбутнє)
 
 Зараз вкладення зберігаються локально/через посилання. Для проду варто винести
 в об'єктне сховище (S3/R2): додати драйвер завантаження + `S3_*` змінні. **Не реалізовано.**

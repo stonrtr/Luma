@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ClipboardList, FolderOpen, Network, UsersRound, BarChart3, FolderKanban, Phone } from "lucide-react";
+import { LayoutDashboard, ClipboardList, FolderOpen, Network, UsersRound, BarChart3, FolderKanban, Phone, HeartPulse } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,7 @@ export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: bool
   const pathname = usePathname();
   const items = [
     { href: "/", key: "nav.myspace", icon: LayoutDashboard },
+    { href: "/life", key: "nav.life", icon: HeartPulse },
     { href: "/planning", key: "nav.planning", icon: ClipboardList },
     { href: "/calls", key: "nav.calls", icon: Phone },
     { href: "/projects", key: "nav.projects", icon: FolderKanban },

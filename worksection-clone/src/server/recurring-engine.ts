@@ -1,5 +1,6 @@
 import "server-only";
 import { db } from "@/server/db";
+import { syncTaskToGoogle } from "@/server/google/calendar";
 
 function sameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -26,7 +27,7 @@ export async function generateDueRecurringTasks(): Promise<number> {
       orderBy: { position: "desc" },
     });
     const dueDate = new Date(now); dueDate.setHours(23, 59, 0, 0);
-    await db.task.create({
+    const task = await db.task.create({
       data: {
         title: r.title,
         status: "TODO",
@@ -39,9 +40,12 @@ export async function generateDueRecurringTasks(): Promise<number> {
         dueDate,
         position: (last?.position ?? -1) + 1,
         assignees: { create: [{ userId: r.assigneeId }] },
+        // сфера жизни (для личного планера)
+        ...(r.tagId ? { tags: { create: [{ tagId: r.tagId }] } } : {}),
       },
     });
     await db.recurringTask.update({ where: { id: r.id }, data: { lastGeneratedAt: now } });
+    await syncTaskToGoogle(task.id); // best-effort напоминание в календаре
     created++;
   }
   return created;

@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  TelegramAccount: 'TelegramAccount',
   WeeklyPlanApproval: 'WeeklyPlanApproval',
   PushSubscription: 'PushSubscription',
   GoogleAccount: 'GoogleAccount',
@@ -115,10 +116,22 @@ export const UserScalarFieldEnum = {
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  managerId: 'managerId'
+  managerId: 'managerId',
+  telegramLinkCode: 'telegramLinkCode'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const TelegramAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  chatId: 'chatId',
+  username: 'username',
+  createdAt: 'createdAt'
+} as const
+
+export type TelegramAccountScalarFieldEnum = (typeof TelegramAccountScalarFieldEnum)[keyof typeof TelegramAccountScalarFieldEnum]
 
 
 export const WeeklyPlanApprovalScalarFieldEnum = {
@@ -181,6 +194,7 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   color: 'color',
   status: 'status',
+  isPersonal: 'isPersonal',
   startDate: 'startDate',
   dueDate: 'dueDate',
   budget: 'budget',
@@ -284,7 +298,8 @@ export const RecurringTaskScalarFieldEnum = {
   createdAt: 'createdAt',
   assigneeId: 'assigneeId',
   createdById: 'createdById',
-  projectId: 'projectId'
+  projectId: 'projectId',
+  tagId: 'tagId'
 } as const
 
 export type RecurringTaskScalarFieldEnum = (typeof RecurringTaskScalarFieldEnum)[keyof typeof RecurringTaskScalarFieldEnum]

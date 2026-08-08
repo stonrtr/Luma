@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 // Проекты, в которых пользователь состоит участником
 export async function getProjectsForUser(userId: string) {
   const projects = await db.project.findMany({
-    where: { members: { some: { userId } } },
+    where: { members: { some: { userId } }, isPersonal: false },
     orderBy: { updatedAt: "desc" },
     include: {
       members: { include: { user: true } },

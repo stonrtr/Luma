@@ -3,6 +3,8 @@ import { getRecurringForUser } from "@/server/queries/planning";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { RecurringBlock } from "@/components/planning/recurring-block";
 import { GoogleCalendarCard } from "@/components/settings/google-calendar-card";
+import { TelegramCard } from "@/components/settings/telegram-card";
+import { isTelegramConfigured } from "@/server/telegram/api";
 import { NotificationSettingsForm } from "@/components/admin/notification-settings-form";
 import { getNotificationSettings } from "@/server/queries/notification-settings";
 import { db } from "@/server/db";
@@ -14,6 +16,7 @@ export default async function SettingsPage() {
   const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
   const recurring = await getRecurringForUser(user.id);
   const googleAcc = await db.googleAccount.findUnique({ where: { userId: user.id }, select: { googleEmail: true } });
+  const tgAcc = await db.telegramAccount.findUnique({ where: { userId: user.id }, select: { username: true } });
   const notificationSettings = isAdmin ? await getNotificationSettings() : null;
 
   return (
@@ -42,6 +45,8 @@ export default async function SettingsPage() {
           <NotificationSettingsForm settings={notificationSettings} />
         </section>
       )}
+
+      <TelegramCard configured={isTelegramConfigured()} connected={!!tgAcc} username={tgAcc?.username ?? null} />
 
       <GoogleCalendarCard configured={isGoogleConfigured()} connected={!!googleAcc} email={googleAcc?.googleEmail ?? null} />
 

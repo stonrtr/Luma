@@ -1,6 +1,10 @@
 import "server-only";
 import { db } from "@/server/db";
 
+// Исключить задачи личного планера («Моя жизнь») из командных экранов.
+// Совпадает и для задач без проекта (projectId = null).
+const NOT_PERSONAL = { NOT: { project: { is: { isPersonal: true } } } } as const;
+
 // Задачи верхнего уровня проекта для канбан-доски
 export async function getBoardTasks(projectId: string) {
   return db.task.findMany({
@@ -18,7 +22,7 @@ export async function getBoardTasks(projectId: string) {
 // Личные задачи пользователя (из всех проектов + без проекта), назначенные на него
 export async function getMyTasks(userId: string) {
   return db.task.findMany({
-    where: { parentId: null, archivedAt: null, assignees: { some: { userId } } },
+    where: { parentId: null, archivedAt: null, assignees: { some: { userId } }, ...NOT_PERSONAL },
     orderBy: [{ priority: "desc" }, { position: "asc" }],
     include: {
       project: { select: { name: true, color: true } },
@@ -33,7 +37,7 @@ export async function getMyTasks(userId: string) {
 // Все задачи команды (для агрегированной доски «Всі» на вкладці Команда)
 export async function getAllTasks() {
   return db.task.findMany({
-    where: { parentId: null, archivedAt: null },
+    where: { parentId: null, archivedAt: null, ...NOT_PERSONAL },
     orderBy: [{ priority: "desc" }, { position: "asc" }],
     include: {
       project: { select: { name: true, color: true } },
@@ -48,7 +52,7 @@ export async function getAllTasks() {
 // Архив: завершённые задачи, от последней выполненной вниз
 export async function getArchivedTasks(userId?: string) {
   return db.task.findMany({
-    where: { status: "DONE", parentId: null, ...(userId ? { assignees: { some: { userId } } } : {}) },
+    where: { status: "DONE", parentId: null, ...NOT_PERSONAL, ...(userId ? { assignees: { some: { userId } } } : {}) },
     orderBy: [{ completedAt: "desc" }, { updatedAt: "desc" }],
     take: 200,
     include: {
@@ -99,10 +103,10 @@ export async function getTaskDetail(taskId: string) {
 
 export async function getUserTaskStats(userId: string) {
   const [assigned, inProgress, overdue] = await Promise.all([
-    db.taskAssignee.count({ where: { userId, task: { status: { not: "DONE" } } } }),
-    db.taskAssignee.count({ where: { userId, task: { status: "IN_PROGRESS" } } }),
+    db.taskAssignee.count({ where: { userId, task: { status: { not: "DONE" }, ...NOT_PERSONAL } } }),
+    db.taskAssignee.count({ where: { userId, task: { status: "IN_PROGRESS", ...NOT_PERSONAL } } }),
     db.taskAssignee.count({
-      where: { userId, task: { status: { not: "DONE" }, dueDate: { lt: new Date() } } },
+      where: { userId, task: { status: { not: "DONE" }, dueDate: { lt: new Date() }, ...NOT_PERSONAL } },
     }),
   ]);
   return { assigned, inProgress, overdue };

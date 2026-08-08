@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/server/db";
 import { sendPushToUser } from "@/server/push";
+import { sendTelegramToUser } from "@/server/telegram/api";
 
 const TITLES: Record<string, string> = {
   assignment: "Нова задача",
@@ -29,10 +30,10 @@ export async function notify(n: {
       actorId: n.actorId ?? null,
     },
   });
-  await sendPushToUser(n.recipientId, {
-    title: TITLES[n.type] ?? "Сповіщення",
-    body: n.message,
-    url: n.link ?? "/",
-  }).catch(() => {});
+  const title = TITLES[n.type] ?? "Сповіщення";
+  await Promise.all([
+    sendPushToUser(n.recipientId, { title, body: n.message, url: n.link ?? "/" }).catch(() => {}),
+    sendTelegramToUser(n.recipientId, `🔔 <b>${title}</b>\n${n.message}`).catch(() => {}),
+  ]);
   return created;
 }

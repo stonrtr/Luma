@@ -49,7 +49,7 @@ export async function getCalendarTasks(userId: string, year: number, month: numb
   return db.task.findMany({
     where: {
       dueDate: { gte: from, lt: to },
-      project: { members: { some: { userId } } },
+      project: { members: { some: { userId } }, isPersonal: false },
     },
     include: { project: true, assignees: { include: { user: true } } },
     orderBy: { dueDate: "asc" },

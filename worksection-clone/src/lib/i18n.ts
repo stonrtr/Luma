@@ -6,6 +6,7 @@ type Dict = Record<string, string>;
 
 const uk: Dict = {
   "nav.myspace": "Задачі",
+  "nav.life": "Моє життя",
   "nav.planning": "Планування",
   "nav.calendar": "Календар",
   "nav.org": "Оргсхема",
@@ -51,6 +52,7 @@ const uk: Dict = {
 
 const ru: Dict = {
   "nav.myspace": "Задачи",
+  "nav.life": "Моя жизнь",
   "nav.planning": "Планирование",
   "nav.calendar": "Календарь",
   "nav.org": "Оргсхема",
@@ -96,6 +98,7 @@ const ru: Dict = {
 
 const en: Dict = {
   "nav.myspace": "Tasks",
+  "nav.life": "My life",
   "nav.planning": "Planning",
   "nav.calendar": "Calendar",
   "nav.org": "Org chart",

@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+/* ============ Quizlet design tokens ============ */
+@theme {
+  --color-assembly: #4255ff; /* primary brand blue */
+  --color-assembly-dark: #3b49df;
+  --color-assembly-darker: #2e3856;
+  --color-heading: #212843; /* dark navy text */
+  --color-body: #303545;
+  --color-muted: #646f90;
+  --color-line: #d9dde8;
+  --color-canvas: #f6f7fb; /* app background */
+  --color-star: #ffcd1f; /* starred gold */
+  --color-plus: #ffcd1f;
+  --color-correct: #17ab5a;
+  --color-correct-bg: #d6f5e0;
+  --color-incorrect: #ff725b;
+  --color-incorrect-bg: #ffe7e2;
+
+  --font-sans: "Hurme Geometric Sans", "Proxima Nova", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --radius-card: 16px;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.07), 0 8px 24px rgba(20, 23, 40, 0.06);
+}
+
+:root {
+  --background: #f6f7fb;
+  --surface: #ffffff;
+  --text: #303545;
+  --heading: #212843;
+  --muted: #646f90;
+  --line: #d9dde8;
+  --canvas: #f6f7fb;
+  --nav: #ffffff;
+}
+
+:root.dark {
+  --background: #0a092d;
+  --surface: #2e3856;
+  --text: #edeff4;
+  --heading: #ffffff;
+  --muted: #a6b0d0;
+  --line: #3e4b7a;
+  --canvas: #0a092d;
+  --nav: #2e3856;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.surface {
+  background: var(--surface);
+}
+.text-heading-c {
+  color: var(--heading);
+}
+.text-body-c {
+  color: var(--text);
+}
+.text-muted-c {
+  color: var(--muted);
+}
+.border-line-c {
+  border-color: var(--line);
+}
+.bg-canvas-c {
+  background: var(--canvas);
+}
+.bg-nav-c {
+  background: var(--nav);
+}
+
+/* Quizlet buttons */
+.qbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  border: 2px solid transparent;
+  line-height: 1;
+  user-select: none;
+}
+.qbtn-primary {
+  background: var(--color-assembly);
+  color: #fff;
+  box-shadow: 0 2px 0 0 var(--color-assembly-dark);
+}
+.qbtn-primary:hover {
+  background: #3a4bf0;
+}
+.qbtn-primary:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+.qbtn-ghost {
+  background: var(--surface);
+  color: var(--heading);
+  border: 2px solid var(--line);
+  box-shadow: 0 2px 0 0 var(--line);
+}
+.qbtn-ghost:hover {
+  background: rgba(66, 85, 255, 0.06);
+  border-color: var(--color-assembly);
+  color: var(--color-assembly);
+}
+.qbtn-yellow {
+  background: var(--color-star);
+  color: #2e3856;
+  box-shadow: 0 2px 0 0 #e0af00;
+}
+
+/* card flip */
+.flip-scene {
+  perspective: 2200px;
+}
+.flip-card {
+  transform-style: preserve-3d;
+  transition: transform 0.42s cubic-bezier(0.2, 0.7, 0.3, 1);
+  position: relative;
+}
+.flip-card.is-flipped {
+  transform: rotateX(180deg);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+}
+.flip-face-back {
+  transform: rotateX(180deg);
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 8px;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.pop-in {
+  animation: pop-in 0.18s ease;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+.shake {
+  animation: shake 0.4s;
+}

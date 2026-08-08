@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/TelegramAccount'
 export type * from './models/WeeklyPlanApproval'
 export type * from './models/PushSubscription'
 export type * from './models/GoogleAccount'
