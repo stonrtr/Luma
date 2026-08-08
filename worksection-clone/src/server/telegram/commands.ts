@@ -44,14 +44,14 @@ const REQUEST_CONTACT_KB = { reply_markup: { keyboard: [[{ text: "📱 Поді�
 const normPhone = (s: string) => s.replace(/\D/g, "");
 const sameLast10 = (a: string, b: string) => a.length >= 10 && a.slice(-10) === b.slice(-10);
 
-function endOfDay(d: Date): Date { d.setHours(23, 59, 0, 0); return d; }
+function endOfDay(d: Date): Date { d.setHours(19, 0, 0, 0); return d; } // кінець робочого дня — 19:00
 function parseDeadline(text: string): Date | null {
   const day = 86400000;
   switch (text) {
     case DL.today: return endOfDay(new Date());
     case DL.tomorrowNoon: { const d = new Date(Date.now() + day); d.setHours(12, 0, 0, 0); return d; }
     case DL.tomorrow: return endOfDay(new Date(Date.now() + day));
-    case DL.weekEnd: { const now = new Date(); const add = (7 - now.getDay()) % 7; return endOfDay(new Date(Date.now() + add * day)); } // до неділі включно
+    case DL.weekEnd: { const now = new Date(); const add = (5 - now.getDay() + 7) % 7; return endOfDay(new Date(Date.now() + add * day)); } // до п'ятниці
     default: return null;
   }
 }
