@@ -23,9 +23,10 @@ const PRIORITY_KB = { reply_markup: { keyboard: [
   [6, 7, 8, 9, 10].map((n) => ({ text: String(n) })),
   [{ text: CANCEL }],
 ], resize_keyboard: true } };
-const DL = { today: "Сьогодні до кінця дня", tomorrow: "Завтра до кінця дня", weekEnd: "До кінця тижня" };
+const DL = { today: "Сьогодні до кінця дня", tomorrowNoon: "Завтра до обіду", tomorrow: "Завтра до кінця дня", weekEnd: "До кінця тижня" };
 const DEADLINE_KB = { reply_markup: { keyboard: [
-  [{ text: DL.today }, { text: DL.tomorrow }],
+  [{ text: DL.today }],
+  [{ text: DL.tomorrowNoon }, { text: DL.tomorrow }],
   [{ text: DL.weekEnd }],
   [{ text: CANCEL }],
 ], resize_keyboard: true } };
@@ -48,6 +49,7 @@ function parseDeadline(text: string): Date | null {
   const day = 86400000;
   switch (text) {
     case DL.today: return endOfDay(new Date());
+    case DL.tomorrowNoon: { const d = new Date(Date.now() + day); d.setHours(12, 0, 0, 0); return d; }
     case DL.tomorrow: return endOfDay(new Date(Date.now() + day));
     case DL.weekEnd: { const now = new Date(); const add = (7 - now.getDay()) % 7; return endOfDay(new Date(Date.now() + add * day)); } // до неділі включно
     default: return null;
