@@ -158,7 +158,7 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
       if (!due) { await reply("Оберіть дедлайн кнопкою:", DEADLINE_KB); return; }
       await createFor(userId, state.title ?? "Без назви", "TODO", { priority: state.priority, dueDate: due });
       await setState(null);
-      await reply(`✅ Задачу створено: <b>${esc(state.title ?? "")}</b>\nПріоритет ${state.priority}, дедлайн ${fmtDate(due)}`);
+      await reply(`✅ Задачу створено: <b>${esc(state.title ?? "")}</b>\nПріоритет ${state.priority}\nДедлайн ${fmtDate(due)}`);
       return;
     }
   }
