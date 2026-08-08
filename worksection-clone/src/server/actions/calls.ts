@@ -91,42 +91,57 @@ function heuristicExtract(summary: string): string[] {
   return [...new Set(result)].slice(0, 30);
 }
 
-// Вызов Anthropic API, если задан ключ. Возвращает массив задач или null.
-async function aiExtract(summary: string): Promise<string[] | null> {
+const EXTRACT_PROMPT =
+  "Ось саммарі робочого дзвінка. Виокрем із нього чіткі задачі до виконання (тільки конкретні дії). " +
+  "Поверни ЛИШЕ JSON-масив рядків, без пояснень, кожен рядок — коротке формулювання задачі українською.\n\n";
+
+// Достать JSON-массив строк из ответа модели
+function parseTitles(text: string): string[] | null {
+  const m = text.match(/\[[\s\S]*\]/);
+  if (!m) return null;
+  try {
+    const arr = JSON.parse(m[0]);
+    return Array.isArray(arr) ? arr.map((x) => String(x).trim()).filter(Boolean).slice(0, 30) : null;
+  } catch { return null; }
+}
+
+// Google Gemini (OpenAI-совместимый эндпоинт)
+async function geminiExtract(summary: string): Promise<string[] | null> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+  try {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
+      body: JSON.stringify({ model, temperature: 0.2, messages: [{ role: "user", content: EXTRACT_PROMPT + summary }] }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return parseTitles(data?.choices?.[0]?.message?.content ?? "");
+  } catch { return null; }
+}
+
+// Anthropic Claude (если задан ключ)
+async function anthropicExtract(summary: string): Promise<string[] | null> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return null;
   const model = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 1024,
-        messages: [{
-          role: "user",
-          content:
-            "Ось саммарі робочого дзвінка. Виокрем із нього чіткі задачі до виконання (тільки конкретні дії). " +
-            "Поверни ЛИШЕ JSON-масив рядків, без пояснень, кожен рядок — коротке формулювання задачі українською.\n\n" +
-            summary,
-        }],
-      }),
+      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
+      body: JSON.stringify({ model, max_tokens: 1024, messages: [{ role: "user", content: EXTRACT_PROMPT + summary }] }),
     });
     if (!res.ok) return null;
     const data = await res.json();
-    const text: string = data?.content?.[0]?.text ?? "";
-    const match = text.match(/\[[\s\S]*\]/);
-    if (!match) return null;
-    const arr = JSON.parse(match[0]);
-    if (!Array.isArray(arr)) return null;
-    return arr.map((x) => String(x).trim()).filter(Boolean).slice(0, 30);
-  } catch {
-    return null;
-  }
+    return parseTitles(data?.content?.[0]?.text ?? "");
+  } catch { return null; }
+}
+
+// Сначала Gemini, затем Anthropic; null → откат на эвристику
+async function aiExtract(summary: string): Promise<string[] | null> {
+  return (await geminiExtract(summary)) ?? (await anthropicExtract(summary));
 }
 
 // Только извлекаем задачи из саммари (без создания) — далее сотрудник
