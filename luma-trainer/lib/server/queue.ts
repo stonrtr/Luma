@@ -62,6 +62,27 @@ export async function buildLessonQueue(lessonId: string): Promise<PhraseCard[]> 
   return cards.map((c) => toPhrase(c, c.lesson?.title));
 }
 
+/**
+ * «Приближающиеся к забыванию»: уже изученные карточки, у которых срок
+ * повторения ещё не наступил, отсортированные по близости dueAt — для
+ * дополнительного занятия, когда очередь «Сегодня» пуста.
+ */
+export async function buildUpcomingQueue(): Promise<PhraseCard[]> {
+  const settings = await getSettingsRow();
+  const cards = await db.phraseCard.findMany({
+    where: {
+      translationStatus: "ready",
+      lesson: { archived: false },
+      reviewCount: { gt: 0 },
+      dueAt: { gt: new Date() },
+    },
+    include: { lesson: { select: { title: true } } },
+    orderBy: { dueAt: "asc" },
+    take: settings.cardsPerDay,
+  });
+  return cards.map((c) => toPhrase(c, c.lesson?.title));
+}
+
 /** Favorites as a virtual study set (§14). Worst-known first. */
 export async function buildFavoriteQueue(): Promise<PhraseCard[]> {
   const cards = await db.phraseCard.findMany({

@@ -39,10 +39,14 @@ export function StudySession({
   const [usedHint, setUsedHint] = useState(false);
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
   const [reviewedCount, setReviewedCount] = useState(0);
+  // «Повторить приближающиеся»: внутренняя подмена scope при пустой очереди.
+  const [scopeOverride, setScopeOverride] = useState<"upcoming" | null>(null);
+  const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
   const busy = useRef(false);
 
   const showFirst = settings.showFirst;
   const card = cards?.[index] ?? null;
+  const effScope = scopeOverride ?? scope.scope;
 
   // Встроенный режим перечитывает очередь после закрытия оверлейной сессии (refreshKey).
   const fetchKey = embedded ? refreshKey : 0;
@@ -52,10 +56,10 @@ export function StudySession({
     setFlipped(false);
     setReveal(0);
     setUsedHint(false);
-    A.study(scope.scope, scope.lessonId)
+    A.study(effScope, scope.lessonId)
       .then((r) => setCards(r.cards))
       .catch(() => setCards([]));
-  }, [scope, fetchKey]);
+  }, [scope, effScope, fetchKey]);
 
   // Прогрев озвучки: текущая карточка и две следующие — последовательно,
   // чтобы к нажатию 🔊 (или автоозвучке) аудио уже было в кэше.
@@ -184,7 +188,13 @@ export function StudySession({
   };
 
   const title =
-    scope.scope === "today" ? "Сегодня" : scope.scope === "favorites" ? "Избранное" : scope.title || "Урок";
+    scopeOverride === "upcoming"
+      ? "Приближающиеся"
+      : scope.scope === "today"
+        ? "Сегодня"
+        : scope.scope === "favorites"
+          ? "Избранное"
+          : scope.title || "Урок";
 
   const total = cards?.length ?? 0;
   const revealText = card ? maskAnswer(answer, reveal) : "";
@@ -192,6 +202,15 @@ export function StudySession({
   const done = cards !== null && !card;
   const emptyFromStart = done && reviewedCount === 0 && total === 0;
   const fbClass = feedback === "good" ? "fb-good" : feedback === "bad" ? "fb-bad" : "";
+
+  // Пустая очередь «Сегодня» → узнаём, есть ли карточки, близкие к забыванию.
+  useEffect(() => {
+    if (done && emptyFromStart && !scopeOverride && effScope === "today") {
+      A.study("upcoming")
+        .then((r) => setUpcomingCount(r.cards.length))
+        .catch(() => setUpcomingCount(0));
+    }
+  }, [done, emptyFromStart, scopeOverride, effScope]);
 
   /* ── Общие блоки разметки ─────────────────────────────────────────── */
 
@@ -465,20 +484,35 @@ export function StudySession({
       </div>
       <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 600 }}>
         {emptyFromStart
-          ? "Очередь повторения пуста. Загляни в уроки для дополнительного занятия."
+          ? upcomingCount && upcomingCount > 0
+            ? "Очередь пуста, но можно закрепить фразы, которые скоро начнут забываться."
+            : "Очередь повторения пуста. Загляни в уроки для дополнительного занятия."
           : `Повторено карточек: ${reviewedCount}. Отличная работа!`}
       </div>
-      {embedded ? (
-        emptyFromStart && (
-          <button className="wbtn wbtn-lg" style={{ marginTop: 6 }} onClick={() => goTo("lessons")}>
-            Открыть уроки
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 6 }}>
+        {emptyFromStart && (upcomingCount ?? 0) > 0 && (
+          <button
+            className="wbtn wbtn-lg"
+            onClick={() => {
+              setUpcomingCount(null);
+              setScopeOverride("upcoming");
+            }}
+          >
+            Повторить приближающиеся ({upcomingCount})
           </button>
-        )
-      ) : (
-        <button className="wbtn wbtn-lg" style={{ marginTop: 6 }} onClick={onClose}>
-          Готово
-        </button>
-      )}
+        )}
+        {embedded ? (
+          emptyFromStart && (
+            <button className="gbtn" style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }} onClick={() => goTo("lessons")}>
+              Открыть уроки
+            </button>
+          )
+        ) : (
+          <button className={emptyFromStart && (upcomingCount ?? 0) > 0 ? "gbtn" : "wbtn wbtn-lg"} style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }} onClick={onClose}>
+            Готово
+          </button>
+        )}
+      </div>
     </div>
   );
 

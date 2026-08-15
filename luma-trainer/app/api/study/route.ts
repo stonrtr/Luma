@@ -1,4 +1,9 @@
-import { buildTodayQueue, buildLessonQueue, buildFavoriteQueue } from "@/lib/server/queue";
+import {
+  buildTodayQueue,
+  buildLessonQueue,
+  buildFavoriteQueue,
+  buildUpcomingQueue,
+} from "@/lib/server/queue";
 import { warmPhrases } from "@/lib/server/tts";
 import { getSettingsRow } from "@/lib/server/settings";
 import { json } from "@/lib/server/http";
@@ -11,6 +16,7 @@ export async function GET(req: Request) {
   let cards;
   if (scope === "lesson" && lessonId) cards = await buildLessonQueue(lessonId);
   else if (scope === "favorites") cards = await buildFavoriteQueue();
+  else if (scope === "upcoming") cards = await buildUpcomingQueue();
   else cards = await buildTodayQueue();
 
   // Фоновый прогрев озвучки всей очереди: к моменту показа карточки аудио уже в кэше.

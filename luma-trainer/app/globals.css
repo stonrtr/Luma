@@ -143,6 +143,23 @@ button {
 }
 
 /* ── Кнопки ──────────────────────────────────────────────────────────── */
+/* Оптическое центрирование текста: у Baloo 2 верхнеутяжелённые метрики
+   (крупный ascender), из-за чего глифы в пилюлях сидят ниже центра.
+   text-box обрезает пустые поля строки по cap-height/baseline — текст
+   центрируется по реальным глифам. Старые браузеры просто игнорируют. */
+.wbtn,
+.gbtn,
+.abtn,
+.lbtn,
+.btn,
+.chip,
+.gpill,
+.toggle-pill,
+.nav-pill,
+.select-onpanel {
+  text-box: trim-both cap alphabetic;
+}
+
 .wbtn {
   display: inline-flex;
   align-items: center;

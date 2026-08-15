@@ -117,27 +117,34 @@ export async function askJson<T>(
 ): Promise<{ result: T; provider: "gemini" | "anthropic" }> {
   const errors: string[] = [];
 
-  if (hasGemini()) {
-    try {
-      const text = await callGemini(system, user);
-      const parsed = extractJson(text);
-      const valid = parsed ? validate(parsed) : null;
-      if (valid) return { result: valid, provider: "gemini" };
-      errors.push("gemini: invalid JSON shape");
-    } catch (e) {
-      errors.push(`gemini: ${(e as Error).message}`);
-    }
-  }
+  // Два прохода: сразу после пробуждения инстанса (cold start Render Free)
+  // сеть бывает не готова и ВСЕ модели падают за доли секунды — короткая
+  // пауза и повтор каскада спасают первый пользовательский запрос.
+  for (let pass = 0; pass < 2; pass++) {
+    if (pass > 0) await new Promise((r) => setTimeout(r, 1500));
 
-  if (hasAnthropic()) {
-    try {
-      const text = await callAnthropic(system, user);
-      const parsed = extractJson(text);
-      const valid = parsed ? validate(parsed) : null;
-      if (valid) return { result: valid, provider: "anthropic" };
-      errors.push("anthropic: invalid JSON shape");
-    } catch (e) {
-      errors.push(`anthropic: ${(e as Error).message}`);
+    if (hasGemini()) {
+      try {
+        const text = await callGemini(system, user);
+        const parsed = extractJson(text);
+        const valid = parsed ? validate(parsed) : null;
+        if (valid) return { result: valid, provider: "gemini" };
+        errors.push("gemini: invalid JSON shape");
+      } catch (e) {
+        errors.push(`gemini: ${(e as Error).message}`);
+      }
+    }
+
+    if (hasAnthropic()) {
+      try {
+        const text = await callAnthropic(system, user);
+        const parsed = extractJson(text);
+        const valid = parsed ? validate(parsed) : null;
+        if (valid) return { result: valid, provider: "anthropic" };
+        errors.push("anthropic: invalid JSON shape");
+      } catch (e) {
+        errors.push(`anthropic: ${(e as Error).message}`);
+      }
     }
   }
 
