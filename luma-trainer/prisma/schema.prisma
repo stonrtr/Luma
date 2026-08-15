@@ -180,3 +180,12 @@ model DailyActivity {
   newStudied Int    @default(0)
   learned    Int    @default(0)
 }
+
+// Кэш озвучки в БД: на Render Free нет persistent-диска, файловая система
+// эфемерна — аудио храним в Postgres, чтобы кэш переживал рестарты.
+model TtsCache {
+  key         String   @id // sha1(provider|voice|text)
+  audio       Bytes
+  contentType String
+  createdAt   DateTime @default(now())
+}
