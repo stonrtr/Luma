@@ -3,13 +3,15 @@
 import "server-only";
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY || "";
-// Primary model first, then free-tier-friendly fallbacks tried on quota/rate errors.
+// Primary model first, then фолбэки с РАЗНЫМИ квотами (проверено против
+// ListModels 2026-08: gemini-2.0-flash отключён Google, gemini-flash-latest —
+// алиас 2.5-flash и делит с ней 429-бакет, поэтому бесполезен как фолбэк).
 const GEMINI_MODELS = Array.from(
   new Set([
     process.env.GEMINI_MODEL || "gemini-2.5-flash",
     "gemini-2.5-flash",
-    "gemini-flash-latest",
-    "gemini-2.0-flash",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
   ])
 );
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || "";
@@ -71,7 +73,7 @@ function isRetryableModelError(msg: string): boolean {
 async function callGemini(system: string, user: string): Promise<string> {
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-  let lastErr: Error | null = null;
+  const errs: string[] = [];
   // Try models in order, moving on when one is rate-limited/unavailable.
   for (const modelName of GEMINI_MODELS) {
     try {
@@ -83,11 +85,13 @@ async function callGemini(system: string, user: string): Promise<string> {
       const res = await withTimeout(model.generateContent(user));
       return res.response.text();
     } catch (e) {
-      lastErr = e as Error;
-      if (!isRetryableModelError(lastErr.message)) throw lastErr;
+      const err = e as Error;
+      // Копим ошибки всех моделей — иначе диагноз маскируется последней в цепочке.
+      errs.push(`${modelName}: ${err.message}`);
+      if (!isRetryableModelError(err.message)) throw new Error(errs.join(" | "));
     }
   }
-  throw lastErr ?? new Error("gemini: all models failed");
+  throw new Error(errs.join(" | ") || "gemini: all models failed");
 }
 
 async function callAnthropic(system: string, user: string): Promise<string> {
