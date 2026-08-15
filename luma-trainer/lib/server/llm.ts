@@ -60,7 +60,9 @@ export function extractJson<T = unknown>(text: string): T | null {
 }
 
 function isRetryableModelError(msg: string): boolean {
-  return /429|quota|rate.?limit|exceeded|not found|404|unavailable|overloaded|503/i.test(msg);
+  // timeout тоже ретраим следующей моделью: первый запрос после простоя
+  // (cold start на Render Free) стабильно долгий у основной модели.
+  return /429|quota|rate.?limit|exceeded|not found|404|unavailable|overloaded|503|timeout/i.test(msg);
 }
 
 async function callGemini(system: string, user: string): Promise<string> {
