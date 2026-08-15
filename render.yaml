@@ -7,6 +7,7 @@ services:
     name: luma-trainer
     env: node
     plan: free
+    region: frankfurt # рядом с Neon (eu-central-1), иначе каждый запрос к БД летит через океан
     buildCommand: cd luma-trainer && npm install && sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma && npx prisma generate && npm run build
     startCommand: cd luma-trainer && npx prisma db push && npm run start
     envVars:
