@@ -60,9 +60,12 @@ export function extractJson<T = unknown>(text: string): T | null {
 }
 
 function isRetryableModelError(msg: string): boolean {
-  // timeout тоже ретраим следующей моделью: первый запрос после простоя
-  // (cold start на Render Free) стабильно долгий у основной модели.
-  return /429|quota|rate.?limit|exceeded|not found|404|unavailable|overloaded|503|timeout/i.test(msg);
+  // Ретраим следующей моделью не только квоты, но и timeout/сетевые сбои:
+  // первый запрос после простоя (cold start на Render Free) регулярно
+  // падает на уровне fetch, второй проходит.
+  return /429|quota|rate.?limit|exceeded|not found|404|unavailable|overloaded|503|timeout|error fetching|fetch failed|network|econn|socket/i.test(
+    msg
+  );
 }
 
 async function callGemini(system: string, user: string): Promise<string> {
