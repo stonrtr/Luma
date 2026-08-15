@@ -8,6 +8,8 @@ import type { Rating } from "./types";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MINUTE_DAYS = 1 / (24 * 60);
 const AGAIN_DELAY_DAYS = 10 * MINUTE_DAYS; // ~10 minutes (§9.2)
+// Потолок интервала: без него после 5–6 «Легко» карточка уходила на годы.
+const MAX_STABILITY_DAYS = 365;
 
 export interface SrsState {
   stability: number; // days of memory strength
@@ -90,8 +92,14 @@ export function computeProgress(
   const intervalScore = clamp(state.stability / Math.max(0.01, settings.minIntervalDays), 0, 1);
   const lastGood = state.lastRating && state.lastRating !== "again" ? 1 : 0;
 
-  const errorPenalty = Math.max(0.85, 1 - state.lapseCount * 0.05);
-  const hintPenalty = Math.max(0.8, 1 - state.hintCount * 0.03);
+  // Штрафы «прощаются» серией правильных ответов: сразу после провала прогресс
+  // проседает, но каждая ступень серии гасит один старый провал/подсказку.
+  // Иначе одна ошибка навсегда запирала карточку ниже 100% («выучено»
+  // становилось недостижимым — вечный потолок 95%).
+  const effLapses = Math.max(0, state.lapseCount - state.consecutiveCorrect);
+  const effHints = Math.max(0, state.hintCount - state.consecutiveCorrect);
+  const errorPenalty = Math.max(0.85, 1 - effLapses * 0.05);
+  const hintPenalty = Math.max(0.8, 1 - effHints * 0.03);
 
   const base = 0.3 * repScore + 0.25 * streakScore + 0.35 * intervalScore + 0.1 * lastGood;
   const computed = base * errorPenalty * hintPenalty * 100;
@@ -156,6 +164,7 @@ export function review(
     } else {
       stability = state.stability * mul;
     }
+    stability = Math.min(stability, MAX_STABILITY_DAYS);
     intervalDays = stability;
   }
 

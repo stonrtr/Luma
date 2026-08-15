@@ -135,4 +135,34 @@ describe("SRS — known transition (§9.4)", () => {
     expect(out.known).toBe(false);
     expect(out.progress).toBeLessThan(100);
   });
+
+  it("a lapse does NOT permanently block 'known' — streak forgives the penalty", () => {
+    // Карточка с одним провалом в истории, но восстановленной серией и интервалом.
+    const recovered = newState({
+      stability: 30,
+      successfulReviewCount: 6,
+      consecutiveCorrect: 3,
+      reviewCount: 8,
+      lapseCount: 1,
+      lastRating: "easy",
+      lastReviewedAt: new Date(Date.now() - 31 * 86400000),
+    });
+    const out = review(recovered, "easy");
+    expect(out.progress).toBe(100);
+    expect(out.known).toBe(true);
+  });
+
+  it("interval never exceeds 365 days", () => {
+    const veteran = newState({
+      stability: 300,
+      successfulReviewCount: 10,
+      consecutiveCorrect: 10,
+      reviewCount: 10,
+      lastRating: "easy",
+      lastReviewedAt: new Date(Date.now() - 300 * 86400000),
+    });
+    const out = review(veteran, "easy");
+    expect(out.intervalDays).toBeLessThanOrEqual(365);
+    expect(out.stability).toBeLessThanOrEqual(365);
+  });
 });
