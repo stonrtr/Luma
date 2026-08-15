@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; max-width: 460px; margin: 40px auto; color: #282e3e; }
+      input { width: 100%; padding: 10px; border: 1px solid #e2e5ee; border-radius: 8px; font-size: 15px; box-sizing: border-box; }
+      button { margin-top: 12px; min-height: 42px; padding: 0 20px; border: none; border-radius: 8px; background: #4255ff; color: #fff; font-weight: 600; cursor: pointer; }
+      label { font-weight: 600; display: block; margin-bottom: 6px; }
+      .ok { color: #23a66f; margin-left: 10px; }
+    </style>
+  </head>
+  <body>
+    <h1>Настройки Luma</h1>
+    <label for="base">Адрес приложения Luma</label>
+    <input id="base" placeholder="http://localhost:3400" />
+    <div>
+      <button id="save">Сохранить</button>
+      <span class="ok" id="saved"></span>
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>

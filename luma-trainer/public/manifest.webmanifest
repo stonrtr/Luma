@@ -1,0 +1,26 @@
+{
+  "name": "Luma — тренажёр английского",
+  "short_name": "Luma",
+  "description": "Персональный тренажёр английских слов, фраз и правил с интервальным повторением.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#0a3a9e",
+  "lang": "ru",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

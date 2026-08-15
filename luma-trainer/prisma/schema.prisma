@@ -1,0 +1,182 @@
+// Luma Phrase Trainer — data model (spec §27)
+// JSON-shaped fields are stored as TEXT and (de)serialized in lib/db mappers,
+// keeping the schema portable across SQLite without relying on a Json scalar.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Topic {
+  id        String   @id @default(cuid())
+  name      String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lessons   Lesson[]
+}
+
+model Lesson {
+  id           String       @id @default(cuid())
+  title        String
+  topicId      String? // null = "Без темы"
+  topic        Topic?       @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  archived     Boolean      @default(false)
+  position     Int          @default(0)
+  lastOpenedAt DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  phrases      PhraseCard[]
+
+  @@index([topicId])
+  @@index([archived])
+}
+
+model PhraseCard {
+  id       String @id @default(cuid())
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  english                 String
+  russian                 String  @default("")
+  alternativeTranslations String  @default("[]") // JSON string[]
+  transcription           String  @default("")
+  exampleEn               String  @default("")
+  exampleRu               String  @default("")
+  difficulty              Int     @default(5)
+  favorite                Boolean @default(false)
+
+  // Spaced-repetition state (FSRS-like)
+  progress               Float    @default(0)
+  known                  Boolean  @default(false)
+  stability              Float    @default(0)
+  retrievability         Float    @default(0)
+  reviewCount            Int      @default(0)
+  successfulReviewCount  Int      @default(0)
+  consecutiveCorrect     Int      @default(0)
+  lapseCount             Int      @default(0)
+  hintCount              Int      @default(0)
+  lastRating             String? // again | hard | easy
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  lastOpenedAt   DateTime?
+  lastReviewedAt DateTime?
+  dueAt          DateTime?
+
+  translationStatus String @default("pending") // pending | ready | failed
+  source            String @default("{\"type\":\"manual\"}") // JSON
+
+  reviewLogs ReviewLog[]
+
+  @@index([lessonId])
+  @@index([dueAt])
+  @@index([favorite])
+  @@index([known])
+}
+
+model ReviewLog {
+  id     String      @id @default(cuid())
+  cardId String?
+  card   PhraseCard? @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  ruleId String?
+  rule   GrammarRule? @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  rating       String // again | hard | easy
+  usedHint     Boolean  @default(false)
+  prevProgress Float    @default(0)
+  newProgress  Float    @default(0)
+  prevStability Float   @default(0)
+  newStability Float    @default(0)
+  intervalDays Float    @default(0)
+  reviewedAt   DateTime @default(now())
+
+  @@index([cardId])
+  @@index([ruleId])
+  @@index([reviewedAt])
+}
+
+model GrammarRule {
+  id          String   @id @default(cuid())
+  title       String
+  query       String   @default("")
+  status      String   @default("pending") // pending | ready | failed
+
+  explanation String @default("")
+  formula     String @default("")
+  uses        String @default("[]") // JSON string[]
+  examples    String @default("[]") // JSON {en,ru}[]
+  markers     String @default("[]") // JSON string[]
+  mistakes    String @default("[]") // JSON string[]
+  comparison  String @default("")
+
+  archived Boolean @default(false)
+
+  // repetition state
+  progress              Float    @default(0)
+  known                 Boolean  @default(false)
+  stability             Float    @default(0)
+  retrievability        Float    @default(0)
+  difficulty            Int      @default(5)
+  reviewCount           Int      @default(0)
+  successfulReviewCount Int      @default(0)
+  consecutiveCorrect    Int      @default(0)
+  lapseCount            Int      @default(0)
+  lastRating            String?
+  dueAt                 DateTime?
+  lastReviewedAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  exercises  RuleExercise[]
+  reviewLogs ReviewLog[]
+
+  @@index([archived])
+  @@index([dueAt])
+}
+
+model RuleExercise {
+  id       String      @id @default(cuid())
+  ruleId   String
+  rule     GrammarRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  type     String // choice | fill | fix | order | translate | identify
+  prompt   String
+  answers  String @default("[]") // JSON string[] acceptable answers
+  options  String @default("[]") // JSON string[] (for choice/order)
+  explanation String @default("")
+  position Int    @default(0)
+
+  @@index([ruleId])
+}
+
+model UserSettings {
+  id                 String  @id @default("default")
+  cardsPerDay        Int     @default(40)
+  newCardsPerDay     Int     @default(15)
+  showFirst          String  @default("en") // en | ru
+  voice              String  @default("aura-2-thalia-en")
+  speechRate         Float   @default(1.0)
+  autoPlay           Boolean @default(true)
+  requiredSuccess    Int     @default(4)
+  requiredStreak     Int     @default(3)
+  minIntervalDays    Int     @default(7)
+  countHardAsCorrect Boolean @default(true)
+  progressThreshold  Int     @default(100)
+  animationsEnabled  Boolean @default(true)
+  theme              String  @default("blue") // blue | green | purple | red
+  lastSection        String  @default("today")
+  updatedAt          DateTime @updatedAt
+}
+
+model DailyActivity {
+  id         String @id @default(cuid())
+  date       String @unique // yyyy-mm-dd (local)
+  reviewed   Int    @default(0)
+  newStudied Int    @default(0)
+  learned    Int    @default(0)
+}

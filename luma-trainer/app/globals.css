@@ -1,0 +1,719 @@
+@import "tailwindcss";
+
+/* ── Redesign «панель в рамке» (design_handoff_luma_redesign) ─────────── */
+
+/* Цветовые темы: 4 акцента, переключаются data-hue на <html> */
+:root,
+:root[data-hue="blue"] {
+  --outer: #0a3a9e;
+  --panel-grad: radial-gradient(120% 150% at 28% 18%, #3572e8 0%, #1c55c9 48%, #0c3da5 100%);
+  --accent: #1150c8;
+  --dot: #2f6fe0;
+}
+:root[data-hue="green"] {
+  --outer: #0b5c31;
+  --panel-grad: radial-gradient(120% 150% at 28% 18%, #2fae63 0%, #1a8a4c 48%, #0d5f33 100%);
+  --accent: #0f7a41;
+  --dot: #27a35c;
+}
+:root[data-hue="purple"] {
+  --outer: #3c1878;
+  --panel-grad: radial-gradient(120% 150% at 28% 18%, #8a55e0 0%, #6a34c4 48%, #4b1f96 100%);
+  --accent: #6a2fc9;
+  --dot: #7e46d8;
+}
+:root[data-hue="red"] {
+  --outer: #7c1a1a;
+  --panel-grad: radial-gradient(120% 150% at 28% 18%, #e05555 0%, #c03434 48%, #8f1f1f 100%);
+  --accent: #c23434;
+  --dot: #d64c4c;
+}
+
+:root {
+  /* Нейтральные на белом */
+  --ink: #23304d;
+  --ink-body: #3b4763;
+  --ink-2: #7a86a3;
+  --ink-3: #a8b1c9;
+  --bg-soft: #f2f5fb;
+  --bg-soft2: #f6f8fd;
+  --bg-chip: #eef1f8;
+  --bg-block: #f8fafd;
+  --track: #e8ecf7;
+  --track-soft: #f0f3fa;
+  --line: #e2e7f3;
+  --line-soft: #edf0f8;
+  /* Семантика */
+  --success: #23a66f;
+  --success-bg: #e2f6ec;
+  --danger: #d64c4c;
+  --danger-bg: #fdf3f3;
+  --danger-line: #f3d2d2;
+  --star: #ffcd1f;
+
+  --font-sans: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-sans);
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: var(--outer);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background 0.5s ease;
+}
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: 16px; /* iOS: без зума при фокусе */
+}
+
+/* ── Каркас: рамка + панель ──────────────────────────────────────────── */
+.app-outer {
+  min-height: 100vh;
+  background: var(--outer);
+  padding: clamp(10px, 2.5vw, 32px);
+  display: flex;
+  transition: background 0.5s ease;
+}
+.app-frame {
+  flex: 1;
+  background: #fff;
+  border-radius: clamp(26px, 4vw, 52px);
+  padding: clamp(10px, 1.6vw, 22px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+  display: flex;
+}
+.app-panel {
+  flex: 1;
+  background: var(--panel-grad);
+  border-radius: clamp(18px, 3vw, 38px);
+  padding: clamp(16px, 3vw, 40px);
+  min-height: calc(100vh - clamp(60px, 12vw, 120px));
+  transition: background 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vh, 28px);
+  position: relative;
+}
+.content-col {
+  flex: 1;
+  width: 100%;
+  max-width: 1020px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Логотип */
+.brand {
+  font-weight: 800;
+  font-size: clamp(24px, 3vw, 32px);
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.dim {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Гигантские заголовки */
+.title-hero {
+  font-size: clamp(34px, 5vw, 60px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ── Кнопки ──────────────────────────────────────────────────────────── */
+.wbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease, background 0.15s ease;
+  user-select: none;
+  text-decoration: none;
+}
+.wbtn:hover {
+  transform: translateY(-1px);
+}
+.wbtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+.wbtn-lg {
+  min-height: 56px;
+  padding: 0 34px;
+  font-size: 18px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+.wbtn-lg:hover {
+  transform: translateY(-2px);
+}
+.wbtn-sm {
+  min-height: 38px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+.gbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+.gbtn:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+.gbtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.gbtn-sm {
+  min-height: 38px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+.abtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  user-select: none;
+  text-decoration: none;
+}
+.abtn:hover {
+  filter: brightness(1.07);
+}
+.abtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Стеклянная пилюля-«span» */
+.gpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── Белые карточки и чипы ───────────────────────────────────────────── */
+.wcard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+}
+.wcard-sm {
+  background: #fff;
+  border-radius: 20px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--bg-chip);
+  color: var(--ink-2);
+}
+.chip-accent {
+  background: color-mix(in srgb, var(--accent) 12%, #ffffff);
+  color: var(--accent);
+}
+.chip-green {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.chip-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* Лёгкие кнопки на белом (чипы-действия) */
+.lbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft2);
+  color: #4a5878;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.lbtn:hover {
+  background: var(--bg-chip);
+}
+.lbtn-danger {
+  border-color: var(--danger-line);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.icon-btn {
+  border: none;
+  background: var(--bg-soft2);
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  color: #4a5878;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.icon-btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.icon-btn-sm {
+  width: 32px;
+  height: 32px;
+}
+
+/* ── Прогресс-бары ───────────────────────────────────────────────────── */
+.track {
+  height: 9px;
+  border-radius: 999px;
+  background: var(--track);
+  overflow: hidden;
+}
+.track > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.5s ease;
+}
+.track.is-known > span {
+  background: var(--success);
+}
+
+/* Точка сложности */
+.diff-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+}
+.diff-green {
+  background: #23a66f;
+}
+.diff-lime {
+  background: #9acd32;
+}
+.diff-orange {
+  background: #f5972b;
+}
+.diff-red {
+  background: #d64c4c;
+}
+
+/* ── Тумблеры и круги темы ───────────────────────────────────────────── */
+.toggle-pill {
+  min-width: 74px;
+  min-height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  background: var(--bg-chip);
+  color: var(--ink-2);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.toggle-pill.on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.hue-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease;
+  padding: 0;
+}
+.hue-btn:hover {
+  transform: scale(1.08);
+}
+.hue-btn.on {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+.hue-btn-onwhite {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-soft);
+  box-shadow: none;
+}
+.hue-btn-onwhite.on {
+  border-color: var(--accent);
+}
+.hue-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ── Инпуты ──────────────────────────────────────────────────────────── */
+.input,
+.select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  font-weight: 600;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 18px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  line-height: 1.5;
+}
+.input-num {
+  width: 90px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 15px;
+  outline: none;
+}
+/* Белый select-пилюля на панели */
+.select-onpanel {
+  width: auto;
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin-bottom: 6px;
+}
+.muted {
+  color: var(--ink-2);
+}
+
+/* ── Легаси-классы (диалоги) в новом стиле ───────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft2);
+  color: #4a5878;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  user-select: none;
+}
+.btn:hover {
+  background: var(--bg-chip);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 800;
+}
+.btn-primary:hover {
+  background: var(--accent);
+  filter: brightness(1.07);
+}
+.btn-danger {
+  border-color: var(--danger-line);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.btn-danger:hover {
+  background: var(--danger-bg);
+  filter: brightness(0.98);
+}
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+}
+.btn-ghost:hover {
+  background: var(--bg-chip);
+}
+.btn-sm {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+.card {
+  background: var(--bg-block);
+  border-radius: 18px;
+}
+
+/* ── Модальные окна ──────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(10, 16, 38, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fade 0.15s ease;
+}
+.modal {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: pop 0.18s ease;
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line-soft);
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+.modal-body {
+  padding: 20px;
+}
+.h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+@media (max-width: 620px) {
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    max-width: 100%;
+    border-radius: 24px 24px 0 0;
+    max-height: 92vh;
+    animation: sheet 0.22s ease;
+  }
+}
+
+/* ── Анимации ────────────────────────────────────────────────────────── */
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes sheet {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.stage {
+  animation: fadeUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes ringGood {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 30px transparent;
+  }
+}
+@keyframes shakeBad {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+.fb-good {
+  animation: ringGood 0.5s ease-out;
+}
+.fb-bad {
+  animation: shakeBad 0.32s ease;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+.bob {
+  animation: bob 2.4s ease-in-out infinite;
+}
+.star {
+  transition: transform 0.15s ease;
+}
+.star:active {
+  transform: scale(1.3);
+}
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Настройка «Включить анимации» = Выкл */
+.no-anim *,
+.no-anim *::before,
+.no-anim *::after {
+  animation: none !important;
+  transition: none !important;
+}
