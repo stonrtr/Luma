@@ -8,7 +8,6 @@ import { ToastProvider } from "./ui";
 import { TodaySection } from "./sections/TodaySection";
 import { LessonsSection } from "./sections/LessonsSection";
 import { PhrasesSection } from "./sections/PhrasesSection";
-import { RulesSection } from "./sections/RulesSection";
 import { ProgressSection } from "./sections/ProgressSection";
 import { SettingsSection } from "./sections/SettingsSection";
 import { StudySession } from "./study/StudySession";
@@ -104,7 +103,6 @@ export function AppShell() {
               {section === "today" && <TodaySection />}
               {section === "lessons" && <LessonsSection />}
               {section === "phrases" && <PhrasesSection />}
-              {section === "rules" && <RulesSection />}
               {section === "progress" && <ProgressSection />}
               {section === "settings" && <SettingsSection />}
             </div>
