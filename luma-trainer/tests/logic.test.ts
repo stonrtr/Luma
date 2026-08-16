@@ -152,6 +152,17 @@ describe("SRS — known transition (§9.4)", () => {
     expect(out.known).toBe(true);
   });
 
+  it("using a hint forces the answer to be treated as 'again'", () => {
+    // Даже с оценкой «Легко»: подсказка = не вспомнил.
+    const out = review(newState({ stability: 10, reviewCount: 2, successfulReviewCount: 2, consecutiveCorrect: 2, lastReviewedAt: new Date() }), "easy", {
+      usedHint: true,
+    });
+    expect(out.lastRating).toBe("again");
+    expect(out.consecutiveCorrect).toBe(0);
+    expect(out.lapseCount).toBe(1);
+    expect(out.intervalDays).toBeLessThan(0.02); // ~10 мин
+  });
+
   it("interval never exceeds 365 days", () => {
     const veteran = newState({
       stability: 300,

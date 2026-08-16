@@ -2,7 +2,11 @@
 import { createContext, useContext } from "react";
 import type { UserSettings } from "@/lib/types";
 
-export type StudyScope = { scope: "today" | "lesson" | "favorites"; lessonId?: string; title?: string };
+export type StudyScope = {
+  scope: "today" | "lesson" | "favorites" | "random";
+  lessonId?: string;
+  title?: string;
+};
 
 export type AppCtx = {
   settings: UserSettings;

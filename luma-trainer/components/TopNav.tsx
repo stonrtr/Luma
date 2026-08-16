@@ -7,10 +7,12 @@ export function TopNav({
   active,
   onNavigate,
   onStartSession,
+  onStartRandom,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
   onStartSession: () => void;
+  onStartRandom: () => void;
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
@@ -32,9 +34,14 @@ export function TopNav({
           );
         })}
       </nav>
-      <button className="wbtn" onClick={onStartSession}>
-        ▶ сессия
-      </button>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button className="gbtn" onClick={onStartRandom} title="Все фразы в случайном порядке">
+          🎲 Random
+        </button>
+        <button className="wbtn" onClick={onStartSession}>
+          ▶ сессия
+        </button>
+      </div>
     </div>
   );
 }

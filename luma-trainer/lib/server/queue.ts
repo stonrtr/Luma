@@ -83,6 +83,21 @@ export async function buildUpcomingQueue(): Promise<PhraseCard[]> {
   return cards.map((c) => toPhrase(c, c.lesson?.title));
 }
 
+/** Режим Random: абсолютно все готовые фразы в случайном порядке.
+ *  Клиент по исчерпании списка запрашивает новую перетасовку — цикл бесконечен. */
+export async function buildRandomQueue(): Promise<PhraseCard[]> {
+  const cards = await db.phraseCard.findMany({
+    where: { translationStatus: "ready", lesson: { archived: false } },
+    include: { lesson: { select: { title: true } } },
+  });
+  // Fisher–Yates
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  return cards.map((c) => toPhrase(c, c.lesson?.title));
+}
+
 /** Favorites as a virtual study set (§14). Worst-known first. */
 export async function buildFavoriteQueue(): Promise<PhraseCard[]> {
   const cards = await db.phraseCard.findMany({

@@ -42,6 +42,8 @@ export function StudySession({
   // «Повторить приближающиеся»: внутренняя подмена scope при пустой очереди.
   const [scopeOverride, setScopeOverride] = useState<"upcoming" | null>(null);
   const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
+  // Random: по исчерпании списка перезапрашиваем новую перетасовку (бесконечный цикл).
+  const [reloadTick, setReloadTick] = useState(0);
   const busy = useRef(false);
 
   const showFirst = settings.showFirst;
@@ -59,7 +61,7 @@ export function StudySession({
     A.study(effScope, scope.lessonId)
       .then((r) => setCards(r.cards))
       .catch(() => setCards([]));
-  }, [scope, effScope, fetchKey]);
+  }, [scope, effScope, fetchKey, reloadTick]);
 
   // Прогрев озвучки: текущая карточка и две следующие — последовательно,
   // чтобы к нажатию 🔊 (или автоозвучке) аудио уже было в кэше.
@@ -106,16 +108,23 @@ export function StudySession({
     setReveal(0);
     setUsedHint(false);
     setFeedback(null);
-    setIndex((i) => i + 1);
-  }, []);
+    const next = index + 1;
+    if (effScope === "random" && cards && next >= cards.length) {
+      setReloadTick((t) => t + 1); // новая перетасовка вместо экрана «готово»
+    } else {
+      setIndex(next);
+    }
+  }, [index, cards, effScope]);
 
   const grade = useCallback(
     async (rating: Rating) => {
       if (!card || busy.current) return;
+      // Подсказка = «Не вспомнил»: открывал буквы — сам не вспомнил.
+      const effective: Rating = usedHint ? "again" : rating;
       busy.current = true;
-      setFeedback(rating === "again" ? "bad" : "good");
+      setFeedback(effective === "again" ? "bad" : "good");
       try {
-        await A.review(card.id, rating, usedHint);
+        await A.review(card.id, effective, usedHint);
         setReviewedCount((n) => n + 1);
       } catch {
         /* не блокируем сессию при ошибке сохранения */
@@ -194,7 +203,9 @@ export function StudySession({
         ? "Сегодня"
         : scope.scope === "favorites"
           ? "Избранное"
-          : scope.title || "Урок";
+          : scope.scope === "random"
+            ? "Случайный режим"
+            : scope.title || "Урок";
 
   const total = cards?.length ?? 0;
   const revealText = card ? maskAnswer(answer, reveal) : "";
@@ -355,21 +366,34 @@ export function StudySession({
               )}
             </div>
           )}
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
-            <button
-              className="wbtn"
-              style={{ minHeight: 52, padding: "0 26px", fontSize: 16, color: "#d6403f" }}
-              onClick={() => grade("again")}
-            >
-              ← Не вспомнил
-            </button>
-            <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
-              ↓ С трудом
-            </button>
-            <button className="wbtn" style={{ minHeight: 52, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
-              Легко →
-            </button>
-          </div>
+          {usedHint ? (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, marginTop: 8 }}>
+              <span className="gpill" style={{ fontSize: 13 }}>подсказка использована — засчитывается как «Не вспомнил»</span>
+              <button
+                className="wbtn"
+                style={{ minHeight: 52, padding: "0 30px", fontSize: 16, color: "#d6403f" }}
+                onClick={() => grade("again")}
+              >
+                Не вспомнил →
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
+              <button
+                className="wbtn"
+                style={{ minHeight: 52, padding: "0 26px", fontSize: 16, color: "#d6403f" }}
+                onClick={() => grade("again")}
+              >
+                ← Не вспомнил
+              </button>
+              <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
+                ↓ С трудом
+              </button>
+              <button className="wbtn" style={{ minHeight: 52, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
+                Легко →
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

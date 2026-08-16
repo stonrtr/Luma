@@ -3,6 +3,7 @@ import {
   buildLessonQueue,
   buildFavoriteQueue,
   buildUpcomingQueue,
+  buildRandomQueue,
 } from "@/lib/server/queue";
 import { warmPhrases } from "@/lib/server/tts";
 import { getSettingsRow } from "@/lib/server/settings";
@@ -17,12 +18,15 @@ export async function GET(req: Request) {
   if (scope === "lesson" && lessonId) cards = await buildLessonQueue(lessonId);
   else if (scope === "favorites") cards = await buildFavoriteQueue();
   else if (scope === "upcoming") cards = await buildUpcomingQueue();
+  else if (scope === "random") cards = await buildRandomQueue();
   else cards = await buildTodayQueue();
 
-  // Фоновый прогрев озвучки всей очереди: к моменту показа карточки аудио уже в кэше.
+  // Фоновый прогрев озвучки: к моменту показа карточки аудио уже в кэше.
+  // Random может вернуть всю коллекцию — греем только начало очереди.
+  const toWarm = scope === "random" ? cards.slice(0, 15) : cards;
   void (async () => {
     const settings = await getSettingsRow();
-    await warmPhrases(cards.map((c) => c.english), settings.voice);
+    await warmPhrases(toWarm.map((c) => c.english), settings.voice);
   })();
 
   return json({ scope, cards });

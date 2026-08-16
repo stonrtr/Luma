@@ -91,6 +91,7 @@ export function AppShell() {
                 active={section}
                 onNavigate={navigate}
                 onStartSession={() => setStudy({ scope: "today" })}
+                onStartRandom={() => setStudy({ scope: "random" })}
               />
               {/* key=section перезапускает fade-up при смене раздела */}
               <div className="content-col stage" key={section}>

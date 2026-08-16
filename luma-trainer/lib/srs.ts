@@ -115,7 +115,12 @@ export function computeProgress(
   return { progress, known };
 }
 
-/** Apply one review and return the full next state. `usedHint` softens gains (§7.5). */
+/**
+ * Apply one review and return the full next state.
+ * Подсказка приравнивается к «Не вспомнил»: если открывал буквы — сам не
+ * вспомнил, и любая оценка обрабатывается как again (решение пользователя,
+ * заменяет мягкий штраф из §7.5 ТЗ).
+ */
 export function review(
   state: SrsState,
   rating: Rating,
@@ -124,11 +129,11 @@ export function review(
   const now = opts.now ?? new Date();
   const usedHint = opts.usedHint ?? false;
   const settings = opts.settings ?? DEFAULT_SRS_SETTINGS;
+  if (usedHint) rating = "again";
 
   const rNow = retrievability(state, now);
   const reviewCount = state.reviewCount + 1;
   const isNew = state.stability <= 0 || !state.lastReviewedAt;
-  const hintFactor = usedHint ? 0.85 : 1;
 
   let stability: number;
   let difficulty = state.difficulty;
@@ -156,11 +161,11 @@ export function review(
     const diffFactor = 1 - (difficulty - 1) / 18; // d=1 → 1.0, d=10 → 0.5
     const rBoost = 1 + (1 - rNow) * 0.6;
     const targetMul = rating === "easy" ? 3.0 : 1.4;
-    const mul = 1 + (targetMul - 1) * diffFactor * rBoost * hintFactor;
+    const mul = 1 + (targetMul - 1) * diffFactor * rBoost;
 
     if (isNew) {
       const seed = rating === "easy" ? 4 : 1;
-      stability = Math.max(rating === "easy" ? 2 : 0.5, seed * diffFactor * hintFactor);
+      stability = Math.max(rating === "easy" ? 2 : 0.5, seed * diffFactor);
     } else {
       stability = state.stability * mul;
     }
