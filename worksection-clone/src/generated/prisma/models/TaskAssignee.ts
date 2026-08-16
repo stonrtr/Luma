@@ -359,6 +359,7 @@ export type TaskAssigneeCreateOrConnectWithoutUserInput = {
 
 export type TaskAssigneeCreateManyUserInputEnvelope = {
   data: Prisma.TaskAssigneeCreateManyUserInput | Prisma.TaskAssigneeCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type TaskAssigneeUpsertWithWhereUniqueWithoutUserInput = {
@@ -400,6 +401,7 @@ export type TaskAssigneeCreateOrConnectWithoutTaskInput = {
 
 export type TaskAssigneeCreateManyTaskInputEnvelope = {
   data: Prisma.TaskAssigneeCreateManyTaskInput | Prisma.TaskAssigneeCreateManyTaskInput[]
+  skipDuplicates?: boolean
 }
 
 export type TaskAssigneeUpsertWithWhereUniqueWithoutTaskInput = {
@@ -1162,6 +1164,7 @@ export type TaskAssigneeCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many TaskAssignees.
    */
   data: Prisma.TaskAssigneeCreateManyInput | Prisma.TaskAssigneeCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1180,6 +1183,7 @@ export type TaskAssigneeCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * The data used to create many TaskAssignees.
    */
   data: Prisma.TaskAssigneeCreateManyInput | Prisma.TaskAssigneeCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // ----------------------------------------------------------------------------
@@ -39,6 +39,9 @@ model User {
   theme        String     @default("system")
   weekStartsMon Boolean   @default(true)
   isActive     Boolean    @default(true)
+  lastSeenAt   DateTime?  // остання активність (візит у застосунок)
+  resetTokenHash String?  @unique // sha256 токена скидання пароля (сам токен — лише в листі)
+  resetTokenExp  DateTime? // строк дії токена скидання
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -68,6 +71,11 @@ model User {
   fileShares      FileShare[]
   callPointsAuthored CallPoint[]  @relation("CallPointAuthor")
   callPointsAbout    CallPoint[]  @relation("CallPointMember")
+  callContacts       CallContact[] @relation("CallContactOwner")
+  waitingOnMe        Task[]        @relation("TaskWaitingFor")
+  note               UserNote?     @relation("UserNoteOwner")
+  weeklyWins         WeeklyWin[]   @relation("WeeklyWinOwner")
+  spreadsheets       Spreadsheet[] @relation("SpreadsheetOwner")
   googleAccount      GoogleAccount?
   pushSubscriptions  PushSubscription[]
   planApprovals      WeeklyPlanApproval[] @relation("PlanApprovalOwner")
@@ -149,6 +157,69 @@ model CallPoint {
   member   User   @relation("CallPointMember", fields: [memberId], references: [id], onDelete: Cascade)
 
   @@index([authorId, memberId])
+}
+
+// Победы (достижения) недели — ручной ввод в конце недели, потом уходит в архив (правится)
+model WeeklyWin {
+  id        String   @id @default(cuid())
+  weekStart DateTime // понедельник недели
+  text      String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation("WeeklyWinOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStart])
+}
+
+// Таблица (spreadsheet) — командный ресурс. data = JSON x-spreadsheet (массив листов).
+model Spreadsheet {
+  id        String   @id @default(cuid())
+  name      String
+  data      String   @default("") // JSON листов
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation("SpreadsheetOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([updatedAt])
+}
+
+// Личный скретчпад — одна авто-сохраняющаяся заметка на пользователя (markdown)
+model UserNote {
+  userId    String   @id
+  user      User     @relation("UserNoteOwner", fields: [userId], references: [id], onDelete: Cascade)
+  body      String   @default("")
+  updatedAt DateTime @updatedAt
+}
+
+// Контрагент для созвонов — заводит пользователь сам (внешний контакт/клиент)
+model CallContact {
+  id         String    @id @default(cuid())
+  name       String
+  createdAt  DateTime  @default(now())
+  archivedAt DateTime? // null = активен; дата = в архиве (обратимо, без удаления)
+
+  ownerId String
+  owner   User   @relation("CallContactOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  topics  CallTopic[]
+
+  @@index([ownerId])
+}
+
+// Тема к обсуждению с контрагентом. Закрытие фиксирует дату (closedAt) → уходит в архив.
+model CallTopic {
+  id        String    @id @default(cuid())
+  text      String
+  closedAt  DateTime? // null = открыта; дата = когда закрыли (поставили галочку)
+  createdAt DateTime  @default(now())
+
+  contactId String
+  contact   CallContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId, closedAt])
 }
 
 // ----------------------------------------------------------------------------
@@ -234,7 +305,10 @@ model Task {
   completedAt     DateTime?
   archivedAt      DateTime?
   reviewRequestedAt DateTime? // «на проверку руководителю»
+  waitingForId    String?    // «моя часть готова, жду коллегу» — снимает вину за просрочку
+  waitingSince    DateTime?  // когда пометили ожидание
   assignedByManager Boolean  @default(false) // поставлена руководителем
+  fromSummary       Boolean  @default(false) // створена з саммарі дзвінка
   position        Int        @default(0)
   googleEventId   String?    // id связанного события Google Calendar
   createdAt       DateTime   @default(now())
@@ -249,6 +323,8 @@ model Task {
 
   createdById String
   createdBy   User   @relation("TaskCreator", fields: [createdById], references: [id])
+
+  waitingFor  User?  @relation("TaskWaitingFor", fields: [waitingForId], references: [id], onDelete: SetNull)
 
   milestoneId String?
   milestone   Milestone? @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
@@ -334,6 +410,8 @@ model RecurringTask {
   plannedMinutes Int?
   frequency      RecurrenceFreq @default(WEEKLY)
   weekdays       String?        // csv 1..7 (Пн..Вс) для WEEKLY
+  startTime String? // "HH:MM" — час старту екземплярів (у TZ виконавця)
+  dueDayOfMonth Int? // для щомісячних: число місяця — дедлайн екземпляра (типово = dayOfMonth)
   dayOfMonth     Int?           // для MONTHLY
   active         Boolean        @default(true)
   lastGeneratedAt DateTime?
@@ -588,8 +666,12 @@ model Activity {
 
 // Глобальные настройки: какие уведомления отправлять (админ)
 model NotificationSetting {
-  type    String  @id // assignment | overdue | review | kpi_reminder
-  enabled Boolean @default(true)
+  type            String  @id // assignment | overdue | review | kpi_reminder | mention | daily_plan
+  enabled         Boolean @default(true) // мастер вкл/выкл типа
+  pushEnabled     Boolean @default(true) // пуш в приложении (web-push, со звуком) + колокол
+  telegramEnabled Boolean @default(true) // доставка в Telegram-бот
+  sendAtMinutes   Int?    // время суток (минуты от полуночи, Europe/Kyiv) — для плановых типов
+  weekdaysOnly    Boolean @default(true) // слать только в рабочие будни (Пн–Пт)
 }
 
 model Notification {

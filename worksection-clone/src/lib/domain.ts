@@ -12,47 +12,61 @@ export const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
   DONE: "Завершено",
 };
 
+// Чипы статуса (фон / текст) — палитра рестайла
 export const TASK_STATUS_STYLE: Record<TaskStatus, string> = {
-  IDEA: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
-  TODO: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  IN_PROGRESS: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-  TO_REVIEW: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-  DONE: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  IDEA: "bg-[#EDE7FA] text-[#5B47A6] dark:bg-[#241d3a] dark:text-[#c3b6f0]",
+  TODO: "bg-[#EEF1E7] text-[#6B7A66] dark:bg-[#1c261a] dark:text-[#a6b7a0]",
+  IN_PROGRESS: "bg-[#DCEAF6] text-[#2C5E7A] dark:bg-[#132a36] dark:text-[#8fc6e2]",
+  TO_REVIEW: "bg-[#FBE6D6] text-[#A0561F] dark:bg-[#33210f] dark:text-[#e2b382]",
+  DONE: "bg-[#EAF4DA] text-[#3D6B26] dark:bg-[#1D2F1B] dark:text-[#A9D97F]",
 };
 
+// Цветные точки статуса
 export const TASK_STATUS_DOT: Record<TaskStatus, string> = {
-  IDEA: "bg-purple-500",
-  TODO: "bg-slate-400",
-  IN_PROGRESS: "bg-blue-500",
-  TO_REVIEW: "bg-amber-500",
-  DONE: "bg-emerald-500",
+  IDEA: "bg-[#8E7BD6] dark:bg-[#9B87E8]",
+  TODO: "bg-[#7E8C79] dark:bg-[#6E7C6A]",
+  IN_PROGRESS: "bg-[#5AA9C9] dark:bg-[#5FBFA0]",
+  TO_REVIEW: "bg-[#D8B25E]",
+  DONE: "bg-[#C6E89B]",
 };
 
 // --- Приоритет 1..10 ---
 export const PRIORITY_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 export const DEFAULT_PRIORITY = 5;
 
+// Тон приоритета — единый цвет для кружка-обводки (форму задаёт место использования)
+export function priorityTone(p: number): string {
+  if (p >= 7) return "#C25A28"; // оранжевый — высокий
+  if (p >= 5) return "#3D6B26"; // зелёный — средний
+  return "#94A18F";             // серый — низкий
+}
+
+// Тонированная заливка для ВЫБРАННОЙ кнопки в пикере приоритета (сетка 1..10).
+// Для маленького бейджа-индикатора используйте кружок с priorityTone() (обводка + прозрачный фон).
 export function priorityStyle(p: number): string {
-  if (p >= 9) return "bg-red-600 text-white";
-  if (p >= 7) return "bg-orange-500 text-white";
-  if (p >= 5) return "bg-sky-500 text-white";
-  if (p >= 3) return "bg-slate-400 text-white";
-  return "bg-slate-300 text-slate-700 dark:bg-slate-700 dark:text-slate-200";
+  if (p >= 7) return "bg-[#FBE6D6] text-[#A0561F] border-[#E8B892] dark:bg-[#33210f] dark:text-[#e2b382] dark:border-[#5a3a1e]";
+  if (p >= 5) return "bg-[#EAF4DA] text-[#3D6B26] border-[#BFE0A0] dark:bg-[#1D2F1B] dark:text-[#A9D97F] dark:border-[#2f4a2a]";
+  return "bg-[#EEF1E7] text-[#6B7A66] border-[#D6DDCD] dark:bg-[#1c261a] dark:text-[#a6b7a0] dark:border-[#2a352626]";
 }
 
 export function priorityChipStyle(p: number): string {
-  if (p >= 9) return "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300";
-  if (p >= 7) return "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300";
-  if (p >= 5) return "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300";
-  return "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
+  if (p >= 7) return "bg-[#FBE6D6] text-[#A0561F] dark:bg-[#33210f] dark:text-[#e2b382]";
+  if (p >= 5) return "bg-[#EAF4DA] text-[#3D6B26] dark:bg-[#1D2F1B] dark:text-[#A9D97F]";
+  return "bg-[#EEF1E7] text-[#6B7A66] dark:bg-[#1c261a] dark:text-[#a6b7a0]";
 }
 
 // --- Пресеты плановой длительности (минуты) ---
 export const PLANNED_MINUTES = [15, 30, 60, 120, 180] as const;
-export function plannedLabel(min: number): string {
-  if (min < 60) return `${min}хв`;
+const PLANNED_UNITS: Record<string, { h: string; m: string }> = {
+  uk: { h: "год", m: "хв" },
+  ru: { h: "ч", m: "м" },
+  en: { h: "h", m: "m" },
+};
+export function plannedLabel(min: number, locale = "uk"): string {
+  const u = PLANNED_UNITS[locale] ?? PLANNED_UNITS.uk;
+  if (min < 60) return `${min}${u.m}`;
   const h = min / 60;
-  return Number.isInteger(h) ? `${h}год` : `${(min / 60).toFixed(1)}год`;
+  return Number.isInteger(h) ? `${h}${u.h}` : `${(min / 60).toFixed(1)}${u.h}`;
 }
 
 // Статусы задачи для создания (идея/зробити)
@@ -66,8 +80,8 @@ export const PROJECT_STATUS_LABEL: Record<ProjectStatus, string> = {
 };
 
 export const PROJECT_STATUS_STYLE: Record<ProjectStatus, string> = {
-  ACTIVE: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
-  ON_HOLD: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-  DONE: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-  ARCHIVED: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  ACTIVE: "bg-[#EAF4DA] text-[#3D6B26] dark:bg-[#1D2F1B] dark:text-[#A9D97F]",
+  ON_HOLD: "bg-[#FBE6D6] text-[#A0561F] dark:bg-[#33210f] dark:text-[#e2b382]",
+  DONE: "bg-[#DCEAF6] text-[#2C5E7A] dark:bg-[#132a36] dark:text-[#8fc6e2]",
+  ARCHIVED: "bg-[#EEF1E7] text-[#6B7A66] dark:bg-[#1c261a] dark:text-[#a6b7a0]",
 };

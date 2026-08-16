@@ -1,0 +1,17 @@
+import { PrismaClient } from "@/lib/generated/prisma/client";
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+function makeAdapter() {
+  const url = process.env.DATABASE_URL ?? "file:./dev.db";
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
+  return new PrismaBetterSqlite3({ url });
+}
+
+export const db =
+  globalForPrisma.prisma ?? new PrismaClient({ adapter: makeAdapter() });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;

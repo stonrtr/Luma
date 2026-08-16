@@ -1,12 +1,10 @@
 import { requireUser } from "@/server/dal";
-import { getRecurringForUser } from "@/server/queries/planning";
 import { SettingsForm } from "@/components/settings/settings-form";
-import { RecurringBlock } from "@/components/planning/recurring-block";
 import { GoogleCalendarCard } from "@/components/settings/google-calendar-card";
 import { TelegramCard } from "@/components/settings/telegram-card";
 import { isTelegramConfigured } from "@/server/telegram/api";
-import { NotificationSettingsForm } from "@/components/admin/notification-settings-form";
-import { getNotificationSettings } from "@/server/queries/notification-settings";
+import Link from "next/link";
+import { Bell, ChevronRight } from "lucide-react";
 import { db } from "@/server/db";
 import { isGoogleConfigured } from "@/server/google/oauth";
 import { t } from "@/lib/i18n";
@@ -14,10 +12,8 @@ import { t } from "@/lib/i18n";
 export default async function SettingsPage() {
   const user = await requireUser();
   const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
-  const recurring = await getRecurringForUser(user.id);
   const googleAcc = await db.googleAccount.findUnique({ where: { userId: user.id }, select: { googleEmail: true } });
   const tgAcc = await db.telegramAccount.findUnique({ where: { userId: user.id }, select: { username: true } });
-  const notificationSettings = isAdmin ? await getNotificationSettings() : null;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
@@ -39,25 +35,22 @@ export default async function SettingsPage() {
         }}
       />
 
-      {notificationSettings && (
-        <section className="mt-6">
-          <h2 className="mb-1 text-sm font-semibold">Сповіщення команди</h2>
-          <p className="mb-3 text-xs text-muted-foreground">Які сповіщення надсилати співробітникам</p>
-          <NotificationSettingsForm settings={notificationSettings} />
-        </section>
+      {isAdmin && (
+        <Link href="/admin/notifications" className="mt-6 flex items-center gap-3 rounded-xl border bg-card px-4 py-3.5 transition-colors hover:bg-accent/40">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            <Bell className="size-4.5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold">{t(user.locale, "nset.hubTitle")}</span>
+            <span className="block text-xs text-muted-foreground">{t(user.locale, "nset.hubSub")}</span>
+          </span>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+        </Link>
       )}
 
       <TelegramCard configured={isTelegramConfigured()} connected={!!tgAcc} username={tgAcc?.username ?? null} />
 
       <GoogleCalendarCard configured={isGoogleConfigured()} connected={!!googleAcc} email={googleAcc?.googleEmail ?? null} />
-
-      <section className="mt-6 rounded-xl border bg-card p-5">
-        <RecurringBlock
-          userId={user.id}
-          items={recurring.map((r) => ({ id: r.id, title: r.title, priority: r.priority, frequency: r.frequency, weekdays: r.weekdays, dayOfMonth: r.dayOfMonth }))}
-          canEdit
-        />
-      </section>
     </div>
   );
 }

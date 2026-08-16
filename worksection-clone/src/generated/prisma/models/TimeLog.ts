@@ -588,6 +588,7 @@ export type TimeLogCreateOrConnectWithoutUserInput = {
 
 export type TimeLogCreateManyUserInputEnvelope = {
   data: Prisma.TimeLogCreateManyUserInput | Prisma.TimeLogCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type TimeLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -653,6 +654,7 @@ export type TimeLogCreateOrConnectWithoutTaskInput = {
 
 export type TimeLogCreateManyTaskInputEnvelope = {
   data: Prisma.TimeLogCreateManyTaskInput | Prisma.TimeLogCreateManyTaskInput[]
+  skipDuplicates?: boolean
 }
 
 export type TimeLogUpsertWithWhereUniqueWithoutTaskInput = {
@@ -1527,6 +1529,7 @@ export type TimeLogCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many TimeLogs.
    */
   data: Prisma.TimeLogCreateManyInput | Prisma.TimeLogCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1545,6 +1548,7 @@ export type TimeLogCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many TimeLogs.
    */
   data: Prisma.TimeLogCreateManyInput | Prisma.TimeLogCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -4,6 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { zonedTimeToUtc } from "@/lib/tz";
+import { parseStructuredSummary, type SummaryPrefill } from "@/lib/summary";
 
 // ---- Запланированные звонки (календарь) ----
 
@@ -18,7 +20,7 @@ const callSchema = z.object({
 export async function createCall(input: z.infer<typeof callSchema>) {
   const viewer = await requireUser();
   const data = callSchema.parse(input);
-  const scheduledAt = new Date(`${data.date}T${data.time}`);
+  const scheduledAt = zonedTimeToUtc(data.date, data.time, viewer.timezone);
   if (isNaN(scheduledAt.getTime())) return { error: "Невірна дата/час" };
 
   const userId = data.userId || viewer.id;
@@ -42,30 +44,99 @@ export async function deleteCall(id: string) {
   revalidatePath("/calendar");
 }
 
-// ---- Поінти до дзвінка (что обсудить с членом команды) ----
+// ---- Контрагенты и темы к созвону ----
 
-export async function addCallPoint(input: { memberId: string; text: string }) {
+// Проверка, что контрагент принадлежит пользователю.
+async function ownsContact(userId: string, contactId: string) {
+  const c = await db.callContact.findUnique({ where: { id: contactId }, select: { ownerId: true } });
+  return !!c && c.ownerId === userId;
+}
+
+export async function addCallContact(input: { name: string }) {
   const user = await requireUser();
-  const text = input.text.trim();
-  if (!text) return { error: "Порожній пункт" };
-  await db.callPoint.create({ data: { authorId: user.id, memberId: input.memberId, text } });
+  const name = input.name.trim();
+  if (!name) return { error: "Порожня назва" };
+  await db.callContact.create({ data: { ownerId: user.id, name: name.slice(0, 120) } });
   revalidatePath("/calls");
   return { error: null };
 }
 
-export async function toggleCallPoint(id: string) {
+// Архивировать собеседника (обратимо — не удаляем, темы сохраняются).
+export async function archiveCallContact(id: string) {
   const user = await requireUser();
-  const p = await db.callPoint.findUnique({ where: { id } });
-  if (!p || p.authorId !== user.id) return;
-  await db.callPoint.update({ where: { id }, data: { done: !p.done } });
+  if (!(await ownsContact(user.id, id))) return;
+  await db.callContact.update({ where: { id }, data: { archivedAt: new Date() } });
   revalidatePath("/calls");
 }
 
-export async function deleteCallPoint(id: string) {
+// Вернуть собеседника из архива.
+export async function restoreCallContact(id: string) {
   const user = await requireUser();
-  const p = await db.callPoint.findUnique({ where: { id } });
-  if (!p || p.authorId !== user.id) return;
-  await db.callPoint.delete({ where: { id } });
+  if (!(await ownsContact(user.id, id))) return;
+  await db.callContact.update({ where: { id }, data: { archivedAt: null } });
+  revalidatePath("/calls");
+}
+
+export async function addCallTopic(input: { contactId: string; text: string }) {
+  const user = await requireUser();
+  const text = input.text.trim();
+  if (!text) return { error: "Порожня тема" };
+  if (!(await ownsContact(user.id, input.contactId))) return { error: "Немає прав" };
+  await db.callTopic.create({ data: { contactId: input.contactId, text: text.slice(0, 500) } });
+  revalidatePath("/calls");
+  return { error: null };
+}
+
+// Добавить несколько тем сразу (вставка списком: по строке / через «;»).
+export async function addCallTopics(input: { contactId: string; texts: string[] }) {
+  const user = await requireUser();
+  if (!(await ownsContact(user.id, input.contactId))) return { error: "Немає прав" };
+  const texts = input.texts.map((t) => t.trim()).filter(Boolean).slice(0, 100).map((t) => t.slice(0, 500));
+  if (!texts.length) return { error: "Порожньо" };
+  await db.callTopic.createMany({ data: texts.map((text) => ({ contactId: input.contactId, text })) });
+  revalidatePath("/calls");
+  return { error: null };
+}
+
+// Переименовать (отредактировать) тему.
+export async function renameCallTopic(input: { id: string; text: string }) {
+  const user = await requireUser();
+  const text = input.text.trim();
+  if (!text) return { error: "Порожня тема" };
+  const t = await db.callTopic.findUnique({ where: { id: input.id }, select: { contact: { select: { ownerId: true } } } });
+  if (!t || t.contact.ownerId !== user.id) return { error: "Немає прав" };
+  await db.callTopic.update({ where: { id: input.id }, data: { text: text.slice(0, 500) } });
+  revalidatePath("/calls");
+  return { error: null };
+}
+
+// Закрыть/переоткрыть тему. Закрытие фиксирует дату (closedAt) → уходит в архив.
+// Возврат в работу — тема встаёт в конец списка (обновляем createdAt, по нему сортируются открытые).
+export async function toggleCallTopic(id: string) {
+  const user = await requireUser();
+  const t = await db.callTopic.findUnique({ where: { id }, select: { closedAt: true, contact: { select: { ownerId: true } } } });
+  if (!t || t.contact.ownerId !== user.id) return;
+  const reopening = !!t.closedAt;
+  await db.callTopic.update({
+    where: { id },
+    data: reopening ? { closedAt: null, createdAt: new Date() } : { closedAt: new Date() },
+  });
+  revalidatePath("/calls");
+}
+
+// Закрыть все открытые темы контрагента одной галочкой (единая дата закрытия).
+export async function closeAllCallTopics(contactId: string) {
+  const user = await requireUser();
+  if (!(await ownsContact(user.id, contactId))) return;
+  await db.callTopic.updateMany({ where: { contactId, closedAt: null }, data: { closedAt: new Date() } });
+  revalidatePath("/calls");
+}
+
+export async function deleteCallTopic(id: string) {
+  const user = await requireUser();
+  const t = await db.callTopic.findUnique({ where: { id }, select: { contact: { select: { ownerId: true } } } });
+  if (!t || t.contact.ownerId !== user.id) return;
+  await db.callTopic.delete({ where: { id } });
   revalidatePath("/calls");
 }
 
@@ -92,7 +163,7 @@ function heuristicExtract(summary: string): string[] {
 }
 
 const EXTRACT_PROMPT =
-  "Ось саммарі робочого дзвінка. Виокрем із нього чіткі задачі до виконання (тільки конкретні дії). " +
+  "Ось самарі робочого дзвінка. Виокрем із нього чіткі задачі до виконання (тільки конкретні дії). " +
   "Поверни ЛИШЕ JSON-масив рядків, без пояснень, кожен рядок — коротке формулювання задачі українською.\n\n";
 
 // Достать JSON-массив строк из ответа модели
@@ -124,9 +195,9 @@ async function geminiCall(key: string, model: string, summary: string): Promise<
 async function geminiExtract(summary: string): Promise<string[] | null> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return null;
-  const primary = process.env.GEMINI_MODEL ?? "gemini-2.5-pro";
-  // при лимите переходим на модели с более щедрими квотами
-  const chain = [...new Set([primary, "gemini-2.5-flash", "gemini-2.0-flash"])];
+  const primary = process.env.GEMINI_MODEL ?? "gemini-flash-latest";
+  // при лимите/недоступности переходим на другие рабочие модели
+  const chain = [...new Set([primary, "gemini-3.5-flash", "gemini-2.0-flash"])];
   for (const model of chain) {
     const { titles, rateLimited } = await geminiCall(key, model, summary);
     if (titles && titles.length) return titles;
@@ -168,4 +239,82 @@ export async function extractTaskTitles(input: { summary: string }): Promise<{ e
   const titles = ((await aiExtract(summary)) ?? heuristicExtract(summary)).map((t) => t.slice(0, 200));
   if (titles.length === 0) return { error: "Не вдалося виокремити задачі", titles: [] };
   return { error: null, titles };
+}
+
+// ---- Структурированный шаблон саммари (секции «Ідеї» / «Задачі») ----
+
+async function createFor(userId: string, title: string, status: "TODO" | "IDEA", opts?: { priority?: number; dueDate?: Date; plannedMinutes?: number | null; fromSummary?: boolean }) {
+  const last = await db.task.findFirst({ where: { status, parentId: null, assignees: { some: { userId } } }, orderBy: { position: "desc" }, select: { position: true } });
+  await db.task.create({
+    data: {
+      title: title.slice(0, 200), status, priority: opts?.priority ?? 5,
+      createdById: userId, dueDate: opts?.dueDate ?? null, plannedMinutes: opts?.plannedMinutes ?? null,
+      fromSummary: opts?.fromSummary ?? false,
+      position: (last?.position ?? -1) + 1, assignees: { create: [{ userId }] },
+    },
+  });
+}
+
+// «ДД.ММ.РРРР» → «РРРР-ММ-ДД» для <input type=date>
+function labelToInput(lbl: string | null): string | undefined {
+  if (!lbl) return undefined;
+  const [dd, mm, yyyy] = lbl.split(".");
+  return yyyy && mm && dd ? `${yyyy}-${mm}-${dd}` : undefined;
+}
+
+// Разбор саммари: если это размеченный шаблон (секции «Ідеї»/«Задачі») —
+// идеи и ПОЛНЫЕ задачи создаём сразу; неполные (нет пріоритету/дедлайну/часу)
+// возвращаем в pending — по ним спросим лише відсутній параметр. Иначе — ИИ-титулы.
+export async function importSummary(input: { summary: string }): Promise<
+  | { kind: "structured"; created: number; pending: SummaryPrefill[]; error?: undefined }
+  | { kind: "freeform"; titles: string[]; error?: undefined }
+  | { error: string; kind?: undefined }
+> {
+  const viewer = await requireUser();
+  const summary = input.summary.trim();
+  if (summary.length < 10) return { error: "Замало тексту" };
+
+  const structured = parseStructuredSummary(summary);
+  if (structured) {
+    let created = 0;
+    for (const title of structured.ideas) { await createFor(viewer.id, title, "IDEA", { fromSummary: true }); created++; }
+    const pending: SummaryPrefill[] = [];
+    for (const t of structured.tasks) {
+      const complete = t.priority != null && t.dueISO != null && t.plannedMinutes != null;
+      if (complete) {
+        await createFor(viewer.id, t.title, "TODO", { priority: t.priority!, dueDate: new Date(t.dueISO!), plannedMinutes: t.plannedMinutes, fromSummary: true });
+        created++;
+      } else {
+        pending.push({
+          title: t.title, status: "TODO",
+          priority: t.priority ?? undefined,
+          dueDate: labelToInput(t.dueLabel),
+          plannedMinutes: t.plannedMinutes ?? undefined,
+        });
+      }
+    }
+    revalidatePath("/board");
+    revalidatePath("/tasks");
+    revalidatePath("/");
+    return { kind: "structured", created, pending };
+  }
+
+  const titles = ((await aiExtract(summary)) ?? heuristicExtract(summary)).map((t) => t.slice(0, 200));
+  if (titles.length === 0) return { error: "Не вдалося виокремити задачі" };
+  return { kind: "freeform", titles };
+}
+
+// Создать одну задачу из импорта саммари (после заполнения недостающих полей).
+export async function createSummaryTask(input: { title: string; priority: number; dueDate: string; plannedMinutes: number }): Promise<{ error: string | null }> {
+  const viewer = await requireUser();
+  const title = input.title.trim();
+  if (!title) return { error: "Порожня назва" };
+  if (!Number.isInteger(input.priority) || input.priority < 1 || input.priority > 10) return { error: "Пріоритет 1–10" };
+  if (!input.plannedMinutes || input.plannedMinutes <= 0) return { error: "Вкажіть час" };
+  const due = new Date(input.dueDate);
+  if (isNaN(due.getTime())) return { error: "Невірна дата" };
+  due.setHours(19, 0, 0, 0); // кінець робочого дня
+  await createFor(viewer.id, title, "TODO", { priority: input.priority, dueDate: due, plannedMinutes: input.plannedMinutes, fromSummary: true });
+  revalidatePath("/");
+  return { error: null };
 }

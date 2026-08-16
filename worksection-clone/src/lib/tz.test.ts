@@ -19,3 +19,20 @@ describe("zonedMinutes", () => {
     expect(zonedMinutes(instant, "Europe/Kyiv")).toBe(3 * 60 + 30); // 03:30
   });
 });
+
+import { zonedTimeToUtc } from "./tz";
+
+describe("zonedTimeToUtc", () => {
+  it("конвертирует киевское стенное время в UTC (летнее время, +3)", () => {
+    const d = zonedTimeToUtc("2026-08-14", "15:30", "Europe/Kyiv");
+    expect(d.toISOString()).toBe("2026-08-14T12:30:00.000Z");
+  });
+  it("конвертирует зимнее время (+2)", () => {
+    const d = zonedTimeToUtc("2026-01-15", "09:00", "Europe/Kyiv");
+    expect(d.toISOString()).toBe("2026-01-15T07:00:00.000Z");
+  });
+  it("дата без времени — полночь пользователя", () => {
+    const d = zonedTimeToUtc("2026-08-14", "00:00", "Europe/Kyiv");
+    expect(d.toISOString()).toBe("2026-08-13T21:00:00.000Z");
+  });
+});

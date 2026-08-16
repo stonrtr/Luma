@@ -382,6 +382,7 @@ export type TaskDependencyCreateOrConnectWithoutSuccessorInput = {
 
 export type TaskDependencyCreateManySuccessorInputEnvelope = {
   data: Prisma.TaskDependencyCreateManySuccessorInput | Prisma.TaskDependencyCreateManySuccessorInput[]
+  skipDuplicates?: boolean
 }
 
 export type TaskDependencyCreateWithoutPredecessorInput = {
@@ -401,6 +402,7 @@ export type TaskDependencyCreateOrConnectWithoutPredecessorInput = {
 
 export type TaskDependencyCreateManyPredecessorInputEnvelope = {
   data: Prisma.TaskDependencyCreateManyPredecessorInput | Prisma.TaskDependencyCreateManyPredecessorInput[]
+  skipDuplicates?: boolean
 }
 
 export type TaskDependencyUpsertWithWhereUniqueWithoutSuccessorInput = {
@@ -1202,6 +1204,7 @@ export type TaskDependencyCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many TaskDependencies.
    */
   data: Prisma.TaskDependencyCreateManyInput | Prisma.TaskDependencyCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1220,6 +1223,7 @@ export type TaskDependencyCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * The data used to create many TaskDependencies.
    */
   data: Prisma.TaskDependencyCreateManyInput | Prisma.TaskDependencyCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

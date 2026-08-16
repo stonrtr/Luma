@@ -382,6 +382,7 @@ export type MentionCreateOrConnectWithoutUserInput = {
 
 export type MentionCreateManyUserInputEnvelope = {
   data: Prisma.MentionCreateManyUserInput | Prisma.MentionCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type MentionUpsertWithWhereUniqueWithoutUserInput = {
@@ -426,6 +427,7 @@ export type MentionCreateOrConnectWithoutCommentInput = {
 
 export type MentionCreateManyCommentInputEnvelope = {
   data: Prisma.MentionCreateManyCommentInput | Prisma.MentionCreateManyCommentInput[]
+  skipDuplicates?: boolean
 }
 
 export type MentionUpsertWithWhereUniqueWithoutCommentInput = {
@@ -1202,6 +1204,7 @@ export type MentionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Mentions.
    */
   data: Prisma.MentionCreateManyInput | Prisma.MentionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1220,6 +1223,7 @@ export type MentionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many Mentions.
    */
   data: Prisma.MentionCreateManyInput | Prisma.MentionCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -1,43 +1,28 @@
 import { describe, it, expect } from "vitest";
-import { mondayOf, addDays, isoWeekNumber, monthLabel } from "./week";
+import { mondayUtc, weekStartInTz } from "./week";
 
-describe("mondayOf", () => {
-  it("returns the Monday of the week at midnight", () => {
-    for (let i = 0; i < 14; i++) {
-      const d = addDays(new Date(2026, 7, 1), i); // разные дни
-      const m = mondayOf(d);
-      expect(m.getDay()).toBe(1); // Monday
-      expect(m.getHours()).toBe(0);
-      expect(m.getTime()).toBeLessThanOrEqual(new Date(d).setHours(0, 0, 0, 0));
-      expect(new Date(d).setHours(0, 0, 0, 0) - m.getTime()).toBeLessThan(7 * 86400000);
-    }
+describe("mondayUtc — снап к понедельнику 00:00 UTC (без TZ среды)", () => {
+  it("пятница → понедельник той же недели", () => {
+    expect(mondayUtc(new Date("2026-08-14T10:00:00Z")).toISOString()).toBe("2026-08-10T00:00:00.000Z");
+  });
+  it("сам понедельник 00:00 UTC — не сдвигается (идемпотентно)", () => {
+    const m = new Date("2026-08-10T00:00:00Z");
+    expect(mondayUtc(m).toISOString()).toBe("2026-08-10T00:00:00.000Z");
+    expect(mondayUtc(mondayUtc(m)).toISOString()).toBe("2026-08-10T00:00:00.000Z");
+  });
+  it("воскресенье → понедельник ЭТОЙ недели (не следующей)", () => {
+    expect(mondayUtc(new Date("2026-08-16T23:00:00Z")).toISOString()).toBe("2026-08-10T00:00:00.000Z");
   });
 });
 
-describe("addDays", () => {
-  it("adds and subtracts days", () => {
-    const base = new Date(2026, 0, 10);
-    expect(addDays(base, 5).getDate()).toBe(15);
-    expect(addDays(base, -3).getDate()).toBe(7);
+describe("weekStartInTz — неделя по TZ пользователя", () => {
+  it("вечер вс в Киеве всё ещё та же неделя (маркер понедельника)", () => {
+    // 2026-08-16 22:00 Kyiv = 19:00 UTC, воскресенье → понедельник 10 авг
+    expect(weekStartInTz("Europe/Kyiv", new Date("2026-08-16T19:00:00Z")).toISOString()).toBe("2026-08-10T00:00:00.000Z");
   });
-});
-
-describe("isoWeekNumber", () => {
-  it("Jan 4 is always ISO week 1", () => {
-    expect(isoWeekNumber(new Date(2026, 0, 4))).toBe(1);
-    expect(isoWeekNumber(new Date(2024, 0, 4))).toBe(1);
-  });
-  it("returns a value in 1..53", () => {
-    const n = isoWeekNumber(new Date(2026, 6, 15));
-    expect(n).toBeGreaterThanOrEqual(1);
-    expect(n).toBeLessThanOrEqual(53);
-  });
-});
-
-describe("monthLabel", () => {
-  it("maps month index to Ukrainian name", () => {
-    expect(monthLabel(0)).toBe("Січень");
-    expect(monthLabel(7)).toBe("Серпень");
-    expect(monthLabel(11)).toBe("Грудень");
+  it("пн 01:00 Киев (вс 22:00 UTC) — уже НОВАЯ неделя для киевлянина", () => {
+    // 2026-08-17 01:00 Kyiv = 2026-08-16 22:00 UTC. По UTC ещё вс (старая неделя),
+    // по Киеву уже пн 17-го → маркер 17 авг. Это и есть «неделя по сотруднику».
+    expect(weekStartInTz("Europe/Kyiv", new Date("2026-08-16T22:00:00Z")).toISOString()).toBe("2026-08-17T00:00:00.000Z");
   });
 });

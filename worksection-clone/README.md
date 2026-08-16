@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# team M Workspace
 
-## Getting Started
+A team work-management app inspired by Worksection — tasks, weekly planning with KPIs,
+call prep, and a configurable notification system. Built as a full-stack Next.js app.
 
-First, run the development server:
+Demo login (after seeding): `admin@workspacem.local` / `Password1!`
+
+## Tech stack
+
+- **Next.js 16** (App Router, Server Components + Server Actions) · **React 19** · **TypeScript**
+- **Prisma 7** with driver adapters — SQLite for local dev, PostgreSQL for production
+- **Tailwind CSS v4** · shadcn-style UI components
+- **NextAuth v5** (credentials) for auth
+- **web-push** (VAPID) for browser push · Telegram bot for chat notifications
+- **Vitest** for unit tests
+- i18n: Ukrainian / Russian / English
+
+## Features
+
+- **Tasks** — Kanban / by-day / calendar / archive views, priority 1–10, statuses,
+  planned time, checklists, dependencies, comments with @mentions, per-task review flow
+  (approve / return with a required reason).
+- **Planning** — monthly KPIs, weekly priorities → tasks, and **weekly wins** (recorded
+  from Friday, then archived and editable).
+- **Calls** — counterparties (contacts) with discussion topics, bulk-close, per-contact
+  topic archive grouped by month; AI task extraction from a call summary.
+- **Notifications** — in-app toast (live polling + sound) + bell history + Telegram,
+  with an admin hub to control *what / when / where / under which conditions* to send.
+  Scheduled morning plan and evening summary via a cron endpoint.
+- **Org chart**, **team workload**, **files**, **reports**, personal **scratchpad**,
+  keyboard shortcuts (`1–7` tabs, `z` new task, `x` notes) and an in-app help dialog.
+- Timezone-aware scheduling, centralized permission checks, CLIENT-role isolation.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env          # fill in the secrets you need (see below)
+npm run db:push               # create the SQLite schema (dev.db)
+npm run db:seed               # demo users + sample data
+npm run dev                   # http://localhost:3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`DATABASE_URL` selects the Prisma adapter by scheme: `file:./dev.db` (SQLite, default for
+dev) or `postgres://…` (production). Everything else is optional and only enables the
+matching feature:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Var | Purpose |
+| --- | --- |
+| `AUTH_SECRET` | NextAuth session secret |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | web-push |
+| `TELEGRAM_BOT_TOKEN` | Telegram notifications + wizard |
+| `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` | AI task extraction (falls back to a heuristic) |
+| `CRON_SECRET` | protects `GET /api/cron/run` in production |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Calendar sync (optional) |
 
-## Learn More
+See `.env.example` for the full list. Real `.env` files and `dev.db` are gitignored.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | Does |
+| --- | --- |
+| `npm run dev` | dev server on port 3100 |
+| `npm run build` / `npm start` | production build / serve |
+| `npm test` | Vitest unit tests |
+| `npx tsc --noEmit` | type-check |
+| `npm run db:push` / `npm run db:seed` | sync schema / seed demo data |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project layout
 
-## Deploy on Vercel
+```
+prisma/schema.prisma        data model (users, tasks, planning, calls, notifications…)
+src/app/(app)/              authenticated app routes (tasks, planning, calls, …)
+src/app/api/                route handlers (cron, telegram webhook, notifications poll…)
+src/server/queries/         read models (server-only)
+src/server/actions/         Server Actions (writes)
+src/server/                 notify, scheduler, lifecycle-engine, telegram, push
+src/components/             UI, grouped by area
+src/lib/                    i18n, dates/timezones, domain helpers
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Notes for reviewers
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Notification delivery: `src/server/notify.ts` (fan-out to bell + web-push + Telegram),
+  `src/server/lifecycle-engine.ts` (scheduled reminders), `src/server/scheduler.ts` (cron run).
+- Timezone logic lives in `src/lib/tz.ts` / `src/lib/week.ts`.
+- Prisma client is generated to `src/generated/prisma` (regenerate with `npx prisma generate`).

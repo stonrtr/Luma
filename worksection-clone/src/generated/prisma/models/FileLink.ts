@@ -484,6 +484,7 @@ export type FileLinkCreateOrConnectWithoutOwnerInput = {
 
 export type FileLinkCreateManyOwnerInputEnvelope = {
   data: Prisma.FileLinkCreateManyOwnerInput | Prisma.FileLinkCreateManyOwnerInput[]
+  skipDuplicates?: boolean
 }
 
 export type FileLinkUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -1393,6 +1394,7 @@ export type FileLinkCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many FileLinks.
    */
   data: Prisma.FileLinkCreateManyInput | Prisma.FileLinkCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1411,6 +1413,7 @@ export type FileLinkCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many FileLinks.
    */
   data: Prisma.FileLinkCreateManyInput | Prisma.FileLinkCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

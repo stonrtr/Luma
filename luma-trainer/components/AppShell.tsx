@@ -11,6 +11,7 @@ import { PhrasesSection } from "./sections/PhrasesSection";
 import { ProgressSection } from "./sections/ProgressSection";
 import { SettingsSection } from "./sections/SettingsSection";
 import { StudySession } from "./study/StudySession";
+import { primeSfx } from "@/lib/sfx";
 
 const LS_KEY = "luma:section";
 
@@ -23,6 +24,7 @@ export function AppShell() {
   const ready = useRef(false);
 
   useEffect(() => {
+    primeSfx();
     (async () => {
       const s = await A.settings().catch(() => null);
       let initial: string | null = null;

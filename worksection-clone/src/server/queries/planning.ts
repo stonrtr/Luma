@@ -1,11 +1,13 @@
 import "server-only";
 import { db } from "@/server/db";
-import { mondayOf } from "@/lib/week";
+import { weekStartInTz } from "@/lib/week";
 
 export async function getPlanning(userId: string, ref: Date = new Date()) {
   const year = ref.getFullYear();
   const month = ref.getMonth();
-  const weekStart = mondayOf(ref);
+  // Неделя — в часовом поясе самого сотрудника (маркер понедельника 00:00 UTC)
+  const tz = (await db.user.findUnique({ where: { id: userId }, select: { timezone: true } }))?.timezone || "Europe/Kyiv";
+  const weekStart = weekStartInTz(tz, ref);
 
   const [user, goals, kpis, planItems, projects, recurring] = await Promise.all([
     db.user.findUnique({ where: { id: userId }, select: { id: true, name: true, title: true, managerId: true } }),
@@ -47,8 +49,22 @@ export async function ensureMonthlyKpis(userId: string, ref: Date = new Date()) 
   });
 }
 
+// Регулярки команды: для OWNER/ADMIN — всех участников, для руководителя — подчинённых.
+export async function getTeamRecurringForViewer(viewerId: string, role: string) {
+  const isAdmin = role === "OWNER" || role === "ADMIN";
+  const members = isAdmin
+    ? await db.user.findMany({ where: { role: { not: "CLIENT" }, id: { not: viewerId } }, select: { id: true } })
+    : await db.user.findMany({ where: { managerId: viewerId }, select: { id: true } });
+  if (members.length === 0) return [];
+  return db.recurringTask.findMany({
+    where: { assigneeId: { in: members.map((m) => m.id) }, active: true },
+    orderBy: { createdAt: "asc" },
+    include: { assignee: { select: { name: true } } },
+  });
+}
+
 export async function getRecurringForUser(userId: string) {
-  return db.recurringTask.findMany({ where: { assigneeId: userId }, orderBy: { createdAt: "asc" } });
+  return db.recurringTask.findMany({ where: { assigneeId: userId, active: true }, orderBy: { createdAt: "asc" } });
 }
 
 // Архив KPI: цели прошлых месяцев, сгруппированные по месяцу
@@ -70,7 +86,8 @@ export async function getKpiArchive(userId: string, ref: Date = new Date()) {
 
 // Архив недельных приоритетов: планы прошлых недель, сгруппированные по неделе
 export async function getPlanArchive(userId: string, ref: Date = new Date()) {
-  const ws = mondayOf(ref);
+  const tz = (await db.user.findUnique({ where: { id: userId }, select: { timezone: true } }))?.timezone || "Europe/Kyiv";
+  const ws = weekStartInTz(tz, ref);
   const rows = await db.weeklyPlanItem.findMany({
     where: { userId, weekStart: { lt: ws } },
     orderBy: [{ weekStart: "desc" }, { priority: "desc" }, { order: "asc" }],

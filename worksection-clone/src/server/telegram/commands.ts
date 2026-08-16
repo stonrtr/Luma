@@ -1,5 +1,7 @@
 import "server-only";
 import { db } from "@/server/db";
+import { parseStructuredSummary, parsePlannedMinutes, parseTaskLine } from "@/lib/summary";
+import { weekStartInTz } from "@/lib/week";
 import { sendTelegram } from "./api";
 
 const APP_URL = process.env.APP_URL ?? "http://localhost:3100";
@@ -9,15 +11,18 @@ function esc(s: string): string {
 }
 
 // --- Кнопки ---
-const BTN = { task: "➕ Задача", idea: "💡 Ідея", tasks: "📋 Мої задачі", today: "📅 Сьогодні", inbox: "🔔 Сповіщення" };
+const BTN = { task: "➕ Задача", idea: "💡 Ідея", summary: "📥 Завантажити самарі", priorities: "🎯 Мої пріоритети", tasks: "📋 Мої задачі", today: "📅 Сьогодні", inbox: "🔔 Сповіщення" };
 const CANCEL = "❌ Відміна";
 
 const MAIN_KB = { reply_markup: { keyboard: [
   [{ text: BTN.task }, { text: BTN.idea }],
-  [{ text: BTN.tasks }, { text: BTN.today }],
-  [{ text: BTN.inbox }],
+  [{ text: BTN.summary }],
+  [{ text: BTN.priorities }],
 ], resize_keyboard: true, is_persistent: true } };
 const CANCEL_KB = { reply_markup: { keyboard: [[{ text: CANCEL }]], resize_keyboard: true } };
+// Клавіатура для кроків вводу тексту: лише «Відміна» + підказка в полі вводу
+// (Telegram надсилає введений текст своєю кнопкою-літачком — окрема кнопка «Відправити» неможлива).
+const askKb = (placeholder: string) => ({ reply_markup: { keyboard: [[{ text: CANCEL }]], resize_keyboard: true, input_field_placeholder: placeholder } });
 const PRIORITY_KB = { reply_markup: { keyboard: [
   [1, 2, 3, 4, 5].map((n) => ({ text: String(n) })),
   [6, 7, 8, 9, 10].map((n) => ({ text: String(n) })),
@@ -32,12 +37,25 @@ const DEADLINE_KB = { reply_markup: { keyboard: [
 ], resize_keyboard: true } };
 
 const HELP = [
-  "<b>team M бот</b>",
+  "<b>Workspace M бот</b>",
   "",
-  "Кнопки нижче або команди:",
-  "➕ Задача — назва → пріоритет → дедлайн",
+  "Кнопки нижче:",
+  "➕ Задача — назва → пріоритет → дедлайн → час",
   "💡 Ідея — лише назва",
-  "/today · /tasks · /inbox · /help",
+  "📥 Завантажити самарі — секції «Ідеї»/«Задачі»",
+  "🎯 Мої пріоритети — план на поточний тиждень",
+].join("\n");
+
+const SUMMARY_HINT = [
+  "📥 Надішли текст самарі з секціями. Приклад:",
+  "",
+  "<code>Ідеї",
+  "Помити посуд",
+  "",
+  "Задачі",
+  "Витерти пил. До 21.08. 2 год. 5</code>",
+  "",
+  "Рядок задачі: <b>Назва. До ДД.ММ. Час(2 год/30 хв). Пріоритет(1–10)</b>.",
 ].join("\n");
 
 const REQUEST_CONTACT_KB = { reply_markup: { keyboard: [[{ text: "📱 Поділитися номером", request_contact: true }]], resize_keyboard: true, one_time_keyboard: true } };
@@ -60,18 +78,32 @@ function fmtDate(d: Date): string {
   return `${p(d.getDate())}.${p(d.getMonth() + 1)} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-async function createFor(userId: string, title: string, status: "TODO" | "IDEA", opts?: { priority?: number; dueDate?: Date }) {
+async function createFor(userId: string, title: string, status: "TODO" | "IDEA", opts?: { priority?: number; dueDate?: Date; plannedMinutes?: number | null; fromSummary?: boolean }) {
   const last = await db.task.findFirst({ where: { status, parentId: null, assignees: { some: { userId } } }, orderBy: { position: "desc" }, select: { position: true } });
   await db.task.create({
     data: {
       title: title.slice(0, 200), status, priority: opts?.priority ?? 5,
-      createdById: userId, dueDate: opts?.dueDate ?? null,
+      createdById: userId, dueDate: opts?.dueDate ?? null, plannedMinutes: opts?.plannedMinutes ?? null,
+      fromSummary: opts?.fromSummary ?? false,
       position: (last?.position ?? -1) + 1, assignees: { create: [{ userId }] },
     },
   });
 }
 
-type State = { flow: "task" | "idea"; step: string; title?: string; priority?: number };
+const PLAN = { m15: "15 хв", m30: "30 хв", h1: "1 год", h2: "2 год", h4: "4 год", h8: "8 год" };
+const PLANNED_KB = { reply_markup: { keyboard: [
+  [{ text: PLAN.m15 }, { text: PLAN.m30 }],
+  [{ text: PLAN.h1 }, { text: PLAN.h2 }],
+  [{ text: PLAN.h4 }, { text: PLAN.h8 }],
+  [{ text: CANCEL }],
+], resize_keyboard: true } };
+function fmtDuration(mins: number | null): string {
+  if (!mins) return "—";
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return [h ? `${h} год` : "", m ? `${m} хв` : ""].filter(Boolean).join(" ") || "0 хв";
+}
+
+type State = { flow: "task" | "idea" | "summary"; step: string; title?: string; priority?: number; dueISO?: string };
 function readState(raw: string | null): State | null {
   if (!raw) return null;
   try { const s = JSON.parse(raw); return s && s.flow ? s : null; } catch { return null; }
@@ -142,6 +174,14 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
   // --- Мастер задачи ---
   if (state?.flow === "task") {
     if (state.step === "title") {
+      // Однорядковий шаблон «Назва. До ДД.ММ. Час. Пріоритет» — усі три параметри є → створюємо одразу
+      const q = parseTaskLine(text);
+      if (q && q.priority != null && q.dueISO != null && q.plannedMinutes != null) {
+        await createFor(userId, q.title, "TODO", { priority: q.priority, dueDate: new Date(q.dueISO), plannedMinutes: q.plannedMinutes });
+        await setState(null);
+        await reply(`✅ Задачу створено: <b>${esc(q.title)}</b>\nПріоритет ${q.priority}\nДедлайн ${q.dueLabel}\nЗапланований час ${fmtDuration(q.plannedMinutes)}`, MAIN_KB);
+        return;
+      }
       await setState({ flow: "task", step: "priority", title: text });
       await reply(`Задача: <b>${esc(text)}</b>\n\nОберіть <b>пріоритет</b> (1–10):`, PRIORITY_KB);
       return;
@@ -156,9 +196,17 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
     if (state.step === "deadline") {
       const due = parseDeadline(text);
       if (!due) { await reply("Оберіть дедлайн кнопкою:", DEADLINE_KB); return; }
-      await createFor(userId, state.title ?? "Без назви", "TODO", { priority: state.priority, dueDate: due });
+      await setState({ flow: "task", step: "planned", title: state.title, priority: state.priority, dueISO: due.toISOString() });
+      await reply("Оберіть <b>орієнтовний запланований час</b>:", PLANNED_KB);
+      return;
+    }
+    if (state.step === "planned") {
+      const mins = parsePlannedMinutes(text);
+      if (mins == null || mins <= 0) { await reply("Вкажіть орієнтовний час кнопкою або напишіть, напр. <b>45 хв</b> / <b>2 год</b>:", PLANNED_KB); return; }
+      const due = state.dueISO ? new Date(state.dueISO) : undefined;
+      await createFor(userId, state.title ?? "Без назви", "TODO", { priority: state.priority, dueDate: due, plannedMinutes: mins });
       await setState(null);
-      await reply(`✅ Задачу створено: <b>${esc(state.title ?? "")}</b>\nПріоритет ${state.priority}\nДедлайн ${fmtDate(due)}`);
+      await reply(`✅ Задачу створено: <b>${esc(state.title ?? "")}</b>\nПріоритет ${state.priority}\nДедлайн ${due ? fmtDate(due) : "—"}\nЗапланований час ${fmtDuration(mins)}`);
       return;
     }
   }
@@ -169,16 +217,52 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
     await reply(`💡 Ідею додано: <b>${esc(text)}</b> (колонка «Ідеї»)`);
     return;
   }
+  // --- Самарі: вставлений текст із секціями «Ідеї»/«Задачі» ---
+  if (state?.flow === "summary" && state.step === "await") {
+    const parsed = parseStructuredSummary(text);
+    if (!parsed) { await reply(`Не бачу секцій «Ідеї»/«Задачі».\n\n${SUMMARY_HINT}`, askKb("Вставте текст самарі…")); return; }
+    for (const title of parsed.ideas) await createFor(userId, title, "IDEA", { fromSummary: true });
+    for (const t of parsed.tasks) await createFor(userId, t.title, "TODO", { priority: t.priority ?? undefined, dueDate: t.dueISO ? new Date(t.dueISO) : undefined, plannedMinutes: t.plannedMinutes, fromSummary: true });
+    await setState(null);
+    const lines = [
+      ...parsed.ideas.map((t) => `💡 ${esc(t)}`),
+      ...parsed.tasks.map((t) => `✅ ${esc(t.title)} — П${t.priority ?? 5}${t.dueLabel ? `, до ${t.dueLabel}` : ""}${t.plannedMinutes ? `, ${fmtDuration(t.plannedMinutes)}` : ""}`),
+    ];
+    await reply(`Створено з самарі: ідей ${parsed.ideas.length}, задач ${parsed.tasks.length}\n${lines.join("\n")}`);
+    return;
+  }
+
+  // Ответ на утренний вопрос «Бажаєте додати якусь задачу?» (кнопки Так/Ні під планом дня)
+  if (text === "Так") { await setState({ flow: "task", step: "title" }); await reply("✍️ Напишіть <b>назву задачі</b> й надішліть:", askKb("Назва задачі…")); return; }
+  if (text === "Ні") { await reply("Гаразд, гарного дня! 👋"); return; }
 
   // Кнопки, начинающие мастер
-  if (text === BTN.task) { await setState({ flow: "task", step: "title" }); await reply("✍️ Напишіть <b>назву задачі</b>:", CANCEL_KB); return; }
-  if (text === BTN.idea) { await setState({ flow: "idea", step: "title" }); await reply("✍️ Напишіть <b>назву ідеї</b>:", CANCEL_KB); return; }
+  if (text === BTN.task) { await setState({ flow: "task", step: "title" }); await reply("✍️ Напишіть <b>назву задачі</b> й надішліть:", askKb("Назва задачі…")); return; }
+  if (text === BTN.idea) { await setState({ flow: "idea", step: "title" }); await reply("✍️ Напишіть <b>назву ідеї</b> й надішліть:", askKb("Назва ідеї…")); return; }
+  if (text === BTN.summary) { await setState({ flow: "summary", step: "await" }); await reply(SUMMARY_HINT, askKb("Вставте текст самарі…")); return; }
 
   // Списки (кнопки/команды)
   let cmd = text;
-  if (text === BTN.tasks) cmd = "/tasks"; else if (text === BTN.today) cmd = "/today"; else if (text === BTN.inbox) cmd = "/inbox";
+  if (text === BTN.priorities) cmd = "/priorities";
+  else if (text === BTN.tasks) cmd = "/tasks"; else if (text === BTN.today) cmd = "/today"; else if (text === BTN.inbox) cmd = "/inbox";
 
   if (cmd === "/help") { await reply(HELP); return; }
+
+  if (cmd === "/priorities") {
+    const utz = (await db.user.findUnique({ where: { id: userId }, select: { timezone: true } }))?.timezone || "Europe/Kyiv";
+    const ws = weekStartInTz(utz, new Date());
+    const items = await db.weeklyPlanItem.findMany({
+      where: { userId, weekStart: ws },
+      orderBy: [{ priority: "desc" }, { order: "asc" }],
+      include: { task: { select: { status: true } } },
+    });
+    if (items.length === 0) { await reply("На цей тиждень пріоритетів ще немає.\nДодайте їх у застосунку → Планування."); return; }
+    const approval = await db.weeklyPlanApproval.findUnique({ where: { userId_weekStart: { userId, weekStart: ws } }, select: { status: true } });
+    const APPROVAL: Record<string, string> = { DRAFT: "чернетка", PENDING: "на затвердженні ⏳", APPROVED: "затверджено ✅", RETURNED: "повернено на доопрацювання ↩️" };
+    const lines = items.map((it) => `${it.task?.status === "DONE" ? "✅" : `[${it.priority}]`} ${esc(it.title)}`);
+    await reply(`<b>Мої пріоритети тижня (${items.length})</b>\n${lines.join("\n")}\n\nСтатус плану: ${APPROVAL[approval?.status ?? "DRAFT"]}`);
+    return;
+  }
 
   if (cmd === "/inbox") {
     const items = await db.notification.findMany({ where: { recipientId: userId, readAt: null }, orderBy: { createdAt: "desc" }, take: 10 });
@@ -203,6 +287,7 @@ export async function handleTelegramUpdate(update: Update): Promise<void> {
   // Быстрые текстовые команды
   if (cmd.startsWith("/idea")) { const t = cmd.slice(5).trim(); if (!t) { await reply("Вкажіть назву: /idea Нова фіча"); return; } await createFor(userId, t, "IDEA"); await reply(`💡 Ідею додано: <b>${esc(t)}</b>`); return; }
   if (cmd.startsWith("/new")) { const t = cmd.slice(4).trim(); if (!t) { await reply("Натисніть ➕ Задача або: /new Назва"); return; } await setState({ flow: "task", step: "priority", title: t }); await reply(`Задача: <b>${esc(t)}</b>\n\nОберіть <b>пріоритет</b> (1–10):`, PRIORITY_KB); return; }
+  if (cmd === "/summary") { await setState({ flow: "summary", step: "await" }); await reply(SUMMARY_HINT, askKb("Вставте текст самарі…")); return; }
 
   await reply("Скористайтесь кнопками нижче або /help");
 }

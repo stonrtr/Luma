@@ -1,0 +1,612 @@
+// Worksection-clone — полная доменная модель
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ----------------------------------------------------------------------------
+// Пользователи, роли, иерархия
+// ----------------------------------------------------------------------------
+
+enum SystemRole {
+  OWNER
+  ADMIN
+  MEMBER
+  CLIENT
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  firstName    String?
+  lastName     String?
+  email        String     @unique
+  passwordHash String
+  avatarUrl    String?
+  title        String?    // должность
+  phone        String?    // телефон (для привязки Telegram по номеру)
+  functions    String?    // функции/обязанности (оргсхема)
+  role         SystemRole @default(MEMBER)
+  hourlyRate   Float?
+  weeklyHours  Float?     // оговоренные рабочие часы в неделю (неполный день)
+  driveFolderUrl String?  // папка Google Drive сотрудника
+  locale       String     @default("uk") // uk | ru | en
+  timezone     String     @default("Europe/Kyiv")
+  theme        String     @default("system")
+  weekStartsMon Boolean   @default(true)
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  managerId String?
+  manager   User?   @relation("OrgHierarchy", fields: [managerId], references: [id], onDelete: SetNull)
+  reports   User[]  @relation("OrgHierarchy")
+
+  createdProjects Project[]       @relation("ProjectCreator")
+  projectMembers  ProjectMember[]
+  createdTasks    Task[]          @relation("TaskCreator")
+  assignedTasks   TaskAssignee[]
+  comments        Comment[]
+  timeLogs        TimeLog[]
+  activities      Activity[]
+  notifications   Notification[]  @relation("NotificationRecipient")
+  triggeredNotifs Notification[]  @relation("NotificationActor")
+  uploadedFiles   Attachment[]
+  mentions        Mention[]
+
+  monthlyGoals    MonthlyGoal[]   @relation("GoalOwner")
+  kpis            Kpi[]           @relation("KpiOwner")
+  weeklyPlanItems WeeklyPlanItem[] @relation("PlanOwner")
+  recurringAssigned RecurringTask[] @relation("RecurringAssignee")
+  recurringCreated  RecurringTask[] @relation("RecurringCreator")
+  calls           Call[]          @relation("CallOwner")
+  ownedFiles      FileLink[]      @relation("FileOwner")
+  fileShares      FileShare[]
+  callPointsAuthored CallPoint[]  @relation("CallPointAuthor")
+  callPointsAbout    CallPoint[]  @relation("CallPointMember")
+  googleAccount      GoogleAccount?
+  pushSubscriptions  PushSubscription[]
+  planApprovals      WeeklyPlanApproval[] @relation("PlanApprovalOwner")
+  telegramAccount    TelegramAccount?
+  telegramLinkCode   String?   // одноразовый код для привязки Telegram
+}
+
+// Привязка Telegram-аккаунта сотрудника к его учётке
+model TelegramAccount {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatId        String   @unique // id чата Telegram
+  username      String?
+  pendingAction String?  // ожидание ввода: "task" | "idea"
+  createdAt     DateTime @default(now())
+}
+
+enum PlanStatus {
+  DRAFT     // черновик
+  PENDING   // отправлен руководителю
+  APPROVED  // утверждён
+  RETURNED  // возвращён на доработку
+}
+
+// Статус утверждения недельного плана сотрудника руководителем
+model WeeklyPlanApproval {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation("PlanApprovalOwner", fields: [userId], references: [id], onDelete: Cascade)
+  weekStart   DateTime
+  status      PlanStatus @default(DRAFT)
+  comment     String?    // комментарий при возврате
+  reviewerId  String?
+  submittedAt DateTime?
+  decidedAt   DateTime?
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([userId, weekStart])
+}
+
+// Подписка браузера на web-push
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Подключение Google Calendar сотрудника (OAuth-токены)
+model GoogleAccount {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  googleEmail  String?
+  calendarId   String   @default("primary")
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime // когда истекает accessToken
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Поінти до дзвінка: что обсудить с конкретным членом команды перед созвоном
+model CallPoint {
+  id        String   @id @default(cuid())
+  text      String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  authorId String
+  author   User   @relation("CallPointAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  memberId String
+  member   User   @relation("CallPointMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([authorId, memberId])
+}
+
+// ----------------------------------------------------------------------------
+// Проекты
+// ----------------------------------------------------------------------------
+
+enum ProjectStatus {
+  ACTIVE
+  ON_HOLD
+  DONE
+  ARCHIVED
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  color       String        @default("#4f46e5")
+  status      ProjectStatus @default(ACTIVE)
+  startDate   DateTime?
+  dueDate     DateTime?
+  budget      Float?
+  archivedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  createdById String
+  createdBy   User   @relation("ProjectCreator", fields: [createdById], references: [id])
+
+  members    ProjectMember[]
+  tasks      Task[]
+  milestones Milestone[]
+  tags       Tag[]
+  activities Activity[]
+  recurringTasks RecurringTask[]
+
+  @@index([status])
+}
+
+enum ProjectRole {
+  MANAGER
+  MEMBER
+  CLIENT
+}
+
+model ProjectMember {
+  id        String      @id @default(cuid())
+  role      ProjectRole @default(MEMBER)
+  createdAt DateTime    @default(now())
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+}
+
+// ----------------------------------------------------------------------------
+// Задачи
+// ----------------------------------------------------------------------------
+
+enum TaskStatus {
+  IDEA        // ідея
+  TODO        // зробити
+  IN_PROGRESS // в роботі
+  TO_REVIEW   // на перевірці
+  DONE        // завершено
+}
+
+model Task {
+  id              String     @id @default(cuid())
+  title           String
+  description     String?
+  status          TaskStatus @default(TODO)
+  priority        Int        @default(5) // 1..10
+  startDate       DateTime?
+  dueDate         DateTime?
+  scheduledAt     DateTime?  // дата+время для календаря
+  plannedMinutes  Int?       // план по времени (15/30/60/120/180…)
+  completedAt     DateTime?
+  archivedAt      DateTime?
+  reviewRequestedAt DateTime? // «на проверку руководителю»
+  assignedByManager Boolean  @default(false) // поставлена руководителем
+  fromSummary       Boolean  @default(false) // створена з саммарі дзвінка
+  position        Int        @default(0)
+  googleEventId   String?    // id связанного события Google Calendar
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  parentId String?
+  parent   Task?   @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  subtasks Task[]  @relation("TaskSubtasks")
+
+  createdById String
+  createdBy   User   @relation("TaskCreator", fields: [createdById], references: [id])
+
+  milestoneId String?
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+
+  recurringTaskId String?
+  recurringTask   RecurringTask? @relation(fields: [recurringTaskId], references: [id], onDelete: SetNull)
+
+  assignees   TaskAssignee[]
+  comments    Comment[]
+  timeLogs    TimeLog[]
+  checklist   ChecklistItem[]
+  attachments Attachment[]
+  tags        TaskTag[]
+  dependsOn   TaskDependency[] @relation("DependencySuccessor")
+  dependedBy  TaskDependency[] @relation("DependencyPredecessor")
+  planItem    WeeklyPlanItem?
+
+  @@index([projectId, status, position])
+  @@index([parentId])
+  @@index([scheduledAt])
+}
+
+model TaskAssignee {
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@index([userId])
+}
+
+model TaskDependency {
+  id            String @id @default(cuid())
+  predecessorId String
+  predecessor   Task   @relation("DependencyPredecessor", fields: [predecessorId], references: [id], onDelete: Cascade)
+  successorId   String
+  successor     Task   @relation("DependencySuccessor", fields: [successorId], references: [id], onDelete: Cascade)
+
+  @@unique([predecessorId, successorId])
+}
+
+model Milestone {
+  id        String    @id @default(cuid())
+  title     String
+  dueDate   DateTime?
+  createdAt DateTime  @default(now())
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+
+  @@index([projectId])
+}
+
+model ChecklistItem {
+  id       String  @id @default(cuid())
+  text     String
+  done     Boolean @default(false)
+  position Int     @default(0)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+}
+
+// ----------------------------------------------------------------------------
+// Регулярные задачи
+// ----------------------------------------------------------------------------
+
+enum RecurrenceFreq {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model RecurringTask {
+  id             String         @id @default(cuid())
+  title          String
+  priority       Int            @default(5)
+  plannedMinutes Int?
+  frequency      RecurrenceFreq @default(WEEKLY)
+  weekdays       String?        // csv 1..7 (Пн..Вс) для WEEKLY
+  dayOfMonth     Int?           // для MONTHLY
+  active         Boolean        @default(true)
+  lastGeneratedAt DateTime?
+  createdAt      DateTime       @default(now())
+
+  assigneeId String
+  assignee   User   @relation("RecurringAssignee", fields: [assigneeId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation("RecurringCreator", fields: [createdById], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  tasks Task[]
+
+  @@index([assigneeId, active])
+}
+
+// ----------------------------------------------------------------------------
+// Теги
+// ----------------------------------------------------------------------------
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String
+  color String @default("#64748b")
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks TaskTag[]
+
+  @@unique([projectId, name])
+}
+
+model TaskTag {
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tagId  String
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+}
+
+// ----------------------------------------------------------------------------
+// Комментарии, упоминания, вложения
+// ----------------------------------------------------------------------------
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  mentions    Mention[]
+  attachments Attachment[]
+
+  @@index([taskId])
+}
+
+model Mention {
+  id String @id @default(cuid())
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+  url       String
+  createdAt DateTime @default(now())
+
+  uploadedById String
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+
+  taskId String?
+  task   Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+}
+
+// ----------------------------------------------------------------------------
+// Вкладка «Файлы» — ссылки и загрузки, в т.ч. чужие важные
+// ----------------------------------------------------------------------------
+
+enum FileKind {
+  LINK
+  UPLOAD
+}
+
+model FileLink {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  kind      FileKind @default(LINK)
+  isTeam    Boolean  @default(false) // командний файл (видно всім)
+  note      String?
+  createdAt DateTime @default(now())
+
+  ownerId String
+  owner   User   @relation("FileOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  shares FileShare[]
+
+  @@index([ownerId])
+}
+
+model FileShare {
+  fileId String
+  file   FileLink @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([fileId, userId])
+  @@index([userId])
+}
+
+// ----------------------------------------------------------------------------
+// Тайм-трекинг
+// ----------------------------------------------------------------------------
+
+model TimeLog {
+  id        String    @id @default(cuid())
+  minutes   Int
+  note      String?
+  billable  Boolean   @default(true)
+  loggedAt  DateTime  @default(now())
+  startedAt DateTime?
+  isRunning Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId, loggedAt])
+}
+
+// ----------------------------------------------------------------------------
+// Звонки (календарь)
+// ----------------------------------------------------------------------------
+
+model Call {
+  id          String   @id @default(cuid())
+  title       String
+  scheduledAt DateTime
+  durationMin Int      @default(30)
+  note        String?
+  createdAt   DateTime @default(now())
+
+  userId String
+  user   User   @relation("CallOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, scheduledAt])
+  @@index([scheduledAt])
+}
+
+// ----------------------------------------------------------------------------
+// Планирование: цели, KPI, недельный план
+// ----------------------------------------------------------------------------
+
+model MonthlyGoal {
+  id        String   @id @default(cuid())
+  year      Int
+  month     Int      // 0..11
+  text      String
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation("GoalOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, year, month])
+}
+
+model Kpi {
+  id          String   @id @default(cuid())
+  year        Int
+  month       Int
+  title       String
+  target      String?  // целевое значение (текст, может быть число)
+  actualValue String?  // фактическое значение (вводит сотрудник)
+  achieved    Boolean? // досягнуто / не досягнуто
+  createdAt   DateTime @default(now())
+
+  userId String
+  user   User   @relation("KpiOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, year, month])
+}
+
+model WeeklyPlanItem {
+  id        String   @id @default(cuid())
+  weekStart DateTime // понедельник недели
+  title     String
+  priority  Int      @default(5)
+  order     Int      @default(0)
+  approved  Boolean  @default(false)
+  projectId String?
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation("PlanOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  // связь с созданной задачей (после утверждения)
+  taskId String? @unique
+  task   Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([userId, weekStart])
+}
+
+// ----------------------------------------------------------------------------
+// Лента активности и уведомления
+// ----------------------------------------------------------------------------
+
+model Activity {
+  id        String   @id @default(cuid())
+  type      String
+  meta      String?
+  taskId    String?
+  createdAt DateTime @default(now())
+
+  actorId String
+  actor   User   @relation(fields: [actorId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@index([createdAt])
+}
+
+// Глобальные настройки: какие уведомления отправлять (админ)
+model NotificationSetting {
+  type            String  @id // assignment | overdue | review | kpi_reminder | comment | mention | manager_overdue
+  pushEnabled     Boolean @default(true) // пуш в приложении (web-push, со звуком)
+  telegramEnabled Boolean @default(true) // доставка в Telegram-бот
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  type      String
+  message   String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  recipientId String
+  recipient   User   @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  actorId String?
+  actor   User?   @relation("NotificationActor", fields: [actorId], references: [id])
+
+  @@index([recipientId, readAt])
+}

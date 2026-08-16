@@ -61,7 +61,7 @@ function ymd(d: Date): string {
 
 // Собрать тело события Google из задачи. null — задачу нет смысла класть в календарь.
 function taskToEventBody(task: { id: string; title: string; scheduledAt: Date | null; dueDate: Date | null; plannedMinutes: number | null }) {
-  const description = `Задача у team M: ${APP_URL}/tasks/${task.id}`;
+  const description = `Задача у Workspace M: ${APP_URL}/tasks/${task.id}`;
   if (task.scheduledAt) {
     const start = task.scheduledAt;
     const end = new Date(start.getTime() + (task.plannedMinutes ?? 60) * 60_000);

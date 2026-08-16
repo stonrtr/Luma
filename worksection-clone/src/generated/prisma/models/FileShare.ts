@@ -359,6 +359,7 @@ export type FileShareCreateOrConnectWithoutUserInput = {
 
 export type FileShareCreateManyUserInputEnvelope = {
   data: Prisma.FileShareCreateManyUserInput | Prisma.FileShareCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type FileShareUpsertWithWhereUniqueWithoutUserInput = {
@@ -400,6 +401,7 @@ export type FileShareCreateOrConnectWithoutFileInput = {
 
 export type FileShareCreateManyFileInputEnvelope = {
   data: Prisma.FileShareCreateManyFileInput | Prisma.FileShareCreateManyFileInput[]
+  skipDuplicates?: boolean
 }
 
 export type FileShareUpsertWithWhereUniqueWithoutFileInput = {
@@ -1162,6 +1164,7 @@ export type FileShareCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many FileShares.
    */
   data: Prisma.FileShareCreateManyInput | Prisma.FileShareCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1180,6 +1183,7 @@ export type FileShareCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many FileShares.
    */
   data: Prisma.FileShareCreateManyInput | Prisma.FileShareCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

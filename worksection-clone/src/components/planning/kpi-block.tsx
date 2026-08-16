@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/locale-context";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -8,6 +9,7 @@ import { Pencil } from "lucide-react";
 import { addKpi, deleteKpi, updateKpiResult, updateKpiTarget } from "@/server/actions/planning";
 import { Input } from "@/components/ui/input";
 import { monthLabel } from "@/lib/week";
+import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type Kpi = { id: string; title: string; target: string | null; actualValue: string | null; achieved: boolean | null };
@@ -15,11 +17,12 @@ type Kpi = { id: string; title: string; target: string | null; actualValue: stri
 const MIN_KPI_SLOTS = 2;
 
 export function KpiBlock({
-  userId, year, month, kpis, canManage, canEditResult,
+  userId, year, month, kpis, canManage, canEditResult, locale,
 }: {
-  userId: string; year: number; month: number; kpis: Kpi[]; canManage: boolean; canEditResult: boolean;
+  userId: string; year: number; month: number; kpis: Kpi[]; canManage: boolean; canEditResult: boolean; locale: string;
 }) {
   const router = useRouter();
+  const tr = useT();
   const [title, setTitle] = useState("");
   const [target, setTarget] = useState("");
   const [, start] = useTransition();
@@ -40,24 +43,24 @@ export function KpiBlock({
   return (
     <div>
       <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
-        <Gauge className="size-4 text-primary" /> KPI місяця · {monthLabel(month)}
+        <Gauge className="size-4 text-accent-foreground" /> {t(locale, "kpi.month")} · {monthLabel(month, locale)}
       </h3>
       <div className="space-y-2">
         {kpis.map((k) => (
-          <KpiRow key={k.id} kpi={k} canManage={canManage} canEditResult={canEditResult} />
+          <KpiRow key={k.id} kpi={k} canManage={canManage} canEditResult={canEditResult} locale={locale} />
         ))}
         {/* пустые слоты-заготовки до минимума */}
         {Array.from({ length: emptySlots }).map((_, i) => (
           <div key={`kpi-slot-${i}`} className="flex items-center gap-2 rounded-lg border border-dashed bg-muted/20 px-3 py-3 text-sm text-muted-foreground">
             <Gauge className="size-4 opacity-50" />
-            {canManage ? "Порожній слот KPI — задайте ціль" : "KPI не задано"}
+            {canManage ? t(locale, "kpi.emptySlot") : t(locale, "kpi.notSet")}
           </div>
         ))}
       </div>
       {canManage && (
         <div className="mt-2 flex gap-2">
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Назва KPI" className="h-8 flex-1" />
-          <Input value={target} onChange={(e) => setTarget(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Ціль" className="h-8 w-24" />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t(locale, "kpi.namePh")} className="h-8 flex-1" />
+          <Input value={target} onChange={(e) => setTarget(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder={t(locale, "kpi.goalPh")} className="h-8 w-24" />
           <button onClick={add} className="flex size-8 shrink-0 items-center justify-center rounded-md border hover:bg-muted"><Plus className="size-4" /></button>
         </div>
       )}
@@ -65,8 +68,9 @@ export function KpiBlock({
   );
 }
 
-function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolean; canEditResult: boolean }) {
+function KpiRow({ kpi, canManage, canEditResult, locale }: { kpi: Kpi; canManage: boolean; canEditResult: boolean; locale: string }) {
   const router = useRouter();
+  const tr = useT();
   const [actual, setActual] = useState(kpi.actualValue ?? "");
   const [editingTarget, setEditingTarget] = useState(false);
   const [targetVal, setTargetVal] = useState(kpi.target ?? "");
@@ -75,7 +79,7 @@ function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolea
   function save(achieved: boolean | null) {
     start(async () => {
       await updateKpiResult({ id: kpi.id, actualValue: actual, achieved });
-      toast.success("Збережено");
+      toast.success(tr("common.saved"));
       router.refresh();
     });
   }
@@ -84,7 +88,7 @@ function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolea
     if (targetVal !== (kpi.target ?? "")) {
       start(async () => {
         await updateKpiTarget({ id: kpi.id, target: targetVal });
-        toast.success("Ціль оновлено");
+        toast.success(tr("kpi.goalUpdated"));
         router.refresh();
       });
     }
@@ -110,10 +114,10 @@ function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolea
               onClick={() => canManage && setEditingTarget(true)}
               disabled={!canManage}
               className="group flex items-baseline gap-1"
-              title={canManage ? "Редагувати ціль" : undefined}
+              title={canManage ? tr("kpi.editGoal") : undefined}
             >
-              <span className="text-[11px] text-muted-foreground">ціль</span>
-              <span className="text-xl font-bold text-primary">{kpi.target ?? "—"}</span>
+              <span className="text-[11px] text-muted-foreground">{t(locale, "kpi.target")}</span>
+              <span className="text-xl font-bold text-accent-foreground">{kpi.target ?? "—"}</span>
               {canManage && <Pencil className="size-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />}
             </button>
           )}
@@ -130,27 +134,41 @@ function KpiRow({ kpi, canManage, canEditResult }: { kpi: Kpi; canManage: boolea
           onChange={(e) => setActual(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && canEditResult) save(kpi.achieved); }}
           onBlur={() => canEditResult && actual !== (kpi.actualValue ?? "") && save(kpi.achieved)}
-          placeholder="Факт"
+          placeholder={t(locale, "kpi.fact")}
           disabled={!canEditResult}
           className="h-8 w-28"
         />
-        <button
-          disabled={!canEditResult}
-          onClick={() => save(true)}
-          className={cn("rounded-md border px-2.5 py-1 text-xs font-medium transition-colors disabled:opacity-50",
-            kpi.achieved === true ? "border-emerald-500 bg-emerald-500/10 text-emerald-600" : "hover:bg-muted")}
-        >
-          <Check className="mr-1 inline size-3" /> Досягнуто
-        </button>
-        <button
-          disabled={!canEditResult}
-          onClick={() => save(false)}
-          className={cn("rounded-md border px-2.5 py-1 text-xs font-medium transition-colors disabled:opacity-50",
-            kpi.achieved === false ? "border-destructive bg-destructive/10 text-destructive" : "hover:bg-muted")}
-        >
-          Не досягнуто
-        </button>
       </div>
     </div>
+  );
+}
+
+
+// Тогл «Досягнуто / Не досягнуто» для АРХІВУ KPI: підсумок місяця відмічається
+// після його завершення (активна картка місяця цих кнопок не має).
+export function KpiAchievedToggle({ id, actualValue, achieved, locale }: { id: string; actualValue: string | null; achieved: boolean | null; locale: string }) {
+  const router = useRouter();
+  const [, start] = useTransition();
+  const save = (v: boolean) => start(async () => {
+    await updateKpiResult({ id, actualValue: actualValue ?? "", achieved: achieved === v ? null : v });
+    router.refresh();
+  });
+  return (
+    <span className="flex items-center gap-1">
+      <button
+        onClick={() => save(true)}
+        className={cn("rounded-md border px-2 py-0.5 text-[11px] font-medium transition-colors",
+          achieved === true ? "border-primary bg-accent text-accent-foreground" : "hover:bg-muted")}
+      >
+        <Check className="mr-0.5 inline size-3" /> {t(locale, "kpi.achievedShort")}
+      </button>
+      <button
+        onClick={() => save(false)}
+        className={cn("rounded-md border px-2 py-0.5 text-[11px] font-medium transition-colors",
+          achieved === false ? "border-destructive bg-destructive/10 text-destructive" : "hover:bg-muted")}
+      >
+        {t(locale, "kpi.notAchievedShort")}
+      </button>
+    </span>
   );
 }

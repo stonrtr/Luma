@@ -434,6 +434,7 @@ export type ProjectMemberCreateOrConnectWithoutUserInput = {
 
 export type ProjectMemberCreateManyUserInputEnvelope = {
   data: Prisma.ProjectMemberCreateManyUserInput | Prisma.ProjectMemberCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type ProjectMemberUpsertWithWhereUniqueWithoutUserInput = {
@@ -484,6 +485,7 @@ export type ProjectMemberCreateOrConnectWithoutProjectInput = {
 
 export type ProjectMemberCreateManyProjectInputEnvelope = {
   data: Prisma.ProjectMemberCreateManyProjectInput | Prisma.ProjectMemberCreateManyProjectInput[]
+  skipDuplicates?: boolean
 }
 
 export type ProjectMemberUpsertWithWhereUniqueWithoutProjectInput = {
@@ -1288,6 +1290,7 @@ export type ProjectMemberCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many ProjectMembers.
    */
   data: Prisma.ProjectMemberCreateManyInput | Prisma.ProjectMemberCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1306,6 +1309,7 @@ export type ProjectMemberCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many ProjectMembers.
    */
   data: Prisma.ProjectMemberCreateManyInput | Prisma.ProjectMemberCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

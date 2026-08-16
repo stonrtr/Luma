@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#0A130D; }
+  body { font-family:'Manrope','Helvetica Neue',Arial,sans-serif; color:#E8EFE3; -webkit-font-smoothing:antialiased; }
+  a { color:#A9D97F; text-decoration:none; }
+  a:hover { color:#C6E89B; }
+  ::selection { background:#C6E89B; color:#0A130D; }
+</style>
+</helmet>
+
+<div style="display:flex; min-height:100vh; align-items:center; justify-content:center; padding:0 16px; background-color:#0A130D; background-image:radial-gradient(1200px 620px at 50% -120px, rgba(140,215,120,.30), transparent 68%); background-repeat:no-repeat;">
+  <div style="width:100%; max-width:384px;">
+    <div style="margin-bottom:32px; text-align:center;">
+      <div role="img" aria-label="team M" style="margin:0 auto 12px; width:80px; height:80px; border-radius:16px; background-color:#131C15; background-image:url('logo.png'); background-size:contain; background-position:center; background-repeat:no-repeat; box-shadow:0 1px 2px rgba(0,0,0,.4); outline:1px solid rgba(0,0,0,.4);"></div>
+      <h1 style="margin:0; font-size:24px; font-weight:600; letter-spacing:-.02em;">team <span style="font-weight:800;">M</span> Workspace</h1>
+      <p style="margin:4px 0 0; font-size:13px; color:#8B9C86;">Войдите, чтобы управлять проектами</p>
+    </div>
+
+    <div style="border-radius:12px; border:1px solid #232E20; background:#131C15; padding:24px; box-shadow:0 1px 2px rgba(0,0,0,.3);">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label for="email" style="font-size:13px; font-weight:500;">Email</label>
+          <input id="email" type="email" value="admin@worksection.local" style="height:36px; border-radius:6px; border:1px solid #232E20; background:#131C15; padding:0 10px; font:inherit; font-size:13px; color:#E8EFE3;" />
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label for="password" style="font-size:13px; font-weight:500;">Пароль</label>
+          <input id="password" type="password" value="Password1!" style="height:36px; border-radius:6px; border:1px solid #232E20; background:#131C15; padding:0 10px; font:inherit; font-size:13px; color:#E8EFE3;" />
+        </div>
+        <button style="width:100%; border:0; border-radius:6px; background:#C6E89B; padding:9px 14px; font:inherit; font-size:13px; font-weight:600; color:#12240F; cursor:pointer;">Войти</button>
+      </div>
+    </div>
+
+    <p style="margin:16px 0 0; text-align:center; font-size:11px; color:#8B9C86;">Демо-доступ уже подставлен в форму</p>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -6,7 +6,7 @@ import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
 import { notify } from "@/server/notify";
 import { canManageUser } from "@/server/authz";
-import { mondayOf } from "@/lib/week";
+import { mondayUtc } from "@/lib/week";
 
 // тонкая обёртка над общим слоем прав (совместимость с вызовами ниже)
 async function canManage(viewerId: string, viewerRole: string, targetId: string) {
@@ -78,8 +78,8 @@ export async function updateKpiResult(input: { id: string; actualValue: string; 
   const viewer = await requireUser();
   const kpi = await db.kpi.findUnique({ where: { id: input.id } });
   if (!kpi) return;
-  const allowed = kpi.userId === viewer.id || (await canManage(viewer.id, viewer.role, kpi.userId));
-  if (!allowed) return;
+  // факт і «досягнуто/не досягнуто» вносить ЛИШЕ сам співробітник, не керівник
+  if (kpi.userId !== viewer.id) return;
   await db.kpi.update({
     where: { id: input.id },
     data: { actualValue: input.actualValue.trim() || null, achieved: input.achieved },
@@ -103,7 +103,7 @@ export async function addPlanItem(input: z.infer<typeof planItemSchema>) {
   const canEdit = data.userId === viewer.id || (await canManage(viewer.id, viewer.role, data.userId));
   if (!canEdit) return { error: "Немає прав" };
 
-  const ws = mondayOf(new Date(data.weekStart));
+  const ws = mondayUtc(new Date(data.weekStart));
   const count = await db.weeklyPlanItem.count({ where: { userId: data.userId, weekStart: ws } });
   await db.weeklyPlanItem.create({
     data: {
@@ -126,7 +126,7 @@ export async function addExistingTaskToPlan(input: z.infer<typeof fromTaskSchema
   const task = await db.task.findUnique({ where: { id: data.taskId }, select: { id: true, title: true, priority: true, projectId: true } });
   if (!task) return { error: "Задачу не знайдено" };
 
-  const ws = mondayOf(new Date(data.weekStart));
+  const ws = mondayUtc(new Date(data.weekStart));
   const dup = await db.weeklyPlanItem.findFirst({ where: { userId: data.userId, weekStart: ws, taskId: task.id } });
   if (dup) return { error: "Задача вже в плані" };
 
@@ -167,7 +167,7 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
   const viewer = await requireUser();
   if (!(await canApprove(viewer, input.userId))) return { error: "Тільки керівник може затвердити" };
 
-  const ws = mondayOf(new Date(input.weekStart));
+  const ws = mondayUtc(new Date(input.weekStart));
   const items = await db.weeklyPlanItem.findMany({
     where: { userId: input.userId, weekStart: ws, approved: false, taskId: null },
   });
@@ -209,7 +209,7 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
 // Сотрудник отправляет план руководителю на утверждение
 export async function submitPlanForApproval(input: { weekStart: string }) {
   const viewer = await requireUser();
-  const ws = mondayOf(new Date(input.weekStart));
+  const ws = mondayUtc(new Date(input.weekStart));
   const count = await db.weeklyPlanItem.count({ where: { userId: viewer.id, weekStart: ws } });
   if (count === 0) return { error: "Додайте хоча б одну задачу" };
 
@@ -240,7 +240,7 @@ export async function submitPlanForApproval(input: { weekStart: string }) {
 export async function returnPlan(input: { userId: string; weekStart: string; comment?: string }) {
   const viewer = await requireUser();
   if (!(await canManage(viewer.id, viewer.role, input.userId))) return { error: "Немає прав" };
-  const ws = mondayOf(new Date(input.weekStart));
+  const ws = mondayUtc(new Date(input.weekStart));
 
   await db.weeklyPlanApproval.upsert({
     where: { userId_weekStart: { userId: input.userId, weekStart: ws } },

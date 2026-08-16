@@ -1,10 +1,10 @@
 import "server-only";
 import { db } from "@/server/db";
 
-// Проекты, в которых пользователь состоит участником
-export async function getProjectsForUser(userId: string) {
+// Проекты, в которых пользователь состоит участником (или все — для админа)
+export async function getProjectsForUser(userId: string, opts?: { all?: boolean }) {
   const projects = await db.project.findMany({
-    where: { members: { some: { userId } } },
+    where: opts?.all ? {} : { members: { some: { userId } } },
     orderBy: { updatedAt: "desc" },
     include: {
       members: { include: { user: true } },

@@ -1142,6 +1142,7 @@ export type TelegramAccountCreateManyArgs<ExtArgs extends runtime.Types.Extensio
    * The data used to create many TelegramAccounts.
    */
   data: Prisma.TelegramAccountCreateManyInput | Prisma.TelegramAccountCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1160,6 +1161,7 @@ export type TelegramAccountCreateManyAndReturnArgs<ExtArgs extends runtime.Types
    * The data used to create many TelegramAccounts.
    */
   data: Prisma.TelegramAccountCreateManyInput | Prisma.TelegramAccountCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

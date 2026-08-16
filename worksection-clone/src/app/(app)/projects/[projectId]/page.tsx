@@ -9,9 +9,12 @@ import { KanbanBoard } from "@/components/board/kanban-board";
 import { TaskList } from "@/components/board/task-list";
 import { GanttChart } from "@/components/gantt/gantt-chart";
 import { ManageMembers } from "@/components/project/manage-members";
+import { ProjectActions } from "@/components/project/project-actions";
+import { isAdmin } from "@/server/authz";
 import type { BoardTask } from "@/components/board/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { PROJECT_STATUS_LABEL, PROJECT_STATUS_STYLE } from "@/lib/domain";
+import { PROJECT_STATUS_STYLE } from "@/lib/domain";
+import { projectStatusLabel, t } from "@/lib/i18n";
 import { initials, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +30,8 @@ export default async function ProjectBoardPage({
   const user = await requireUser();
 
   const member = await isProjectMember(projectId, user.id);
-  if (!member) redirect("/");
+  const canManage = member || isAdmin(user.role);
+  if (!canManage) redirect("/"); // доступ — учасникам проєкту та адмінам
 
   const project = await getProjectById(projectId);
   if (!project) notFound();
@@ -45,9 +49,10 @@ export default async function ProjectBoardPage({
     dueDate: t.dueDate ? t.dueDate.toISOString() : null,
     position: t.position,
     assignedByManager: t.assignedByManager,
+    fromSummary: t.fromSummary,
     plannedMinutes: t.plannedMinutes,
     isProject: !!t.projectId,
-    assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
+    assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name, avatarUrl: a.user.avatarUrl })),
     tags: t.tags.map((tt) => ({ id: tt.tag.id, name: tt.tag.name, color: tt.tag.color })),
     subtaskCount: t._count.subtasks,
     commentCount: t._count.comments,
@@ -63,8 +68,8 @@ export default async function ProjectBoardPage({
 
   return (
     <div className="flex flex-col">
-      <header className="border-b px-6 py-4">
-        <div className="flex items-center gap-3">
+      <header className="border-b px-4 py-4 sm:px-6">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="size-3 rounded-full" style={{ backgroundColor: project.color }} />
           <h1 className="text-xl font-semibold tracking-tight">{project.name}</h1>
           <span
@@ -73,11 +78,11 @@ export default async function ProjectBoardPage({
               PROJECT_STATUS_STYLE[project.status],
             )}
           >
-            {PROJECT_STATUS_LABEL[project.status]}
+            {projectStatusLabel(user.locale, project.status)}
           </span>
-          <div className="ml-auto flex items-center gap-4">
+          <div className="ml-auto flex flex-wrap items-center gap-4">
             {project.dueDate && (
-              <span className="text-xs text-muted-foreground">Срок: {formatDate(project.dueDate)}</span>
+              <span className="text-xs text-muted-foreground">{t(user.locale, "proj.due")}: {formatDate(project.dueDate, user.locale)}</span>
             )}
             <ManageMembers
               projectId={projectId}
@@ -96,6 +101,7 @@ export default async function ProjectBoardPage({
                 </Avatar>
               ))}
             </div>
+            <ProjectActions projectId={projectId} status={project.status} />
           </div>
         </div>
         {project.description && (
@@ -111,7 +117,7 @@ export default async function ProjectBoardPage({
               !isList ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted",
             )}
           >
-            Доска
+            {t(user.locale, "proj.board")}
           </Link>
           <Link
             href={`/projects/${projectId}?view=list`}
@@ -120,7 +126,7 @@ export default async function ProjectBoardPage({
               isList ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted",
             )}
           >
-            Список
+            {t(user.locale, "proj.list")}
           </Link>
           <Link
             href={`/projects/${projectId}?view=gantt`}
@@ -129,14 +135,15 @@ export default async function ProjectBoardPage({
               isGantt ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted",
             )}
           >
-            Гант
+            {t(user.locale, "proj.gantt")}
           </Link>
         </div>
       </header>
 
-      <div className="overflow-x-auto px-6 py-4">
+      <div className="overflow-x-auto px-4 py-4 sm:px-6">
         {isGantt && gantt ? (
           <GanttChart
+            locale={user.locale}
             tasks={gantt.tasks.map((t) => ({
               id: t.id,
               title: t.title,
@@ -155,7 +162,7 @@ export default async function ProjectBoardPage({
         ) : isList ? (
           <TaskList tasks={boardTasks} />
         ) : (
-          <KanbanBoard projectId={projectId} initialTasks={boardTasks} members={members} />
+          <KanbanBoard projectId={projectId} initialTasks={boardTasks} members={members} locale={user.locale} />
         )}
       </div>
     </div>

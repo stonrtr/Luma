@@ -1,10 +1,22 @@
 import "dotenv/config";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "../src/generated/prisma/client";
 import bcrypt from "bcryptjs";
 
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL! });
-const db = new PrismaClient({ adapter });
+// Адаптер по схеме DATABASE_URL: postgres:// → Postgres (сервер), иначе SQLite (локально).
+function makeAdapter() {
+  const url = process.env.DATABASE_URL ?? "";
+  if (url.startsWith("postgres://") || url.startsWith("postgresql://")) {
+    const { PrismaNeon } = require("@prisma/adapter-neon");
+    const { neonConfig } = require("@neondatabase/serverless");
+    if (!neonConfig.webSocketConstructor && typeof globalThis.WebSocket !== "undefined") {
+      neonConfig.webSocketConstructor = globalThis.WebSocket;
+    }
+    return new PrismaNeon({ connectionString: url });
+  }
+  const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
+  return new PrismaBetterSqlite3({ url });
+}
+const db = new PrismaClient({ adapter: makeAdapter() });
 
 function mondayOf(d: Date) {
   const x = new Date(d);
@@ -19,11 +31,11 @@ async function main() {
   const now = new Date();
 
   const admin = await db.user.upsert({
-    where: { email: process.env.ADMIN_EMAIL ?? "admin@worksection.local" },
+    where: { email: process.env.ADMIN_EMAIL ?? "admin@workspacem.local" },
     update: {},
     create: {
       name: "Admin", firstName: "Admin", lastName: "",
-      email: process.env.ADMIN_EMAIL ?? "admin@worksection.local",
+      email: process.env.ADMIN_EMAIL ?? "admin@workspacem.local",
       passwordHash: password, role: "OWNER", title: "Керівник проєкту",
       functions: "Керує командою, ставить цілі та KPI, перевіряє задачі.",
       hourlyRate: 40, weeklyHours: 40, locale: "uk",
@@ -190,7 +202,7 @@ async function main() {
   // важный чужой файл, расшарен Анне
   await db.fileShare.create({ data: { fileId: f1.id, userId: igor.id } });
 
-  console.log("Seed завершено. Вхід: admin@worksection.local / Password1!");
+  console.log("Seed завершено. Вхід: admin@workspacem.local / Password1!");
 }
 
 main().then(() => db.$disconnect()).catch(async (e) => { console.error(e); await db.$disconnect(); process.exit(1); });

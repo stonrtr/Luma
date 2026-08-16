@@ -1238,6 +1238,7 @@ export type GoogleAccountCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many GoogleAccounts.
    */
   data: Prisma.GoogleAccountCreateManyInput | Prisma.GoogleAccountCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1256,6 +1257,7 @@ export type GoogleAccountCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many GoogleAccounts.
    */
   data: Prisma.GoogleAccountCreateManyInput | Prisma.GoogleAccountCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

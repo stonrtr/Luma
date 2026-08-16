@@ -359,6 +359,7 @@ export type TaskTagCreateOrConnectWithoutTaskInput = {
 
 export type TaskTagCreateManyTaskInputEnvelope = {
   data: Prisma.TaskTagCreateManyTaskInput | Prisma.TaskTagCreateManyTaskInput[]
+  skipDuplicates?: boolean
 }
 
 export type TaskTagUpsertWithWhereUniqueWithoutTaskInput = {
@@ -400,6 +401,7 @@ export type TaskTagCreateOrConnectWithoutTagInput = {
 
 export type TaskTagCreateManyTagInputEnvelope = {
   data: Prisma.TaskTagCreateManyTagInput | Prisma.TaskTagCreateManyTagInput[]
+  skipDuplicates?: boolean
 }
 
 export type TaskTagUpsertWithWhereUniqueWithoutTagInput = {
@@ -1162,6 +1164,7 @@ export type TaskTagCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many TaskTags.
    */
   data: Prisma.TaskTagCreateManyInput | Prisma.TaskTagCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1180,6 +1183,7 @@ export type TaskTagCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many TaskTags.
    */
   data: Prisma.TaskTagCreateManyInput | Prisma.TaskTagCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

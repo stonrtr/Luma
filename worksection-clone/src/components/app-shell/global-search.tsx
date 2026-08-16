@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { useT } from "@/lib/locale-context";
 import { useRouter } from "next/navigation";
 import { Search, CheckSquare, FolderKanban, User } from "lucide-react";
 import { globalSearch } from "@/server/actions/search";
@@ -16,6 +17,7 @@ export function GlobalSearch() {
   const [q, setQ] = useState("");
   const [res, setRes] = useState<SearchResults>(EMPTY);
   const [pending, start] = useTransition();
+  const tr = useT();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ⌘K / Ctrl+K — открыть
@@ -52,46 +54,46 @@ export function GlobalSearch() {
       <button
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 rounded-lg border bg-card px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted"
-        title="Пошук (⌘K)"
-        aria-label="Пошук"
+        title={`${tr("search.ph")} (⌘K)`}
+        aria-label={tr("search.ph")}
       >
         <Search className="size-4" />
-        <span className="hidden lg:inline">Пошук…</span>
+        <span className="hidden lg:inline">{tr("search.ph")}</span>
         <kbd className="ml-1 hidden rounded border bg-muted px-1 text-[10px] lg:inline">⌘K</kbd>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-xl gap-0 overflow-hidden p-0" showCloseButton={false}>
+        <DialogContent className="sm:max-w-xl gap-0 overflow-hidden p-0" showCloseButton={false}>
           <div className="flex items-center gap-2 border-b px-3">
             <Search className="size-4 shrink-0 text-muted-foreground" />
             <Input
               autoFocus
               value={q}
               onChange={(e) => onChange(e.target.value)}
-              placeholder="Пошук задач, проєктів, людей…"
+              placeholder={tr("search.ph")}
               className="h-12 border-0 px-0 focus-visible:ring-0"
             />
           </div>
 
           <div className="max-h-[60vh] overflow-y-auto p-2">
             {q.trim().length < 2 ? (
-              <p className="px-2 py-6 text-center text-sm text-muted-foreground">Введіть щонайменше 2 символи.</p>
+              <p className="px-2 py-6 text-center text-sm text-muted-foreground">{tr("search.min")}</p>
             ) : total === 0 ? (
-              <p className="px-2 py-6 text-center text-sm text-muted-foreground">{pending ? "Пошук…" : "Нічого не знайдено."}</p>
+              <p className="px-2 py-6 text-center text-sm text-muted-foreground">{pending ? tr("search.ph") : tr("search.notFound")}</p>
             ) : (
               <>
-                <Group label="Задачі" show={res.tasks.length > 0}>
+                <Group label={tr("search.tasks")} show={res.tasks.length > 0}>
                   {res.tasks.map((t) => (
                     <Row key={t.id} icon={<CheckSquare className="size-4" />} onClick={() => go(`/tasks/${t.id}`)}
                       title={t.title} sub={t.projectName ?? undefined} />
                   ))}
                 </Group>
-                <Group label="Проєкти" show={res.projects.length > 0}>
+                <Group label={tr("search.projects")} show={res.projects.length > 0}>
                   {res.projects.map((p) => (
                     <Row key={p.id} icon={<FolderKanban className="size-4" style={{ color: p.color }} />} onClick={() => go(`/projects/${p.id}`)} title={p.name} />
                   ))}
                 </Group>
-                <Group label="Люди" show={res.people.length > 0}>
+                <Group label={tr("search.people")} show={res.people.length > 0}>
                   {res.people.map((u) => (
                     <Row key={u.id} icon={<User className="size-4" />} onClick={() => go(`/team?member=${u.id}`)} title={u.name} sub={u.title ?? undefined} />
                   ))}
@@ -109,7 +111,7 @@ function Group({ label, show, children }: { label: string; show: boolean; childr
   if (!show) return null;
   return (
     <div className="mb-1">
-      <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="px-2 py-1 text-[10px] font-semibold text-muted-foreground">{label}</p>
       {children}
     </div>
   );

@@ -1,0 +1,115 @@
+"use server";
+
+import { z } from "zod";
+import bcrypt from "bcryptjs";
+import { revalidatePath } from "next/cache";
+import { db } from "@/server/db";
+import { requireUser } from "@/server/dal";
+import { sendMail, inviteEmail } from "@/server/mail";
+
+const schema = z.object({
+  name: z.string().min(1).max(80),
+  email: z.string().email(),
+  password: z.string().min(6, "Минимум 6 символов"),
+  title: z.string().max(80).optional(),
+  role: z.enum(["ADMIN", "MEMBER", "CLIENT"]).default("MEMBER"),
+  hourlyRate: z.number().nullable().optional(),
+});
+
+export async function createUser(input: z.infer<typeof schema>) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") {
+    return { error: "Недостаточно прав" };
+  }
+  const data = schema.parse(input);
+
+  const existing = await db.user.findUnique({ where: { email: data.email } });
+  if (existing) return { error: "Пользователь с таким email уже есть" };
+
+  await db.user.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      passwordHash: await bcrypt.hash(data.password, 10),
+      title: data.title || null,
+      role: data.role,
+      hourlyRate: data.hourlyRate ?? null,
+    },
+  });
+
+  revalidatePath("/admin/users");
+  return { error: null };
+}
+
+// Пригласить сотрудника из оргсхемы: создаёт аккаунт, назначает руководителя, возвращает временный пароль
+const inviteSchema = z.object({
+  firstName: z.string().min(1, "Вкажіть ім'я").max(60),
+  lastName: z.string().max(60).optional(),
+  email: z.string().email("Невірний email"),
+  title: z.string().max(80).optional(),
+  managerId: z.string().nullable().optional(),
+  weeklyHours: z.number().min(0).max(168).nullable().optional(),
+});
+
+export async function inviteMember(input: z.infer<typeof inviteSchema>) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };
+  const parsed = inviteSchema.safeParse(input);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Помилка" };
+  const data = parsed.data;
+
+  const existing = await db.user.findUnique({ where: { email: data.email } });
+  if (existing) return { error: "Користувач з таким email вже існує" };
+
+  const firstName = data.firstName.trim();
+  const lastName = (data.lastName ?? "").trim();
+  const name = [firstName, lastName].filter(Boolean).join(" ");
+
+  const tempPassword = Math.random().toString(36).slice(-4) + Math.random().toString(36).slice(-4).toUpperCase() + "1!";
+  await db.user.create({
+    data: {
+      name,
+      firstName,
+      lastName: lastName || null,
+      email: data.email,
+      passwordHash: await bcrypt.hash(tempPassword, 10),
+      title: data.title || null,
+      role: "MEMBER",
+      managerId: data.managerId || null,
+      weeklyHours: data.weeklyHours ?? null,
+    },
+  });
+  // отправляем доступы на почту сотруднику (или dev-fallback в консоль, если SMTP не настроен)
+  let emailed = false;
+  try {
+    emailed = await sendMail(inviteEmail(name, data.email, tempPassword));
+  } catch (e) {
+    console.error("[invite] не вдалося надіслати листа:", e);
+  }
+
+  revalidatePath("/org");
+  revalidatePath("/admin/users");
+  return { error: null, tempPassword, emailed };
+}
+
+export async function setUserActive(input: { userId: string; active: boolean }) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };
+  if (input.userId === admin.id) return { error: "Не можна деактивувати себе" };
+  const target = await db.user.findUnique({ where: { id: input.userId }, select: { role: true } });
+  if (target?.role === "OWNER") return { error: "Не можна деактивувати власника" };
+  await db.user.update({ where: { id: input.userId }, data: { isActive: input.active } });
+  revalidatePath("/admin/users");
+  return { error: null };
+}
+
+export async function deleteUser(userId: string) {
+  const admin = await requireUser();
+  if (admin.role !== "OWNER" && admin.role !== "ADMIN") return { error: "Немає прав" };
+  if (userId === admin.id) return { error: "Не можна видалити себе" };
+  const target = await db.user.findUnique({ where: { id: userId }, select: { role: true } });
+  if (target?.role === "OWNER") return { error: "Не можна видалити власника" };
+  await db.user.delete({ where: { id: userId } });
+  revalidatePath("/admin/users");
+  return { error: null };
+}

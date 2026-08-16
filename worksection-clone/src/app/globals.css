@@ -5,51 +5,51 @@
 
 :root {
   --radius: 0.6rem;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #4f46e5;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #eef2ff;
-  --accent-foreground: #3730a3;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #4f46e5;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0f172a;
+  --background: #F3F4EF;
+  --foreground: #12240F;
+  --card: #FFFFFF;
+  --card-foreground: #12240F;
+  --popover: #FFFFFF;
+  --popover-foreground: #12240F;
+  --primary: #C6E89B;            /* лайм — заливка активных элементов */
+  --primary-foreground: #12240F; /* тёмно-зелёный текст на лайме */
+  --secondary: #EEF1E7;
+  --secondary-foreground: #12240F;
+  --muted: #EEF1E7;
+  --muted-foreground: #6B7A66;
+  --accent: #EAF4DA;
+  --accent-foreground: #3D6B26;
+  --destructive: #B24239;
+  --destructive-foreground: #FFFFFF;
+  --border: #E3E6DD;
+  --input: #E3E6DD;
+  --ring: #3D6B26;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #12240F;
 }
 
 .dark {
-  --background: #0b1120;
-  --foreground: #e2e8f0;
-  --card: #0f172a;
-  --card-foreground: #e2e8f0;
-  --popover: #0f172a;
-  --popover-foreground: #e2e8f0;
-  --primary: #6366f1;
-  --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #e2e8f0;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #1e293b;
-  --accent-foreground: #c7d2fe;
-  --destructive: #f87171;
-  --destructive-foreground: #0b1120;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #6366f1;
-  --sidebar: #0f172a;
-  --sidebar-foreground: #e2e8f0;
+  --background: #0A130D;
+  --foreground: #E8EFE3;
+  --card: #131C15;
+  --card-foreground: #E8EFE3;
+  --popover: #131C15;
+  --popover-foreground: #E8EFE3;
+  --primary: #C6E89B;
+  --primary-foreground: #0A130D;
+  --secondary: #16211A;
+  --secondary-foreground: #E8EFE3;
+  --muted: #16211A;
+  --muted-foreground: #8B9C86;
+  --accent: #1D2F1B;
+  --accent-foreground: #A9D97F;
+  --destructive: #E58279;
+  --destructive-foreground: #0A130D;
+  --border: #232E20;
+  --input: #232E20;
+  --ring: #A9D97F;
+  --sidebar: #131C15;
+  --sidebar-foreground: #E8EFE3;
 }
 
 @theme inline {
@@ -78,7 +78,7 @@
   --color-ring: var(--ring);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 * {
@@ -89,4 +89,34 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* --- Иерархия «светящихся» кнопок (tier 1 / tier 2) --- */
+@keyframes btnglow {
+  0%, 100% { box-shadow: 0 0 18px 2px rgba(183,238,122,.60), 0 10px 46px 8px rgba(183,238,122,.42), 0 22px 80px 16px rgba(160,225,100,.28); }
+  50%      { box-shadow: 0 0 26px 4px rgba(195,245,135,.85), 0 14px 60px 12px rgba(183,238,122,.58), 0 28px 100px 22px rgba(160,225,100,.38); }
+}
+@keyframes btnglow2 {
+  0%, 100% { box-shadow: 0 0 8px 1px rgba(183,238,122,.45), 0 4px 16px 2px rgba(183,238,122,.22); }
+  50%      { box-shadow: 0 0 12px 2px rgba(195,245,135,.60), 0 6px 22px 4px rgba(183,238,122,.32); }
+}
+.glow-ring-1 { animation: btnglow 6s ease-in-out infinite; }
+.glow-ring-2 { animation: btnglow2 6s ease-in-out infinite; }
+
+/* Контейнер навигации: свечение активного пункта не должно обрезаться */
+.nav-scroll { overflow-x: auto; padding: 14px 0; margin: -14px 0; scrollbar-width: none; }
+.nav-scroll::-webkit-scrollbar { display: none; }
+
+/* Оболочка приложения задаёт color здесь, где --foreground разрешается по теме
+   (класс .dark висит на этом же элементе), иначе текст без явного цвета наследует
+   светлотемное значение с body и в тёмной теме становится нечитабельным. */
+.app-shell { color: var(--foreground); }
+
+/* Тёмная тема: мягкое свечение на фоне приложения */
+.dark.app-shell {
+  background-color: #0A130D;
+  background-image:
+    radial-gradient(1200px 520px at 15% -60px, rgba(140,215,120,.34), transparent 68%),
+    radial-gradient(1000px 460px at 70% -80px, rgba(95,191,160,.26), transparent 70%);
+  background-repeat: no-repeat;
 }

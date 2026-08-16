@@ -1,19 +1,21 @@
+import { redirect } from "next/navigation";
 import { requireUser } from "@/server/dal";
+import { t, roleLabel } from "@/lib/i18n";
 import { getOrgUsers } from "@/server/queries/team";
 import { OrgEditDialog } from "@/components/org/org-edit-dialog";
 import { OrgAddDialog } from "@/components/org/org-add-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { initials } from "@/lib/format";
-import { Plus } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { initials, timeAgo } from "@/lib/format";
+import { Plus, Clock } from "lucide-react";
 
-const ROLE_LABEL: Record<string, string> = { OWNER: "Власник", ADMIN: "Адміністратор", MEMBER: "Співробітник" };
 
 type OrgUser = Awaited<ReturnType<typeof getOrgUsers>>[number];
 
 export default async function OrgPage() {
   const viewer = await requireUser();
-  const users = await getOrgUsers();
   const isAdmin = viewer.role === "OWNER" || viewer.role === "ADMIN";
+  if (!isAdmin) redirect("/"); // оргсхема — только для руководителей
+  const users = await getOrgUsers();
   const candidates = users.map((u) => ({ id: u.id, name: u.name }));
 
   const byManager = new Map<string | null, OrgUser[]>();
@@ -31,17 +33,17 @@ export default async function OrgPage() {
       <li>
         <div className="orgcard inline-flex w-56 flex-col rounded-xl border bg-card p-3 text-left align-top shadow-sm">
           <div className="flex items-start gap-2">
-            <Avatar className="size-9"><AvatarFallback className="text-xs">{initials(user.name)}</AvatarFallback></Avatar>
+            <Avatar className="size-9">{user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}<AvatarFallback className="text-xs">{initials(user.name)}</AvatarFallback></Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-sm font-semibold">{user.name}</span>
+                <span className="min-w-0 flex-1 break-words text-sm font-semibold leading-tight">{user.name}</span>
                 {(canEdit || isAdmin) && (
                   <span className="ml-auto flex shrink-0 items-center gap-1">
                     {isAdmin && (
                       <OrgAddDialog
                         candidates={candidates}
                         defaultManagerId={user.id}
-                        trigger={<button type="button" className="text-muted-foreground hover:text-primary" title={`Додати підлеглого до «${user.name}»`}><Plus className="size-3.5" /></button>}
+                        trigger={<button type="button" className="text-muted-foreground hover:text-accent-foreground" title={`${t(viewer.locale, "org.addSubTo")} «${user.name}»`}><Plus className="size-3.5" /></button>}
                       />
                     )}
                     {canEdit && (
@@ -50,17 +52,28 @@ export default async function OrgPage() {
                   </span>
                 )}
               </div>
-              <p className="truncate text-xs text-muted-foreground">{user.title ?? "Посада не вказана"}</p>
+              <p className="truncate text-xs">
+                {user.title
+                  ? <span className="inline-block rounded-full bg-accent px-2 py-0.5 text-[11px] text-accent-foreground">{user.title}</span>
+                  : <span className="text-muted-foreground">{t(viewer.locale, "org.noTitle")}</span>}
+              </p>
             </div>
           </div>
           <div className="mt-1.5 flex flex-wrap items-center gap-1">
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{ROLE_LABEL[user.role] ?? user.role}</span>
-            {!user.isActive && <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">Неактивний</span>}
+            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{roleLabel(viewer.locale, user.role)}</span>
+            {!user.isActive && <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">{t(viewer.locale, "org.inactive")}</span>}
             <span className="ml-auto text-[11px] text-muted-foreground">
-              {user.weeklyHours != null ? `${Math.round((user.weeklyHours / 5) * 10) / 10} год/день` : "—"}
+              {user.weeklyHours != null ? `${Math.round((user.weeklyHours / 5) * 10) / 10} ${t(viewer.locale, "org.hPerDay")}` : "—"}
             </span>
           </div>
           {user.functions && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{user.functions}</p>}
+          {/* Время последнего визита — футер ВНУТРИ карточки, чтобы стрелка связи не перекрывала текст */}
+          <p className="mt-1.5 flex items-center gap-1 border-t pt-1.5 text-[11px] text-muted-foreground">
+            <Clock className="size-3 shrink-0" />
+            {user.lastSeenAt
+              ? <span>{t(viewer.locale, "org.lastSeen")}: {timeAgo(user.lastSeenAt, viewer.locale)}</span>
+              : <span>{t(viewer.locale, "org.lastSeenNever")}</span>}
+          </p>
         </div>
         {reports.length > 0 && (
           <ul>
@@ -77,8 +90,8 @@ export default async function OrgPage() {
     <div className="mx-auto max-w-full px-6 py-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Оргсхема</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Структура команди, функції та робочі години</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{t(viewer.locale, "page.org")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t(viewer.locale, "page.orgSub")}</p>
         </div>
         {isAdmin && <OrgAddDialog candidates={candidates} />}
       </div>
@@ -94,7 +107,8 @@ export default async function OrgPage() {
         .orgtree, .orgtree ul { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; }
         .orgtree > li { padding-top: 0; }
         .orgtree li { position: relative; display: flex; flex-direction: column; align-items: center; padding: 24px 14px 0; }
-        .orgtree ul { position: relative; }
+        /* отступ под карточкой: вертикальный «стебель» (top:-24px) рисуется в этом зазоре и не налазит на карточку */
+        .orgtree ul { position: relative; margin-top: 24px; }
         /* горизонтальные соединители между детьми */
         .orgtree ul li::before, .orgtree ul li::after {
           content: ""; position: absolute; top: 0; width: 50%; height: 24px;

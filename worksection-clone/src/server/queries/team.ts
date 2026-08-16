@@ -9,6 +9,7 @@ export async function getOrgUsers() {
     select: {
       id: true, name: true, title: true, functions: true, role: true,
       weeklyHours: true, managerId: true, isActive: true, email: true, driveFolderUrl: true,
+      lastSeenAt: true, avatarUrl: true,
     },
   });
 }

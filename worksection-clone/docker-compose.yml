@@ -1,0 +1,41 @@
+# Локальный прод-паритет: Postgres + приложение в контейнере (как на сервере).
+# Запуск:  docker compose up --build
+# Затем открыть http://localhost:3100 (логин из ADMIN_EMAIL / ADMIN_PASSWORD).
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: worksection
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/worksection
+      AUTH_SECRET: dev-secret-change-me
+      APP_URL: http://localhost:3100
+      ADMIN_EMAIL: admin@worksection.local
+      ADMIN_PASSWORD: Password1!
+      ADMIN_NAME: Admin
+      # CRON_SECRET, GOOGLE_*, TELEGRAM_*, VAPID_*, RESEND/SMTP — по необходимости
+    ports:
+      - "3100:3100"
+    volumes:
+      - uploads:/app/public/uploads
+
+volumes:
+  pgdata:
+  uploads:

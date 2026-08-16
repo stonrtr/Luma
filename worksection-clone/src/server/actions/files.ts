@@ -1,12 +1,11 @@
 "use server";
 
-import { promises as fs } from "fs";
-import path from "path";
 import { randomUUID } from "crypto";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { putObject, deleteByUrl } from "@/server/storage";
 
 export async function addFileLink(input: { name: string; url: string; note?: string; isTeam?: boolean }) {
   const user = await requireUser();
@@ -41,11 +40,11 @@ export async function uploadFileDoc(formData: FormData) {
   if (!(file instanceof File) || file.size === 0) return { error: "Файл не вибрано" };
   if (file.size > 20 * 1024 * 1024) return { error: "Файл більше 20 МБ" };
   const safeName = file.name.replace(/[^\w.\-а-яА-ЯіїєґІЇЄҐ ]+/g, "_");
-  const key = `${randomUUID()}-${safeName}`;
-  const dir = path.join(process.cwd(), "public", "uploads", "files");
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(path.join(dir, key), Buffer.from(await file.arrayBuffer()));
-  await db.fileLink.create({ data: { name: file.name, url: `/uploads/files/${key}`, kind: "UPLOAD", ownerId: user.id } });
+  const key = `files/${randomUUID()}-${safeName}`;
+  const url = await putObject(key, Buffer.from(await file.arrayBuffer()), file.type || "application/octet-stream");
+  // отображаемое имя: введённое пользователем, иначе имя файла
+  const displayName = (formData.get("name")?.toString().trim() || file.name).slice(0, 200);
+  await db.fileLink.create({ data: { name: displayName, url, kind: "UPLOAD", ownerId: user.id } });
   revalidatePath("/files");
   return { error: null };
 }
@@ -53,10 +52,9 @@ export async function uploadFileDoc(formData: FormData) {
 export async function deleteFile(id: string) {
   const user = await requireUser();
   const f = await db.fileLink.findUnique({ where: { id } });
-  if (!f || f.ownerId !== user.id) return;
-  if (f.kind === "UPLOAD" && f.url.startsWith("/uploads/")) {
-    try { await fs.unlink(path.join(process.cwd(), "public", f.url)); } catch {}
-  }
+  const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
+  if (!f || (f.ownerId !== user.id && !isAdmin)) return; // свій файл або адмін
+  if (f.kind === "UPLOAD") await deleteByUrl(f.url); // з диска або S3; зовнішні посилання ігноруються
   await db.fileLink.delete({ where: { id } });
   revalidatePath("/files");
 }

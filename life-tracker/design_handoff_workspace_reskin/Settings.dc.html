@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  html, body { margin:0; padding:0; background:#F3F4EF; }
+  body { font-family:'Manrope','Helvetica Neue',Arial,sans-serif; color:#12240F; -webkit-font-smoothing:antialiased; }
+  a { color:#3D6B26; text-decoration:none; }
+  a:hover { color:#2A4C19; }
+  ::selection { background:#C6E89B; color:#12240F; }
+  @keyframes navglow {
+    0%, 100% { box-shadow: 0 0 10px 1px rgba(183,238,122,.45), 0 6px 22px 4px rgba(183,238,122,.25); }
+    50%      { box-shadow: 0 0 16px 2px rgba(195,245,135,.65), 0 8px 30px 6px rgba(183,238,122,.35); }
+  }
+  @keyframes btnglow2 {
+    0%, 100% { box-shadow: 0 0 8px 1px rgba(183,238,122,.45), 0 4px 16px 2px rgba(183,238,122,.22); }
+    50%      { box-shadow: 0 0 12px 2px rgba(195,245,135,.60), 0 6px 22px 4px rgba(183,238,122,.32); }
+  }
+  @keyframes btnglow {
+    0%, 100% { box-shadow: 0 0 18px 2px rgba(183,238,122,.60), 0 10px 46px 8px rgba(183,238,122,.42), 0 22px 80px 16px rgba(160,225,100,.28); }
+    50%      { box-shadow: 0 0 26px 4px rgba(195,245,135,.85), 0 14px 60px 12px rgba(183,238,122,.58), 0 28px 100px 22px rgba(160,225,100,.38); }
+  }
+  .navscroll { scrollbar-width:none; -ms-overflow-style:none; }
+  .navscroll::-webkit-scrollbar { display:none; height:0; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column; background:#F3F4EF;">
+
+  <header style="position:sticky; top:0; z-index:40; display:flex; height:56px; flex-shrink:0; align-items:center; gap:12px; padding:0 16px; background:#FFFFFF; border-bottom:1px solid #E3E6DD;">
+    <a href="Workspace Board.dc.html" style="display:flex; flex-shrink:0; align-items:center; gap:8px; color:#12240F;">
+      <span role="img" aria-label="team M" style="width:32px; height:32px; border-radius:8px; background-color:#fff; background-image:url('logo.png'); background-size:contain; background-position:center; background-repeat:no-repeat; box-shadow:0 1px 2px rgba(18,36,15,.12); outline:1px solid rgba(18,36,15,.12);"></span>
+      <span style="font-size:18px; font-weight:500; letter-spacing:-.02em;">Workspace</span>
+    </a>
+    <div class="navscroll" style="flex:1; min-width:0; overflow-x:auto; overflow-y:hidden; padding:14px 0; margin:-14px 0;">
+      <nav style="display:flex; align-items:center; gap:2px; overflow:visible;">
+        <a href="Workspace Board.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="layout-dashboard" style="width:16px;height:16px"></i><span>Задачі</span></a>
+        <a href="Planning.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="clipboard-list" style="width:16px;height:16px"></i><span>Планування</span></a>
+        <a href="Projects.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="folder-kanban" style="width:16px;height:16px"></i><span>Проєкти</span></a>
+        <a href="Files.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="folder-open" style="width:16px;height:16px"></i><span>Файли</span></a>
+        <a href="Org.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="network" style="width:16px;height:16px"></i><span>Оргсхема</span></a>
+        <a href="Team.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="users-round" style="width:16px;height:16px"></i><span>Команда</span></a>
+        <a href="Reports.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#6B7A66;"><i data-lucide="bar-chart-3" style="width:16px;height:16px"></i><span>Звіти</span></a>
+      </nav>
+    </div>
+    <div style="display:flex; flex-shrink:0; align-items:center; gap:4px;">
+      <button style="display:flex; align-items:center; justify-content:center; width:32px; height:32px; border:0; background:transparent; border-radius:8px; color:#6B7A66; cursor:pointer;"><i data-lucide="search" style="width:16px;height:16px"></i></button>
+      <button style="position:relative; display:flex; align-items:center; justify-content:center; width:32px; height:32px; border:0; background:transparent; border-radius:8px; color:#6B7A66; cursor:pointer;">
+        <i data-lucide="bell" style="width:16px;height:16px"></i>
+        <span style="position:absolute; top:4px; right:5px; width:6px; height:6px; border-radius:50%; background:#3D6B26;"></span>
+      </button>
+      <button style="display:flex; align-items:center; gap:8px; border:0; background:transparent; padding:0 2px 0 6px; cursor:pointer;">
+        <span style="width:28px; height:28px; border-radius:50%; background:#DCEFBE; color:#3D6B26; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600;">АД</span>
+        <i data-lucide="chevron-down" style="width:14px;height:14px;color:#6B7A66"></i>
+      </button>
+    </div>
+  </header>
+
+  <main style="flex:1;">
+    <div style="margin:0 auto; max-width:768px; padding:32px 24px;">
+      <h1 style="margin:0; font-size:24px; font-weight:600; letter-spacing:-.02em;">Налаштування</h1>
+      <p style="margin:4px 0 24px; font-size:13px; color:#6B7A66;">Профіль та вподобання</p>
+
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        <section style="border-radius:12px; border:1px solid #E3E6DD; background:#FFFFFF; padding:20px;">
+          <h2 style="margin:0 0 16px; font-size:13px; font-weight:600;">Профіль</h2>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <span style="display:flex; width:64px; height:64px; align-items:center; justify-content:center; border-radius:50%; background:#DCEFBE; font-size:18px; font-weight:600; color:#3D6B26;">АД</span>
+            <div><button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:9999px; background:#B7EE7A; padding:6px 12px; font:inherit; font-size:13px; font-weight:500; color:#1E3A12; cursor:pointer;"><i data-lucide="upload" style="width:16px;height:16px"></i> Завантажити аватар</button></div>
+          </div>
+          <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Ім'я</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#FFFFFF; padding:0 10px; font-size:13px; color:#12240F;">Анна</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Прізвище</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#FFFFFF; padding:0 10px; font-size:13px; color:#12240F;">Дизайнер</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Email</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#F7F9F3; padding:0 10px; font-size:13px; color:#94A18F;">anna@worksection.local</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Телефон</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#F7F9F3; padding:0 10px; font-size:13px; color:#94A18F;">+380…</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Посада</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#F7F9F3; padding:0 10px; font-size:13px; color:#94A18F;">UI/UX дизайнер</div></div>
+          </div>
+          <div style="margin-top:16px;"><span style="display:inline-flex; border-radius:9999px; padding:1.5px; background:#B7EE7A; animation:btnglow2 6s ease-in-out infinite; flex-shrink:0;"><button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:9999px; background:#FFFFFF; padding:7px 14px; font:inherit; font-size:13px; font-weight:600; color:#12240F; cursor:pointer;">Зберегти</button></span></div></section>
+
+        <section style="border-radius:12px; border:1px solid #E3E6DD; background:#FFFFFF; padding:20px;">
+          <h2 style="margin:0 0 16px; font-size:13px; font-weight:600;">Вподобання</h2>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Мова застосунку</label><div style="display:flex; height:36px; align-items:center; justify-content:space-between; border-radius:6px; border:1px solid #E3E6DD; padding:0 10px; font-size:13px;">Українська <i data-lucide="chevron-down" style="width:14px;height:14px;color:#6B7A66"></i></div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Тема</label><div style="display:flex; height:36px; align-items:center; justify-content:space-between; border-radius:6px; border:1px solid #E3E6DD; padding:0 10px; font-size:13px;">Світла <i data-lucide="chevron-down" style="width:14px;height:14px;color:#6B7A66"></i></div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Часовий пояс</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#FFFFFF; padding:0 10px; font-size:13px; color:#12240F;">Europe/Kyiv</div></div>
+            <label style="display:flex; align-items:flex-end; gap:8px; padding-bottom:8px;">
+              <span style="display:flex; width:16px; height:16px; align-items:center; justify-content:center; border-radius:4px; background:#C6E89B; color:#12240F;"><i data-lucide="check" style="width:12px;height:12px"></i></span>
+              <span style="font-size:13px;">Початок тижня — понеділок</span>
+            </label>
+          </div>
+          <div style="margin-top:16px;"><button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:6px; background:#C6E89B; padding:8px 14px; font:inherit; font-size:13px; font-weight:600; color:#12240F; cursor:pointer;">Зберегти</button></div></section>
+
+        <section style="border-radius:12px; border:1px solid #E3E6DD; background:#FFFFFF; padding:20px;">
+          <h2 style="margin:0 0 16px; font-size:13px; font-weight:600;">Зміна паролю</h2>
+          <div style="display:grid; max-width:448px; grid-template-columns:1fr; gap:12px;">
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Поточний пароль</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#F7F9F3; padding:0 10px; font-size:13px; color:#94A18F;">••••••••</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;"><label style="font-size:13px; font-weight:500;">Новий пароль</label><div style="display:flex; height:36px; align-items:center; border-radius:6px; border:1px solid #E3E6DD; background:#F7F9F3; padding:0 10px; font-size:13px; color:#94A18F;">••••••••</div></div>
+          </div>
+          <div style="margin-top:16px;"><button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:9999px; background:#B7EE7A; padding:6px 12px; font:inherit; font-size:13px; font-weight:500; color:#1E3A12; cursor:pointer;">Змінити пароль</button></div></section>
+      </div>
+
+      <section style="margin-top:24px; border-radius:12px; border:1px solid #E3E6DD; background:#FFFFFF; padding:20px;">
+        <div style="margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="bell" style="width:20px;height:20px;color:#3D6B26"></i>
+          <div>
+            <h2 style="margin:0; font-size:13px; font-weight:600;">Пуш-сповіщення</h2>
+            <p style="margin:2px 0 0; font-size:11px; color:#6B7A66;">Отримувати сповіщення в браузері, навіть коли вкладку закрито.</p>
+          </div>
+        </div>
+        <button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:6px; background:#C6E89B; padding:8px 14px; font:inherit; font-size:13px; font-weight:600; color:#12240F; cursor:pointer;"><i data-lucide="bell" style="width:16px;height:16px"></i> Увімкнути пуш</button>
+      </section>
+      <section style="margin-top:24px; border-radius:12px; border:1px solid #E3E6DD; background:#FFFFFF; padding:20px;">
+        <div style="margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="send" style="width:20px;height:20px;color:#3D6B26"></i>
+          <div>
+            <h2 style="margin:0; font-size:13px; font-weight:600;">Telegram-бот</h2>
+            <p style="margin:2px 0 0; font-size:11px; color:#6B7A66;">Отримуйте сповіщення та керуйте задачами з телефона (/today, /inbox, /new…).</p>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><i data-lucide="check" style="width:16px;height:16px;color:#3D6B26"></i> Підключено: @anna_designer</span>
+          <button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:9999px; background:#B7EE7A; padding:6px 12px; font:inherit; font-size:13px; font-weight:500; color:#1E3A12; cursor:pointer;">Відключити</button>
+        </div>
+      </section>
+      <section style="margin-top:24px; border-radius:12px; border:1px solid #E3E6DD; background:#FFFFFF; padding:20px;">
+        <div style="margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="calendar-days" style="width:20px;height:20px;color:#3D6B26"></i>
+          <div>
+            <h2 style="margin:0; font-size:13px; font-weight:600;">Google Calendar</h2>
+            <p style="margin:2px 0 0; font-size:11px; color:#6B7A66;">Звінки з Google з’являться в календарі, а задачі зі стартом і дедлайном — у Google.</p>
+          </div>
+        </div>
+        <button style="display:inline-flex; align-items:center; gap:6px; border:0; border-radius:6px; background:#C6E89B; padding:8px 14px; font:inherit; font-size:13px; font-weight:600; color:#12240F; cursor:pointer;">Підключити Google Calendar</button>
+      </section>
+    </div>
+  </main>
+
+  <span style="position:fixed; bottom:24px; left:24px; z-index:50; display:inline-flex; border-radius:50%; padding:1.5px; background:#B7EE7A; animation:btnglow 6s ease-in-out infinite;"><button style="display:flex; width:53px; height:53px; align-items:center; justify-content:center; border:0; border-radius:50%; color:#12240F; background:#FFFFFF; cursor:pointer;">
+    <i data-lucide="plus" style="width:28px;height:28px"></i>
+  </button></span>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  icons() { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }
+  componentDidMount() {
+    this.icons();
+    this._t = [80, 300, 900, 2000].map((ms) => setTimeout(() => this.icons(), ms));
+  }
+  componentDidUpdate() { this.icons(); }
+  componentWillUnmount() { (this._t || []).forEach(clearTimeout); }
+}
+</script>
+</body>
+</html>

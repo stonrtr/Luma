@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireUser } from "@/server/dal";
+import { getRecurringForUser, getTeamRecurringForViewer } from "@/server/queries/planning";
 import { getMyTasks, getArchivedTasks } from "@/server/queries/tasks";
 import { getMonthlyKpis } from "@/server/queries/planning";
 import { getProjectsForUser } from "@/server/queries/projects";
@@ -15,17 +16,17 @@ import { formatMinutes } from "@/lib/format";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-function WorkloadBar({ label, used, cap }: { label: string; used: number; cap: number }) {
+function WorkloadBar({ label, used, cap, locale }: { label: string; used: number; cap: number; locale: string }) {
   const pct = cap ? Math.min(100, Math.round((used / cap) * 100)) : 0;
   const over = used > cap;
   return (
     <div className="flex flex-1 items-center gap-2.5 rounded-lg border bg-card px-3 py-1.5">
       <span className="whitespace-nowrap text-xs text-muted-foreground">{label}</span>
       <div className="h-1.5 min-w-12 flex-1 overflow-hidden rounded-full bg-muted">
-        <div className={cn("h-full rounded-full", over ? "bg-destructive" : pct > 80 ? "bg-amber-500" : "bg-emerald-500")} style={{ width: `${pct}%` }} />
+        <div className={cn("h-full rounded-full", over ? "bg-destructive" : "bg-primary")} style={{ width: `${pct}%` }} />
       </div>
       <span className={cn("whitespace-nowrap text-xs font-semibold", over && "text-destructive")}>
-        {formatMinutes(used)}<span className="font-normal text-muted-foreground"> / {formatMinutes(cap)}</span>
+        {formatMinutes(used, locale)}<span className="font-normal text-muted-foreground"> / {formatMinutes(cap, locale)}</span>
       </span>
     </div>
   );
@@ -45,9 +46,13 @@ export default async function HomePage({
         id: t.id, title: t.title,
         projectName: t.project?.name ?? null, projectColor: t.project?.color ?? null,
         completedAt: (t.completedAt ?? t.updatedAt).toISOString(),
-        assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
+        assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name, avatarUrl: a.user.avatarUrl })),
       }))
     : [];
+  const recurringRows = view === "recurring" ? await getRecurringForUser(user.id) : undefined;
+  const teamRecurringRows = view === "recurring"
+    ? (await getTeamRecurringForViewer(user.id, user.role)).map((r) => ({ ...r, assigneeName: r.assignee.name }))
+    : undefined;
   const myProjects = (await getProjectsForUser(user.id)).map((p) => ({ id: p.id, name: p.name, color: p.color }));
 
   // Данные для вида «Календар» — недельный тайм-грид
@@ -71,6 +76,7 @@ export default async function HomePage({
     const days: WeekDay[] = Array.from({ length: 7 }, (_, di) => {
       const date = addDays(weekStart, di);
       return {
+        dateISO: dayKeys[di],
         weekdayLabel: dayNames[di],
         dateLabel: `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`,
         isToday: dayKeys[di] === todayKey,
@@ -82,7 +88,7 @@ export default async function HomePage({
     for (const tk of wkTasks) {
       const inWeek = (d: Date | null) => d && new Date(d) >= weekStart && new Date(d) < weekEnd;
       const done = tk.status === "DONE";
-      const color = tk.project?.color ?? (done ? "#10b981" : "#4f46e5");
+      const color = tk.project?.color ?? (done ? "#C6E89B" : "#3D6B26");
       let di = -1;
       if (inWeek(tk.scheduledAt)) {
         di = dayIndex(tk.scheduledAt!);
@@ -106,7 +112,7 @@ export default async function HomePage({
       const di = dayIndex(c.scheduledAt);
       if (di < 0) continue;
       const startMin = zonedMinutes(new Date(c.scheduledAt), tz);
-      days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#0ea5e9", type: "call" });
+      days[di].events.push({ startMin, endMin: startMin + (c.durationMin || 30), title: c.title, color: "#5AA9C9", type: "call" });
     }
     // события из Google Calendar пользователя (звонки/встречи); задачи-зеркала пропускаем
     for (const g of await listGoogleEvents(user.id, weekStart, weekEnd)) {
@@ -127,7 +133,10 @@ export default async function HomePage({
       const di = dayIndex(l.loggedAt);
       if (di >= 0) days[di].summary.actualMin += l.minutes;
     }
-    for (const d of days) d.summary.freeMin = Math.max(0, dailyCap - d.summary.plannedMin);
+    for (const d of days) {
+      const callMin = d.events.filter((e) => e.type === "call").reduce((s, e) => s + (e.endMin - e.startMin), 0);
+      d.summary.freeMin = Math.max(0, dailyCap - d.summary.plannedMin - callMin); // мінус задачі І дзвінки/зустрічі
+    }
 
     const fmt = (d: Date) => `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
     const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -140,7 +149,11 @@ export default async function HomePage({
     };
   }
 
-  const boardTasks: BoardTask[] = tasks.map((t) => ({
+  const boardTasks: BoardTask[] = tasks.map((t) => {
+    // Задача-«Перевірити …» (маркер /tasks/<id> в описі): у картці — АВТОР,
+    // тобто підлеглий, що відправив на перевірку: його фото і імʼя замість проєкту.
+    const isCheckTask = !!t.description && /^\/tasks\/[a-z0-9]+$/i.test(t.description.trim()) && t.createdById !== user.id && !!t.createdBy;
+    return {
     id: t.id,
     title: t.title,
     status: t.status,
@@ -148,17 +161,20 @@ export default async function HomePage({
     dueDate: (t.scheduledAt ?? t.dueDate)?.toISOString() ?? null,
     position: t.position,
     assignedByManager: t.assignedByManager,
+    fromSummary: t.fromSummary,
     plannedMinutes: t.plannedMinutes,
     isProject: !!t.projectId,
-    projectName: t.project?.name ?? null,
+    projectName: isCheckTask ? t.createdBy!.name : (t.project?.name ?? null),
     projectColor: t.project?.color ?? null,
-    assignees: t.assignees.map((a) => ({ id: a.user.id, name: a.user.name })),
+    assignees: isCheckTask
+      ? [{ id: t.createdBy!.id, name: t.createdBy!.name, avatarUrl: t.createdBy!.avatarUrl }]
+      : t.assignees.map((a) => ({ id: a.user.id, name: a.user.name, avatarUrl: a.user.avatarUrl })),
     tags: t.tags.map((tt) => ({ id: tt.tag.id, name: tt.tag.name, color: tt.tag.color })),
     subtaskCount: t._count.subtasks,
     commentCount: t._count.comments,
     checklistTotal: t._count.checklist,
     checklistDone: t.checklist.filter((c) => c.done).length,
-  }));
+  }; });
 
   // Нагрузка на день и неделю (по плановому времени незакрытых задач)
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -180,16 +196,17 @@ export default async function HomePage({
     <div className="flex flex-col">
       <KpiStrip
         ownerName={user.name}
+        locale={user.locale}
         kpis={kpis.map((k) => ({ id: k.id, title: k.title, target: k.target, actualValue: k.actualValue, achieved: k.achieved }))}
       />
       <header className="border-b px-6 py-2.5">
         <div className="flex max-w-2xl flex-wrap gap-3">
-          <WorkloadBar label={t(user.locale, "load.today")} used={todayMin} cap={dailyCap} />
-          <WorkloadBar label={t(user.locale, "load.week")} used={weekMin} cap={weekCap} />
+          <WorkloadBar label={t(user.locale, "load.today")} used={todayMin} cap={dailyCap} locale={user.locale} />
+          <WorkloadBar label={t(user.locale, "load.week")} used={weekMin} cap={weekCap} locale={user.locale} />
         </div>
       </header>
       <div>
-        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} projects={myProjects} archive={archiveRows} />
+        <MyWorkspace tasks={boardTasks} userId={user.id} view={view ?? "board"} locale={user.locale} calendar={calendar} projects={myProjects} archive={archiveRows} recurring={recurringRows} teamRecurring={teamRecurringRows} />
       </div>
     </div>
   );

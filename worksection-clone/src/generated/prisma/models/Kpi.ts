@@ -530,6 +530,7 @@ export type KpiCreateOrConnectWithoutUserInput = {
 
 export type KpiCreateManyUserInputEnvelope = {
   data: Prisma.KpiCreateManyUserInput | Prisma.KpiCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type KpiUpsertWithWhereUniqueWithoutUserInput = {
@@ -1353,6 +1354,7 @@ export type KpiCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data used to create many Kpis.
    */
   data: Prisma.KpiCreateManyInput | Prisma.KpiCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1371,6 +1373,7 @@ export type KpiCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many Kpis.
    */
   data: Prisma.KpiCreateManyInput | Prisma.KpiCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

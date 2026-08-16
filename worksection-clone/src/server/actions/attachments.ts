@@ -1,11 +1,10 @@
 "use server";
 
-import { promises as fs } from "fs";
-import path from "path";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { putObject, deleteByUrl } from "@/server/storage";
 
 const MAX_BYTES = 10 * 1024 * 1024; // 10 МБ
 
@@ -25,18 +24,17 @@ export async function uploadAttachment(formData: FormData) {
   if (!task) return { error: "Задача не найдена" };
 
   const safeName = file.name.replace(/[^\w.\-а-яА-ЯёЁ ]+/g, "_");
-  const key = `${randomUUID()}-${safeName}`;
-  const dir = path.join(process.cwd(), "public", "uploads", taskId);
-  await fs.mkdir(dir, { recursive: true });
+  const contentType = file.type || "application/octet-stream";
+  const key = `tasks/${taskId}/${randomUUID()}-${safeName}`;
   const buffer = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(path.join(dir, key), buffer);
+  const url = await putObject(key, buffer, contentType);
 
   await db.attachment.create({
     data: {
       fileName: file.name,
-      mimeType: file.type || "application/octet-stream",
+      mimeType: contentType,
       sizeBytes: file.size,
-      url: `/uploads/${taskId}/${key}`,
+      url,
       uploadedById: user.id,
       taskId,
     },
@@ -50,14 +48,7 @@ export async function deleteAttachment(input: { id: string; taskId: string }) {
   await requireUser();
   const att = await db.attachment.findUnique({ where: { id: input.id } });
   if (!att) return;
-  // удаляем файл с диска, если он локальный
-  if (att.url.startsWith("/uploads/")) {
-    try {
-      await fs.unlink(path.join(process.cwd(), "public", att.url));
-    } catch {
-      // файл мог быть уже удалён — не критично
-    }
-  }
+  await deleteByUrl(att.url); // удалит из хранилища (диск или S3), внешние ссылки игнорирует
   await db.attachment.delete({ where: { id: input.id } });
   revalidatePath(`/tasks/${input.taskId}`);
 }

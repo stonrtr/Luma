@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+*.db
+dev.db
+prisma/dev.db
+public/uploads
+.env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store
+README*.md
+design_handoff_workspace_reskin

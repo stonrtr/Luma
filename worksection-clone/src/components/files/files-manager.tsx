@@ -1,25 +1,22 @@
 "use client";
+import { useT } from "@/lib/locale-context";
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { LinkIcon, Upload, X, FileText, Share2, Check, Copy, Users, FolderInput } from "lucide-react";
-import { addFileLink, uploadFileDoc, deleteFile, shareFile, setDriveFolder } from "@/server/actions/files";
+import { LinkIcon, Upload, X, FileText, Check, Copy, Loader2, Eye } from "lucide-react";
+import { addFileLink, uploadFileDoc, deleteFile } from "@/server/actions/files";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { driveEmbedUrl } from "@/lib/drive";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-type OwnFile = { id: string; name: string; url: string; kind: string; note: string | null; shares: { user: { id: string; name: string } }[] };
-type TeamFile = { id: string; name: string; url: string; kind: string; owner: { name: string } };
-type SharedFile = { id: string; name: string; url: string; kind: string; owner: { name: string } };
-type UserOpt = { id: string; name: string };
+type TeamFile = { id: string; name: string; url: string; kind: string; ownerId: string; ownerName: string };
 
 function useCopy() {
+  const tr = useT();
   return (url: string) => {
     const abs = url.startsWith("http") ? url : (typeof window !== "undefined" ? window.location.origin : "") + url;
-    navigator.clipboard.writeText(abs).then(() => toast.success("Посилання скопійовано")).catch(() => toast.error("Не вдалося скопіювати"));
+    navigator.clipboard.writeText(abs).then(() => toast.success(tr("fm.linkCopied"))).catch(() => toast.error(tr("fm.copyFailed")));
   };
 }
 
@@ -27,44 +24,49 @@ function FileIcon({ kind }: { kind: string }) {
   return kind === "LINK" ? <LinkIcon className="size-4 text-muted-foreground" /> : <FileText className="size-4 text-muted-foreground" />;
 }
 
+// Назва файлу: посилання відкривається зовні, завантажений файл — у попапі предпросмотру.
+function FileName({ f, onPreview }: { f: { kind: string; url: string; name: string }; onPreview: () => void }) {
+  if (f.kind === "LINK") {
+    return <a href={f.url} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate text-sm hover:text-accent-foreground">{f.name}</a>;
+  }
+  return <button onClick={onPreview} className="min-w-0 flex-1 truncate text-left text-sm hover:text-accent-foreground">{f.name}</button>;
+}
+
+const IMG_RE = /\.(png|jpe?g|gif|webp|svg|bmp|avif)$/i;
+
 export function FilesManager({
-  team, own, shared, users, driveFolderUrl, isAdmin,
+  files, viewerId, isAdmin,
 }: {
-  team: TeamFile[]; own: OwnFile[]; shared: SharedFile[]; users: UserOpt[]; driveFolderUrl: string | null; isAdmin: boolean;
+  files: TeamFile[]; viewerId: string; isAdmin: boolean;
 }) {
   const router = useRouter();
+  const tr = useT();
   const fileRef = useRef<HTMLInputElement>(null);
   const [, start] = useTransition();
   const copy = useCopy();
 
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
-  const [isTeam, setIsTeam] = useState(false);
-  const [drive, setDrive] = useState(driveFolderUrl ?? "");
-
-  const embed = driveFolderUrl ? driveEmbedUrl(driveFolderUrl) : null;
+  const [uploadStatus, setUploadStatus] = useState<{ name: string; ok: boolean | null; error?: string } | null>(null);
+  const [preview, setPreview] = useState<{ name: string; url: string } | null>(null);
 
   function addLink() {
-    if (!name.trim() || !url.trim()) { toast.error("Вкажіть назву та посилання"); return; }
+    if (!name.trim() || !url.trim()) { toast.error(tr("fm.enterNameLink")); return; }
     start(async () => {
-      const res = await addFileLink({ name, url, isTeam: isTeam && isAdmin });
+      const res = await addFileLink({ name, url });
       if (res?.error) toast.error(res.error);
-      else { setName(""); setUrl(""); toast.success("Додано"); router.refresh(); }
+      else { setName(""); setUrl(""); toast.success(tr("fm.added")); router.refresh(); }
     });
   }
   function upload(file: File) {
+    const display = name.trim() || file.name;
+    setUploadStatus({ name: display, ok: null });
     const fd = new FormData(); fd.set("file", file);
+    if (name.trim()) fd.set("name", name.trim());
     start(async () => {
       const res = await uploadFileDoc(fd);
-      if (res?.error) toast.error(res.error);
-      else { toast.success("Завантажено"); router.refresh(); }
-    });
-  }
-  function saveDrive() {
-    start(async () => {
-      const res = await setDriveFolder({ url: drive });
-      if (res?.error) toast.error(res.error);
-      else { toast.success("Папку збережено"); router.refresh(); }
+      if (res?.error) { setUploadStatus({ name: display, ok: false, error: res.error }); toast.error(res.error); }
+      else { setUploadStatus({ name: display, ok: true }); setName(""); toast.success(tr("fm.uploaded")); router.refresh(); }
     });
   }
 
@@ -73,110 +75,80 @@ export function FilesManager({
       {/* Добавление */}
       <div className="rounded-xl border bg-card p-4">
         <div className="flex flex-wrap items-end gap-2">
-          <div className="flex-1 space-y-1">
-            <label className="text-xs text-muted-foreground">Назва</label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Бренд-бук" className="h-8" />
+          <div className="min-w-[130px] flex-1 space-y-1">
+            <label className="text-xs text-muted-foreground">{tr("fm.nameLabel")}</label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("fm.namePh")} className="h-8" />
           </div>
-          <div className="flex-[2] space-y-1">
-            <label className="text-xs text-muted-foreground">Посилання</label>
+          <div className="min-w-[200px] flex-[2] space-y-1">
+            <label className="text-xs text-muted-foreground">{tr("fm.linkLabel")} <span className="text-muted-foreground/70">{tr("fm.orUpload")}</span></label>
             <Input value={url} onChange={(e) => setUrl(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addLink()} placeholder="https://…" className="h-8" />
           </div>
-          <Button size="sm" onClick={addLink}><LinkIcon className="size-4" /> Додати</Button>
-          <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()}><Upload className="size-4" /> Завантажити</Button>
+          <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()}><Upload className="size-4" /> {tr("fm.uploadFile")}</Button>
           <input ref={fileRef} type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ""; }} />
+          <Button size="sm" onClick={addLink} disabled={!name.trim() || !url.trim()}>{tr("common.add")}</Button>
         </div>
-        {isAdmin && (
-          <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm">
-            <Checkbox checked={isTeam} onCheckedChange={(c) => setIsTeam(!!c)} />
-            <Users className="size-3.5 text-muted-foreground" /> Командний файл (видно всім)
-          </label>
+        <p className="mt-2 text-xs text-muted-foreground">{tr("fm.hint")}</p>
+
+        {/* Статус завантаження файлу */}
+        {uploadStatus && (
+          <div className="mt-2 flex items-center gap-2 rounded-lg border bg-muted/20 px-3 py-1.5 text-sm">
+            {uploadStatus.ok === null ? (
+              <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" />
+            ) : uploadStatus.ok ? (
+              <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Check className="size-3" /></span>
+            ) : (
+              <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-destructive text-white"><X className="size-3" /></span>
+            )}
+            <FileText className="size-4 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 flex-1 truncate">{uploadStatus.name}</span>
+            <span className={"shrink-0 text-xs " + (uploadStatus.ok === null ? "text-muted-foreground" : uploadStatus.ok ? "text-[#3D6B26] dark:text-[#A9D97F]" : "text-destructive")}>
+              {uploadStatus.ok === null ? tr("fm.uploading") : uploadStatus.ok ? tr("common.ready") : (uploadStatus.error ?? tr("common.error"))}
+            </span>
+            {uploadStatus.ok !== null && (
+              <button onClick={() => setUploadStatus(null)} className="shrink-0 text-muted-foreground hover:text-foreground" title={tr("fm.hide")}><X className="size-3.5" /></button>
+            )}
+          </div>
         )}
       </div>
 
-      {/* Командные файлы — приоритетнее, сверху */}
+      {/* Файлы команды — общий список */}
       <div>
-        <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold"><Users className="size-4 text-primary" /> Командні файли</h2>
+        <h2 className="mb-3 text-sm font-semibold">{tr("fm.teamFiles")}</h2>
         <div className="space-y-1.5">
-          {team.map((f) => (
+          {files.map((f) => (
             <div key={f.id} className="group flex items-center gap-2 rounded-lg border bg-card px-3 py-2">
               <FileIcon kind={f.kind} />
-              <a href={f.url} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate text-sm hover:text-primary">{f.name}</a>
-              <button onClick={() => copy(f.url)} className="text-muted-foreground hover:text-foreground" title="Скопіювати посилання"><Copy className="size-4" /></button>
-              {isAdmin && (
-                <button onClick={() => start(async () => { await deleteFile(f.id); router.refresh(); })} className="text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"><X className="size-3.5" /></button>
+              <FileName f={f} onPreview={() => setPreview({ name: f.name, url: f.url })} />
+              <span className="hidden text-xs text-muted-foreground sm:inline">{f.ownerId === viewerId ? tr("fm.you") : f.ownerName}</span>
+              {f.kind !== "LINK" && (
+                <button onClick={() => setPreview({ name: f.name, url: f.url })} className="text-muted-foreground hover:text-foreground" title={tr("fm.view")}><Eye className="size-4" /></button>
+              )}
+              <button onClick={() => copy(f.url)} className="text-muted-foreground hover:text-foreground" title={tr("fm.copyLinkT")}><Copy className="size-4" /></button>
+              {(f.ownerId === viewerId || isAdmin) && (
+                <button onClick={() => start(async () => { await deleteFile(f.id); router.refresh(); })} className="text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100" title={tr("fm.deleteT")}><X className="size-3.5" /></button>
               )}
             </div>
           ))}
-          {team.length === 0 && <p className="text-sm text-muted-foreground">Командних файлів поки немає.</p>}
+          {files.length === 0 && <p className="text-sm text-muted-foreground">{tr("fm.empty")}</p>}
         </div>
       </div>
 
-      {/* Google Drive папка */}
-      <div>
-        <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold"><FolderInput className="size-4 text-primary" /> Файли з Google Drive</h2>
-        <div className="flex flex-wrap items-center gap-2">
-          <Input value={drive} onChange={(e) => setDrive(e.target.value)} placeholder="Посилання на папку Google Drive…" className="h-8 flex-1" />
-          <Button size="sm" variant="outline" onClick={saveDrive}>Зберегти папку</Button>
-        </div>
-        <p className="mt-1 text-xs text-muted-foreground">Папка має бути відкрита «усім, хто має посилання» — тоді список файлів підтягнеться та оновлюватиметься автоматично.</p>
-        {embed ? (
-          <iframe src={embed} className="mt-3 h-96 w-full rounded-lg border bg-white" title="Google Drive" />
-        ) : driveFolderUrl ? (
-          <p className="mt-3 text-sm text-destructive">Не вдалося розпізнати ID папки з посилання.</p>
-        ) : null}
-      </div>
-
-      {/* Мои файлы */}
-      <div>
-        <h2 className="mb-3 text-sm font-semibold">Мої файли</h2>
-        <div className="space-y-1.5">
-          {own.map((f) => (
-            <div key={f.id} className="group flex items-center gap-2 rounded-lg border bg-card px-3 py-2">
-              <FileIcon kind={f.kind} />
-              <a href={f.url} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate text-sm hover:text-primary">{f.name}</a>
-              {f.shares.length > 0 && <span className="hidden text-xs text-muted-foreground sm:inline">спільний: {f.shares.map((s) => s.user.name).join(", ")}</span>}
-              <button onClick={() => copy(f.url)} className="text-muted-foreground hover:text-foreground" title="Скопіювати посилання"><Copy className="size-4" /></button>
-              <Popover>
-                <PopoverTrigger className="text-muted-foreground hover:text-foreground" title="Поділитися"><Share2 className="size-4" /></PopoverTrigger>
-                <PopoverContent className="w-56" align="end">
-                  <p className="mb-2 text-xs font-medium text-muted-foreground">Поділитися з</p>
-                  <div className="space-y-1">
-                    {users.map((u) => {
-                      const on = f.shares.some((s) => s.user.id === u.id);
-                      return (
-                        <label key={u.id} className="flex cursor-pointer items-center gap-2 rounded px-1 py-1 hover:bg-muted">
-                          <Checkbox checked={on} onCheckedChange={(c) => start(async () => { await shareFile({ fileId: f.id, userId: u.id, on: !!c }); router.refresh(); })} />
-                          <span className="text-sm">{u.name}</span>
-                          {on && <Check className="ml-auto size-3 text-emerald-500" />}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <button onClick={() => start(async () => { await deleteFile(f.id); router.refresh(); })} className="text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"><X className="size-3.5" /></button>
-            </div>
-          ))}
-          {own.length === 0 && <p className="text-sm text-muted-foreground">Файлів поки немає.</p>}
-        </div>
-      </div>
-
-      {/* Доступные мне */}
-      {shared.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-sm font-semibold">Доступні мені</h2>
-          <div className="space-y-1.5">
-            {shared.map((f) => (
-              <div key={f.id} className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2">
-                <FileIcon kind={f.kind} />
-                <a href={f.url} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate text-sm hover:text-primary">{f.name}</a>
-                <span className="text-xs text-muted-foreground">від {f.owner.name}</span>
-                <button onClick={() => copy(f.url)} className="text-muted-foreground hover:text-foreground" title="Скопіювати посилання"><Copy className="size-4" /></button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Попап предпросмотру файлу */}
+      <Dialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)}>
+        <DialogContent className="w-[96vw] !max-w-[96vw] sm:!max-w-[96vw]">
+          <DialogHeader>
+            <DialogTitle className="truncate pr-6">{preview?.name}</DialogTitle>
+          </DialogHeader>
+          {preview && (
+            IMG_RE.test(preview.url)
+              ? <img src={preview.url} alt={preview.name} className="max-h-[86vh] w-full rounded-lg object-contain" />
+              : <iframe src={preview.url} title={preview.name} className="h-[86vh] w-full rounded-lg border bg-white" />
+          )}
+          {preview && (
+            <a href={preview.url} target="_blank" rel="noreferrer" className="text-xs text-accent-foreground hover:underline">{tr("fm.openNewTab")}</a>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

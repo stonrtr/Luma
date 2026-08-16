@@ -4,6 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { zonedTimeToUtc, zonedDateStr } from "@/lib/tz";
+import { t } from "@/lib/i18n";
 import { isNotificationEnabled } from "@/server/queries/notification-settings";
 import { syncTaskToGoogle } from "@/server/google/calendar";
 import { notify } from "@/server/notify";
@@ -18,8 +20,11 @@ const createTaskSchema = z.object({
   assigneeId: z.string().optional(),
   dueDate: z.string().optional(),
   dueTime: z.string().optional(),
+  scheduledAt: z.string().optional(), // старт (дата+время) для календаря
   parentId: z.string().optional(),
   recurringTaskId: z.string().optional(),
+  fromSummary: z.boolean().optional(),      // ручний тег «з самарі»
+  assignedByManager: z.boolean().optional(), // ручний тег «від керівника»
 });
 
 export async function createTask(input: z.infer<typeof createTaskSchema>) {
@@ -34,9 +39,9 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
     orderBy: { position: "desc" },
   });
 
-  // задача от руководителя: назначена другому и создатель — админ/владелец или руководитель исполнителя
-  let assignedByManager = false;
-  if (assigneeId !== user.id) {
+  // задача от руководителя: ручной тег ИЛИ авто (назначена другому руководителем/админом)
+  let assignedByManager = data.assignedByManager ?? false;
+  if (!assignedByManager && assigneeId !== user.id) {
     if (user.role === "OWNER" || user.role === "ADMIN") assignedByManager = true;
     else {
       const assignee = await db.user.findUnique({ where: { id: assigneeId }, select: { managerId: true } });
@@ -44,11 +49,14 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
     }
   }
 
-  // дата+время → scheduledAt (для календаря)
+  // старт задачи → scheduledAt (для календаря): явный scheduledAt или дедлайн+время (обратная совместимость)
   let scheduledAt: Date | null = null;
   const dueDate = data.dueDate ? new Date(data.dueDate) : null;
-  if (data.dueDate && data.dueTime) {
-    scheduledAt = new Date(`${data.dueDate}T${data.dueTime}`);
+  if (data.scheduledAt) {
+    const [sd, st] = data.scheduledAt.split("T");
+    scheduledAt = zonedTimeToUtc(sd, st ?? "00:00", user.timezone);
+  } else if (data.dueDate && data.dueTime) {
+    scheduledAt = zonedTimeToUtc(data.dueDate, data.dueTime, user.timezone);
   }
 
   const task = await db.task.create({
@@ -63,6 +71,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
       dueDate,
       scheduledAt,
       assignedByManager,
+      fromSummary: data.fromSummary ?? false,
       recurringTaskId: data.recurringTaskId ?? null,
       position: (last?.position ?? -1) + 1,
       assignees: { create: [{ userId: assigneeId }] },
@@ -87,6 +96,15 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
 }
 
 // Перемещение задачи между колонками канбана / внутри колонки
+// Закрыть висящие задачи «Перевірити «…»» для задачи, когда её закрыли ЛЮБЫМ путём
+// (вердикт, смена статуса, чекбокс на доске, масове закриття). Маркер — /tasks/<id> в описі.
+async function closeCheckTasksFor(taskId: string) {
+  await db.task.updateMany({
+    where: { description: `/tasks/${taskId}`, status: { not: "DONE" } },
+    data: { status: "DONE", completedAt: new Date() },
+  });
+}
+
 export async function moveTask(input: {
   taskId: string;
   toStatus: TaskStatus;
@@ -119,6 +137,7 @@ export async function moveTask(input: {
       db.task.update({ where: { id: t.id }, data: { position: i } }),
     ),
   ]);
+  if (toStatus === "DONE") await closeCheckTasksFor(taskId);
 
   if (task.status !== toStatus) {
     await db.activity.create({
@@ -138,12 +157,13 @@ const updateTaskSchema = z.object({
   priority: z.number().int().min(1).max(10).optional(),
   plannedMinutes: z.number().int().positive().nullable().optional(),
   dueDate: z.string().nullable().optional(),
+  scheduledAt: z.string().nullable().optional(), // старт (дата+час) для календаря
 });
 
 export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
   const user = await requireUser();
   const data = updateTaskSchema.parse(input);
-  const { taskId, dueDate, status, ...rest } = data;
+  const { taskId, dueDate, scheduledAt, status, ...rest } = data;
 
   const prev = status ? await db.task.findUnique({ where: { id: taskId }, select: { status: true } }) : null;
 
@@ -153,6 +173,9 @@ export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
       ...rest,
       ...(status ? { status, completedAt: status === "DONE" ? new Date() : null } : {}),
       ...(dueDate !== undefined ? { dueDate: dueDate ? new Date(dueDate) : null } : {}),
+      ...(scheduledAt !== undefined
+        ? { scheduledAt: scheduledAt ? zonedTimeToUtc(scheduledAt.split("T")[0], scheduledAt.split("T")[1] ?? "00:00", user.timezone) : null }
+        : {}),
     },
   });
 
@@ -161,6 +184,8 @@ export async function updateTask(input: z.infer<typeof updateTaskSchema>) {
       data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId, meta: JSON.stringify({ title: task.title, to: status }) },
     });
   }
+
+  if (status === "DONE") await closeCheckTasksFor(taskId);
 
   await syncTaskToGoogle(taskId); // best-effort: обновить событие в Google Calendar
 
@@ -185,7 +210,33 @@ export async function bulkSetStatus(input: { taskIds: string[]; status: TaskStat
       meta: JSON.stringify({ title: t.title, to: input.status }),
     })),
   });
+  if (input.status === "DONE") {
+    for (const t of tasks) await closeCheckTasksFor(t.id);
+  }
   revalidatePath("/", "layout");
+}
+
+// Полное удаление задачи. Право: владелец/админ, автор, исполнитель
+// или руководитель исполнителя. Каскады подчищают чек-лист/комментарии/сабтаски.
+export async function deleteTask(taskId: string) {
+  const user = await requireUser();
+  const task = await db.task.findUnique({
+    where: { id: taskId },
+    include: { assignees: { include: { user: { select: { id: true, managerId: true } } } } },
+  });
+  if (!task) return { error: null, projectId: null };
+  const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
+  const isMine = task.createdById === user.id || task.assignees.some((a) => a.user.id === user.id);
+  const managesAssignee = task.assignees.some((a) => a.user.managerId === user.id);
+  if (!isAdmin && !isMine && !managesAssignee) return { error: "Немає прав", projectId: null };
+
+  await db.task.delete({ where: { id: taskId } });
+  // «Перевірити …» для удалённой задачи больше не имеют смысла — убираем незакрытые
+  await db.task.deleteMany({ where: { description: `/tasks/${taskId}`, status: { not: "DONE" } } });
+
+  if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
+  revalidatePath("/");
+  return { error: null, projectId: task.projectId };
 }
 
 // Отправить задачу на проверку руководителю
@@ -218,9 +269,101 @@ export async function sendForReview(taskId: string) {
     );
   }
 
+  // Керівнику падає особиста задача «Перевірити «…»» з дедлайном на сьогодні.
+  // Маркер зв'язку — посилання /tasks/<id> в описі: після вердикту вона закриється сама.
+  const marker = `/tasks/${task.id}`;
+  const managers = await db.user.findMany({
+    where: { id: { in: [...managerIds] } },
+    select: { id: true, locale: true, timezone: true },
+  });
+  for (const m of managers) {
+    const existing = await db.task.findFirst({
+      where: { status: { not: "DONE" }, description: marker, assignees: { some: { userId: m.id } } },
+      select: { id: true },
+    });
+    if (existing) continue; // повторна відправка — задача вже висить
+    const tz = m.timezone || "Europe/Kyiv";
+    const last = await db.task.findFirst({ where: { projectId: null, status: "TODO", parentId: null }, orderBy: { position: "desc" } });
+    await db.task.create({
+      data: {
+        title: `${t(m.locale, "review.checkTitle")} «${task.title}»`,
+        description: marker,
+        status: "TODO",
+        priority: task.priority,
+        plannedMinutes: 15,
+        createdById: user.id,
+        dueDate: zonedTimeToUtc(zonedDateStr(new Date(), tz), "23:59", tz),
+        position: (last?.position ?? -1) + 1,
+        assignees: { create: [{ userId: m.id }] },
+      },
+    });
+  }
+
   if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
   revalidatePath(`/tasks/${taskId}`);
   revalidatePath("/");
+}
+
+// Вердикт по задаче на проверке: принять или вернуть на доработку (причина обязательна).
+// Результат летит исполнителю пушом + в колокол (тип review_result). Причина — комментарием в ленту.
+export async function reviewTask(input: { taskId: string; decision: "approve" | "reject"; comment?: string }) {
+  const user = await requireUser();
+  const task = await db.task.findUnique({
+    where: { id: input.taskId },
+    include: { assignees: { include: { user: { select: { id: true, managerId: true } } } } },
+  });
+  if (!task) return { error: "Задачу не знайдено" };
+
+  // Проверять может админ/владелец или руководитель исполнителя
+  const managesAssignee = task.assignees.some((a) => a.user.managerId === user.id);
+  if (user.role !== "OWNER" && user.role !== "ADMIN" && !managesAssignee) return { error: "Немає прав на перевірку" };
+
+  const assigneeIds = task.assignees.map((a) => a.user.id).filter((id) => id !== user.id);
+
+  if (input.decision === "reject") {
+    const reason = (input.comment ?? "").trim();
+    if (!reason) return { error: "Вкажіть, що доопрацювати" };
+
+    // возврат с проверки — в «Зробити» исполнителя
+    await db.task.update({ where: { id: task.id }, data: { status: "TODO", reviewRequestedAt: null } });
+    await db.comment.create({ data: { taskId: task.id, authorId: user.id, body: reason } });
+    await db.activity.create({ data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId: task.id, meta: JSON.stringify({ title: task.title, to: "TODO" }) } });
+
+    await Promise.all(assigneeIds.map((rid) =>
+      notify({ recipientId: rid, type: "review_result", message: `${user.name} повернув «${task.title}» на доопрацювання: ${reason}`, link: `/tasks/${task.id}`, actorId: user.id }),
+    ));
+  } else {
+    await db.task.update({ where: { id: task.id }, data: { status: "DONE", completedAt: new Date() } });
+    await db.activity.create({ data: { type: "task.status", actorId: user.id, projectId: task.projectId, taskId: task.id, meta: JSON.stringify({ title: task.title, to: "DONE" }) } });
+
+    await Promise.all(assigneeIds.map((rid) =>
+      notify({ recipientId: rid, type: "review_result", message: `${user.name} прийняв «${task.title}» ✅`, link: `/tasks/${task.id}`, actorId: user.id }),
+    ));
+  }
+
+  // Особиста задача «Перевірити «…»» закривається автоматично (у всіх перевіряючих)
+  await closeCheckTasksFor(input.taskId);
+
+  if (task.projectId) revalidatePath(`/projects/${task.projectId}`);
+  revalidatePath(`/tasks/${input.taskId}`);
+  revalidatePath("/");
+  return { error: null };
+}
+
+// «Моя часть готова, жду коллегу»: помечаем ожидание (или снимаем). Снимает вину за просрочку.
+export async function setTaskWaiting(input: { taskId: string; waitingForId: string | null }) {
+  const user = await requireUser();
+  const task = await db.task.findUnique({ where: { id: input.taskId }, select: { createdById: true, assignees: { select: { userId: true } } } });
+  if (!task) return { error: "Задачу не знайдено" };
+  const isMine = task.createdById === user.id || task.assignees.some((a) => a.userId === user.id);
+  if (!isMine && user.role !== "OWNER" && user.role !== "ADMIN") return { error: "Немає прав" };
+  await db.task.update({
+    where: { id: input.taskId },
+    data: { waitingForId: input.waitingForId, waitingSince: input.waitingForId ? new Date() : null },
+  });
+  revalidatePath(`/tasks/${input.taskId}`);
+  revalidatePath("/");
+  return { error: null };
 }
 
 // Задача (successor) залежить від predecessor — той має бути завершений раніше

@@ -1,13 +1,12 @@
 "use server";
 
-import { promises as fs } from "fs";
-import path from "path";
 import { randomUUID } from "crypto";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/dal";
+import { putObject } from "@/server/storage";
 
 const profileSchema = z.object({
   firstName: z.string().max(80).optional(),
@@ -45,6 +44,14 @@ export async function updatePreferences(input: z.infer<typeof prefsSchema>) {
   return { error: null };
 }
 
+// Отдельное быстрое сохранение темы (для мгновенного тумблера без кнопки «Зберегти»).
+export async function setTheme(theme: "light" | "dark" | "system") {
+  const user = await requireUser();
+  await db.user.update({ where: { id: user.id }, data: { theme } });
+  revalidatePath("/", "layout");
+  return { error: null };
+}
+
 export async function changePassword(input: { current: string; next: string }) {
   const user = await requireUser();
   if (input.next.length < 6) return { error: "Мінімум 6 символів" };
@@ -61,12 +68,10 @@ export async function uploadAvatar(formData: FormData) {
   if (file.size > 4 * 1024 * 1024) return { error: "Файл більше 4 МБ" };
 
   const ext = (file.name.split(".").pop() || "png").replace(/[^\w]/g, "");
-  const key = `${randomUUID()}.${ext}`;
-  const dir = path.join(process.cwd(), "public", "uploads", "avatars");
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(path.join(dir, key), Buffer.from(await file.arrayBuffer()));
+  const key = `avatars/${randomUUID()}.${ext}`;
+  const url = await putObject(key, Buffer.from(await file.arrayBuffer()), file.type || "image/png");
 
-  await db.user.update({ where: { id: user.id }, data: { avatarUrl: `/uploads/avatars/${key}` } });
+  await db.user.update({ where: { id: user.id }, data: { avatarUrl: url } });
   revalidatePath("/", "layout");
-  return { error: null, url: `/uploads/avatars/${key}` };
+  return { error: null, url };
 }

@@ -457,10 +457,6 @@ export type EnumPlanStatusFieldUpdateOperationsInput = {
   set?: $Enums.PlanStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type WeeklyPlanApprovalCreateWithoutUserInput = {
   id?: string
   weekStart: Date | string
@@ -490,6 +486,7 @@ export type WeeklyPlanApprovalCreateOrConnectWithoutUserInput = {
 
 export type WeeklyPlanApprovalCreateManyUserInputEnvelope = {
   data: Prisma.WeeklyPlanApprovalCreateManyUserInput | Prisma.WeeklyPlanApprovalCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type WeeklyPlanApprovalUpsertWithWhereUniqueWithoutUserInput = {
@@ -1313,6 +1310,7 @@ export type WeeklyPlanApprovalCreateManyArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many WeeklyPlanApprovals.
    */
   data: Prisma.WeeklyPlanApprovalCreateManyInput | Prisma.WeeklyPlanApprovalCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1331,6 +1329,7 @@ export type WeeklyPlanApprovalCreateManyAndReturnArgs<ExtArgs extends runtime.Ty
    * The data used to create many WeeklyPlanApprovals.
    */
   data: Prisma.WeeklyPlanApprovalCreateManyInput | Prisma.WeeklyPlanApprovalCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

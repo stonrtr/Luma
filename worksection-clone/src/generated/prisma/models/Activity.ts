@@ -472,6 +472,7 @@ export type ActivityCreateOrConnectWithoutActorInput = {
 
 export type ActivityCreateManyActorInputEnvelope = {
   data: Prisma.ActivityCreateManyActorInput | Prisma.ActivityCreateManyActorInput[]
+  skipDuplicates?: boolean
 }
 
 export type ActivityUpsertWithWhereUniqueWithoutActorInput = {
@@ -528,6 +529,7 @@ export type ActivityCreateOrConnectWithoutProjectInput = {
 
 export type ActivityCreateManyProjectInputEnvelope = {
   data: Prisma.ActivityCreateManyProjectInput | Prisma.ActivityCreateManyProjectInput[]
+  skipDuplicates?: boolean
 }
 
 export type ActivityUpsertWithWhereUniqueWithoutProjectInput = {
@@ -1360,6 +1362,7 @@ export type ActivityCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many Activities.
    */
   data: Prisma.ActivityCreateManyInput | Prisma.ActivityCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1378,6 +1381,7 @@ export type ActivityCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Activities.
    */
   data: Prisma.ActivityCreateManyInput | Prisma.ActivityCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

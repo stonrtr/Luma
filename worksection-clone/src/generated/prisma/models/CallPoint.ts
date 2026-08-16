@@ -448,6 +448,7 @@ export type CallPointCreateOrConnectWithoutAuthorInput = {
 
 export type CallPointCreateManyAuthorInputEnvelope = {
   data: Prisma.CallPointCreateManyAuthorInput | Prisma.CallPointCreateManyAuthorInput[]
+  skipDuplicates?: boolean
 }
 
 export type CallPointCreateWithoutMemberInput = {
@@ -473,6 +474,7 @@ export type CallPointCreateOrConnectWithoutMemberInput = {
 
 export type CallPointCreateManyMemberInputEnvelope = {
   data: Prisma.CallPointCreateManyMemberInput | Prisma.CallPointCreateManyMemberInput[]
+  skipDuplicates?: boolean
 }
 
 export type CallPointUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -1319,6 +1321,7 @@ export type CallPointCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many CallPoints.
    */
   data: Prisma.CallPointCreateManyInput | Prisma.CallPointCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1337,6 +1340,7 @@ export type CallPointCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many CallPoints.
    */
   data: Prisma.CallPointCreateManyInput | Prisma.CallPointCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

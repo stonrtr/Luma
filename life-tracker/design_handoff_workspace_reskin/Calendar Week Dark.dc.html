@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  html, body { margin:0; padding:0; background:#0A130D; }
+  body { font-family:'Manrope','Helvetica Neue',Arial,sans-serif; color:#E8EFE3; -webkit-font-smoothing:antialiased; }
+  a { color:#A9D97F; text-decoration:none; }
+  a:hover { color:#C6E89B; }
+  ::selection { background:#C6E89B; color:#0A130D; }
+  .scr::-webkit-scrollbar { height:8px; }
+  .scr::-webkit-scrollbar-thumb { background:rgba(0,0,0,.5); border-radius:8px; }
+  @keyframes navglow {
+    0%, 100% { box-shadow: 0 0 10px 1px rgba(183,238,122,.45), 0 6px 22px 4px rgba(183,238,122,.25); }
+    50%      { box-shadow: 0 0 16px 2px rgba(195,245,135,.65), 0 8px 30px 6px rgba(183,238,122,.35); }
+  }
+  @keyframes btnglow2 {
+    0%, 100% { box-shadow: 0 0 8px 1px rgba(183,238,122,.45), 0 4px 16px 2px rgba(183,238,122,.22); }
+    50%      { box-shadow: 0 0 12px 2px rgba(195,245,135,.60), 0 6px 22px 4px rgba(183,238,122,.32); }
+  }
+  @keyframes btnglow {
+    0%, 100% { box-shadow: 0 0 18px 2px rgba(183,238,122,.60), 0 10px 46px 8px rgba(183,238,122,.42), 0 22px 80px 16px rgba(160,225,100,.28); }
+    50%      { box-shadow: 0 0 26px 4px rgba(195,245,135,.85), 0 14px 60px 12px rgba(183,238,122,.58), 0 28px 100px 22px rgba(160,225,100,.38); }
+  }
+  .navscroll { scrollbar-width:none; -ms-overflow-style:none; }
+  .navscroll::-webkit-scrollbar { display:none; height:0; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column; background-color:#0A130D; background-image:radial-gradient(1200px 520px at 15% -60px, rgba(140,215,120,.34), transparent 68%), radial-gradient(1000px 460px at 70% -80px, rgba(95,191,160,.26), transparent 70%); background-repeat:no-repeat;">
+
+  <header style="position:sticky; top:0; z-index:40; display:flex; height:56px; flex-shrink:0; align-items:center; gap:12px; padding:0 16px; background:rgba(10,19,13,.55); backdrop-filter:blur(12px); border-bottom:1px solid rgba(198,232,155,.10);">
+    <a href="#" style="display:flex; flex-shrink:0; align-items:center; gap:8px; color:#E8EFE3;">
+      <span role="img" aria-label="team M" style="width:32px; height:32px; border-radius:8px; background-color:#131C15; background-image:url('logo.png'); background-size:contain; background-position:center; background-repeat:no-repeat; box-shadow:0 1px 2px rgba(0,0,0,.4); outline:1px solid rgba(0,0,0,.4);"></span>
+      <span style="font-size:18px; font-weight:500; letter-spacing:-.02em;">Workspace</span>
+    </a>
+
+    <div class="navscroll" style="flex:1; min-width:0; overflow-x:auto; overflow-y:hidden; padding:14px 0; margin:-14px 0;">
+      <nav style="display:flex; align-items:center; gap:2px; overflow:visible;">
+        <a href="#" style="display:flex; align-items:center; gap:6px; border-radius:9999px; padding:6px 12px; font-size:13px; font-weight:600; background:#B7EE7A; color:#1E3A12;"><i data-lucide="layout-dashboard" style="width:16px;height:16px"></i><span>Задачі</span></a>
+        <a href="Planning Dark.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#8B9C86;"><i data-lucide="clipboard-list" style="width:16px;height:16px"></i><span>Планування</span></a>
+        <a href="Projects Dark.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#8B9C86;"><i data-lucide="folder-kanban" style="width:16px;height:16px"></i><span>Проєкти</span></a>
+        <a href="Files Dark.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#8B9C86;"><i data-lucide="folder-open" style="width:16px;height:16px"></i><span>Файли</span></a>
+        <a href="Org Dark.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#8B9C86;"><i data-lucide="network" style="width:16px;height:16px"></i><span>Оргсхема</span></a>
+        <a href="Team Dark.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#8B9C86;"><i data-lucide="users-round" style="width:16px;height:16px"></i><span>Команда</span></a>
+        <a href="Reports Dark.dc.html" style="display:flex; align-items:center; gap:6px; border-radius:6px; padding:6px 10px; font-size:13px; font-weight:500; color:#8B9C86;"><i data-lucide="bar-chart-3" style="width:16px;height:16px"></i><span>Звіти</span></a>
+      </nav>
+    </div>
+
+    <div style="display:flex; flex-shrink:0; align-items:center; gap:4px;">
+      <button style="display:flex; align-items:center; justify-content:center; width:32px; height:32px; border:0; background:transparent; border-radius:8px; color:#8B9C86; cursor:pointer;"><i data-lucide="search" style="width:16px;height:16px"></i></button>
+      <button style="position:relative; display:flex; align-items:center; justify-content:center; width:32px; height:32px; border:0; background:transparent; border-radius:8px; color:#8B9C86; cursor:pointer;">
+        <i data-lucide="bell" style="width:16px;height:16px"></i>
+        <span style="position:absolute; top:4px; right:5px; width:6px; height:6px; border-radius:50%; background:#C6E89B;"></span>
+      </button>
+      <button style="display:flex; align-items:center; gap:8px; border:0; background:transparent; padding:0 2px 0 6px; cursor:pointer;">
+        <span style="width:28px; height:28px; border-radius:50%; background:#22331F; color:#A9D97F; display:flex; align-items:center; justify-content:center; font-family:'Manrope','Helvetica Neue',Arial,sans-serif; font-size:10px; font-weight:500;">АД</span>
+        <i data-lucide="chevron-down" style="width:14px;height:14px;color:#8B9C86"></i>
+      </button>
+    </div>
+  </header>
+
+  <main style="flex:1;">
+    <div style="display:flex; flex-direction:column;">
+
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:8px 24px; border-bottom:1px solid #232E20;">
+        <span style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:500; color:#8B9C86;">
+          <i data-lucide="gauge" style="width:14px;height:14px"></i> KPI місяця
+          <span style="text-transform:none; letter-spacing:0;">· Анна Дизайнер</span>
+        </span>
+        <div style="display:flex; align-items:baseline; gap:8px; border-radius:8px; border:1px solid #232E20; background:#131C15; padding:4px 12px;">
+          <span style="font-size:12px; color:#8B9C86;">Готових макетів</span>
+          <span style="font-family:'Manrope','Helvetica Neue',Arial,sans-serif; font-size:10px; color:#8A9885;">ціль</span>
+          <span style="font-size:18px; font-weight:700; line-height:1; color:#A9D97F;">8</span>
+        </div>
+        <div style="display:flex; align-items:baseline; gap:8px; border-radius:8px; border:1px solid #232E20; background:#131C15; padding:4px 12px;">
+          <span style="font-size:12px; color:#8B9C86;">Оцінка задоволеності замовника</span>
+          <span style="font-family:'Manrope','Helvetica Neue',Arial,sans-serif; font-size:10px; color:#8A9885;">ціль</span>
+          <span style="font-size:18px; font-weight:700; line-height:1; color:#A9D97F;">4.5</span>
+        </div>
+      </div>
+
+      <header style="border-bottom:1px solid #232E20; padding:10px 24px;">
+        <div style="display:flex; max-width:672px; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; flex:1; align-items:center; gap:10px; border-radius:8px; border:1px solid #232E20; background:#131C15; padding:6px 12px;">
+            <span style="white-space:nowrap; font-size:12px; color:#8B9C86;">Навантаження сьогодні</span>
+            <div style="height:6px; min-width:48px; flex:1; overflow:hidden; border-radius:9999px; background:#232E20;">
+              <div style="height:100%; width:25%; border-radius:9999px; background:#C6E89B;"></div>
+            </div>
+            <span style="white-space:nowrap; font-family:'Manrope','Helvetica Neue',Arial,sans-serif; font-size:11px; font-weight:700; color:#E8EFE3;">2год<span style="font-weight:400; color:#8B9C86;"> / 8год</span></span>
+          </div>
+          <div style="display:flex; flex:1; align-items:center; gap:10px; border-radius:8px; border:1px solid #232E20; background:#131C15; padding:6px 12px;">
+            <span style="white-space:nowrap; font-size:12px; color:#8B9C86;">Навантаження на тиждень</span>
+            <div style="height:6px; min-width:48px; flex:1; overflow:hidden; border-radius:9999px; background:#232E20;">
+              <div style="height:100%; width:20%; border-radius:9999px; background:#C6E89B;"></div>
+            </div>
+            <span style="white-space:nowrap; font-family:'Manrope','Helvetica Neue',Arial,sans-serif; font-size:11px; font-weight:700; color:#E8EFE3;">8год<span style="font-weight:400; color:#8B9C86;"> / 40год</span></span>
+          </div>
+        </div>
+      </header>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 24px 0;">
+        <div style="display:flex; gap:4px;">
+          <a href="Workspace Board Dark.dc.html" style="border-radius:6px; padding:4px 12px; font-size:13px; font-weight:500; color:#8B9C86;">Канбан</a>
+          <a href="#" style="border-radius:6px; padding:4px 12px; font-size:13px; font-weight:500; color:#8B9C86;">По днях</a>
+          <a href="#" style="border-radius:9999px; padding:4px 14px; font-size:13px; font-weight:600; background:#B7EE7A; color:#1E3A12;">Календар</a>
+          <a href="#" style="border-radius:6px; padding:4px 12px; font-size:13px; font-weight:500; color:#8B9C86;">Архів</a>
+        </div>
+        <button style="display:inline-flex; flex-shrink:0; align-items:center; gap:6px; border:0; border-radius:6px; background:#C6E89B; padding:6px 12px; font-family:'Manrope','Helvetica Neue',Arial,sans-serif; font-size:11px; font-weight:500; color:#12240F; cursor:pointer;">
+          <i data-lucide="file-up" style="width:15px;height:15px"></i> Імпорт задач
+        </button>
+      </div>
+
+      <div style="padding:16px 24px;">
+        <div style="margin-bottom:16px; display:flex; align-items:center; gap:16px;">
+          <div style="display:flex; align-items:center; gap:4px;">
+            <a href="#" style="display:flex; border-radius:6px; border:1px solid #232E20; padding:6px; color:#E8EFE3;"><i data-lucide="chevron-left" style="width:16px;height:16px"></i></a>
+            <a href="#" style="border-radius:6px; border:1px solid #232E20; padding:4px 10px; font-size:11px; color:#E8EFE3;">Сьогодні</a>
+            <a href="#" style="display:flex; border-radius:6px; border:1px solid #232E20; padding:6px; color:#E8EFE3;"><i data-lucide="chevron-right" style="width:16px;height:16px"></i></a>
+          </div>
+          <span style="font-size:13px; font-weight:500; color:#8B9C86;">03.08 — 09.08</span>
+        </div>
+
+        <div class="scr" style="overflow-x:auto; border-radius:12px; border:1px solid #232E20; background:#131C15;">
+          <div style="min-width:720px;">
+            <div style="display:grid; grid-template-columns:56px repeat(7, minmax(96px, 1fr)); border-bottom:1px solid #232E20;">
+            <div></div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; ">
+              <div style="font-size:11px; color:#8B9C86;">пн</div>
+              <div style="font-size:13px; font-weight:500; ">03.08</div>
+            </div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; ">
+              <div style="font-size:11px; color:#8B9C86;">вт</div>
+              <div style="font-size:13px; font-weight:500; ">04.08</div>
+            </div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; ">
+              <div style="font-size:11px; color:#8B9C86;">ср</div>
+              <div style="font-size:13px; font-weight:500; ">05.08</div>
+            </div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; background:#1D2F1B;">
+              <div style="font-size:11px; color:#8B9C86;">чт</div>
+              <div style="font-size:13px; font-weight:500; color:#A9D97F;">06.08</div>
+            </div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; ">
+              <div style="font-size:11px; color:#8B9C86;">пт</div>
+              <div style="font-size:13px; font-weight:500; ">07.08</div>
+            </div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; ">
+              <div style="font-size:11px; color:#8B9C86;">сб</div>
+              <div style="font-size:13px; font-weight:500; ">08.08</div>
+            </div>
+            <div style="border-left:1px solid #232E20; padding:8px; text-align:center; ">
+              <div style="font-size:11px; color:#8B9C86;">нд</div>
+              <div style="font-size:13px; font-weight:500; ">09.08</div>
+            </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:56px repeat(7, minmax(96px, 1fr)); border-bottom:1px solid #232E20;">
+              <div style="padding:4px; text-align:right; font-size:10px; color:#8B9C86;">весь день</div>
+              <div style="border-left:1px solid #232E20; padding:4px;"></div>
+              <div style="border-left:1px solid #232E20; padding:4px;"></div>
+              <div style="border-left:1px solid #232E20; padding:4px;"></div>
+              <div style="border-left:1px solid #232E20; padding:4px;"><div style="border-radius:4px; padding:2px 4px; font-size:11px; background:#A9D97F22; border-left:2px solid #A9D97F;">Мобільна версія головної</div></div>
+              <div style="border-left:1px solid #232E20; padding:4px;"></div>
+              <div style="border-left:1px solid #232E20; padding:4px;"></div>
+              <div style="border-left:1px solid #232E20; padding:4px;"></div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:56px repeat(7, minmax(96px, 1fr));">
+            <div style="position:relative; height:672px;"><div style="position:absolute; right:4px; top:0px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">08:00</div><div style="position:absolute; right:4px; top:48px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">09:00</div><div style="position:absolute; right:4px; top:96px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">10:00</div><div style="position:absolute; right:4px; top:144px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">11:00</div><div style="position:absolute; right:4px; top:192px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">12:00</div><div style="position:absolute; right:4px; top:240px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">13:00</div><div style="position:absolute; right:4px; top:288px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">14:00</div><div style="position:absolute; right:4px; top:336px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">15:00</div><div style="position:absolute; right:4px; top:384px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">16:00</div><div style="position:absolute; right:4px; top:432px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">17:00</div><div style="position:absolute; right:4px; top:480px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">18:00</div><div style="position:absolute; right:4px; top:528px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">19:00</div><div style="position:absolute; right:4px; top:576px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">20:00</div><div style="position:absolute; right:4px; top:624px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">21:00</div><div style="position:absolute; right:4px; top:672px; transform:translateY(-50%); font-size:10px; color:#8B9C86;">22:00</div></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; "><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; "><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div><a href="#" style="position:absolute; left:4px; right:4px; top:360px; height:34px; overflow:hidden; border-radius:6px; padding:2px 6px; font-size:10px; line-height:1.25; color:#E8EFE3; background:#5FBFA026; border-left:3px solid #5FBFA0;">
+                <div style="display:flex; align-items:center; gap:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;"><i data-lucide="phone" style="width:10px;height:10px;flex-shrink:0"></i><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Демо замовнику</span></div>
+                <div style="font-size:9px; opacity:.7;">15:30–16:15</div>
+              </a></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; "><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; background:#17241A;"><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div><a href="#" style="position:absolute; left:4px; right:4px; top:96px; height:94px; overflow:hidden; border-radius:6px; padding:2px 6px; font-size:10px; line-height:1.25; color:#E8EFE3; background:#A9D97F26; border-left:3px solid #A9D97F;">
+                <div style="display:flex; align-items:center; gap:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;"><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Дизайн головної сторінки</span></div>
+                <div style="font-size:9px; opacity:.7;">10:00–12:00</div>
+              </a><a href="#" style="position:absolute; left:4px; right:4px; top:144px; height:22px; overflow:hidden; border-radius:6px; padding:2px 6px; font-size:10px; line-height:1.25; color:#E8EFE3; background:#5FBFA026; border-left:3px solid #5FBFA0;">
+                <div style="display:flex; align-items:center; gap:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;"><i data-lucide="phone" style="width:10px;height:10px;flex-shrink:0"></i><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Синк з командою</span></div>
+                <div style="font-size:9px; opacity:.7;">11:00–11:30</div>
+              </a></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; "><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div><a href="#" style="position:absolute; left:4px; right:4px; top:48px; height:46px; overflow:hidden; border-radius:6px; padding:2px 6px; font-size:10px; line-height:1.25; color:#E8EFE3; background:#A9D97F26; border-left:3px solid #A9D97F;">
+                <div style="display:flex; align-items:center; gap:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;"><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Щоденний стендап</span></div>
+                <div style="font-size:9px; opacity:.7;">09:00–10:00</div>
+              </a></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; "><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div></div>
+            <div style="position:relative; height:672px; border-left:1px solid #232E20; "><div style="position:absolute; left:0; right:0; top:0px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:48px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:96px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:144px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:192px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:240px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:288px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:336px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:384px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:432px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:480px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:528px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:576px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:624px; border-top:1px solid #16211A;"></div><div style="position:absolute; left:0; right:0; top:672px; border-top:1px solid #16211A;"></div></div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:56px repeat(7, minmax(96px, 1fr)); border-top:1px solid #232E20; background:#16211A;">
+            <div style="display:flex; align-items:center; justify-content:center; color:#8B9C86;">Σ</div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">6год</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 1</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">0хв / 1год</div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">7год 15хв</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 1</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">0хв / 45хв</div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">8год</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 0</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">0хв / 0хв</div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">6год</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 2</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">2год / 2год</div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">7год</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 1</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">0хв / 1год</div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">8год</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 0</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">0хв / 0хв</div></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; border-left:1px solid #232E20; padding:8px; font-size:11px;">
+              <div><span style="color:#8B9C86;">Вільний час</span><div style="font-weight:500;">8год</div></div>
+              <div><span style="color:#8B9C86;">Задач</span><div style="font-weight:500;">0 / 0</div></div>
+              <div><span style="color:#8B9C86;">Факт / План</span><div style="font-weight:500;">0хв / 0хв</div></div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <span style="position:fixed; bottom:24px; left:24px; z-index:50; display:inline-flex; border-radius:50%; padding:1.5px; background:#B7EE7A; animation:btnglow 6s ease-in-out infinite;"><button style="display:flex; width:53px; height:53px; align-items:center; justify-content:center; border:0; border-radius:50%; color:#E8EFE3; background:#16211A; cursor:pointer;">
+    <i data-lucide="plus" style="width:28px;height:28px"></i>
+  </button></span>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  icons() { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }
+  componentDidMount() {
+    this.icons();
+    this._t = [80, 300, 900, 2000].map((ms) => setTimeout(() => this.icons(), ms));
+  }
+  componentDidUpdate() { this.icons(); }
+  componentWillUnmount() { (this._t || []).forEach(clearTimeout); }
+}
+</script>
+</body>
+</html>

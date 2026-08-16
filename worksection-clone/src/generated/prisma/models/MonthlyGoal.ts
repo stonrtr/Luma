@@ -454,6 +454,7 @@ export type MonthlyGoalCreateOrConnectWithoutUserInput = {
 
 export type MonthlyGoalCreateManyUserInputEnvelope = {
   data: Prisma.MonthlyGoalCreateManyUserInput | Prisma.MonthlyGoalCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type MonthlyGoalUpsertWithWhereUniqueWithoutUserInput = {
@@ -1244,6 +1245,7 @@ export type MonthlyGoalCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many MonthlyGoals.
    */
   data: Prisma.MonthlyGoalCreateManyInput | Prisma.MonthlyGoalCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1262,6 +1264,7 @@ export type MonthlyGoalCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many MonthlyGoals.
    */
   data: Prisma.MonthlyGoalCreateManyInput | Prisma.MonthlyGoalCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

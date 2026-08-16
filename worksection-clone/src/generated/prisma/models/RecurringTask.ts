@@ -29,12 +29,14 @@ export type AggregateRecurringTask = {
 export type RecurringTaskAvgAggregateOutputType = {
   priority: number | null
   plannedMinutes: number | null
+  dueDayOfMonth: number | null
   dayOfMonth: number | null
 }
 
 export type RecurringTaskSumAggregateOutputType = {
   priority: number | null
   plannedMinutes: number | null
+  dueDayOfMonth: number | null
   dayOfMonth: number | null
 }
 
@@ -45,6 +47,8 @@ export type RecurringTaskMinAggregateOutputType = {
   plannedMinutes: number | null
   frequency: $Enums.RecurrenceFreq | null
   weekdays: string | null
+  startTime: string | null
+  dueDayOfMonth: number | null
   dayOfMonth: number | null
   active: boolean | null
   lastGeneratedAt: Date | null
@@ -61,6 +65,8 @@ export type RecurringTaskMaxAggregateOutputType = {
   plannedMinutes: number | null
   frequency: $Enums.RecurrenceFreq | null
   weekdays: string | null
+  startTime: string | null
+  dueDayOfMonth: number | null
   dayOfMonth: number | null
   active: boolean | null
   lastGeneratedAt: Date | null
@@ -77,6 +83,8 @@ export type RecurringTaskCountAggregateOutputType = {
   plannedMinutes: number
   frequency: number
   weekdays: number
+  startTime: number
+  dueDayOfMonth: number
   dayOfMonth: number
   active: number
   lastGeneratedAt: number
@@ -91,12 +99,14 @@ export type RecurringTaskCountAggregateOutputType = {
 export type RecurringTaskAvgAggregateInputType = {
   priority?: true
   plannedMinutes?: true
+  dueDayOfMonth?: true
   dayOfMonth?: true
 }
 
 export type RecurringTaskSumAggregateInputType = {
   priority?: true
   plannedMinutes?: true
+  dueDayOfMonth?: true
   dayOfMonth?: true
 }
 
@@ -107,6 +117,8 @@ export type RecurringTaskMinAggregateInputType = {
   plannedMinutes?: true
   frequency?: true
   weekdays?: true
+  startTime?: true
+  dueDayOfMonth?: true
   dayOfMonth?: true
   active?: true
   lastGeneratedAt?: true
@@ -123,6 +135,8 @@ export type RecurringTaskMaxAggregateInputType = {
   plannedMinutes?: true
   frequency?: true
   weekdays?: true
+  startTime?: true
+  dueDayOfMonth?: true
   dayOfMonth?: true
   active?: true
   lastGeneratedAt?: true
@@ -139,6 +153,8 @@ export type RecurringTaskCountAggregateInputType = {
   plannedMinutes?: true
   frequency?: true
   weekdays?: true
+  startTime?: true
+  dueDayOfMonth?: true
   dayOfMonth?: true
   active?: true
   lastGeneratedAt?: true
@@ -242,6 +258,8 @@ export type RecurringTaskGroupByOutputType = {
   plannedMinutes: number | null
   frequency: $Enums.RecurrenceFreq
   weekdays: string | null
+  startTime: string | null
+  dueDayOfMonth: number | null
   dayOfMonth: number | null
   active: boolean
   lastGeneratedAt: Date | null
@@ -281,6 +299,8 @@ export type RecurringTaskWhereInput = {
   plannedMinutes?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   frequency?: Prisma.EnumRecurrenceFreqFilter<"RecurringTask"> | $Enums.RecurrenceFreq
   weekdays?: Prisma.StringNullableFilter<"RecurringTask"> | string | null
+  startTime?: Prisma.StringNullableFilter<"RecurringTask"> | string | null
+  dueDayOfMonth?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   dayOfMonth?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   active?: Prisma.BoolFilter<"RecurringTask"> | boolean
   lastGeneratedAt?: Prisma.DateTimeNullableFilter<"RecurringTask"> | Date | string | null
@@ -301,6 +321,8 @@ export type RecurringTaskOrderByWithRelationInput = {
   plannedMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   frequency?: Prisma.SortOrder
   weekdays?: Prisma.SortOrderInput | Prisma.SortOrder
+  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrderInput | Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   lastGeneratedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -324,6 +346,8 @@ export type RecurringTaskWhereUniqueInput = Prisma.AtLeast<{
   plannedMinutes?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   frequency?: Prisma.EnumRecurrenceFreqFilter<"RecurringTask"> | $Enums.RecurrenceFreq
   weekdays?: Prisma.StringNullableFilter<"RecurringTask"> | string | null
+  startTime?: Prisma.StringNullableFilter<"RecurringTask"> | string | null
+  dueDayOfMonth?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   dayOfMonth?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   active?: Prisma.BoolFilter<"RecurringTask"> | boolean
   lastGeneratedAt?: Prisma.DateTimeNullableFilter<"RecurringTask"> | Date | string | null
@@ -344,6 +368,8 @@ export type RecurringTaskOrderByWithAggregationInput = {
   plannedMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   frequency?: Prisma.SortOrder
   weekdays?: Prisma.SortOrderInput | Prisma.SortOrder
+  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrderInput | Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   lastGeneratedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -368,6 +394,8 @@ export type RecurringTaskScalarWhereWithAggregatesInput = {
   plannedMinutes?: Prisma.IntNullableWithAggregatesFilter<"RecurringTask"> | number | null
   frequency?: Prisma.EnumRecurrenceFreqWithAggregatesFilter<"RecurringTask"> | $Enums.RecurrenceFreq
   weekdays?: Prisma.StringNullableWithAggregatesFilter<"RecurringTask"> | string | null
+  startTime?: Prisma.StringNullableWithAggregatesFilter<"RecurringTask"> | string | null
+  dueDayOfMonth?: Prisma.IntNullableWithAggregatesFilter<"RecurringTask"> | number | null
   dayOfMonth?: Prisma.IntNullableWithAggregatesFilter<"RecurringTask"> | number | null
   active?: Prisma.BoolWithAggregatesFilter<"RecurringTask"> | boolean
   lastGeneratedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RecurringTask"> | Date | string | null
@@ -384,6 +412,8 @@ export type RecurringTaskCreateInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -401,6 +431,8 @@ export type RecurringTaskUncheckedCreateInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -418,6 +450,8 @@ export type RecurringTaskUpdateInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -435,6 +469,8 @@ export type RecurringTaskUncheckedUpdateInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -452,6 +488,8 @@ export type RecurringTaskCreateManyInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -468,6 +506,8 @@ export type RecurringTaskUpdateManyMutationInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -481,6 +521,8 @@ export type RecurringTaskUncheckedUpdateManyInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -512,6 +554,8 @@ export type RecurringTaskCountOrderByAggregateInput = {
   plannedMinutes?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   weekdays?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrder
   active?: Prisma.SortOrder
   lastGeneratedAt?: Prisma.SortOrder
@@ -524,6 +568,7 @@ export type RecurringTaskCountOrderByAggregateInput = {
 export type RecurringTaskAvgOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   plannedMinutes?: Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrder
 }
 
@@ -534,6 +579,8 @@ export type RecurringTaskMaxOrderByAggregateInput = {
   plannedMinutes?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   weekdays?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrder
   active?: Prisma.SortOrder
   lastGeneratedAt?: Prisma.SortOrder
@@ -550,6 +597,8 @@ export type RecurringTaskMinOrderByAggregateInput = {
   plannedMinutes?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   weekdays?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrder
   active?: Prisma.SortOrder
   lastGeneratedAt?: Prisma.SortOrder
@@ -562,6 +611,7 @@ export type RecurringTaskMinOrderByAggregateInput = {
 export type RecurringTaskSumOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   plannedMinutes?: Prisma.SortOrder
+  dueDayOfMonth?: Prisma.SortOrder
   dayOfMonth?: Prisma.SortOrder
 }
 
@@ -718,6 +768,8 @@ export type RecurringTaskCreateWithoutAssigneeInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -734,6 +786,8 @@ export type RecurringTaskUncheckedCreateWithoutAssigneeInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -750,6 +804,7 @@ export type RecurringTaskCreateOrConnectWithoutAssigneeInput = {
 
 export type RecurringTaskCreateManyAssigneeInputEnvelope = {
   data: Prisma.RecurringTaskCreateManyAssigneeInput | Prisma.RecurringTaskCreateManyAssigneeInput[]
+  skipDuplicates?: boolean
 }
 
 export type RecurringTaskCreateWithoutCreatedByInput = {
@@ -759,6 +814,8 @@ export type RecurringTaskCreateWithoutCreatedByInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -775,6 +832,8 @@ export type RecurringTaskUncheckedCreateWithoutCreatedByInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -791,6 +850,7 @@ export type RecurringTaskCreateOrConnectWithoutCreatedByInput = {
 
 export type RecurringTaskCreateManyCreatedByInputEnvelope = {
   data: Prisma.RecurringTaskCreateManyCreatedByInput | Prisma.RecurringTaskCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type RecurringTaskUpsertWithWhereUniqueWithoutAssigneeInput = {
@@ -819,6 +879,8 @@ export type RecurringTaskScalarWhereInput = {
   plannedMinutes?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   frequency?: Prisma.EnumRecurrenceFreqFilter<"RecurringTask"> | $Enums.RecurrenceFreq
   weekdays?: Prisma.StringNullableFilter<"RecurringTask"> | string | null
+  startTime?: Prisma.StringNullableFilter<"RecurringTask"> | string | null
+  dueDayOfMonth?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   dayOfMonth?: Prisma.IntNullableFilter<"RecurringTask"> | number | null
   active?: Prisma.BoolFilter<"RecurringTask"> | boolean
   lastGeneratedAt?: Prisma.DateTimeNullableFilter<"RecurringTask"> | Date | string | null
@@ -851,6 +913,8 @@ export type RecurringTaskCreateWithoutProjectInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -867,6 +931,8 @@ export type RecurringTaskUncheckedCreateWithoutProjectInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -883,6 +949,7 @@ export type RecurringTaskCreateOrConnectWithoutProjectInput = {
 
 export type RecurringTaskCreateManyProjectInputEnvelope = {
   data: Prisma.RecurringTaskCreateManyProjectInput | Prisma.RecurringTaskCreateManyProjectInput[]
+  skipDuplicates?: boolean
 }
 
 export type RecurringTaskUpsertWithWhereUniqueWithoutProjectInput = {
@@ -908,6 +975,8 @@ export type RecurringTaskCreateWithoutTasksInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -924,6 +993,8 @@ export type RecurringTaskUncheckedCreateWithoutTasksInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -956,6 +1027,8 @@ export type RecurringTaskUpdateWithoutTasksInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -972,6 +1045,8 @@ export type RecurringTaskUncheckedUpdateWithoutTasksInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -988,6 +1063,8 @@ export type RecurringTaskCreateManyAssigneeInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -1003,6 +1080,8 @@ export type RecurringTaskCreateManyCreatedByInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -1018,6 +1097,8 @@ export type RecurringTaskUpdateWithoutAssigneeInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1034,6 +1115,8 @@ export type RecurringTaskUncheckedUpdateWithoutAssigneeInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1050,6 +1133,8 @@ export type RecurringTaskUncheckedUpdateManyWithoutAssigneeInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1065,6 +1150,8 @@ export type RecurringTaskUpdateWithoutCreatedByInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1081,6 +1168,8 @@ export type RecurringTaskUncheckedUpdateWithoutCreatedByInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1097,6 +1186,8 @@ export type RecurringTaskUncheckedUpdateManyWithoutCreatedByInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1112,6 +1203,8 @@ export type RecurringTaskCreateManyProjectInput = {
   plannedMinutes?: number | null
   frequency?: $Enums.RecurrenceFreq
   weekdays?: string | null
+  startTime?: string | null
+  dueDayOfMonth?: number | null
   dayOfMonth?: number | null
   active?: boolean
   lastGeneratedAt?: Date | string | null
@@ -1127,6 +1220,8 @@ export type RecurringTaskUpdateWithoutProjectInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1143,6 +1238,8 @@ export type RecurringTaskUncheckedUpdateWithoutProjectInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1159,6 +1256,8 @@ export type RecurringTaskUncheckedUpdateManyWithoutProjectInput = {
   plannedMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   frequency?: Prisma.EnumRecurrenceFreqFieldUpdateOperationsInput | $Enums.RecurrenceFreq
   weekdays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueDayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   dayOfMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastGeneratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1205,6 +1304,8 @@ export type RecurringTaskSelect<ExtArgs extends runtime.Types.Extensions.Interna
   plannedMinutes?: boolean
   frequency?: boolean
   weekdays?: boolean
+  startTime?: boolean
+  dueDayOfMonth?: boolean
   dayOfMonth?: boolean
   active?: boolean
   lastGeneratedAt?: boolean
@@ -1226,6 +1327,8 @@ export type RecurringTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   plannedMinutes?: boolean
   frequency?: boolean
   weekdays?: boolean
+  startTime?: boolean
+  dueDayOfMonth?: boolean
   dayOfMonth?: boolean
   active?: boolean
   lastGeneratedAt?: boolean
@@ -1245,6 +1348,8 @@ export type RecurringTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   plannedMinutes?: boolean
   frequency?: boolean
   weekdays?: boolean
+  startTime?: boolean
+  dueDayOfMonth?: boolean
   dayOfMonth?: boolean
   active?: boolean
   lastGeneratedAt?: boolean
@@ -1264,6 +1369,8 @@ export type RecurringTaskSelectScalar = {
   plannedMinutes?: boolean
   frequency?: boolean
   weekdays?: boolean
+  startTime?: boolean
+  dueDayOfMonth?: boolean
   dayOfMonth?: boolean
   active?: boolean
   lastGeneratedAt?: boolean
@@ -1273,7 +1380,7 @@ export type RecurringTaskSelectScalar = {
   projectId?: boolean
 }
 
-export type RecurringTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "priority" | "plannedMinutes" | "frequency" | "weekdays" | "dayOfMonth" | "active" | "lastGeneratedAt" | "createdAt" | "assigneeId" | "createdById" | "projectId", ExtArgs["result"]["recurringTask"]>
+export type RecurringTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "priority" | "plannedMinutes" | "frequency" | "weekdays" | "startTime" | "dueDayOfMonth" | "dayOfMonth" | "active" | "lastGeneratedAt" | "createdAt" | "assigneeId" | "createdById" | "projectId", ExtArgs["result"]["recurringTask"]>
 export type RecurringTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1307,6 +1414,8 @@ export type $RecurringTaskPayload<ExtArgs extends runtime.Types.Extensions.Inter
     plannedMinutes: number | null
     frequency: $Enums.RecurrenceFreq
     weekdays: string | null
+    startTime: string | null
+    dueDayOfMonth: number | null
     dayOfMonth: number | null
     active: boolean
     lastGeneratedAt: Date | null
@@ -1747,6 +1856,8 @@ export interface RecurringTaskFieldRefs {
   readonly plannedMinutes: Prisma.FieldRef<"RecurringTask", 'Int'>
   readonly frequency: Prisma.FieldRef<"RecurringTask", 'RecurrenceFreq'>
   readonly weekdays: Prisma.FieldRef<"RecurringTask", 'String'>
+  readonly startTime: Prisma.FieldRef<"RecurringTask", 'String'>
+  readonly dueDayOfMonth: Prisma.FieldRef<"RecurringTask", 'Int'>
   readonly dayOfMonth: Prisma.FieldRef<"RecurringTask", 'Int'>
   readonly active: Prisma.FieldRef<"RecurringTask", 'Boolean'>
   readonly lastGeneratedAt: Prisma.FieldRef<"RecurringTask", 'DateTime'>
@@ -1988,6 +2099,7 @@ export type RecurringTaskCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many RecurringTasks.
    */
   data: Prisma.RecurringTaskCreateManyInput | Prisma.RecurringTaskCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -2006,6 +2118,7 @@ export type RecurringTaskCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many RecurringTasks.
    */
   data: Prisma.RecurringTaskCreateManyInput | Prisma.RecurringTaskCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

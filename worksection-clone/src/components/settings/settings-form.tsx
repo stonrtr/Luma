@@ -4,15 +4,17 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
-import { updateProfile, updatePreferences, changePassword, uploadAvatar } from "@/server/actions/settings";
+import { updateProfile, updatePreferences, changePassword, uploadAvatar, setTheme as setThemeAction } from "@/server/actions/settings";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LOCALES, LOCALE_LABEL, t } from "@/lib/i18n";
 import { initials } from "@/lib/format";
+import { AvatarCropDialog } from "@/components/settings/avatar-crop-dialog";
 
 type Initial = {
   firstName: string; lastName: string; name: string; email: string; title: string | null; phone: string | null;
@@ -29,6 +31,7 @@ export function SettingsForm({ initial }: { initial: Initial }) {
   const [lastName, setLastName] = useState(initial.lastName);
   const [phone, setPhone] = useState(initial.phone ?? "");
   const [avatarUrl, setAvatarUrl] = useState(initial.avatarUrl);
+  const [cropSrc, setCropSrc] = useState<string | null>(null); // objectURL фото для кадрирования
 
   const [locale, setLocale] = useState(initial.locale);
   const [theme, setTheme] = useState(initial.theme);
@@ -45,6 +48,15 @@ export function SettingsForm({ initial }: { initial: Initial }) {
       router.refresh();
     });
   }
+  // iOS-тумблер темы: применяем мгновенно (класс на <html> и .app-shell) и сохраняем в фоне — без «Зберегти».
+  function toggleTheme() {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    const isDark = nextTheme === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+    document.querySelector(".app-shell")?.classList.toggle("dark", isDark);
+    start(async () => { await setThemeAction(nextTheme); });
+  }
   function savePrefs() {
     start(async () => {
       await updatePreferences({ locale: locale as "uk" | "ru" | "en", theme: theme as "system" | "light" | "dark", timezone, weekStartsMon });
@@ -58,6 +70,7 @@ export function SettingsForm({ initial }: { initial: Initial }) {
       const res = await uploadAvatar(fd);
       if (res?.error) toast.error(res.error);
       else { setAvatarUrl(res.url ?? null); toast.success(tr("settings.saved")); router.refresh(); }
+      setCropSrc((old) => { if (old) URL.revokeObjectURL(old); return null; }); // закрыть кадрирование
     });
   }
   function doPassword() {
@@ -85,15 +98,23 @@ export function SettingsForm({ initial }: { initial: Initial }) {
               <Upload className="size-4" /> {tr("settings.uploadAvatar")}
             </Button>
             <input ref={fileRef} type="file" accept="image/*" className="hidden"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) doUpload(f); e.target.value = ""; }} />
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) setCropSrc(URL.createObjectURL(f)); e.target.value = ""; }} />
+            {/* Кадрирование перед загрузкой: зум + перетаскивание нужного участка */}
+            <AvatarCropDialog
+              src={cropSrc}
+              title={tr("settings.uploadAvatar")}
+              saving={false}
+              onCancel={() => setCropSrc((old) => { if (old) URL.revokeObjectURL(old); return null; })}
+              onSave={(file) => doUpload(file)}
+            />
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div className="space-y-2"><Label>{tr("settings.firstName")}</Label><Input value={firstName} onChange={(e) => setFirstName(e.target.value)} /></div>
           <div className="space-y-2"><Label>{tr("settings.lastName")}</Label><Input value={lastName} onChange={(e) => setLastName(e.target.value)} /></div>
           <div className="space-y-2"><Label>Email</Label><Input value={initial.email} disabled /></div>
-          <div className="space-y-2"><Label>Телефон</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+380..." /></div>
-          <div className="space-y-2"><Label>{initial.title ? "Посада" : "—"}</Label><Input value={initial.title ?? ""} disabled /></div>
+          <div className="space-y-2"><Label>{tr("set.phone")}</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+380..." /></div>
+          {initial.title && <div className="space-y-2"><Label>{tr("org.title")}</Label><Input value={initial.title} disabled /></div>}
         </div>
         <div className="mt-4"><Button size="sm" onClick={saveProfile}>{tr("settings.save")}</Button></div>
       </section>
@@ -111,14 +132,29 @@ export function SettingsForm({ initial }: { initial: Initial }) {
           </div>
           <div className="space-y-2">
             <Label>{tr("settings.theme")}</Label>
-            <Select value={theme} onValueChange={setTheme}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="system">{tr("theme.system")}</SelectItem>
-                <SelectItem value="light">{tr("theme.light")}</SelectItem>
-                <SelectItem value="dark">{tr("theme.dark")}</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* iOS-стайл тумблер: применяется мгновенно, без «Зберегти» */}
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={theme === "dark"}
+                onClick={toggleTheme}
+                className={cn(
+                  "relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full border transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                  theme === "dark" ? "border-primary bg-primary" : "border-input bg-muted",
+                )}
+              >
+                <span className="pointer-events-none absolute left-1.5 text-[13px] opacity-80">☀️</span>
+                <span className="pointer-events-none absolute right-1.5 text-[13px] opacity-80">🌙</span>
+                <span
+                  className={cn(
+                    "pointer-events-none z-10 inline-block size-6 transform rounded-full bg-white shadow transition-transform",
+                    theme === "dark" ? "translate-x-[1.75rem]" : "translate-x-1",
+                  )}
+                />
+              </button>
+              <span className="text-sm text-muted-foreground">{theme === "dark" ? tr("theme.dark") : tr("theme.light")}</span>
+            </div>
           </div>
           <div className="space-y-2">
             <Label>{tr("settings.timezone")}</Label>

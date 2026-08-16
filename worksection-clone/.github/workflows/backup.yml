@@ -1,0 +1,51 @@
+# Ежедневный бэкап боевой базы (Neon) в R2.
+# Дамп: pg_dump (формат custom, сжатый) → aws s3 cp в бакет workspace-m-files/backups/.
+# Восстановление: pg_restore -d "$DIRECT_URL" backup.dump
+# Секреты (Settings → Secrets → Actions): DIRECT_URL, S3_ENDPOINT, S3_BUCKET,
+#   S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY  (DIRECT_URL уже есть от деплоя).
+name: DB backup to R2
+
+on:
+  schedule:
+    - cron: "30 2 * * *"   # каждый день в 02:30 UTC (04:30–05:30 Киев)
+  workflow_dispatch: {}     # и вручную кнопкой
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump database (pg_dump 17 из Docker — без установки пакетов)
+        run: |
+          FILE="workspace-m-$(date -u +%F).dump"
+          docker run --rm postgres:17-alpine pg_dump "$DIRECT_URL" --format=custom --no-owner --no-privileges > "$FILE"
+          ls -lh "$FILE"
+          test -s "$FILE"  # дамп не должен быть пустым
+          echo "FILE=$FILE" >> "$GITHUB_ENV"
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+      - name: Upload to R2
+        run: aws s3 cp "$FILE" "s3://$S3_BUCKET/backups/$FILE" --endpoint-url "$S3_ENDPOINT"
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+
+      - name: Prune backups older than 30 days
+        run: |
+          CUTOFF=$(date -u -d "30 days ago" +%F)
+          aws s3 ls "s3://$S3_BUCKET/backups/" --endpoint-url "$S3_ENDPOINT" | awk '{print $4}' | while read -r f; do
+            d=$(echo "$f" | sed -E 's/workspace-m-([0-9-]+)\.dump/\1/')
+            if [[ "$d" < "$CUTOFF" ]]; then
+              echo "prune $f"
+              aws s3 rm "s3://$S3_BUCKET/backups/$f" --endpoint-url "$S3_ENDPOINT"
+            fi
+          done
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto

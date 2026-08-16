@@ -57,6 +57,11 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   GoogleAccount: 'GoogleAccount',
   CallPoint: 'CallPoint',
+  WeeklyWin: 'WeeklyWin',
+  Spreadsheet: 'Spreadsheet',
+  UserNote: 'UserNote',
+  CallContact: 'CallContact',
+  CallTopic: 'CallTopic',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
   Task: 'Task',
@@ -89,6 +94,9 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const)
 
@@ -115,6 +123,9 @@ export const UserScalarFieldEnum = {
   theme: 'theme',
   weekStartsMon: 'weekStartsMon',
   isActive: 'isActive',
+  lastSeenAt: 'lastSeenAt',
+  resetTokenHash: 'resetTokenHash',
+  resetTokenExp: 'resetTokenExp',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   managerId: 'managerId',
@@ -190,6 +201,61 @@ export const CallPointScalarFieldEnum = {
 export type CallPointScalarFieldEnum = (typeof CallPointScalarFieldEnum)[keyof typeof CallPointScalarFieldEnum]
 
 
+export const WeeklyWinScalarFieldEnum = {
+  id: 'id',
+  weekStart: 'weekStart',
+  text: 'text',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+} as const
+
+export type WeeklyWinScalarFieldEnum = (typeof WeeklyWinScalarFieldEnum)[keyof typeof WeeklyWinScalarFieldEnum]
+
+
+export const SpreadsheetScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  data: 'data',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ownerId: 'ownerId'
+} as const
+
+export type SpreadsheetScalarFieldEnum = (typeof SpreadsheetScalarFieldEnum)[keyof typeof SpreadsheetScalarFieldEnum]
+
+
+export const UserNoteScalarFieldEnum = {
+  userId: 'userId',
+  body: 'body',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserNoteScalarFieldEnum = (typeof UserNoteScalarFieldEnum)[keyof typeof UserNoteScalarFieldEnum]
+
+
+export const CallContactScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  archivedAt: 'archivedAt',
+  ownerId: 'ownerId'
+} as const
+
+export type CallContactScalarFieldEnum = (typeof CallContactScalarFieldEnum)[keyof typeof CallContactScalarFieldEnum]
+
+
+export const CallTopicScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  contactId: 'contactId'
+} as const
+
+export type CallTopicScalarFieldEnum = (typeof CallTopicScalarFieldEnum)[keyof typeof CallTopicScalarFieldEnum]
+
+
 export const ProjectScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -232,7 +298,10 @@ export const TaskScalarFieldEnum = {
   completedAt: 'completedAt',
   archivedAt: 'archivedAt',
   reviewRequestedAt: 'reviewRequestedAt',
+  waitingForId: 'waitingForId',
+  waitingSince: 'waitingSince',
   assignedByManager: 'assignedByManager',
+  fromSummary: 'fromSummary',
   position: 'position',
   googleEventId: 'googleEventId',
   createdAt: 'createdAt',
@@ -293,6 +362,8 @@ export const RecurringTaskScalarFieldEnum = {
   plannedMinutes: 'plannedMinutes',
   frequency: 'frequency',
   weekdays: 'weekdays',
+  startTime: 'startTime',
+  dueDayOfMonth: 'dueDayOfMonth',
   dayOfMonth: 'dayOfMonth',
   active: 'active',
   lastGeneratedAt: 'lastGeneratedAt',
@@ -468,7 +539,11 @@ export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typ
 
 export const NotificationSettingScalarFieldEnum = {
   type: 'type',
-  enabled: 'enabled'
+  enabled: 'enabled',
+  pushEnabled: 'pushEnabled',
+  telegramEnabled: 'telegramEnabled',
+  sendAtMinutes: 'sendAtMinutes',
+  weekdaysOnly: 'weekdaysOnly'
 } as const
 
 export type NotificationSettingScalarFieldEnum = (typeof NotificationSettingScalarFieldEnum)[keyof typeof NotificationSettingScalarFieldEnum]
@@ -494,6 +569,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 export const NullsOrder = {

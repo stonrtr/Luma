@@ -589,6 +589,7 @@ export type WeeklyPlanItemCreateOrConnectWithoutUserInput = {
 
 export type WeeklyPlanItemCreateManyUserInputEnvelope = {
   data: Prisma.WeeklyPlanItemCreateManyUserInput | Prisma.WeeklyPlanItemCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type WeeklyPlanItemUpsertWithWhereUniqueWithoutUserInput = {
@@ -1495,6 +1496,7 @@ export type WeeklyPlanItemCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many WeeklyPlanItems.
    */
   data: Prisma.WeeklyPlanItemCreateManyInput | Prisma.WeeklyPlanItemCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1513,6 +1515,7 @@ export type WeeklyPlanItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * The data used to create many WeeklyPlanItems.
    */
   data: Prisma.WeeklyPlanItemCreateManyInput | Prisma.WeeklyPlanItemCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

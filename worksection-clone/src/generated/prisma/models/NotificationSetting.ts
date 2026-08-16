@@ -20,40 +20,82 @@ export type NotificationSettingModel = runtime.Types.Result.DefaultSelection<Pri
 
 export type AggregateNotificationSetting = {
   _count: NotificationSettingCountAggregateOutputType | null
+  _avg: NotificationSettingAvgAggregateOutputType | null
+  _sum: NotificationSettingSumAggregateOutputType | null
   _min: NotificationSettingMinAggregateOutputType | null
   _max: NotificationSettingMaxAggregateOutputType | null
+}
+
+export type NotificationSettingAvgAggregateOutputType = {
+  sendAtMinutes: number | null
+}
+
+export type NotificationSettingSumAggregateOutputType = {
+  sendAtMinutes: number | null
 }
 
 export type NotificationSettingMinAggregateOutputType = {
   type: string | null
   enabled: boolean | null
+  pushEnabled: boolean | null
+  telegramEnabled: boolean | null
+  sendAtMinutes: number | null
+  weekdaysOnly: boolean | null
 }
 
 export type NotificationSettingMaxAggregateOutputType = {
   type: string | null
   enabled: boolean | null
+  pushEnabled: boolean | null
+  telegramEnabled: boolean | null
+  sendAtMinutes: number | null
+  weekdaysOnly: boolean | null
 }
 
 export type NotificationSettingCountAggregateOutputType = {
   type: number
   enabled: number
+  pushEnabled: number
+  telegramEnabled: number
+  sendAtMinutes: number
+  weekdaysOnly: number
   _all: number
 }
 
 
+export type NotificationSettingAvgAggregateInputType = {
+  sendAtMinutes?: true
+}
+
+export type NotificationSettingSumAggregateInputType = {
+  sendAtMinutes?: true
+}
+
 export type NotificationSettingMinAggregateInputType = {
   type?: true
   enabled?: true
+  pushEnabled?: true
+  telegramEnabled?: true
+  sendAtMinutes?: true
+  weekdaysOnly?: true
 }
 
 export type NotificationSettingMaxAggregateInputType = {
   type?: true
   enabled?: true
+  pushEnabled?: true
+  telegramEnabled?: true
+  sendAtMinutes?: true
+  weekdaysOnly?: true
 }
 
 export type NotificationSettingCountAggregateInputType = {
   type?: true
   enabled?: true
+  pushEnabled?: true
+  telegramEnabled?: true
+  sendAtMinutes?: true
+  weekdaysOnly?: true
   _all?: true
 }
 
@@ -95,6 +137,18 @@ export type NotificationSettingAggregateArgs<ExtArgs extends runtime.Types.Exten
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: NotificationSettingAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: NotificationSettingSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: NotificationSettingMinAggregateInputType
@@ -125,6 +179,8 @@ export type NotificationSettingGroupByArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   _count?: NotificationSettingCountAggregateInputType | true
+  _avg?: NotificationSettingAvgAggregateInputType
+  _sum?: NotificationSettingSumAggregateInputType
   _min?: NotificationSettingMinAggregateInputType
   _max?: NotificationSettingMaxAggregateInputType
 }
@@ -132,7 +188,13 @@ export type NotificationSettingGroupByArgs<ExtArgs extends runtime.Types.Extensi
 export type NotificationSettingGroupByOutputType = {
   type: string
   enabled: boolean
+  pushEnabled: boolean
+  telegramEnabled: boolean
+  sendAtMinutes: number | null
+  weekdaysOnly: boolean
   _count: NotificationSettingCountAggregateOutputType | null
+  _avg: NotificationSettingAvgAggregateOutputType | null
+  _sum: NotificationSettingSumAggregateOutputType | null
   _min: NotificationSettingMinAggregateOutputType | null
   _max: NotificationSettingMaxAggregateOutputType | null
 }
@@ -158,11 +220,19 @@ export type NotificationSettingWhereInput = {
   NOT?: Prisma.NotificationSettingWhereInput | Prisma.NotificationSettingWhereInput[]
   type?: Prisma.StringFilter<"NotificationSetting"> | string
   enabled?: Prisma.BoolFilter<"NotificationSetting"> | boolean
+  pushEnabled?: Prisma.BoolFilter<"NotificationSetting"> | boolean
+  telegramEnabled?: Prisma.BoolFilter<"NotificationSetting"> | boolean
+  sendAtMinutes?: Prisma.IntNullableFilter<"NotificationSetting"> | number | null
+  weekdaysOnly?: Prisma.BoolFilter<"NotificationSetting"> | boolean
 }
 
 export type NotificationSettingOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  telegramEnabled?: Prisma.SortOrder
+  sendAtMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  weekdaysOnly?: Prisma.SortOrder
 }
 
 export type NotificationSettingWhereUniqueInput = Prisma.AtLeast<{
@@ -171,14 +241,24 @@ export type NotificationSettingWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.NotificationSettingWhereInput[]
   NOT?: Prisma.NotificationSettingWhereInput | Prisma.NotificationSettingWhereInput[]
   enabled?: Prisma.BoolFilter<"NotificationSetting"> | boolean
+  pushEnabled?: Prisma.BoolFilter<"NotificationSetting"> | boolean
+  telegramEnabled?: Prisma.BoolFilter<"NotificationSetting"> | boolean
+  sendAtMinutes?: Prisma.IntNullableFilter<"NotificationSetting"> | number | null
+  weekdaysOnly?: Prisma.BoolFilter<"NotificationSetting"> | boolean
 }, "type">
 
 export type NotificationSettingOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  telegramEnabled?: Prisma.SortOrder
+  sendAtMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  weekdaysOnly?: Prisma.SortOrder
   _count?: Prisma.NotificationSettingCountOrderByAggregateInput
+  _avg?: Prisma.NotificationSettingAvgOrderByAggregateInput
   _max?: Prisma.NotificationSettingMaxOrderByAggregateInput
   _min?: Prisma.NotificationSettingMinOrderByAggregateInput
+  _sum?: Prisma.NotificationSettingSumOrderByAggregateInput
 }
 
 export type NotificationSettingScalarWhereWithAggregatesInput = {
@@ -187,56 +267,108 @@ export type NotificationSettingScalarWhereWithAggregatesInput = {
   NOT?: Prisma.NotificationSettingScalarWhereWithAggregatesInput | Prisma.NotificationSettingScalarWhereWithAggregatesInput[]
   type?: Prisma.StringWithAggregatesFilter<"NotificationSetting"> | string
   enabled?: Prisma.BoolWithAggregatesFilter<"NotificationSetting"> | boolean
+  pushEnabled?: Prisma.BoolWithAggregatesFilter<"NotificationSetting"> | boolean
+  telegramEnabled?: Prisma.BoolWithAggregatesFilter<"NotificationSetting"> | boolean
+  sendAtMinutes?: Prisma.IntNullableWithAggregatesFilter<"NotificationSetting"> | number | null
+  weekdaysOnly?: Prisma.BoolWithAggregatesFilter<"NotificationSetting"> | boolean
 }
 
 export type NotificationSettingCreateInput = {
   type: string
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: number | null
+  weekdaysOnly?: boolean
 }
 
 export type NotificationSettingUncheckedCreateInput = {
   type: string
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: number | null
+  weekdaysOnly?: boolean
 }
 
 export type NotificationSettingUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  telegramEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sendAtMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weekdaysOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type NotificationSettingUncheckedUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  telegramEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sendAtMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weekdaysOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type NotificationSettingCreateManyInput = {
   type: string
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: number | null
+  weekdaysOnly?: boolean
 }
 
 export type NotificationSettingUpdateManyMutationInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  telegramEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sendAtMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weekdaysOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type NotificationSettingUncheckedUpdateManyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  telegramEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sendAtMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weekdaysOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type NotificationSettingCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  telegramEnabled?: Prisma.SortOrder
+  sendAtMinutes?: Prisma.SortOrder
+  weekdaysOnly?: Prisma.SortOrder
+}
+
+export type NotificationSettingAvgOrderByAggregateInput = {
+  sendAtMinutes?: Prisma.SortOrder
 }
 
 export type NotificationSettingMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  telegramEnabled?: Prisma.SortOrder
+  sendAtMinutes?: Prisma.SortOrder
+  weekdaysOnly?: Prisma.SortOrder
 }
 
 export type NotificationSettingMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  telegramEnabled?: Prisma.SortOrder
+  sendAtMinutes?: Prisma.SortOrder
+  weekdaysOnly?: Prisma.SortOrder
+}
+
+export type NotificationSettingSumOrderByAggregateInput = {
+  sendAtMinutes?: Prisma.SortOrder
 }
 
 
@@ -244,24 +376,40 @@ export type NotificationSettingMinOrderByAggregateInput = {
 export type NotificationSettingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   type?: boolean
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: boolean
+  weekdaysOnly?: boolean
 }, ExtArgs["result"]["notificationSetting"]>
 
 export type NotificationSettingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   type?: boolean
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: boolean
+  weekdaysOnly?: boolean
 }, ExtArgs["result"]["notificationSetting"]>
 
 export type NotificationSettingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   type?: boolean
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: boolean
+  weekdaysOnly?: boolean
 }, ExtArgs["result"]["notificationSetting"]>
 
 export type NotificationSettingSelectScalar = {
   type?: boolean
   enabled?: boolean
+  pushEnabled?: boolean
+  telegramEnabled?: boolean
+  sendAtMinutes?: boolean
+  weekdaysOnly?: boolean
 }
 
-export type NotificationSettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"type" | "enabled", ExtArgs["result"]["notificationSetting"]>
+export type NotificationSettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"type" | "enabled" | "pushEnabled" | "telegramEnabled" | "sendAtMinutes" | "weekdaysOnly", ExtArgs["result"]["notificationSetting"]>
 
 export type $NotificationSettingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "NotificationSetting"
@@ -269,6 +417,10 @@ export type $NotificationSettingPayload<ExtArgs extends runtime.Types.Extensions
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     type: string
     enabled: boolean
+    pushEnabled: boolean
+    telegramEnabled: boolean
+    sendAtMinutes: number | null
+    weekdaysOnly: boolean
   }, ExtArgs["result"]["notificationSetting"]>
   composites: {}
 }
@@ -694,6 +846,10 @@ export interface Prisma__NotificationSettingClient<T, Null = never, ExtArgs exte
 export interface NotificationSettingFieldRefs {
   readonly type: Prisma.FieldRef<"NotificationSetting", 'String'>
   readonly enabled: Prisma.FieldRef<"NotificationSetting", 'Boolean'>
+  readonly pushEnabled: Prisma.FieldRef<"NotificationSetting", 'Boolean'>
+  readonly telegramEnabled: Prisma.FieldRef<"NotificationSetting", 'Boolean'>
+  readonly sendAtMinutes: Prisma.FieldRef<"NotificationSetting", 'Int'>
+  readonly weekdaysOnly: Prisma.FieldRef<"NotificationSetting", 'Boolean'>
 }
     
 
@@ -904,6 +1060,7 @@ export type NotificationSettingCreateManyArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many NotificationSettings.
    */
   data: Prisma.NotificationSettingCreateManyInput | Prisma.NotificationSettingCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -922,6 +1079,7 @@ export type NotificationSettingCreateManyAndReturnArgs<ExtArgs extends runtime.T
    * The data used to create many NotificationSettings.
    */
   data: Prisma.NotificationSettingCreateManyInput | Prisma.NotificationSettingCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

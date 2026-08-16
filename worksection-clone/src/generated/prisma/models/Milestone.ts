@@ -410,6 +410,7 @@ export type MilestoneCreateOrConnectWithoutProjectInput = {
 
 export type MilestoneCreateManyProjectInputEnvelope = {
   data: Prisma.MilestoneCreateManyProjectInput | Prisma.MilestoneCreateManyProjectInput[]
+  skipDuplicates?: boolean
 }
 
 export type MilestoneUpsertWithWhereUniqueWithoutProjectInput = {
@@ -1274,6 +1275,7 @@ export type MilestoneCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many Milestones.
    */
   data: Prisma.MilestoneCreateManyInput | Prisma.MilestoneCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1292,6 +1294,7 @@ export type MilestoneCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many Milestones.
    */
   data: Prisma.MilestoneCreateManyInput | Prisma.MilestoneCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

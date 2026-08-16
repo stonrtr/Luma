@@ -424,6 +424,7 @@ export type ChecklistItemCreateOrConnectWithoutTaskInput = {
 
 export type ChecklistItemCreateManyTaskInputEnvelope = {
   data: Prisma.ChecklistItemCreateManyTaskInput | Prisma.ChecklistItemCreateManyTaskInput[]
+  skipDuplicates?: boolean
 }
 
 export type ChecklistItemUpsertWithWhereUniqueWithoutTaskInput = {
@@ -1203,6 +1204,7 @@ export type ChecklistItemCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many ChecklistItems.
    */
   data: Prisma.ChecklistItemCreateManyInput | Prisma.ChecklistItemCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1221,6 +1223,7 @@ export type ChecklistItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many ChecklistItems.
    */
   data: Prisma.ChecklistItemCreateManyInput | Prisma.ChecklistItemCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

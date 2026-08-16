@@ -608,6 +608,7 @@ export type AttachmentCreateOrConnectWithoutUploadedByInput = {
 
 export type AttachmentCreateManyUploadedByInputEnvelope = {
   data: Prisma.AttachmentCreateManyUploadedByInput | Prisma.AttachmentCreateManyUploadedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type AttachmentUpsertWithWhereUniqueWithoutUploadedByInput = {
@@ -670,6 +671,7 @@ export type AttachmentCreateOrConnectWithoutTaskInput = {
 
 export type AttachmentCreateManyTaskInputEnvelope = {
   data: Prisma.AttachmentCreateManyTaskInput | Prisma.AttachmentCreateManyTaskInput[]
+  skipDuplicates?: boolean
 }
 
 export type AttachmentUpsertWithWhereUniqueWithoutTaskInput = {
@@ -717,6 +719,7 @@ export type AttachmentCreateOrConnectWithoutCommentInput = {
 
 export type AttachmentCreateManyCommentInputEnvelope = {
   data: Prisma.AttachmentCreateManyCommentInput | Prisma.AttachmentCreateManyCommentInput[]
+  skipDuplicates?: boolean
 }
 
 export type AttachmentUpsertWithWhereUniqueWithoutCommentInput = {
@@ -1629,6 +1632,7 @@ export type AttachmentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Attachments.
    */
   data: Prisma.AttachmentCreateManyInput | Prisma.AttachmentCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1647,6 +1651,7 @@ export type AttachmentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many Attachments.
    */
   data: Prisma.AttachmentCreateManyInput | Prisma.AttachmentCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -472,6 +472,7 @@ export type CallCreateOrConnectWithoutUserInput = {
 
 export type CallCreateManyUserInputEnvelope = {
   data: Prisma.CallCreateManyUserInput | Prisma.CallCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type CallUpsertWithWhereUniqueWithoutUserInput = {
@@ -1273,6 +1274,7 @@ export type CallCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Calls.
    */
   data: Prisma.CallCreateManyInput | Prisma.CallCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1291,6 +1293,7 @@ export type CallCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Calls.
    */
   data: Prisma.CallCreateManyInput | Prisma.CallCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -39,7 +39,7 @@ function transport(): nodemailer.Transporter | null {
 // Возвращает true, если письмо реально ушло через SMTP; false — если сработал dev-fallback.
 export async function sendMail(mail: Mail): Promise<boolean> {
   const t = transport();
-  const from = process.env.MAIL_FROM ?? "Worksection <no-reply@worksection.local>";
+  const from = process.env.MAIL_FROM ?? "Workspace M <no-reply@workspacem.local>";
   if (!t) {
     console.info(`[mail:dev] Лист не надіслано (SMTP не налаштовано). Кому: ${mail.to}\nТема: ${mail.subject}\n${mail.text}`);
     return false;

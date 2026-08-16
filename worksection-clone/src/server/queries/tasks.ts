@@ -21,6 +21,7 @@ export async function getMyTasks(userId: string) {
     where: { parentId: null, archivedAt: null, assignees: { some: { userId } } },
     orderBy: [{ priority: "desc" }, { position: "asc" }],
     include: {
+      createdBy: { select: { id: true, name: true, avatarUrl: true } },
       project: { select: { name: true, color: true } },
       assignees: { include: { user: true } },
       tags: { include: { tag: true } },
@@ -53,7 +54,7 @@ export async function getArchivedTasks(userId?: string) {
     take: 200,
     include: {
       project: { select: { name: true, color: true } },
-      assignees: { include: { user: { select: { id: true, name: true } } } },
+      assignees: { include: { user: { select: { id: true, name: true, avatarUrl: true } } } },
     },
   });
 }
@@ -74,6 +75,7 @@ export async function getTaskDetail(taskId: string) {
       project: { include: { members: { include: { user: true } }, tags: true } },
       assignees: { include: { user: true } },
       createdBy: true,
+      waitingFor: { select: { id: true, name: true } },
       milestone: true,
       tags: { include: { tag: true } },
       attachments: { include: { uploadedBy: true }, orderBy: { createdAt: "desc" } },

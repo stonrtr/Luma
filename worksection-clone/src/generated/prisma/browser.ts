@@ -48,6 +48,31 @@ export type GoogleAccount = Prisma.GoogleAccountModel
  */
 export type CallPoint = Prisma.CallPointModel
 /**
+ * Model WeeklyWin
+ * 
+ */
+export type WeeklyWin = Prisma.WeeklyWinModel
+/**
+ * Model Spreadsheet
+ * 
+ */
+export type Spreadsheet = Prisma.SpreadsheetModel
+/**
+ * Model UserNote
+ * 
+ */
+export type UserNote = Prisma.UserNoteModel
+/**
+ * Model CallContact
+ * 
+ */
+export type CallContact = Prisma.CallContactModel
+/**
+ * Model CallTopic
+ * 
+ */
+export type CallTopic = Prisma.CallTopicModel
+/**
  * Model Project
  * 
  */

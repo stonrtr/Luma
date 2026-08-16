@@ -1,0 +1,100 @@
+// Recall — personal knowledge base with spaced-repetition training.
+// Core model: "1 topic = 1 card". A topic holds the raw notes (конспект) plus an
+// AI-composed recall question and key points; the whole topic is one review unit.
+// JSON-shaped fields are stored as TEXT and (de)serialized in lib/serialize.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Collection {
+  id        String      @id @default(cuid())
+  name      String
+  position  Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  topics    Knowledge[]
+}
+
+model Knowledge {
+  id           String      @id @default(cuid())
+  title        String
+  sourceText   String                          // конспект (raw notes the user pasted)
+  question     String      @default("")         // AI-composed recall question (front of the card)
+  keyPoints    String      @default("[]")       // JSON string[] — what a complete answer should cover
+  collectionId String?                          // null = "Без раздела"
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  archived     Boolean     @default(false)
+
+  genStatus String @default("pending") // pending | ready | failed
+  genError  String @default("")
+
+  // Spaced-repetition state (FSRS-like) — mirrors lib/srs.ts
+  progress              Float   @default(0)
+  known                 Boolean @default(false)
+  stability             Float   @default(0)
+  retrievability        Float   @default(0)
+  difficulty            Int     @default(5)
+  reviewCount           Int     @default(0)
+  successfulReviewCount Int     @default(0)
+  consecutiveCorrect    Int     @default(0)
+  lapseCount            Int     @default(0)
+  hintCount             Int     @default(0)
+  lastRating            String? // again | hard | easy
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  lastOpenedAt   DateTime?
+  lastReviewedAt DateTime?
+  dueAt          DateTime?
+
+  reviewLogs ReviewLog[]
+
+  @@index([collectionId])
+  @@index([archived])
+  @@index([dueAt])
+  @@index([known])
+}
+
+model ReviewLog {
+  id          String    @id @default(cuid())
+  knowledgeId String
+  knowledge   Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
+
+  rating       String // again | hard | easy
+  usedHint     Boolean  @default(false)
+  prevProgress Float    @default(0)
+  newProgress  Float    @default(0)
+  intervalDays Float    @default(0)
+  reviewedAt   DateTime @default(now())
+
+  @@index([knowledgeId])
+  @@index([reviewedAt])
+}
+
+model UserSettings {
+  id                 String   @id @default("default")
+  newCardsPerDay     Int      @default(10)
+  cardsPerDay        Int      @default(40)
+  requiredSuccess    Int      @default(3)
+  requiredStreak     Int      @default(2)
+  minIntervalDays    Int      @default(7)
+  countHardAsCorrect Boolean  @default(true)
+  progressThreshold  Int      @default(100)
+  animationsEnabled  Boolean  @default(true)
+  lastSection        String   @default("today")
+  updatedAt          DateTime @updatedAt
+}
+
+model DailyActivity {
+  id         String @id @default(cuid())
+  date       String @unique // yyyy-mm-dd (local)
+  reviewed   Int    @default(0)
+  newStudied Int    @default(0)
+  learned    Int    @default(0)
+}
