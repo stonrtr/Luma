@@ -1,7 +1,7 @@
 // Luma service worker (§24). Cache-first for the app shell/static assets,
 // network-first for navigation with an offline fallback. API is never cached.
-const CACHE = "luma-v1";
-const SHELL = ["/", "/manifest.webmanifest", "/icon.svg", "/offline.html"];
+const CACHE = "luma-v2";
+const SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/offline.html"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

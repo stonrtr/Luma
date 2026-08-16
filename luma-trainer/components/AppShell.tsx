@@ -62,8 +62,12 @@ export function AppShell() {
   if (!settings) {
     return (
       <div className="app-outer" style={{ alignItems: "center", justifyContent: "center" }}>
-        <div className="brand" style={{ fontSize: 34 }}>
-          luma<span className="dim">.</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon-192.png" alt="Luma" width={54} height={54} style={{ borderRadius: 15, boxShadow: "0 8px 20px rgba(2,20,90,0.3)" }} />
+          <div className="brand" style={{ fontSize: 34 }}>
+            luma<span className="dim">.</span>
+          </div>
         </div>
       </div>
     );
