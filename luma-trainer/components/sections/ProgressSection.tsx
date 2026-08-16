@@ -35,8 +35,11 @@ export function ProgressSection() {
 
   return (
     <>
-      <div className="title-hero">
-        прогресс<span className="dim">.</span>
+      <div>
+        <div className="overline" style={{ marginBottom: 12 }}>Статистика</div>
+        <div className="title-hero">
+          прогресс<span className="dim">.</span>
+        </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12 }}>

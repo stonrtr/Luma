@@ -1,57 +1,53 @@
 @import "tailwindcss";
 
-/* ── Redesign «панель в рамке» (design_handoff_luma_redesign) ─────────── */
-
-/* Цветовые темы: 4 акцента, переключаются data-hue на <html> */
-:root,
-:root[data-hue="blue"] {
-  --outer: #0a3a9e;
-  --panel-grad: radial-gradient(120% 150% at 28% 18%, #3572e8 0%, #1c55c9 48%, #0c3da5 100%);
-  --accent: #1150c8;
-  --dot: #2f6fe0;
-}
-:root[data-hue="green"] {
-  --outer: #0b5c31;
-  --panel-grad: radial-gradient(120% 150% at 28% 18%, #2fae63 0%, #1a8a4c 48%, #0d5f33 100%);
-  --accent: #0f7a41;
-  --dot: #27a35c;
-}
-:root[data-hue="purple"] {
-  --outer: #3c1878;
-  --panel-grad: radial-gradient(120% 150% at 28% 18%, #8a55e0 0%, #6a34c4 48%, #4b1f96 100%);
-  --accent: #6a2fc9;
-  --dot: #7e46d8;
-}
-:root[data-hue="red"] {
-  --outer: #7c1a1a;
-  --panel-grad: radial-gradient(120% 150% at 28% 18%, #e05555 0%, #c03434 48%, #8f1f1f 100%);
-  --accent: #c23434;
-  --dot: #d64c4c;
-}
+/* ── Редизайн Luma «Bethouse» — полноэкранный синий градиент, стекло, Onest ── */
 
 :root {
-  /* Нейтральные на белом */
-  --ink: #23304d;
-  --ink-body: #3b4763;
-  --ink-2: #7a86a3;
-  --ink-3: #a8b1c9;
-  --bg-soft: #f2f5fb;
-  --bg-soft2: #f6f8fd;
-  --bg-chip: #eef1f8;
-  --bg-block: #f8fafd;
-  --track: #e8ecf7;
-  --track-soft: #f0f3fa;
-  --line: #e2e7f3;
-  --line-soft: #edf0f8;
-  /* Семантика */
-  --success: #23a66f;
-  --success-bg: #e2f6ec;
-  --danger: #d64c4c;
-  --danger-bg: #fdf3f3;
-  --danger-line: #f3d2d2;
-  --star: #ffcd1f;
+  /* Фон */
+  --grad: radial-gradient(120% 140% at 88% 112%, #27b9f5 0%, rgba(39, 185, 245, 0) 46%),
+    linear-gradient(118deg, #03219a 0%, #0a3fca 45%, #0057d5 100%);
+  --base: #0446c8;
 
-  --font-sans: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
+  /* Текст (тема тёмная — белым по стеклу) */
+  --ink: #ffffff;
+  --ink-body: rgba(255, 255, 255, 0.85);
+  --ink-2: rgba(255, 255, 255, 0.6);
+  --ink-3: rgba(255, 255, 255, 0.45);
+  --muted: rgba(255, 255, 255, 0.6);
+
+  /* Акцент и семантика */
+  --accent: #27b9f5;
+  --accent-soft: #a9e4ff;
+  --primary: #27b9f5;
+  --deep: #0047c4; /* текст на белых пилюлях */
+  --dark-cta: #041e7e; /* тёмные круглые CTA */
+  --success: #54e6a1;
+  --success-2: #7defbc;
+  --warning: #ffb35c;
+  --danger: #ff8b8b;
+  --danger-2: #ffa1a1;
+  --star: #ffffff;
+
+  /* Стекло */
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.16);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-border-strong: rgba(255, 255, 255, 0.24);
+  --line: rgba(255, 255, 255, 0.18);
+  --line-soft: rgba(255, 255, 255, 0.14);
+  --track: rgba(255, 255, 255, 0.16);
+  --track-soft: rgba(255, 255, 255, 0.08);
+  --bg-block: rgba(255, 255, 255, 0.06);
+
+  /* Красное стекло (опасные действия) */
+  --danger-bg: rgba(255, 110, 110, 0.14);
+  --danger-bg-hover: rgba(255, 110, 110, 0.24);
+  --danger-line: rgba(255, 139, 139, 0.4);
+
+  --shadow-white: 0 12px 30px rgba(2, 20, 90, 0.35);
+  --shadow-dark: 0 18px 44px rgba(2, 14, 70, 0.45);
+
+  --font-sans: var(--font-onest), "Onest", system-ui, sans-serif;
 }
 
 @theme inline {
@@ -69,113 +65,107 @@ body {
   padding: 0;
 }
 body {
-  background: var(--outer);
+  background: var(--base);
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  transition: background 0.5s ease;
+}
+:focus-visible {
+  outline: 2px solid #7fd4ff;
+  outline-offset: 2px;
+}
+::selection {
+  background: rgba(39, 185, 245, 0.45);
+  color: #fff;
 }
 input,
 textarea,
 select,
 button {
   font-family: inherit;
-  font-size: 16px; /* iOS: без зума при фокусе */
+  font-size: 16px; /* iOS: без зума */
 }
 
-/* ── Каркас: рамка + панель ──────────────────────────────────────────── */
+/* ── Каркас: полноэкранный градиент (без рамки) ─────────────────────────── */
 .app-outer {
   min-height: 100vh;
-  background: var(--outer);
-  padding: clamp(10px, 2.5vw, 32px);
-  display: flex;
-  transition: background 0.5s ease;
-}
-.app-frame {
-  flex: 1;
-  background: #fff;
-  border-radius: clamp(26px, 4vw, 52px);
-  padding: clamp(10px, 1.6vw, 22px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
-  display: flex;
-}
-.app-panel {
-  flex: 1;
-  background: var(--panel-grad);
-  border-radius: clamp(18px, 3vw, 38px);
-  padding: clamp(16px, 3vw, 40px);
-  min-height: calc(100vh - clamp(60px, 12vw, 120px));
-  transition: background 0.5s ease;
+  color: #fff;
+  background: var(--grad);
+  background-attachment: fixed;
+  padding: clamp(18px, 3.5vw, 52px) clamp(18px, 4.5vw, 72px);
   display: flex;
   flex-direction: column;
-  gap: clamp(18px, 3vh, 28px);
-  position: relative;
+  gap: clamp(22px, 4vh, 44px);
 }
 .content-col {
   flex: 1;
   width: 100%;
-  max-width: 1020px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
-/* Логотип */
+/* ── Логотип, заголовки, оверлайны ──────────────────────────────────────── */
 .brand {
   font-weight: 800;
   font-size: clamp(24px, 3vw, 32px);
   color: #fff;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.brand-sub {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+  font-weight: 600;
 }
 .dim {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.45);
 }
-
-/* Гигантские заголовки */
 .title-hero {
-  font-size: clamp(34px, 5vw, 60px);
-  font-weight: 800;
+  font-size: clamp(36px, 5vw, 68px);
+  font-weight: 600;
   color: #fff;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+}
+.overline {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+}
+.overline-sm {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
 }
 
-/* ── Кнопки ──────────────────────────────────────────────────────────── */
-/* Оптическое центрирование текста: у Baloo 2 верхнеутяжелённые метрики
-   (крупный ascender), из-за чего глифы в пилюлях сидят ниже центра.
-   text-box обрезает пустые поля строки по cap-height/baseline — текст
-   центрируется по реальным глифам. Старые браузеры просто игнорируют. */
-.wbtn,
-.gbtn,
-.abtn,
-.lbtn,
-.btn,
-.chip,
-.gpill,
-.toggle-pill,
-.nav-pill,
-.select-onpanel {
-  text-box: trim-both cap alphabetic;
-}
-
+/* ── Кнопки ─────────────────────────────────────────────────────────────── */
 .wbtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 0 22px;
+  min-height: 46px;
+  padding: 0 24px;
   border-radius: 999px;
   border: none;
   background: #fff;
-  color: var(--accent);
-  font-weight: 800;
+  color: var(--deep);
+  font-weight: 700;
   font-size: 15px;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-  transition: transform 0.15s ease, background 0.15s ease;
+  box-shadow: var(--shadow-white);
+  transition: transform 0.15s ease;
   user-select: none;
   text-decoration: none;
 }
@@ -189,16 +179,16 @@ button {
 }
 .wbtn-lg {
   min-height: 56px;
-  padding: 0 34px;
+  padding: 0 36px;
   font-size: 18px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 14px 34px rgba(2, 20, 90, 0.4);
 }
 .wbtn-lg:hover {
   transform: translateY(-2px);
 }
 .wbtn-sm {
-  min-height: 38px;
-  padding: 0 18px;
+  min-height: 40px;
+  padding: 0 20px;
   font-size: 14px;
 }
 
@@ -207,161 +197,175 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 0 20px;
+  min-height: 46px;
+  padding: 0 22px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border-strong);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
   color: #fff;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
   cursor: pointer;
   transition: background 0.15s ease;
   user-select: none;
 }
 .gbtn:hover {
-  background: rgba(255, 255, 255, 0.26);
+  background: var(--glass-hover);
 }
 .gbtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 .gbtn-sm {
-  min-height: 38px;
-  padding: 0 18px;
+  min-height: 40px;
+  padding: 0 20px;
   font-size: 14px;
 }
 
+/* Акцентные первичные действия в Bethouse — тоже белые пилюли */
 .abtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
-  padding: 0 20px;
+  min-height: 42px;
+  padding: 0 22px;
   border-radius: 999px;
   border: none;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 800;
+  background: #fff;
+  color: var(--deep);
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
-  transition: transform 0.15s ease, filter 0.15s ease;
+  box-shadow: 0 10px 24px rgba(2, 20, 90, 0.3);
+  transition: transform 0.15s ease;
   user-select: none;
   text-decoration: none;
 }
 .abtn:hover {
-  filter: brightness(1.07);
+  transform: translateY(-1px);
 }
 .abtn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* Стеклянная пилюля-«span» */
+/* Лёгкие стеклянные чипы-действия */
+.lbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.lbtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.lbtn-danger {
+  border-color: var(--danger-line);
+  background: var(--danger-bg);
+  color: var(--danger-2);
+}
+.lbtn-danger:hover {
+  background: var(--danger-bg-hover);
+}
+
+.icon-btn {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--glass);
+  border-radius: 999px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  transition: background 0.15s ease;
+}
+.icon-btn:hover {
+  background: var(--glass-hover);
+}
+.icon-btn-danger {
+  border-color: rgba(255, 139, 139, 0.35);
+  background: rgba(255, 110, 110, 0.12);
+  color: var(--danger-2);
+}
+.icon-btn-danger:hover {
+  background: rgba(255, 110, 110, 0.22);
+}
+.icon-btn-sm {
+  width: 34px;
+  height: 34px;
+}
+
+/* ── Стеклянные панели и чипы ───────────────────────────────────────────── */
 .gpill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
   color: rgba(255, 255, 255, 0.9);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
-
-/* ── Белые карточки и чипы ───────────────────────────────────────────── */
 .wcard {
-  background: #fff;
-  border-radius: 24px;
-  padding: 16px 20px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  border-radius: 22px;
+  padding: 18px 22px;
 }
 .wcard-sm {
-  background: #fff;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
   border-radius: 20px;
-  padding: 14px 18px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+  padding: 14px 20px;
 }
 
 .chip {
   display: inline-flex;
   align-items: center;
-  padding: 3px 12px;
+  padding: 4px 12px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
-  background: var(--bg-chip);
-  color: var(--ink-2);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
 }
 .chip-accent {
-  background: color-mix(in srgb, var(--accent) 12%, #ffffff);
-  color: var(--accent);
+  background: rgba(39, 185, 245, 0.22);
+  color: var(--accent-soft);
 }
 .chip-green {
-  background: var(--success-bg);
-  color: var(--success);
+  background: rgba(52, 227, 154, 0.18);
+  color: var(--success-2);
 }
 .chip-danger {
   background: var(--danger-bg);
-  color: var(--danger);
+  color: var(--danger-2);
 }
 
-/* Лёгкие кнопки на белом (чипы-действия) */
-.lbtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 0 14px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--bg-soft2);
-  color: #4a5878;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-.lbtn:hover {
-  background: var(--bg-chip);
-}
-.lbtn-danger {
-  border-color: var(--danger-line);
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-.icon-btn {
-  border: none;
-  background: var(--bg-soft2);
-  border-radius: 999px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  color: #4a5878;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-.icon-btn-danger {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-.icon-btn-sm {
-  width: 32px;
-  height: 32px;
-}
-
-/* ── Прогресс-бары ───────────────────────────────────────────────────── */
+/* ── Прогресс-бары ──────────────────────────────────────────────────────── */
 .track {
-  height: 9px;
+  height: 8px;
   border-radius: 999px;
   background: var(--track);
   overflow: hidden;
@@ -371,7 +375,7 @@ button {
   height: 100%;
   border-radius: 999px;
   background: var(--accent);
-  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.5s ease;
+  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .track.is-known > span {
   background: var(--success);
@@ -380,214 +384,212 @@ button {
 /* Точка сложности */
 .diff-dot {
   display: inline-block;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex: none;
 }
 .diff-green {
-  background: #23a66f;
+  background: #54e6a1;
 }
 .diff-lime {
-  background: #9acd32;
+  background: #c9e35e;
 }
 .diff-orange {
-  background: #f5972b;
+  background: #ffb35c;
 }
 .diff-red {
-  background: #d64c4c;
+  background: #ff8b8b;
 }
 
-/* ── Тумблеры и круги темы ───────────────────────────────────────────── */
+/* ── Тумблеры ───────────────────────────────────────────────────────────── */
 .toggle-pill {
-  min-width: 74px;
-  min-height: 38px;
-  padding: 0 18px;
+  min-width: 76px;
+  min-height: 40px;
+  padding: 0 20px;
   border-radius: 999px;
-  border: none;
-  font-weight: 800;
+  border: 1px solid var(--glass-border-strong);
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  background: var(--bg-chip);
-  color: var(--ink-2);
+  background: var(--glass);
+  color: rgba(255, 255, 255, 0.75);
   transition: background 0.15s ease, color 0.15s ease;
 }
 .toggle-pill.on {
-  background: var(--accent);
-  color: #fff;
-}
-
-.hue-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
   background: #fff;
-  border: 3px solid transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-  transition: transform 0.15s ease;
-  padding: 0;
-}
-.hue-btn:hover {
-  transform: scale(1.08);
-}
-.hue-btn.on {
-  border-color: rgba(255, 255, 255, 0.9);
-}
-.hue-btn-onwhite {
-  width: 40px;
-  height: 40px;
-  background: var(--bg-soft);
-  box-shadow: none;
-}
-.hue-btn-onwhite.on {
-  border-color: var(--accent);
-}
-.hue-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: inline-block;
+  color: var(--deep);
+  border-color: transparent;
 }
 
-/* ── Инпуты ──────────────────────────────────────────────────────────── */
+/* ── Инпуты ─────────────────────────────────────────────────────────────── */
 .input,
 .select {
   width: 100%;
   min-height: 44px;
-  padding: 0 16px;
-  border: none;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
-  background: var(--bg-soft);
-  color: var(--ink);
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 500;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 .input:focus,
 .select:focus,
 .textarea:focus {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  border-color: rgba(127, 212, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(39, 185, 245, 0.25);
+}
+.select option {
+  color: #0b2a70; /* нативный дропдаун на белом фоне ОС */
 }
 .textarea {
   width: 100%;
   min-height: 120px;
-  padding: 12px 16px;
-  border: none;
+  padding: 12px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 18px;
-  background: var(--bg-soft);
-  color: var(--ink);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
   outline: none;
   resize: vertical;
   line-height: 1.5;
 }
 .input-num {
   width: 90px;
-  min-height: 42px;
-  padding: 0 14px;
-  border: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
-  background: var(--bg-soft);
-  color: var(--ink);
-  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 600;
   font-size: 15px;
   outline: none;
 }
-/* Белый select-пилюля на панели */
 .select-onpanel {
   width: auto;
-  min-height: 40px;
-  padding: 0 16px;
-  border: none;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--glass-border-strong);
   border-radius: 999px;
-  background: #fff;
-  color: var(--ink);
-  font-weight: 700;
+  background: var(--glass);
+  color: #fff;
+  font-weight: 600;
   font-size: 14px;
   cursor: pointer;
   outline: none;
+  backdrop-filter: blur(12px);
+}
+.select-onpanel option {
+  color: #0b2a70;
 }
 .label {
   display: block;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 6px;
 }
 .muted {
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
-/* ── Легаси-классы (диалоги) в новом стиле ───────────────────────────── */
+/* ── Текстовая навигация ────────────────────────────────────────────────── */
+.nav-link {
+  background: none;
+  border: none;
+  padding: 10px 2px;
+  min-height: 44px;
+  font-size: 15px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.15s ease;
+}
+.nav-link:hover {
+  color: #fff;
+}
+.nav-link.active {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ── Легаси-классы диалогов ─────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 20px;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--bg-soft2);
-  color: #4a5878;
-  font-weight: 700;
+  border: 1px solid var(--glass-border-strong);
+  background: var(--glass);
+  color: #fff;
+  font-weight: 600;
   font-size: 15px;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s ease;
   user-select: none;
 }
 .btn:hover {
-  background: var(--bg-chip);
+  background: var(--glass-hover);
 }
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 .btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-weight: 800;
+  background: #fff;
+  border-color: transparent;
+  color: var(--deep);
+  font-weight: 700;
 }
 .btn-primary:hover {
-  background: var(--accent);
-  filter: brightness(1.07);
+  background: #fff;
+  transform: translateY(-1px);
 }
 .btn-danger {
   border-color: var(--danger-line);
   background: var(--danger-bg);
-  color: var(--danger);
+  color: var(--danger-2);
 }
 .btn-danger:hover {
-  background: var(--danger-bg);
-  filter: brightness(0.98);
+  background: var(--danger-bg-hover);
 }
 .btn-ghost {
   border-color: transparent;
   background: transparent;
 }
 .btn-ghost:hover {
-  background: var(--bg-chip);
+  background: rgba(255, 255, 255, 0.1);
 }
 .btn-sm {
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 36px;
+  padding: 0 14px;
   font-size: 13px;
 }
 .card {
   background: var(--bg-block);
+  border: 1px solid var(--line-soft);
   border-radius: 18px;
 }
 
-/* ── Модальные окна ──────────────────────────────────────────────────── */
+/* ── Модальные окна (тёмная стеклянная панель) ──────────────────────────── */
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(10, 16, 38, 0.45);
+  background: rgba(2, 14, 70, 0.62);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -595,13 +597,16 @@ button {
   animation: fade 0.15s ease;
 }
 .modal {
-  background: #fff;
+  background: rgba(7, 34, 116, 0.94);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 80px rgba(2, 12, 60, 0.6);
   width: 100%;
   max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
+  color: #fff;
   animation: pop 0.18s ease;
 }
 .modal-head {
@@ -609,10 +614,10 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--line-soft);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   position: sticky;
   top: 0;
-  background: #fff;
+  background: rgba(7, 34, 116, 0.96);
   z-index: 1;
 }
 .modal-body {
@@ -620,8 +625,8 @@ button {
 }
 .h2 {
   font-size: 17px;
-  font-weight: 800;
-  color: var(--ink);
+  font-weight: 700;
+  color: #fff;
 }
 
 @media (max-width: 620px) {
@@ -637,7 +642,7 @@ button {
   }
 }
 
-/* ── Анимации ────────────────────────────────────────────────────────── */
+/* ── Анимации ───────────────────────────────────────────────────────────── */
 @keyframes fade {
   from {
     opacity: 0;
@@ -669,7 +674,7 @@ button {
 }
 @keyframes ringGood {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
   }
   100% {
     box-shadow: 0 0 0 30px transparent;
@@ -696,10 +701,10 @@ button {
 @keyframes bob {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
   50% {
-    transform: translateY(5px);
+    transform: translateX(-50%) translateY(5px);
   }
 }
 .bob {
@@ -726,8 +731,6 @@ button {
     transition-duration: 0.001ms !important;
   }
 }
-
-/* Настройка «Включить анимации» = Выкл */
 .no-anim *,
 .no-anim *::before,
 .no-anim *::after {

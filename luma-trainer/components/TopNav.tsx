@@ -1,8 +1,8 @@
 "use client";
 import { SECTIONS, type SectionId } from "./app-context";
 
-// Навигация редизайна: логотип, пилюли разделов по центру, «▶ сессия» справа.
-// На мобильном всё переносится через flex-wrap (гамбургера в новом дизайне нет).
+// Навигация Bethouse: логотип с подписью, текстовые ссылки-разделы по центру,
+// справа «🎲 Random» и белая пилюля «сессия →». На мобильном — flex-wrap.
 export function TopNav({
   active,
   onNavigate,
@@ -15,31 +15,34 @@ export function TopNav({
   onStartRandom: () => void;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div className="brand">
-        luma<span className="dim">.</span>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+        <div className="brand">
+          luma<span className="dim">.</span>
+        </div>
+        <div className="brand-sub">
+          Prime learning
+          <br />
+          platform
+        </div>
       </div>
-      <nav style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-        {SECTIONS.map((s) => {
-          const isActive = active === s.id;
-          return (
-            <button
-              key={s.id}
-              className={isActive ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-              style={{ minHeight: 42, fontWeight: isActive ? 800 : 700 }}
-              onClick={() => onNavigate(s.id)}
-            >
-              {s.label}
-            </button>
-          );
-        })}
+      <nav style={{ display: "flex", gap: "clamp(14px, 2.4vw, 34px)", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
+        {SECTIONS.map((s) => (
+          <button
+            key={s.id}
+            className={`nav-link ${active === s.id ? "active" : ""}`}
+            onClick={() => onNavigate(s.id)}
+          >
+            {s.label}
+          </button>
+        ))}
       </nav>
-      <div style={{ display: "flex", gap: 8 }}>
-        <button className="gbtn" onClick={onStartRandom} title="Все фразы в случайном порядке">
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <button className="gbtn gbtn-sm" onClick={onStartRandom} title="Все фразы в случайном порядке">
           🎲 Random
         </button>
         <button className="wbtn" onClick={onStartSession}>
-          ▶ сессия
+          сессия →
         </button>
       </div>
     </div>

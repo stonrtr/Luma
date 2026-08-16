@@ -37,12 +37,4 @@ export const SECTIONS = [
   { id: "settings", label: "Настройки", icon: "⚙️" },
 ] as const;
 
-export const HUES = ["blue", "green", "purple", "red"] as const;
-export const HUE_DOTS: Record<(typeof HUES)[number], string> = {
-  blue: "#2f6fe0",
-  green: "#27a35c",
-  purple: "#7e46d8",
-  red: "#d64c4c",
-};
-
 export type SectionId = (typeof SECTIONS)[number]["id"];

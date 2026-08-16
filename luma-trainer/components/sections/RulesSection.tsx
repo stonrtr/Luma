@@ -54,8 +54,11 @@ export function RulesSection() {
 
   return (
     <>
-      <div className="title-hero">
-        правила<span className="dim">.</span>
+      <div>
+        <div className="overline" style={{ marginBottom: 12 }}>Грамматика</div>
+        <div className="title-hero">
+          правила<span className="dim">.</span>
+        </div>
       </div>
 
       <div className="wcard" style={{ padding: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>

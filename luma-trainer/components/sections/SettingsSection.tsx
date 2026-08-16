@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { A } from "@/lib/api";
 import { speakEnglish } from "@/lib/tts-client";
-import type { HueTheme } from "@/lib/types";
-import { HUES, HUE_DOTS, useApp } from "../app-context";
+import { useApp } from "../app-context";
 import { useToast } from "../ui";
 
 export function SettingsSection() {
@@ -26,8 +25,11 @@ export function SettingsSection() {
 
   return (
     <>
-      <div className="title-hero">
-        настройки<span className="dim">.</span>
+      <div>
+        <div className="overline" style={{ marginBottom: 12 }}>Параметры</div>
+        <div className="title-hero">
+          настройки<span className="dim">.</span>
+        </div>
       </div>
 
       <Group title="Обучение">
@@ -89,20 +91,6 @@ export function SettingsSection() {
       </Group>
 
       <Group title="Оформление">
-        <Row label="Цвет интерфейса">
-          <div style={{ display: "flex", gap: 10 }}>
-            {HUES.map((h) => (
-              <button
-                key={h}
-                aria-label={`Цвет темы: ${h}`}
-                className={`hue-btn hue-btn-onwhite ${settings.theme === h ? "on" : ""}`}
-                onClick={() => updateSettings({ theme: h as HueTheme })}
-              >
-                <span className="hue-dot" style={{ background: HUE_DOTS[h] }} />
-              </button>
-            ))}
-          </div>
-        </Row>
         <ToggleRow label="Включить анимации" checked={settings.animationsEnabled} onChange={(v) => updateSettings({ animationsEnabled: v })} />
       </Group>
 
@@ -131,8 +119,8 @@ export function SettingsSection() {
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="wcard" style={{ padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
-      <div style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)" }}>{title}</div>
+    <div className="wcard" style={{ padding: 22, display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="overline-sm">{title}</div>
       {children}
     </div>
   );
@@ -141,7 +129,7 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-      <span style={{ fontWeight: 700, color: "var(--ink-body)" }}>{label}</span>
+      <span style={{ fontWeight: 500, color: "var(--ink-body)" }}>{label}</span>
       {children}
     </div>
   );

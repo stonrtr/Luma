@@ -20,8 +20,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Дизайн-референсы (HTML-прототипы), не production-код.
-    "design_handoff_luma_redesign/**",
+    // Дизайн-референсы (HTML-прототипы + их фреймворк), не production-код.
+    "design_handoff_luma_bethouse/**",
     "lib/generated/**",
   ]),
 ]);

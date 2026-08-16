@@ -38,10 +38,9 @@ export function AppShell() {
     })();
   }, []);
 
-  // Цветовая тема (data-hue) и настройка «анимации».
+  // Настройка «анимации» (одна цветовая тема — переключателя нет).
   useEffect(() => {
     if (!settings) return;
-    document.documentElement.setAttribute("data-hue", settings.theme || "blue");
     document.body.classList.toggle("no-anim", !settings.animationsEnabled);
   }, [settings]);
 
@@ -70,6 +69,8 @@ export function AppShell() {
     );
   }
 
+  const inStudy = !!study;
+
   return (
     <ToastProvider>
       <AppContext.Provider
@@ -84,27 +85,27 @@ export function AppShell() {
           studyOpen: !!study,
         }}
       >
-        <div className="app-outer">
-          <div className="app-frame">
-            <div className="app-panel">
-              <TopNav
-                active={section}
-                onNavigate={navigate}
-                onStartSession={() => setStudy({ scope: "today" })}
-                onStartRandom={() => setStudy({ scope: "random" })}
-              />
-              {/* key=section перезапускает fade-up при смене раздела */}
-              <div className="content-col stage" key={section}>
-                {section === "today" && <TodaySection />}
-                {section === "lessons" && <LessonsSection />}
-                {section === "phrases" && <PhrasesSection />}
-                {section === "rules" && <RulesSection />}
-                {section === "progress" && <ProgressSection />}
-                {section === "settings" && <SettingsSection />}
-              </div>
+        {/* Полноэкранный градиент без рамки. Скрываем оболочку, пока открыт
+            полноэкранный оверлей сессии, чтобы не было двойного фона. */}
+        {!inStudy && (
+          <div className="app-outer">
+            <TopNav
+              active={section}
+              onNavigate={navigate}
+              onStartSession={() => setStudy({ scope: "today" })}
+              onStartRandom={() => setStudy({ scope: "random" })}
+            />
+            {/* key=section перезапускает fade-up при смене раздела */}
+            <div className="content-col stage" key={section}>
+              {section === "today" && <TodaySection />}
+              {section === "lessons" && <LessonsSection />}
+              {section === "phrases" && <PhrasesSection />}
+              {section === "rules" && <RulesSection />}
+              {section === "progress" && <ProgressSection />}
+              {section === "settings" && <SettingsSection />}
             </div>
           </div>
-        </div>
+        )}
 
         {study && (
           <StudySession

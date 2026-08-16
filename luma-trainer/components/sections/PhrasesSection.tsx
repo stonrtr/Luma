@@ -4,7 +4,7 @@ import { A } from "@/lib/api";
 import type { PhraseCard } from "@/lib/types";
 import { difficultyBand } from "@/lib/difficulty";
 import { useApp } from "../app-context";
-import { Confirm, EmptyState, Spinner, Star, useToast } from "../ui";
+import { Confirm, EditIcon, EmptyState, Spinner, Star, TrashIcon, useToast } from "../ui";
 import { AddPhraseDialog } from "../dialogs/AddPhraseDialog";
 import { EditPhraseDialog } from "../dialogs/EditPhraseDialog";
 
@@ -57,8 +57,11 @@ export function PhrasesSection() {
   return (
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div className="title-hero">
-          мои фразы<span className="dim">.</span>
+        <div>
+          <div className="overline" style={{ marginBottom: 12 }}>Коллекция</div>
+          <div className="title-hero">
+            мои фразы<span className="dim">.</span>
+          </div>
         </div>
         <button className="wbtn" onClick={() => setAdding(true)}>＋ Добавить фразу</button>
       </div>
@@ -111,8 +114,8 @@ export function PhrasesSection() {
                 </div>
                 <div style={{ color: "var(--ink-2)", fontSize: 11, textAlign: "right", marginTop: 3, fontWeight: 700 }}>{p.progress}%</div>
               </div>
-              <button className="icon-btn" aria-label="Редактировать" onClick={() => setEditing(p)}>✎</button>
-              <button className="icon-btn icon-btn-danger" aria-label="Удалить" onClick={() => setDeleting(p)}>🗑</button>
+              <button className="icon-btn" aria-label="Редактировать" onClick={() => setEditing(p)}><EditIcon /></button>
+              <button className="icon-btn icon-btn-danger" aria-label="Удалить" onClick={() => setDeleting(p)}><TrashIcon /></button>
             </div>
           ))}
         </div>

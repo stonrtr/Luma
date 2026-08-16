@@ -53,6 +53,22 @@ export function Star({
   );
 }
 
+export function EditIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 3l4 4L8 20l-5 1 1-5z" />
+    </svg>
+  );
+}
+
+export function TrashIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15" />
+    </svg>
+  );
+}
+
 export function Spinner({ size = 18 }: { size?: number }) {
   return (
     <svg className="spin" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

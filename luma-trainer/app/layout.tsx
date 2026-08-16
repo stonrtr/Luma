@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Baloo_2 } from "next/font/google";
+import { Onest } from "next/font/google";
 import "./globals.css";
 
-const baloo = Baloo_2({
+const onest = Onest({
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-baloo",
+  variable: "--font-onest",
   display: "swap",
 });
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a3a9e",
+  themeColor: "#0446c8",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={baloo.variable} suppressHydrationWarning>
+    <html lang="ru" className={onest.variable} suppressHydrationWarning>
       <body>
         {children}
         <script

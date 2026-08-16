@@ -4,7 +4,7 @@ import { A } from "@/lib/api";
 import type { Lesson, PhraseCard, Topic } from "@/lib/types";
 import { difficultyBand } from "@/lib/difficulty";
 import { useApp } from "../app-context";
-import { Confirm, EmptyState, Modal, Spinner, Star, useToast } from "../ui";
+import { Confirm, EditIcon, EmptyState, Modal, Spinner, Star, TrashIcon, useToast } from "../ui";
 import { AddPhraseDialog } from "../dialogs/AddPhraseDialog";
 import { ImportDialog } from "../dialogs/ImportDialog";
 import { EditPhraseDialog } from "../dialogs/EditPhraseDialog";
@@ -49,8 +49,11 @@ export function LessonsSection() {
   return (
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div className="title-hero">
-          мои уроки<span className="dim">.</span>
+        <div>
+          <div className="overline" style={{ marginBottom: 12 }}>Библиотека</div>
+          <div className="title-hero">
+            мои уроки<span className="dim">.</span>
+          </div>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button className="gbtn gbtn-sm" style={{ minHeight: 42 }} onClick={() => setDialog("topics")}>Темы</button>
@@ -212,8 +215,8 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
                   </div>
                   <span style={{ color: "var(--ink-2)", fontSize: 12, width: 38, textAlign: "right", fontWeight: 700 }}>{p.progress}%</span>
                   <Star active={p.favorite} size={18} onClick={() => act(() => A.updatePhrase(p.id, { favorite: !p.favorite }))} />
-                  <button className="icon-btn icon-btn-sm" aria-label="Редактировать" onClick={() => setEditing(p)}>✎</button>
-                  <button className="icon-btn icon-btn-sm icon-btn-danger" aria-label="Удалить" onClick={() => act(() => A.deletePhrase(p.id), "Удалено")}>🗑</button>
+                  <button className="icon-btn icon-btn-sm" aria-label="Редактировать" onClick={() => setEditing(p)}><EditIcon size={13} /></button>
+                  <button className="icon-btn icon-btn-sm icon-btn-danger" aria-label="Удалить" onClick={() => act(() => A.deletePhrase(p.id), "Удалено")}><TrashIcon size={13} /></button>
                 </div>
               ))}
             </div>

@@ -1,20 +1,31 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { A } from "@/lib/api";
-import type { HueTheme, PhraseCard, Rating } from "@/lib/types";
+import type { PhraseCard, Rating } from "@/lib/types";
 import { maskAnswer, isFullyRevealed, hintLetterCount } from "@/lib/hint";
 import { difficultyBand } from "@/lib/difficulty";
 import { prefetchEnglish, speakEnglish } from "@/lib/tts-client";
-import { HUES, HUE_DOTS, useApp } from "../app-context";
+import { useApp } from "../app-context";
 import type { StudyScope } from "../app-context";
 import { Spinner, Star, daysAgo } from "../ui";
 
+// Иконка-динамик (SVG вместо эмодзи).
+function SpeakerIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 5L6 9H2v6h4l5 4z" />
+      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+      <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+    </svg>
+  );
+}
+
 // Цвета точки сложности на цветной панели (светлее обычных — по референсу).
 const DIFF_ON_PANEL: Record<string, string> = {
-  green: "#5ee39a",
+  green: "#54e6a1",
   lime: "#c9e35e",
   orange: "#ffb35c",
-  red: "#ff7a7a",
+  red: "#ff8b8b",
 };
 
 /**
@@ -31,7 +42,7 @@ export function StudySession({
   onClose?: () => void;
   embedded?: boolean;
 }) {
-  const { settings, updateSettings, refresh, refreshKey, goTo, studyOpen } = useApp();
+  const { settings, refresh, refreshKey, goTo, studyOpen } = useApp();
   const [cards, setCards] = useState<PhraseCard[] | null>(null);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -401,43 +412,28 @@ export function StudySession({
 
   const bottomBar = card && (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {!embedded && (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, fontWeight: 600 }}>выбери цвет</span>
-            {HUES.map((h) => (
-              <button
-                key={h}
-                aria-label={`Цвет темы: ${h}`}
-                className={`hue-btn ${settings.theme === h ? "on" : ""}`}
-                onClick={() => updateSettings({ theme: h as HueTheme })}
-              >
-                <span className="hue-dot" style={{ background: HUE_DOTS[h] }} />
-              </button>
-            ))}
-          </div>
-        )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {!flipped && (
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button className="wbtn wbtn-lg" onClick={open}>
               Показать ответ
             </button>
-            <button className="gbtn" style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }} onClick={doHint} disabled={hintDone}>
+            <button className="gbtn" style={{ minHeight: 56, padding: "0 26px", fontSize: 16 }} onClick={doHint} disabled={hintDone}>
               Подсказка ↑
             </button>
           </div>
         )}
-        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 600 }}>
+        <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 500, letterSpacing: "0.04em" }}>
           Space — ответ · ↑ — подсказка · V — озвучить · ← ↓ → — оценка
         </div>
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 24, padding: "18px 20px", width: "min(300px, 100%)", boxShadow: "0 12px 30px rgba(0,0,0,0.22)" }}>
-        <div style={{ color: "var(--accent)", fontWeight: 800, fontSize: 15 }}>Прогресс фразы</div>
-        <div style={{ color: "var(--ink-2)", fontSize: 12, fontWeight: 600, margin: "2px 0 10px" }}>
+      <div className="wcard" style={{ padding: "18px 22px", width: "min(300px, 100%)" }}>
+        <div className="overline-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Прогресс фразы</div>
+        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, margin: "6px 0 12px" }}>
           повторено сегодня: {reviewedCount}
         </div>
-        <div className="track" style={{ height: 10 }}>
+        <div className="track" style={{ height: 9 }}>
           <span style={{ width: `${card.progress}%` }} />
         </div>
       </div>
@@ -452,18 +448,18 @@ export function StudySession({
         style={{
           position: "absolute",
           left: "50%",
-          bottom: -6,
+          bottom: 14,
           transform: "translateX(-50%)",
-          width: 48,
-          height: 48,
+          width: 52,
+          height: 52,
           borderRadius: "50%",
-          background: "#fff",
+          background: "var(--dark-cta)",
           border: "none",
-          color: "var(--accent)",
+          color: "#fff",
           fontSize: 20,
-          fontWeight: 800,
+          fontWeight: 700,
           cursor: "pointer",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+          boxShadow: "0 14px 34px rgba(2,14,70,0.5)",
         }}
         onClick={() => (flipped ? close() : open())}
       >
@@ -473,19 +469,19 @@ export function StudySession({
         aria-label="Пропустить"
         style={{
           position: "absolute",
-          right: -4,
+          right: 16,
           top: "50%",
           transform: "translateY(-50%)",
-          width: 44,
-          height: 44,
+          width: 46,
+          height: 46,
           borderRadius: "50%",
-          background: "#fff",
-          border: "none",
-          color: "var(--accent)",
+          background: "rgba(255,255,255,0.1)",
+          border: "1px solid rgba(255,255,255,0.24)",
+          backdropFilter: "blur(12px)",
+          color: "#fff",
           fontSize: 20,
-          fontWeight: 800,
+          fontWeight: 700,
           cursor: "pointer",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
         }}
         onClick={advance}
       >
@@ -553,8 +549,8 @@ export function StudySession({
               {card.lessonTitle || title}
             </span>
             <span style={{ flex: 1 }} />
-            <button aria-label="Озвучить" className="gbtn" style={{ width: 44, height: 44, padding: 0, fontSize: 17 }} onClick={playEnglish}>
-              🔊
+            <button aria-label="Озвучить" className="icon-btn" style={{ width: 46, height: 46 }} onClick={playEnglish}>
+              <SpeakerIcon />
             </button>
             <span className="wbtn" style={{ cursor: "default", fontSize: 15 }}>
               {Math.min(index + 1, Math.max(total, 1))} / {Math.max(total, 1)}
@@ -570,41 +566,46 @@ export function StudySession({
     );
   }
 
-  /* ── Полноэкранный режим ──────────────────────────────────────────── */
+  /* ── Полноэкранный режим (свой градиент на весь экран) ────────────── */
   return (
-    <div className="app-outer" style={{ position: "fixed", inset: 0, zIndex: 50, overflowY: "auto" }}>
-      <div className="app-frame">
-        <div className={`app-panel ${fbClass}`}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <button className="wbtn" style={{ fontWeight: 700 }} onClick={onClose}>✕ выйти</button>
-              {card && (
-                <span className="gpill" style={{ minHeight: 44, padding: "0 18px", fontSize: 14, color: "#fff" }}>
-                  {card.lessonTitle || title}
-                </span>
-              )}
-            </div>
-            <div className="brand" style={{ fontSize: "clamp(22px, 3vw, 30px)" }}>
-              luma<span className="dim">.</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {card && (
-                <button aria-label="Озвучить" className="gbtn" style={{ width: 44, height: 44, padding: 0, fontSize: 17 }} onClick={playEnglish}>
-                  🔊
-                </button>
-              )}
-              <span className="wbtn" style={{ cursor: "default", fontSize: 15 }}>
-                {Math.min(index + 1, Math.max(total, 1))} / {Math.max(total, 1)}
-              </span>
-            </div>
-          </div>
-
-          {loading}
-          {stage}
-          {bottomBar}
-          {circles}
-          {doneBlock}
+    <div
+      className={`app-outer ${fbClass}`}
+      style={{ position: "fixed", inset: 0, zIndex: 50, overflowY: "auto", gap: "clamp(18px, 3vh, 28px)" }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button className="gbtn" onClick={onClose}>✕ выйти</button>
+          {card && (
+            <span className="gpill" style={{ minHeight: 46, padding: "0 20px", fontSize: 14 }}>
+              {card.lessonTitle || title}
+            </span>
+          )}
         </div>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+          <div className="brand" style={{ fontSize: "clamp(22px, 3vw, 30px)" }}>
+            luma<span className="dim">.</span>
+          </div>
+          <div className="brand-sub" style={{ letterSpacing: "0.18em" }}>Session</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {card && (
+            <button aria-label="Озвучить" className="icon-btn" style={{ width: 46, height: 46 }} onClick={playEnglish}>
+              <SpeakerIcon />
+            </button>
+          )}
+          <span className="wbtn" style={{ cursor: "default", fontSize: 15 }}>
+            {Math.min(index + 1, Math.max(total, 1))} / {Math.max(total, 1)}
+          </span>
+        </div>
+      </div>
+
+      {/* обёртка для позиционирования круглых кнопок и вертикального центрирования */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", gap: "clamp(18px, 3vh, 28px)" }}>
+        {loading}
+        {stage}
+        {bottomBar}
+        {circles}
+        {doneBlock}
       </div>
     </div>
   );

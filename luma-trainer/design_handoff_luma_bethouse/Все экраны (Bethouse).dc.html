@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#061236;font-family:"Onest",system-ui,sans-serif}a{color:#8fdcff;text-decoration:none}a:hover{color:#fff}</style>
+</helmet>
+<section style="padding:40px;display:flex;flex-direction:column;gap:36px">
+  <div style="color:rgba(255,255,255,0.85);font-size:20px;font-weight:700">Luma — редизайн Bethouse · все экраны</div>
+  <div style="display:flex;gap:36px;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Сегодня</div>
+      <div style="width:1280px;height:800px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Сегодня">
+        <dc-import name="Luma (Bethouse)" default-section="today" hint-size="1280px,800px" style="width:1280px;height:800px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Уроки</div>
+      <div style="width:1280px;height:1080px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Уроки">
+        <dc-import name="Luma (Bethouse)" default-section="lessons" hint-size="1280px,1080px" style="width:1280px;height:1080px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Фразы</div>
+      <div style="width:1280px;height:800px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Фразы">
+        <dc-import name="Luma (Bethouse)" default-section="phrases" hint-size="1280px,800px" style="width:1280px;height:800px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Правила</div>
+      <div style="width:1280px;height:1300px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Правила">
+        <dc-import name="Luma (Bethouse)" default-section="rules" hint-size="1280px,1300px" style="width:1280px;height:1300px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Прогресс</div>
+      <div style="width:1280px;height:900px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Прогресс">
+        <dc-import name="Luma (Bethouse)" default-section="progress" hint-size="1280px,900px" style="width:1280px;height:900px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Настройки</div>
+      <div style="width:1280px;height:1540px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Настройки">
+        <dc-import name="Luma (Bethouse)" default-section="settings" hint-size="1280px,1540px" style="width:1280px;height:1540px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Карточка — вопрос</div>
+      <div style="width:1280px;height:800px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Карточка — вопрос">
+        <dc-import name="Карточка (Bethouse)" default-view="front" hint-size="1280px,800px" style="width:1280px;height:800px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Карточка — ответ</div>
+      <div style="width:1280px;height:800px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Карточка — ответ">
+        <dc-import name="Карточка (Bethouse)" default-view="back" hint-size="1280px,800px" style="width:1280px;height:800px"></dc-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:600">Сессия завершена</div>
+      <div style="width:1280px;height:800px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);background:#0446c8" data-screen-label="Сессия завершена">
+        <dc-import name="Карточка (Bethouse)" default-view="done" hint-size="1280px,800px" style="width:1280px;height:800px"></dc-import>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>
