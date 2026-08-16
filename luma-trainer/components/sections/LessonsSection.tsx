@@ -156,11 +156,13 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
         }}
         style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", cursor: "pointer" }}
       >
-        <span aria-hidden style={{ fontSize: 18, padding: 4, color: "var(--ink-2)" }}>
-          {open ? "▾" : "▸"}
-        </span>
         <div style={{ flex: 1, minWidth: 180 }}>
-          <div style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)" }}>{lesson.title}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span aria-hidden style={{ fontSize: 16, color: "var(--ink-2)", flex: "none" }}>
+              {open ? "▾" : "▸"}
+            </span>
+            <span style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)" }}>{lesson.title}</span>
+          </div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
             <span className="chip">{s.total} фраз</span>
             {s.due > 0 && <span className="chip chip-accent">{s.due} пора повторить</span>}
@@ -194,7 +196,7 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
             <button className="lbtn" onClick={() => act(() => A.retranslateLesson(lesson.id), "Переводы пересобираются в фоне")}>Пересобрать переводы</button>
             <select
               className="select"
-              style={{ width: "auto", minHeight: 34, fontSize: 13, fontWeight: 700, padding: "0 14px" }}
+              style={{ width: "auto", minHeight: 34, fontSize: 13, fontWeight: 700, padding: "0 34px 0 14px" }}
               value={lesson.topicId || ""}
               onChange={(e) => act(() => A.updateLesson(lesson.id, { topicId: e.target.value || null }), "Перемещено")}
             >

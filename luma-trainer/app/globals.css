@@ -446,6 +446,15 @@ button {
   border-color: rgba(127, 212, 255, 0.7);
   box-shadow: 0 0 0 3px rgba(39, 185, 245, 0.25);
 }
+.select {
+  /* Кастомный шеврон с отступом от края (нативная стрелка липла к рамке) */
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
 .select option {
   color: #0b2a70; /* нативный дропдаун на белом фоне ОС */
 }

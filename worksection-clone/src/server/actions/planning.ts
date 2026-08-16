@@ -200,7 +200,7 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
   });
 
   if (viewer.id !== input.userId) {
-    await notify({ recipientId: input.userId, type: "assignment", message: `${viewer.name} затвердив ваш план тижня`, link: "/planning", actorId: viewer.id });
+    await notify({ recipientId: input.userId, type: "assignment", message: `${viewer.name} затвердив ваш план тижня`, link: "/planning", actorId: viewer.id }).catch(() => {});
   }
   revalidatePath("/planning");
   return { error: null };
@@ -228,8 +228,9 @@ export async function submitPlanForApproval(input: { weekStart: string }) {
     for (const a of admins) managerIds.add(a.id);
   }
   managerIds.delete(viewer.id);
+  // Уведомление — best-effort: сбой пуша/телеграма НЕ должен ронять отправку плана
   await Promise.all([...managerIds].map((rid) =>
-    notify({ recipientId: rid, type: "review", message: `${viewer.name} надіслав план тижня на затвердження`, link: `/planning?user=${viewer.id}`, actorId: viewer.id }),
+    notify({ recipientId: rid, type: "review", message: `${viewer.name} надіслав план тижня на затвердження`, link: `/planning?user=${viewer.id}`, actorId: viewer.id }).catch(() => {}),
   ));
 
   revalidatePath("/planning");
@@ -248,7 +249,7 @@ export async function returnPlan(input: { userId: string; weekStart: string; com
     update: { status: "RETURNED", reviewerId: viewer.id, decidedAt: new Date(), comment: input.comment?.trim() || null },
   });
 
-  await notify({ recipientId: input.userId, type: "review", message: `${viewer.name} повернув план тижня на доопрацювання`, link: "/planning", actorId: viewer.id });
+  await notify({ recipientId: input.userId, type: "review", message: `${viewer.name} повернув план тижня на доопрацювання`, link: "/planning", actorId: viewer.id }).catch(() => {});
   revalidatePath("/planning");
   return { error: null };
 }

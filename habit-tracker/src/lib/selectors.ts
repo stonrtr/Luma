@@ -1,20 +1,32 @@
 import type { AppState, Task } from "./types";
 import { sundayOf, endOfMonth } from "./date";
 
-/** Задачи, попадающие в «Сегодня»: дедлайн = сегодня + инбокс без даты. */
+/**
+ * Задачи «Сегодня»: дедлайн сегодня ИЛИ просрочен (висят, пока не закрою/удалю)
+ * + инбокс без даты. Просроченные — первыми (от старых к новым).
+ */
 export function todayOpenTasks(s: AppState): Task[] {
   return s.tasks
-    .filter((t) => !t.doneAt && (t.dueDate === s.today || (t.dueDate === null && t.goalId === null)))
-    .sort((a, b) => a.ord - b.ord);
+    .filter(
+      (t) =>
+        !t.doneAt &&
+        ((t.dueDate !== null && t.dueDate <= s.today) || (t.dueDate === null && t.goalId === null)),
+    )
+    .sort((a, b) => {
+      const da = a.dueDate ?? "9999-99-99";
+      const db = b.dueDate ?? "9999-99-99";
+      return da < db ? -1 : da > db ? 1 : a.ord - b.ord;
+    });
 }
 
+/** Закрытые сегодня задачи из списка «Сегодня» (висят зачёркнутыми до завтра). */
 export function todayDoneTasks(s: AppState): Task[] {
   return s.tasks
     .filter(
       (t) =>
         t.doneAt &&
-        (t.dueDate === s.today ||
-          (t.dueDate === null && t.goalId === null && t.doneAt.slice(0, 10) === s.today)),
+        t.doneAt.slice(0, 10) === s.today &&
+        ((t.dueDate !== null && t.dueDate <= s.today) || (t.dueDate === null && t.goalId === null)),
     )
     .sort((a, b) => a.ord - b.ord);
 }

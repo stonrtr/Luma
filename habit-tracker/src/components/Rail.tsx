@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
 import { horizonCount } from "@/lib/selectors";
-import { MomentumDot, ActionMeter } from "./Momentum";
+import { MomentumDot, Counts } from "./Momentum";
 
 export function Rail({
   view,
@@ -41,20 +41,18 @@ export function Rail({
           +
         </button>
       </div>
-      {(() => {
-        const rows = goals.map((g) => ({ g, m: goalMomentum(g, state.tasks, state.habits, idx, state.today) }));
-        const maxJ = Math.max(1, ...rows.map((r) => r.m.jumps));
-        const maxS = Math.max(1, ...rows.map((r) => r.m.steps));
-        return rows.map(({ g, m }) => (
+      {goals.map((g) => {
+        const m = goalMomentum(g, state.tasks, state.habits, idx, state.today);
+        return (
           <button key={g.id} className={`nav-item${view === g.id ? " sel" : ""}`} onClick={() => onSelect(g.id)}>
             <span className="nav-top">
               <b>{g.name}</b>
               <MomentumDot m={m} />
             </span>
-            <ActionMeter jumps={m.jumps} steps={m.steps} maxJumps={maxJ} maxSteps={maxS} />
+            <Counts m={m} />
           </button>
-        ));
-      })()}
+        );
+      })}
       {goals.length === 0 && <div className="rail-empty" style={{ padding: "4px 10px 10px" }}>Пока нет целей.</div>}
       <button className={`nav-item${view === "goals" ? " sel" : ""}`} onClick={() => onSelect("goals")}>
         <span className="nav-top">

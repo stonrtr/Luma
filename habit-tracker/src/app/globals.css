@@ -126,41 +126,25 @@ aside {
   background: #e9edeb;
   color: var(--teal);
 }
-/* схематичный метр действий (прыжки/шаги) */
-.ameter {
+/* счёт задач/привычек числами */
+.counts {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 6px;
+  gap: 14px;
+  margin-top: 5px;
+  font-family: var(--mono), monospace;
+  font-size: 11px;
+  color: var(--ink-2);
 }
-.am {
+.ic {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
 }
-.am-ico {
-  font-size: 11px;
-  line-height: 1;
+.ic-task {
+  color: var(--teal);
 }
-.am-bar {
-  display: block;
-  width: 46px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--line-2);
-  overflow: hidden;
-}
-.am-bar > i {
-  display: block;
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.4s ease;
-}
-.am-bar > i.j {
-  background: var(--teal);
-}
-.am-bar > i.s {
-  background: var(--amber);
+.ic-habit {
+  color: var(--amber);
 }
 .track {
   height: 3px;
@@ -331,6 +315,11 @@ main {
   color: var(--ink-3);
   width: 56px;
   text-align: right;
+}
+.due.overdue-date {
+  width: auto;
+  color: var(--miss);
+  white-space: nowrap;
 }
 .empty {
   padding: 30px 0;
@@ -553,7 +542,7 @@ main {
 .tally-j,
 .tally-s {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 5px;
 }
 .goal-tally {

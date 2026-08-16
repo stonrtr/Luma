@@ -1,18 +1,15 @@
 "use client";
-import { useState } from "react";
 import { useStore } from "@/lib/store";
-import { todayOpenTasks, todayDoneTasks, overdueTasks } from "@/lib/selectors";
+import { todayOpenTasks, todayDoneTasks } from "@/lib/selectors";
 import { humanFull } from "@/lib/date";
 import type { Task } from "@/lib/types";
 import { Tick } from "./icons";
 
 export function TodayCenter({ selectedId, onQuickAdd }: { selectedId: string | null; onQuickAdd: () => void }) {
-  const { state, toggleTask, setTaskDue } = useStore();
-  const [overdueDismissed, setOverdueDismissed] = useState(false);
+  const { state, toggleTask } = useStore();
 
   const open = todayOpenTasks(state);
   const done = todayDoneTasks(state);
-  const overdue = overdueTasks(state);
 
   const goalName = (goalId: string | null) =>
     goalId ? state.goals.find((g) => g.id === goalId)?.name ?? null : null;
@@ -24,15 +21,6 @@ export function TodayCenter({ selectedId, onQuickAdd }: { selectedId: string | n
         <div className="left">{open.length ? `осталось ${open.length}` : "всё закрыто"}</div>
       </div>
 
-      {overdue.length > 0 && !overdueDismissed && (
-        <div className="overdue">
-          <b>Просрочено</b>
-          <span>{overdue.length} незакрытых задач с прошлой датой</span>
-          <button onClick={() => overdue.forEach((t) => setTaskDue(t.id, state.today))}>перенести на сегодня</button>
-          <button onClick={() => setOverdueDismissed(true)}>разобрать позже</button>
-        </div>
-      )}
-
       <div className="list">
         {open.length === 0 && done.length === 0 ? (
           <div className="empty">
@@ -41,7 +29,15 @@ export function TodayCenter({ selectedId, onQuickAdd }: { selectedId: string | n
           </div>
         ) : (
           open.concat(done).map((t) => (
-            <Row key={t.id} task={t} goal={goalName(t.goalId)} inbox={t.goalId === null} selected={t.id === selectedId} onToggle={() => toggleTask(t.id, !t.doneAt)} />
+            <Row
+              key={t.id}
+              task={t}
+              goal={goalName(t.goalId)}
+              inbox={t.goalId === null}
+              overdue={!t.doneAt && t.dueDate !== null && t.dueDate < state.today}
+              selected={t.id === selectedId}
+              onToggle={() => toggleTask(t.id, !t.doneAt)}
+            />
           ))
         )}
       </div>
@@ -59,12 +55,14 @@ function Row({
   task,
   goal,
   inbox,
+  overdue,
   selected,
   onToggle,
 }: {
   task: Task;
   goal: string | null;
   inbox: boolean;
+  overdue: boolean;
   selected: boolean;
   onToggle: () => void;
 }) {
@@ -75,7 +73,7 @@ function Row({
       </button>
       <span className="lab">{task.title}</span>
       {inbox ? <span className="tag inbox">инбокс</span> : goal ? <span className="tag">{goal}</span> : null}
-      <span className="due" />
+      {overdue ? <span className="due overdue-date">просрочено · {task.dueDate!.slice(5)}</span> : <span className="due" />}
     </div>
   );
 }

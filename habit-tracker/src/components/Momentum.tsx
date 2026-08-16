@@ -1,5 +1,6 @@
 import type { Momentum } from "@/lib/progress";
 import { jumpsText, stepsText } from "@/lib/plural";
+import { TaskIcon, HabitIcon } from "./icons";
 
 export function MomentumTag({ m }: { m: Momentum }) {
   return (
@@ -14,41 +15,29 @@ export function MomentumDot({ m }: { m: Momentum }) {
   return <span className={`mo ${m.status}`}><span className="mo-dot" /></span>;
 }
 
-/** Счёт достижений к цели: прыжки (задачи) и шаги (привычки). Без процентов. */
+/** Счёт достижений к цели: задачи и привычки, словами. Без процентов. */
 export function Tally({ m, size }: { m: Momentum; size?: "lg" }) {
   return (
     <span className={`tally${size === "lg" ? " lg" : ""}`}>
-      <span className="tally-j">🦘 {jumpsText(m.jumps)}</span>
-      <span className="tally-s">👣 {stepsText(m.steps)}</span>
+      <span className="tally-j">
+        <span className="ic ic-task"><TaskIcon /></span> {jumpsText(m.jumps)}
+      </span>
+      <span className="tally-s">
+        <span className="ic ic-habit"><HabitIcon /></span> {stepsText(m.steps)}
+      </span>
     </span>
   );
 }
 
-/**
- * Схематичный «метр» действий: две мини-шкалы — прыжки (задачи) и шаги (привычки),
- * длина относительно самой активной цели. Сравнимо между целями, без чисел и процентов.
- */
-export function ActionMeter({
-  jumps,
-  steps,
-  maxJumps,
-  maxSteps,
-}: {
-  jumps: number;
-  steps: number;
-  maxJumps: number;
-  maxSteps: number;
-}) {
-  const w = (v: number, max: number) => (v <= 0 ? 0 : Math.max(14, Math.round((v / Math.max(max, 1)) * 100)));
+/** Компактный счёт числами (для рейки). */
+export function Counts({ m }: { m: Momentum }) {
   return (
-    <span className="ameter" aria-hidden>
-      <span className="am" title="прыжки — задачи">
-        <span className="am-ico">🦘</span>
-        <span className="am-bar"><i className="j" style={{ width: `${w(jumps, maxJumps)}%` }} /></span>
+    <span className="counts">
+      <span className="tally-j">
+        <span className="ic ic-task"><TaskIcon /></span> {m.jumps}
       </span>
-      <span className="am" title="шаги — привычки">
-        <span className="am-ico">👣</span>
-        <span className="am-bar"><i className="s" style={{ width: `${w(steps, maxSteps)}%` }} /></span>
+      <span className="tally-s">
+        <span className="ic ic-habit"><HabitIcon /></span> {m.steps}
       </span>
     </span>
   );
