@@ -25,15 +25,13 @@ export function TopNav({
           height={40}
           style={{ borderRadius: 11, display: "block", boxShadow: "0 6px 16px rgba(2,20,90,0.28)" }}
         />
-        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-          <div className="brand">
-            luma<span className="dim">.</span>
-          </div>
-          <div className="brand-sub">
-            Prime learning
-            <br />
-            platform
-          </div>
+        <div className="brand" style={{ display: "flex", alignItems: "center", lineHeight: 1 }}>
+          luma<span className="dim">.</span>
+        </div>
+        <div className="brand-sub" style={{ alignSelf: "center" }}>
+          Prime learning
+          <br />
+          platform
         </div>
       </div>
       <nav style={{ display: "flex", gap: "clamp(14px, 2.4vw, 34px)", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
