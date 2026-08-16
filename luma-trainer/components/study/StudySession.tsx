@@ -276,7 +276,9 @@ export function StudySession({
         alignItems: "center",
         gap: "clamp(14px, 2.5vh, 26px)",
         textAlign: "center",
-        padding: "clamp(16px, 3vh, 32px) 0",
+        padding: "clamp(20px, 3.5vh, 40px) clamp(18px, 4vw, 40px)",
+        border: "1.5px dashed rgba(255,255,255,0.35)",
+        borderRadius: 28,
       }}
     >
       {!flipped ? (
@@ -382,7 +384,6 @@ export function StudySession({
         </>
       ) : (
         <>
-          <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(16px, 1.8vw, 22px)", fontWeight: 600 }}>{question}</div>
           <div
             style={{
               fontSize: embedded ? "clamp(34px, 5.5vw, 90px)" : "clamp(38px, 7vw, 110px)",

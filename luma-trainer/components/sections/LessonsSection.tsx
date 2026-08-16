@@ -117,6 +117,7 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
   const [dialog, setDialog] = useState<"add" | "import" | null>(null);
   const [editing, setEditing] = useState<PhraseCard | null>(null);
   const [confirmDel, setConfirmDel] = useState(false);
+  const [delPhrase, setDelPhrase] = useState<PhraseCard | null>(null);
   const s = lesson.stats;
 
   const loadPhrases = useCallback(() => {
@@ -141,14 +142,23 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
 
   return (
     <div className="wcard">
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <button
-          onClick={toggle}
-          aria-label="Раскрыть"
-          style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, padding: 4, color: "var(--ink-2)" }}
-        >
+      {/* Клик по всей шапке раскрывает/сворачивает урок. «Учить урок» — отдельно (stopPropagation). */}
+      <div
+        onClick={toggle}
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+        style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", cursor: "pointer" }}
+      >
+        <span aria-hidden style={{ fontSize: 18, padding: 4, color: "var(--ink-2)" }}>
           {open ? "▾" : "▸"}
-        </button>
+        </span>
         <div style={{ flex: 1, minWidth: 180 }}>
           <div style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)" }}>{lesson.title}</div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
@@ -166,7 +176,10 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
         </div>
         <button
           className="abtn"
-          onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title })}
+          onClick={(e) => {
+            e.stopPropagation();
+            startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title });
+          }}
           disabled={s.total === 0}
         >
           Учить урок
@@ -216,7 +229,7 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
                   <span style={{ color: "var(--ink-2)", fontSize: 12, width: 38, textAlign: "right", fontWeight: 700 }}>{p.progress}%</span>
                   <Star active={p.favorite} size={18} onClick={() => act(() => A.updatePhrase(p.id, { favorite: !p.favorite }))} />
                   <button className="icon-btn icon-btn-sm" aria-label="Редактировать" onClick={() => setEditing(p)}><EditIcon size={13} /></button>
-                  <button className="icon-btn icon-btn-sm icon-btn-danger" aria-label="Удалить" onClick={() => act(() => A.deletePhrase(p.id), "Удалено")}><TrashIcon size={13} /></button>
+                  <button className="icon-btn icon-btn-sm icon-btn-danger" aria-label="Удалить" onClick={() => setDelPhrase(p)}><TrashIcon size={13} /></button>
                 </div>
               ))}
             </div>
@@ -232,6 +245,13 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
           message={`Удалить урок «${lesson.title}» со всеми фразами? Действие необратимо.`}
           onConfirm={() => { setConfirmDel(false); act(() => A.deleteLesson(lesson.id), "Урок удалён"); }}
           onCancel={() => setConfirmDel(false)}
+        />
+      )}
+      {delPhrase && (
+        <Confirm
+          message={`Удалить фразу «${delPhrase.english || delPhrase.russian}»? Действие необратимо.`}
+          onConfirm={() => { const id = delPhrase.id; setDelPhrase(null); act(() => A.deletePhrase(id), "Удалено"); }}
+          onCancel={() => setDelPhrase(null)}
         />
       )}
     </div>
@@ -326,6 +346,7 @@ function TopicsManager({ onClose }: { onClose: () => void }) {
 function TopicRow({ topic, onChanged }: { topic: Topic; onChanged: () => void }) {
   const toast = useToast();
   const [name, setName] = useState(topic.name);
+  const [confirmDel, setConfirmDel] = useState(false);
   const dirty = name !== topic.name;
   return (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -336,11 +357,21 @@ function TopicRow({ topic, onChanged }: { topic: Topic; onChanged: () => void })
       )}
       <button
         className="icon-btn icon-btn-danger"
-        onClick={() => A.deleteTopic(topic.id).then(onChanged).catch((e) => toast((e as Error).message || "Нельзя удалить непустую тему", "error"))}
+        onClick={() => setConfirmDel(true)}
         aria-label="Удалить тему"
       >
         🗑
       </button>
+      {confirmDel && (
+        <Confirm
+          message={`Удалить тему «${topic.name}»? Уроки останутся без темы.`}
+          onConfirm={() => {
+            setConfirmDel(false);
+            A.deleteTopic(topic.id).then(onChanged).catch((e) => toast((e as Error).message || "Нельзя удалить непустую тему", "error"));
+          }}
+          onCancel={() => setConfirmDel(false)}
+        />
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum, streak } from "@/lib/progress";
-import { MomentumTag, ActivityStrip } from "./Momentum";
+import { MomentumTag, ActivityStrip, Tally } from "./Momentum";
 import { humanFull } from "@/lib/date";
 import { Tick } from "./icons";
 
@@ -34,6 +34,10 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
         <div className="left">{goal.status === "done" ? "достигнуто ✓" : goal.type === "achievement" ? "достижение" : "поддержание"}</div>
       </div>
 
+      <div className="goal-tally">
+        <Tally m={m} size="lg" />
+        <span className="goal-tally-hint">на пути к цели</span>
+      </div>
       <div className="goal-top">
         <MomentumTag m={m} />
         <ActivityStrip dots={m.dots} />

@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { A } from "@/lib/api";
 import { speakEnglish } from "@/lib/tts-client";
 import { useApp } from "../app-context";
-import { useToast } from "../ui";
+import { Confirm, useToast } from "../ui";
 
 export function SettingsSection() {
   const { settings, updateSettings, ttsAvailable } = useApp();
   const toast = useToast();
   const [voices, setVoices] = useState<{ id: string; label: string }[]>([]);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   useEffect(() => {
     A.ttsInfo()
@@ -108,12 +109,7 @@ export function SettingsSection() {
           <button
             className="lbtn lbtn-danger"
             style={{ minHeight: 38, fontSize: 14 }}
-            onClick={() => {
-              try {
-                Object.keys(localStorage).filter((k) => k.startsWith("luma:")).forEach((k) => localStorage.removeItem(k));
-              } catch {}
-              toast("Локальные настройки сброшены", "success");
-            }}
+            onClick={() => setConfirmReset(true)}
           >
             Сбросить
           </button>
@@ -122,6 +118,21 @@ export function SettingsSection() {
           Синхронизация аккаунта появится позже — сейчас данные хранятся локально на сервере приложения.
         </p>
       </Group>
+
+      {confirmReset && (
+        <Confirm
+          message="Сбросить локальные настройки этого браузера? Уроки и фразы не затрагиваются."
+          confirmLabel="Сбросить"
+          onConfirm={() => {
+            setConfirmReset(false);
+            try {
+              Object.keys(localStorage).filter((k) => k.startsWith("luma:")).forEach((k) => localStorage.removeItem(k));
+            } catch {}
+            toast("Локальные настройки сброшены", "success");
+          }}
+          onCancel={() => setConfirmReset(false)}
+        />
+      )}
     </>
   );
 }

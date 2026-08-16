@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
 import { horizonCount } from "@/lib/selectors";
-import { MomentumDot } from "./Momentum";
+import { MomentumDot, ActionMeter } from "./Momentum";
 
 export function Rail({
   view,
@@ -35,23 +35,27 @@ export function Rail({
 
   return (
     <aside>
-      <div className="cap">Цели</div>
-      {goals.map((g) => {
-        const m = goalMomentum(g, state.tasks, state.habits, idx, state.today);
-        return (
+      <div className="cap cap-row">
+        <span>Цели</span>
+        <button className="cap-add" onClick={onAddGoal} aria-label="Добавить цель" title="Добавить цель">
+          +
+        </button>
+      </div>
+      {(() => {
+        const rows = goals.map((g) => ({ g, m: goalMomentum(g, state.tasks, state.habits, idx, state.today) }));
+        const maxJ = Math.max(1, ...rows.map((r) => r.m.jumps));
+        const maxS = Math.max(1, ...rows.map((r) => r.m.steps));
+        return rows.map(({ g, m }) => (
           <button key={g.id} className={`nav-item${view === g.id ? " sel" : ""}`} onClick={() => onSelect(g.id)}>
             <span className="nav-top">
               <b>{g.name}</b>
               <MomentumDot m={m} />
             </span>
-            <span className="nav-sub">{m.label}</span>
+            <ActionMeter jumps={m.jumps} steps={m.steps} maxJumps={maxJ} maxSteps={maxS} />
           </button>
-        );
-      })}
+        ));
+      })()}
       {goals.length === 0 && <div className="rail-empty" style={{ padding: "4px 10px 10px" }}>Пока нет целей.</div>}
-      <button className="add" onClick={onAddGoal}>
-        + цель
-      </button>
       <button className={`nav-item${view === "goals" ? " sel" : ""}`} onClick={() => onSelect("goals")}>
         <span className="nav-top">
           <b>Все цели</b>
@@ -66,7 +70,7 @@ export function Rail({
       {horizon("future", "Будущее", futureLeft)}
       <button className={`nav-item horizon${view === "calendar" ? " sel" : ""}`} onClick={() => onSelect("calendar")}>
         <span className="nav-top">
-          <b>📅 Календарь</b>
+          <b>Календарь</b>
           <i />
         </span>
       </button>

@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
-import { MomentumTag, ActivityStrip } from "./Momentum";
+import { MomentumTag, ActivityStrip, Tally } from "./Momentum";
 import { Tick } from "./icons";
 
 export function GoalsOverview({ onOpenGoal, onAddGoal }: { onOpenGoal: (id: string) => void; onAddGoal: () => void }) {
@@ -34,7 +34,7 @@ export function GoalsOverview({ onOpenGoal, onAddGoal }: { onOpenGoal: (id: stri
                   <b>{g.name}</b>
                   <MomentumTag m={m} />
                 </div>
-                <span className="goal-type">{g.type === "achievement" ? "достижение" : "поддержание"}</span>
+                <Tally m={m} />
                 <ActivityStrip dots={m.dots} />
               </button>
             );

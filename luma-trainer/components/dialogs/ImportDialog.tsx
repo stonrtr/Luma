@@ -70,7 +70,7 @@ export function ImportDialog({
               value={text}
               placeholder={"significant achievement — значительное достижение\nto meet a deadline; уложиться в срок\nby the way\nуложиться в срок"}
               onChange={(e) => setText(e.target.value)}
-              style={{ minHeight: 200, fontFamily: "monospace", fontSize: 14 }}
+              style={{ minHeight: 150, fontFamily: "monospace", fontSize: 14 }}
             />
             <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
               Разделители: тире «—», точка с запятой «;» или табуляция. Запятая не используется как разделитель.
@@ -78,7 +78,19 @@ export function ImportDialog({
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          {/* Прилипающий футер: кнопка всегда видна, даже если список длинный */}
+          <div
+            style={{
+              position: "sticky",
+              bottom: 0,
+              display: "flex",
+              justifyContent: "flex-end",
+              margin: "0 -20px -20px",
+              padding: "14px 20px",
+              background: "rgba(7,34,116,0.96)",
+              borderTop: "1px solid rgba(255,255,255,0.12)",
+            }}
+          >
             <button className="btn btn-primary" onClick={run} disabled={loading || parsedCount === 0}>
               {loading ? <Spinner /> : `Импортировать (${parsedCount})`}
             </button>
