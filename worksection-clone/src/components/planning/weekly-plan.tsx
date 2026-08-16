@@ -82,12 +82,6 @@ export function WeeklyPlan({
           <StatusBadge status={status} locale={locale} />
         </h3>
         <div className="flex items-center gap-1.5">
-          {/* Владелец плана отправляет свой план на утверждение. Кроме главного админа (OWNER) — ему некому отправлять */}
-          {isSelf && !ownerIsTopAdmin && (status === "DRAFT" || status === "RETURNED") && (
-            <Button size="sm" onClick={() => start(async () => { const r = await submitPlanForApproval({ weekStart }); if (r?.error) toast.error(r.error); else { toast.success(t(locale, "plan.sentToManager")); router.refresh(); } })} disabled={pending}>
-              <Send className="size-4" /> {t(locale, "plan.submitApproval")}
-            </Button>
-          )}
           {/* Руководитель утверждает (создаёт задачи) */}
           {canManage && unapproved > 0 && (
             <Button size="sm" onClick={() => start(async () => { const r = await approvePlan({ userId, weekStart }); if (r?.error) toast.error(r.error); else { toast.success(t(locale, "plan.approvedCreated")); router.refresh(); } })} disabled={pending}>
@@ -201,6 +195,17 @@ export function WeeklyPlan({
             </div>
           )}
         </div>
+      )}
+
+      {/* Отправить на утверждение — крупная кнопка внизу контейнера (кроме главного админа) */}
+      {isSelf && !ownerIsTopAdmin && (status === "DRAFT" || status === "RETURNED") && (
+        <Button
+          className="mt-3 h-11 w-full text-sm"
+          disabled={pending}
+          onClick={() => start(async () => { const r = await submitPlanForApproval({ weekStart }); if (r?.error) toast.error(r.error); else { toast.success(t(locale, "plan.sentToManager")); router.refresh(); } })}
+        >
+          <Send className="size-4" /> {t(locale, "plan.submitApproval")}
+        </Button>
       )}
 
       <NewTaskDialog

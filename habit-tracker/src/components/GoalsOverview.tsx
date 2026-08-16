@@ -1,7 +1,8 @@
 "use client";
 import { useMemo } from "react";
 import { useStore } from "@/lib/store";
-import { indexEntries, goalProgress } from "@/lib/progress";
+import { indexEntries, goalMomentum } from "@/lib/progress";
+import { MomentumTag, ActivityStrip } from "./Momentum";
 import { Tick } from "./icons";
 
 export function GoalsOverview({ onOpenGoal, onAddGoal }: { onOpenGoal: (id: string) => void; onAddGoal: () => void }) {
@@ -26,17 +27,15 @@ export function GoalsOverview({ onOpenGoal, onAddGoal }: { onOpenGoal: (id: stri
       ) : (
         <div className="goal-grid">
           {active.map((g) => {
-            const p = Math.round(goalProgress(g, state.tasks, state.habits, idx, state.today) * 100);
+            const m = goalMomentum(g, state.tasks, state.habits, idx, state.today);
             return (
               <button className="goal-card" key={g.id} onClick={() => onOpenGoal(g.id)}>
                 <div className="goal-card-h">
                   <b>{g.name}</b>
-                  <i>{g.type === "maintenance" ? `удержание ${p}%` : `${p}%`}</i>
+                  <MomentumTag m={m} />
                 </div>
                 <span className="goal-type">{g.type === "achievement" ? "достижение" : "поддержание"}</span>
-                <span className="track">
-                  <i style={{ width: `${p}%` }} />
-                </span>
+                <ActivityStrip dots={m.dots} />
               </button>
             );
           })}

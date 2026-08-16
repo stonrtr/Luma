@@ -1,7 +1,9 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useStore } from "@/lib/store";
-import { indexEntries, goalProgress, adherence } from "@/lib/progress";
+import { indexEntries, goalMomentum, streak } from "@/lib/progress";
+import { MomentumTag, ActivityStrip } from "./Momentum";
+import { humanFull } from "@/lib/date";
 import { Tick } from "./icons";
 
 export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit: (goalId: string) => void }) {
@@ -14,7 +16,7 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
 
   const tasks = state.tasks.filter((t) => t.goalId === goal.id).sort((a, b) => a.ord - b.ord);
   const habits = state.habits.filter((h) => h.goalId === goal.id);
-  const pct = Math.round(goalProgress(goal, state.tasks, state.habits, idx, state.today) * 100);
+  const m = goalMomentum(goal, state.tasks, state.habits, idx, state.today);
   const openTasks = tasks.filter((t) => !t.doneAt);
   const doneTasks = tasks.filter((t) => t.doneAt);
 
@@ -29,32 +31,31 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
     <>
       <div className="head">
         <h1>{goal.name}</h1>
-        <div className="left">
-          {goal.status === "done" ? "достигнуто ✓" : goal.type === "maintenance" ? `удержание ${pct}%` : `${pct}%`}
-        </div>
+        <div className="left">{goal.status === "done" ? "достигнуто ✓" : goal.type === "achievement" ? "достижение" : "поддержание"}</div>
       </div>
 
       <div className="goal-top">
-        <span className="goal-type">{goal.type === "achievement" ? "достижение" : "поддержание"}</span>
-        {goal.type === "achievement" ? (
-          <div className="track" style={{ flex: 1 }}>
-            <i style={{ width: `${pct}%` }} />
-          </div>
-        ) : (
-          <span className="goal-maint">за 30 дней — среднее выполнение привычек</span>
-        )}
+        <MomentumTag m={m} />
+        <ActivityStrip dots={m.dots} />
+        <span className="goal-maint">
+          {m.lastActive ? `последнее действие: ${humanFull(m.lastActive).toLowerCase()}` : "пока без активности"}
+        </span>
       </div>
 
-      <div className="section-label">Привычки</div>
+      <div className="section-label">Привычки — ведут к цели</div>
       {habits.length === 0 ? (
         <div className="muted-note">Нет привычек. Добавь ту, что двигает цель.</div>
       ) : (
         <div className="goal-habits">
-          {habits.map((h) => (
-            <span className="chip" key={h.id}>
-              {h.name} · {Math.round(adherence(h, idx, state.today, 30) * 100)}%
-            </span>
-          ))}
+          {habits.map((h) => {
+            const st = streak(h, idx, state.today);
+            return (
+              <span className="chip" key={h.id}>
+                {h.name}
+                {st.value > 0 && <b className="chip-streak"> 🔥{st.value}</b>}
+              </span>
+            );
+          })}
         </div>
       )}
       <button className="mini-btn" style={{ marginTop: 10 }} onClick={() => onAddHabit(goal.id)}>

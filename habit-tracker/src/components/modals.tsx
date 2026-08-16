@@ -108,7 +108,9 @@ function GoalModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className="hint">
-          {type === "achievement" ? "Прогресс растёт к 100% и цель закрывается." : "Финиша нет — показывается удержание привычек за 30 дней."}
+          {type === "achievement"
+            ? "Есть финиш — однажды отметишь достигнутой."
+            : "Финиша нет — держишь ритм. Прогресс не показываем, только движение."}
         </div>
       </div>
       <div className="modal-foot">

@@ -322,7 +322,7 @@ export function StudySession({
                 maxWidth: 560,
                 background: "rgba(255,255,255,0.13)",
                 backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.22)",
+                border: "none",
                 borderRadius: 18,
                 padding: "12px 18px",
                 color: "rgba(255,255,255,0.92)",

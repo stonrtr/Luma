@@ -425,6 +425,61 @@ main {
   margin-top: 4px;
 }
 
+/* ── momentum (движение по цели) ───── */
+.mo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono), monospace;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.mo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--line);
+}
+.mo.active {
+  color: var(--teal);
+}
+.mo.active .mo-dot {
+  background: var(--teal);
+}
+.mo.slowing {
+  color: var(--amber);
+}
+.mo.slowing .mo-dot {
+  background: var(--amber);
+}
+.mo.stalled {
+  color: var(--miss);
+}
+.mo.stalled .mo-dot {
+  background: var(--miss);
+}
+.mo.idle {
+  color: var(--ink-3);
+}
+.strip {
+  display: inline-flex;
+  gap: 2px;
+}
+.strip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+.strip i.on {
+  background: var(--teal);
+}
+.chip-streak {
+  color: var(--amber);
+  font-weight: 600;
+}
+
 /* ── режим цели / горизонты ────────── */
 .section-label {
   font-family: var(--mono), monospace;

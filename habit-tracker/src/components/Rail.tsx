@@ -1,8 +1,9 @@
 "use client";
 import { useMemo } from "react";
 import { useStore } from "@/lib/store";
-import { indexEntries, goalProgress } from "@/lib/progress";
+import { indexEntries, goalMomentum } from "@/lib/progress";
 import { horizonCount } from "@/lib/selectors";
+import { MomentumDot } from "./Momentum";
 
 export function Rail({
   view,
@@ -36,17 +37,14 @@ export function Rail({
     <aside>
       <div className="cap">Цели</div>
       {goals.map((g) => {
-        const p = Math.round(goalProgress(g, state.tasks, state.habits, idx, state.today) * 100);
+        const m = goalMomentum(g, state.tasks, state.habits, idx, state.today);
         return (
           <button key={g.id} className={`nav-item${view === g.id ? " sel" : ""}`} onClick={() => onSelect(g.id)}>
             <span className="nav-top">
               <b>{g.name}</b>
-              <i>{p}%</i>
+              <MomentumDot m={m} />
             </span>
-            <span className="nav-sub">{g.type === "maintenance" ? "поддержание" : "достижение"}</span>
-            <span className="track">
-              <i style={{ width: `${p}%` }} />
-            </span>
+            <span className="nav-sub">{m.label}</span>
           </button>
         );
       })}

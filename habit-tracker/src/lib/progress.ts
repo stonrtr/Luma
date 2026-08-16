@@ -166,3 +166,77 @@ export function dayCompletion(
     dayHabits.filter((h) => doneOn(idx, h.id, date)).length;
   return done / total;
 }
+
+// ---- momentum: движение по цели (задачи + привычки), без «% готовности» ----
+
+export type MomentumStatus = "active" | "slowing" | "stalled" | "idle";
+
+export interface Momentum {
+  status: MomentumStatus;
+  label: string;
+  activeDays: number; // дней с активностью за последние N
+  lastActive: string | null;
+  dots: boolean[]; // N дней (старый→новый): была ли активность по цели
+  jumps: number; // прыжки — закрытые задачи цели (всего)
+  steps: number; // шаги — выполненные привычки цели (всего отметок)
+}
+
+const MOMENTUM_LABEL: Record<MomentumStatus, string> = {
+  active: "в движении",
+  slowing: "замедляется",
+  stalled: "застой",
+  idle: "нет активности",
+};
+
+/**
+ * Движение по цели за последние N дней. Активность дня = в этот день закрыта
+ * задача цели ИЛИ выполнена её привычка. Привычки ведут к цели наравне с задачами.
+ */
+export function goalMomentum(
+  goal: Goal,
+  tasks: Task[],
+  habits: Habit[],
+  idx: EntryIndex,
+  today: string,
+  N = 14,
+): Momentum {
+  const gTasks = tasks.filter((t) => t.goalId === goal.id);
+  const gHabits = habits.filter((h) => h.goalId === goal.id && !h.archived);
+  const hasItems = gTasks.length > 0 || gHabits.length > 0;
+
+  const activeSet = new Set<string>();
+  let jumps = 0;
+  let steps = 0;
+  for (const t of gTasks) if (t.doneAt) {
+    activeSet.add(t.doneAt.slice(0, 10));
+    jumps++;
+  }
+  for (const h of gHabits) {
+    const m = idx.get(h.id);
+    if (m) for (const [date, done] of m) if (done) {
+      activeSet.add(date);
+      steps++;
+    }
+  }
+
+  const dots: boolean[] = [];
+  let activeDays = 0;
+  for (let i = N - 1; i >= 0; i--) {
+    const d = addDays(today, -i);
+    const on = activeSet.has(d);
+    dots.push(on);
+    if (on) activeDays++;
+  }
+
+  let lastActive: string | null = null;
+  for (const d of activeSet) if (!lastActive || d > lastActive) lastActive = d;
+  const daysSince = lastActive ? diffDays(today, lastActive) : Infinity;
+
+  let status: MomentumStatus;
+  if (!hasItems || lastActive === null) status = "idle";
+  else if (daysSince <= 2) status = "active";
+  else if (daysSince <= 6) status = "slowing";
+  else status = "stalled";
+
+  return { status, label: MOMENTUM_LABEL[status], activeDays, lastActive, dots, jumps, steps };
+}
