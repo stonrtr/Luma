@@ -5,6 +5,7 @@ import type { PhraseCard, Rating } from "@/lib/types";
 import { maskAnswer, isFullyRevealed, hintLetterCount } from "@/lib/hint";
 import { difficultyBand } from "@/lib/difficulty";
 import { prefetchEnglish, speakEnglish } from "@/lib/tts-client";
+import { playSfx } from "@/lib/sfx";
 import { useApp } from "../app-context";
 import type { StudyScope } from "../app-context";
 import { Spinner, Star, daysAgo } from "../ui";
@@ -114,11 +115,16 @@ export function StudySession({
 
   const open = useCallback(() => {
     if (flipped || !card) return;
+    playSfx("flip");
     setFlipped(true);
     if (settings.autoPlay) setTimeout(playEnglish, 250);
   }, [flipped, card, settings.autoPlay, playEnglish]);
 
-  const close = useCallback(() => setFlipped(false), []);
+  const close = useCallback(() => {
+    if (!flipped) return;
+    playSfx("flip");
+    setFlipped(false);
+  }, [flipped]);
 
   const doHint = useCallback(() => {
     if (!answer || flipped) return;
@@ -145,6 +151,7 @@ export function StudySession({
       // Подсказка = «Не вспомнил»: открывал буквы — сам не вспомнил.
       const effective: Rating = usedHint ? "again" : rating;
       busy.current = true;
+      playSfx(effective === "easy" ? "success" : effective === "hard" ? "so-so" : "mistake");
       setFeedback(effective === "again" ? "bad" : "good");
       setCounts((c) => ({ ...c, [effective]: c[effective] + 1 }));
       try {
@@ -222,7 +229,7 @@ export function StudySession({
 
   const title =
     scopeOverride === "upcoming"
-      ? "Приближающиеся"
+      ? "Пока не забыл"
       : scope.scope === "today"
         ? "Сегодня"
         : scope.scope === "favorites"
@@ -532,7 +539,7 @@ export function StudySession({
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 6 }}>
         {(upcomingCount ?? 0) > 0 && (
           <button className="wbtn wbtn-lg" onClick={startUpcoming}>
-            Повторить заранее ({upcomingCount})
+            Пока не забыл ({upcomingCount})
           </button>
         )}
         <button
