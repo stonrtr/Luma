@@ -2,7 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { A } from "@/lib/api";
 import type { GrammarRule, RuleExercise } from "@/lib/types";
+import { CEFR_CATALOG } from "@/lib/cefr";
 import { checkAnswer } from "@/lib/answerCheck";
+import { useApp } from "../app-context";
 import { Confirm, EmptyState, Spinner, useToast } from "../ui";
 
 export function RulesSection() {
@@ -12,6 +14,7 @@ export function RulesSection() {
   const [query, setQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const [local, setLocal] = useState(0);
+  const [openId, setOpenId] = useState<string | null>(null); // какой аккордеон раскрыт
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const reload = useCallback(() => setLocal((n) => n + 1), []);
@@ -37,18 +40,34 @@ export function RulesSection() {
     };
   }, [rules, reload]);
 
-  const create = async () => {
-    if (!query.trim()) return;
+  const createRule = async (q: string) => {
     setCreating(true);
     try {
-      await A.createRule(query.trim());
-      setQuery("");
+      await A.createRule(q.trim());
       toast("Правило создаётся…", "info");
       reload();
     } catch (e) {
       toast((e as Error).message || "Ошибка", "error");
     } finally {
       setCreating(false);
+    }
+  };
+
+  const create = async () => {
+    if (!query.trim()) return;
+    await createRule(query.trim());
+    setQuery("");
+  };
+
+  // Клик по теме каталога: если правило уже есть (по query) — открыть его, иначе создать.
+  const pickTopic = (topic: string) => {
+    const existing = rules?.find((r) => r.query === topic);
+    if (existing) {
+      setTab("active");
+      setOpenId(existing.id);
+      setTimeout(() => document.getElementById(`rule-${existing.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+    } else {
+      createRule(topic);
     }
   };
 
@@ -61,11 +80,13 @@ export function RulesSection() {
         </div>
       </div>
 
+      <Catalog rules={rules} onPick={pickTopic} />
+
       <div className="wcard" style={{ padding: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
         <input
           className="input"
           style={{ flex: 1, minWidth: 200, minHeight: 46, fontSize: 15 }}
-          placeholder="Напр. «Present Perfect» или «разница между say и tell»"
+          placeholder="Своя тема: напр. «разница между say и tell»"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && create()}
@@ -86,12 +107,18 @@ export function RulesSection() {
         <EmptyState
           icon="📐"
           title={tab === "archive" ? "Архив пуст" : "Пока нет правил"}
-          hint={tab === "archive" ? undefined : "Введи тему грамматики выше — Luma соберёт объяснение, примеры и упражнения."}
+          hint={tab === "archive" ? undefined : "Выбери тему из каталога по уровням выше или введи свою — Luma соберёт объяснение, примеры и упражнения."}
         />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {rules.map((r) => (
-            <RuleCard key={r.id} rule={r} onChanged={reload} />
+            <RuleCard
+              key={r.id}
+              rule={r}
+              open={openId === r.id}
+              onToggle={() => setOpenId((id) => (id === r.id ? null : r.id))}
+              onChanged={reload}
+            />
           ))}
         </div>
       )}
@@ -99,10 +126,60 @@ export function RulesSection() {
   );
 }
 
-function RuleCard({ rule, onChanged }: { rule: GrammarRule; onChanged: () => void }) {
+/* ── Каталог тем по уровням CEFR ─────────────────────────────────────────── */
+function Catalog({ rules, onPick }: { rules: GrammarRule[] | null; onPick: (topic: string) => void }) {
+  const [open, setOpen] = useState(true);
+  const has = (topic: string) => !!rules?.some((r) => r.query === topic);
+
+  return (
+    <div className="wcard" style={{ padding: 0, overflow: "hidden" }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: "16px 20px", display: "flex", alignItems: "center", gap: 12, fontFamily: "inherit" }}
+      >
+        <span style={{ fontSize: 18, color: "var(--ink-2)" }}>{open ? "▾" : "▸"}</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 800, fontSize: 16, color: "var(--ink)" }}>Каталог тем по уровням</div>
+          <div style={{ color: "var(--ink-2)", fontSize: 13, marginTop: 2 }}>от A2 до C2 — выбери тему, чтобы изучить с примерами</div>
+        </div>
+      </button>
+      {open && (
+        <div style={{ padding: "0 20px 20px", borderTop: "1px solid var(--line-soft)", display: "flex", flexDirection: "column", gap: 16 }}>
+          {CEFR_CATALOG.map((lvl) => (
+            <div key={lvl.level} style={{ marginTop: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <span className="chip chip-accent" style={{ fontWeight: 800, letterSpacing: "0.05em" }}>{lvl.level}</span>
+                <span style={{ color: "var(--ink-2)", fontSize: 13, fontWeight: 600 }}>{lvl.caption}</span>
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {lvl.topics.map((t) => {
+                  const done = has(t);
+                  return (
+                    <button
+                      key={t}
+                      className={done ? "chip chip-green" : "lbtn"}
+                      style={{ cursor: "pointer", fontSize: 13, ...(done ? { padding: "6px 12px" } : {}) }}
+                      onClick={() => onPick(t)}
+                      title={done ? "Уже создано — открыть" : "Создать правило по этой теме"}
+                    >
+                      {done ? "✓ " : "＋ "}{t}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RuleCard({ rule, open, onToggle, onChanged }: { rule: GrammarRule; open: boolean; onToggle: () => void; onChanged: () => void }) {
   const toast = useToast();
-  const [open, setOpen] = useState(false); // аккордеоны закрыты по умолчанию
+  const { refresh } = useApp();
   const [confirmDel, setConfirmDel] = useState(false);
+  const [addedKeys, setAddedKeys] = useState<Set<string>>(new Set());
 
   const grade = async (rating: string) => {
     try {
@@ -114,10 +191,55 @@ function RuleCard({ rule, onChanged }: { rule: GrammarRule; onChanged: () => voi
     }
   };
 
+  // Найти/создать урок под грамматику этого правила (тема «Грамматика»).
+  const ensureGrammarLesson = async (): Promise<string> => {
+    const topics = await A.topics();
+    let topic = topics.find((t) => t.name === "Грамматика");
+    if (!topic) topic = await A.createTopic("Грамматика");
+    const lessons = await A.lessons(false);
+    let lesson = lessons.find((l) => l.title === rule.title && l.topicId === topic!.id);
+    if (!lesson) lesson = await A.createLesson({ title: rule.title, topicId: topic.id });
+    return lesson.id;
+  };
+
+  const addExample = async (en: string, ru: string) => {
+    const key = en + "|" + ru;
+    if (addedKeys.has(key)) return;
+    try {
+      const lessonId = await ensureGrammarLesson();
+      await A.createPhrase({ lessonId, english: en, russian: ru, source: { type: "manual" } });
+      setAddedKeys((s) => new Set(s).add(key));
+      toast("В карточки: " + en, "success");
+      refresh();
+    } catch (e) {
+      toast((e as Error).message || "Не удалось добавить", "error");
+    }
+  };
+
+  const addAllExamples = async () => {
+    try {
+      const lessonId = await ensureGrammarLesson();
+      let n = 0;
+      const next = new Set(addedKeys);
+      for (const e of rule.examples) {
+        const key = e.en + "|" + e.ru;
+        if (next.has(key) || !e.en) continue;
+        await A.createPhrase({ lessonId, english: e.en, russian: e.ru, source: { type: "manual" } });
+        next.add(key);
+        n++;
+      }
+      setAddedKeys(next);
+      toast(n ? `Добавлено в карточки: ${n}` : "Все примеры уже добавлены", n ? "success" : "info");
+      refresh();
+    } catch (e) {
+      toast((e as Error).message || "Не удалось добавить", "error");
+    }
+  };
+
   return (
-    <div className="wcard" style={{ padding: 0, overflow: "hidden" }}>
+    <div id={`rule-${rule.id}`} className="wcard" style={{ padding: 0, overflow: "hidden" }}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: "18px 20px", display: "flex", alignItems: "center", gap: 12, fontFamily: "inherit" }}
       >
         <span style={{ fontSize: 18, color: "var(--ink-2)" }}>{open ? "▾" : "▸"}</span>
@@ -138,7 +260,7 @@ function RuleCard({ rule, onChanged }: { rule: GrammarRule; onChanged: () => voi
 
       {open && rule.status === "ready" && (
         <div style={{ padding: "0 22px 22px", borderTop: "1px solid var(--line-soft)", display: "flex", flexDirection: "column", gap: 14 }}>
-          <RuleBody rule={rule} />
+          <RuleBody rule={rule} addedKeys={addedKeys} onAddExample={addExample} onAddAll={addAllExamples} />
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)", fontSize: 13, fontWeight: 600 }}>Оцени, как помнишь правило:</span>
             <button className="lbtn lbtn-danger" onClick={() => grade("again")}>Не вспомнил</button>
@@ -165,7 +287,17 @@ function RuleCard({ rule, onChanged }: { rule: GrammarRule; onChanged: () => voi
   );
 }
 
-function RuleBody({ rule }: { rule: GrammarRule }) {
+function RuleBody({
+  rule,
+  addedKeys,
+  onAddExample,
+  onAddAll,
+}: {
+  rule: GrammarRule;
+  addedKeys: Set<string>;
+  onAddExample: (en: string, ru: string) => void;
+  onAddAll: () => void;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
       {rule.explanation && <p style={{ margin: 0, lineHeight: 1.6, color: "var(--ink-body)" }}>{rule.explanation}</p>}
@@ -192,14 +324,36 @@ function RuleBody({ rule }: { rule: GrammarRule }) {
         </Block>
       )}
       {rule.examples.length > 0 && (
-        <Block title="Примеры">
+        <Block
+          title="Примеры"
+          action={
+            <button className="lbtn" style={{ minHeight: 30, fontSize: 12 }} onClick={onAddAll}>
+              ＋ все в карточки
+            </button>
+          }
+        >
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {rule.examples.map((e, i) => (
-              <div key={i}>
-                <div style={{ fontWeight: 700, color: "var(--ink)" }}>{e.en}</div>
-                <div style={{ color: "var(--ink-2)", fontSize: 14 }}>{e.ru}</div>
-              </div>
-            ))}
+            {rule.examples.map((e, i) => {
+              const added = addedKeys.has(e.en + "|" + e.ru);
+              return (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, color: "var(--ink)" }}>{e.en}</div>
+                    <div style={{ color: "var(--ink-2)", fontSize: 14 }}>{e.ru}</div>
+                  </div>
+                  <button
+                    className={added ? "chip chip-green" : "icon-btn icon-btn-sm"}
+                    style={{ flex: "none", cursor: added ? "default" : "pointer", ...(added ? { height: 34 } : {}) }}
+                    disabled={added}
+                    aria-label="Добавить в карточки"
+                    title={added ? "Уже в карточках" : "Добавить фразу в карточки"}
+                    onClick={() => onAddExample(e.en, e.ru)}
+                  >
+                    {added ? "✓" : "＋"}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </Block>
       )}
@@ -231,10 +385,13 @@ function RuleBody({ rule }: { rule: GrammarRule }) {
   );
 }
 
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
+function Block({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div>
-      <div style={{ fontSize: 13, fontWeight: 800, color: "var(--ink-2)", marginBottom: 6 }}>{title}</div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
+        <div style={{ fontSize: 13, fontWeight: 800, color: "var(--ink-2)" }}>{title}</div>
+        {action}
+      </div>
       {children}
     </div>
   );
@@ -263,11 +420,11 @@ function ExerciseView({ ex }: { ex: RuleExercise }) {
             const style: React.CSSProperties =
               state !== "idle" && isPicked
                 ? { background: isCorrect ? "var(--success)" : "var(--danger)", color: "#fff", border: "none" }
-                : { background: "#fff", color: "#4a5878", border: "1px solid var(--line)" };
+                : { background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.22)" };
             return (
               <button
                 key={o}
-                style={{ minHeight: 38, padding: "0 20px", borderRadius: 999, fontWeight: 700, fontSize: 14, cursor: "pointer", ...style }}
+                style={{ minHeight: 40, padding: "0 20px", borderRadius: 999, fontWeight: 600, fontSize: 14, cursor: "pointer", ...style }}
                 onClick={() => {
                   setPicked(o);
                   check(o);
@@ -285,13 +442,13 @@ function ExerciseView({ ex }: { ex: RuleExercise }) {
           )}
           <input
             className="input"
-            style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid var(--line)" }}
+            style={{ flex: 1, minWidth: 180 }}
             value={input}
             onChange={(e) => { setInput(e.target.value); setState("idle"); }}
             onKeyDown={(e) => e.key === "Enter" && check(input)}
             placeholder="Ваш ответ"
           />
-          <button className="abtn" style={{ minHeight: 38, fontSize: 14 }} onClick={() => check(input)}>Проверить</button>
+          <button className="abtn" style={{ minHeight: 44, fontSize: 14 }} onClick={() => check(input)}>Проверить</button>
         </div>
       )}
 
