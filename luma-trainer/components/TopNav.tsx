@@ -1,5 +1,6 @@
 "use client";
 import { SECTIONS, type SectionId } from "./app-context";
+import { SectionIcon } from "./section-icons";
 
 // Навигация Bethouse: логотип с подписью, текстовые ссылки-разделы по центру,
 // справа «🎲 Random» и белая пилюля «сессия →». На мобильном — flex-wrap.
@@ -44,6 +45,7 @@ export function TopNav({
             className={`nav-link ${active === s.id ? "active" : ""}`}
             onClick={() => onNavigate(s.id)}
           >
+            <SectionIcon id={s.id} size={18} />
             {s.label}
           </button>
         ))}

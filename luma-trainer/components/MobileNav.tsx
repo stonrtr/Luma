@@ -1,5 +1,6 @@
 "use client";
 import { SECTIONS, type SectionId } from "./app-context";
+import { SectionIcon } from "./section-icons";
 
 // Нижняя таб-панель для мобильных (фикс, стекло, иконка + подпись).
 // Показывается только на узких экранах (CSS @media), десктоп — текстовое меню сверху.
@@ -18,7 +19,7 @@ export function MobileNav({
           className={`mobile-nav-item ${active === s.id ? "active" : ""}`}
           onClick={() => onNavigate(s.id)}
         >
-          <span className="mobile-nav-icon">{s.icon}</span>
+          <span className="mobile-nav-icon"><SectionIcon id={s.id} size={22} /></span>
           <span className="mobile-nav-label">{s.label}</span>
         </button>
       ))}

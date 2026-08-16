@@ -458,7 +458,7 @@ export function StudySession({
       </div>
 
       <div className="wcard session-progress" style={{ padding: "18px 22px", width: "min(300px, 100%)" }}>
-        <div className="overline-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Прогресс фразы</div>
+        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, fontWeight: 700, letterSpacing: "-0.01em" }}>Прогресс фразы</div>
         <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, margin: "6px 0 12px" }}>
           {card.known ? "выучено" : `${Math.round(card.progress)}%`} · повторений этой фразы: {card.reviewCount}
         </div>
