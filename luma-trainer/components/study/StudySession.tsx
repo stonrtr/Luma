@@ -322,6 +322,16 @@ export function StudySession({
             </div>
           )}
 
+          {/* Действия сразу под фразой: Подсказка (слева), Показать ответ (справа) */}
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 4 }}>
+            <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={doHint} disabled={hintDone}>
+              Подсказка ↑
+            </button>
+            <button className="wbtn wbtn-lg" style={{ minHeight: 52 }} onClick={open}>
+              Показать ответ
+            </button>
+          </div>
+
           {reveal > 0 && (
             <div
               style={{
@@ -413,16 +423,6 @@ export function StudySession({
   const bottomBar = card && (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        {!flipped && (
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <button className="wbtn wbtn-lg" onClick={open}>
-              Показать ответ
-            </button>
-            <button className="gbtn" style={{ minHeight: 56, padding: "0 26px", fontSize: 16 }} onClick={doHint} disabled={hintDone}>
-              Подсказка ↑
-            </button>
-          </div>
-        )}
         <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 500, letterSpacing: "0.04em" }}>
           Space — ответ · ↑ — подсказка · V — озвучить · ← ↓ → — оценка
         </div>
@@ -464,28 +464,6 @@ export function StudySession({
         onClick={() => (flipped ? close() : open())}
       >
         ↓
-      </button>
-      <button
-        aria-label="Пропустить"
-        style={{
-          position: "absolute",
-          right: 16,
-          top: "50%",
-          transform: "translateY(-50%)",
-          width: 46,
-          height: 46,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.1)",
-          border: "1px solid rgba(255,255,255,0.24)",
-          backdropFilter: "blur(12px)",
-          color: "#fff",
-          fontSize: 20,
-          fontWeight: 700,
-          cursor: "pointer",
-        }}
-        onClick={advance}
-      >
-        ›
       </button>
     </>
   );
