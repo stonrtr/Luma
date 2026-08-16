@@ -7,11 +7,12 @@ import { TodayCenter } from "./TodayCenter";
 import { TimeCenter } from "./TimeCenter";
 import { GoalCenter } from "./GoalCenter";
 import { GoalsOverview } from "./GoalsOverview";
+import { CalendarCenter } from "./CalendarCenter";
 import { HabitsRail } from "./HabitsRail";
 import { Modals, type ModalState } from "./modals";
 
 // «страничные» view, не привязанные к конкретной цели
-const PAGE_VIEWS = ["today", "week", "month", "future", "goals"] as const;
+const PAGE_VIEWS = ["today", "week", "month", "future", "goals", "calendar"] as const;
 
 export function Desktop() {
   const { state, toggleTask } = useStore();
@@ -89,6 +90,8 @@ export function Desktop() {
           <TimeCenter horizon={view} />
         ) : view === "goals" ? (
           <GoalsOverview onOpenGoal={(id) => setView(id)} onAddGoal={() => setModal({ kind: "goal" })} />
+        ) : view === "calendar" ? (
+          <CalendarCenter onAddForDate={(date) => setModal({ kind: "task", date })} />
         ) : (
           <GoalCenter goalId={view} onAddHabit={(goalId) => setModal({ kind: "habit", goalId })} />
         )}

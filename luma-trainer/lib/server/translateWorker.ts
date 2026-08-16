@@ -104,6 +104,41 @@ export function maybeRetryFailed(): void {
   })();
 }
 
+/**
+ * Пересобрать ТОЛЬКО примеры (exampleEn/exampleRu) для готовых карточек,
+ * перезаписав старые. Нужно для смены стиля примеров (короткие вместо длинных).
+ * Возвращает, сколько карточек обновлено.
+ */
+export async function regenerateExamples(limit = 500): Promise<number> {
+  if (!hasAnyLLM()) return 0;
+  const cards = await db.phraseCard.findMany({
+    where: { translationStatus: "ready" },
+    orderBy: { createdAt: "asc" },
+    take: limit,
+    select: { id: true, english: true, russian: true },
+  });
+  let updated = 0;
+  for (const c of cards) {
+    try {
+      const result = await translatePhrase({
+        english: c.english || undefined,
+        russian: c.russian || undefined,
+        sourceLanguage: c.english ? "en" : "ru",
+      });
+      if (result.exampleEn || result.exampleRu) {
+        await db.phraseCard.update({
+          where: { id: c.id },
+          data: { exampleEn: result.exampleEn, exampleRu: result.exampleRu },
+        });
+        updated += 1;
+      }
+    } catch {
+      /* пропускаем карточку при ошибке — best effort */
+    }
+  }
+  return updated;
+}
+
 /** Process pending/failed cards sequentially (kind to rate limits). Returns how many succeeded. */
 export async function translatePendingBatch(limit = 50): Promise<number> {
   const pending = await db.phraseCard.findMany({

@@ -5,7 +5,7 @@ import { WD_SHORT, todayStr } from "@/lib/date";
 import type { GoalType, Schedule, ScheduleType } from "@/lib/types";
 
 export type ModalState =
-  | { kind: "task"; goalId?: string | null }
+  | { kind: "task"; goalId?: string | null; date?: string }
   | { kind: "goal" }
   | { kind: "habit"; goalId: string | null }
   | null;
@@ -23,16 +23,16 @@ function Shell({ title, children, onClose }: { title: string; children: React.Re
 
 export function Modals({ modal, onClose }: { modal: ModalState; onClose: () => void }) {
   if (!modal) return null;
-  if (modal.kind === "task") return <TaskModal defaultGoal={modal.goalId ?? ""} onClose={onClose} />;
+  if (modal.kind === "task") return <TaskModal defaultGoal={modal.goalId ?? ""} defaultDate={modal.date} onClose={onClose} />;
   if (modal.kind === "goal") return <GoalModal onClose={onClose} />;
   return <HabitModal goalId={modal.goalId} onClose={onClose} />;
 }
 
-function TaskModal({ defaultGoal, onClose }: { defaultGoal: string; onClose: () => void }) {
+function TaskModal({ defaultGoal, defaultDate, onClose }: { defaultGoal: string; defaultDate?: string; onClose: () => void }) {
   const { state, addTask } = useStore();
   const [title, setTitle] = useState("");
   const [goalId, setGoalId] = useState<string>(defaultGoal); // "" = инбокс
-  const [due, setDue] = useState(todayStr());
+  const [due, setDue] = useState(defaultDate ?? todayStr());
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => ref.current?.focus(), []);
 

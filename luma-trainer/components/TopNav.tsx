@@ -6,17 +6,20 @@ import { SECTIONS, type SectionId } from "./app-context";
 export function TopNav({
   active,
   onNavigate,
-  onStartSession,
   onStartRandom,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
-  onStartSession: () => void;
   onStartRandom: () => void;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div className="top-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, flexWrap: "wrap" }}>
+      <button
+        type="button"
+        onClick={() => onNavigate("today")}
+        aria-label="На главную (Сегодня)"
+        style={{ display: "flex", alignItems: "center", gap: 12, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/icon-192.png"
@@ -28,13 +31,13 @@ export function TopNav({
         <div className="brand" style={{ display: "flex", alignItems: "center", lineHeight: 1 }}>
           luma<span className="dim">.</span>
         </div>
-        <div className="brand-sub" style={{ alignSelf: "center" }}>
+        <div className="brand-sub" style={{ alignSelf: "center", textAlign: "left" }}>
           Prime learning
           <br />
           platform
         </div>
-      </div>
-      <nav style={{ display: "flex", gap: "clamp(14px, 2.4vw, 34px)", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
+      </button>
+      <nav className="top-nav-links" style={{ display: "flex", gap: "clamp(14px, 2.4vw, 34px)", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
         {SECTIONS.map((s) => (
           <button
             key={s.id}
@@ -46,11 +49,8 @@ export function TopNav({
         ))}
       </nav>
       <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-        <button className="gbtn gbtn-sm" onClick={onStartRandom} title="Все фразы в случайном порядке">
+        <button className="gbtn gbtn-sm nav-random" onClick={onStartRandom} title="Все фразы в случайном порядке">
           🎲 Random
-        </button>
-        <button className="wbtn" onClick={onStartSession}>
-          сессия →
         </button>
       </div>
     </div>

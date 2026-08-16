@@ -8,7 +8,7 @@ import { prefetchEnglish, speakEnglish } from "@/lib/tts-client";
 import { playSfx } from "@/lib/sfx";
 import { useApp } from "../app-context";
 import type { StudyScope } from "../app-context";
-import { Spinner, Star, daysAgo } from "../ui";
+import { Spinner, Star } from "../ui";
 
 // Плитка итога сессии (число + подпись).
 function SummaryStat({ n, label, color }: { n: number; label: string; color: string }) {
@@ -294,8 +294,9 @@ export function StudySession({
               />
               сложность {card.difficulty}/10
             </span>
-            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, fontWeight: 600 }}>{daysAgo(card.lastReviewedAt)}</span>
-            <Star active={card.favorite} onClick={toggleStar} onPanel />
+            <button aria-label="Озвучить" className="icon-btn icon-btn-sm" onClick={playEnglish}>
+              <SpeakerIcon />
+            </button>
           </div>
 
           <div
@@ -352,10 +353,10 @@ export function StudySession({
 
           {/* Действия сразу под фразой: Подсказка (слева), Показать ответ (справа) */}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 4 }}>
-            <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={doHint} disabled={hintDone}>
+            <button className="gbtn" style={{ minHeight: 34, padding: "0 18px", fontSize: 11 }} onClick={doHint} disabled={hintDone}>
               Подсказка ↑
             </button>
-            <button className="wbtn wbtn-lg" style={{ minHeight: 52 }} onClick={open}>
+            <button className="wbtn" style={{ minHeight: 34, padding: "0 20px", fontSize: 11 }} onClick={open}>
               Показать ответ
             </button>
           </div>
@@ -450,13 +451,13 @@ export function StudySession({
 
   const bottomBar = card && (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <div className="kbd-hints" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 500, letterSpacing: "0.04em" }}>
           Space — ответ · ↑ — подсказка · V — озвучить · ← ↓ → — оценка
         </div>
       </div>
 
-      <div className="wcard" style={{ padding: "18px 22px", width: "min(300px, 100%)" }}>
+      <div className="wcard session-progress" style={{ padding: "18px 22px", width: "min(300px, 100%)" }}>
         <div className="overline-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Прогресс фразы</div>
         <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, margin: "6px 0 12px" }}>
           повторено сегодня: {reviewedCount}
@@ -472,7 +473,7 @@ export function StudySession({
     <>
       <button
         aria-label="Перевернуть"
-        className={settings.animationsEnabled ? "bob" : undefined}
+        className={`flip-circle ${settings.animationsEnabled ? "bob" : ""}`}
         style={{
           position: "absolute",
           left: "50%",
@@ -574,16 +575,14 @@ export function StudySession({
       >
         {card && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <span className="gpill" style={{ minHeight: 44, padding: "0 18px", fontSize: 14, color: "#fff" }}>
+            <span className="gpill" style={{ minHeight: 30, padding: "0 12px", fontSize: 10, color: "#fff" }}>
               {card.lessonTitle || title}
             </span>
             <span style={{ flex: 1 }} />
-            <button aria-label="Озвучить" className="icon-btn" style={{ width: 46, height: 46 }} onClick={playEnglish}>
-              <SpeakerIcon />
-            </button>
-            <span className="wbtn" style={{ cursor: "default", fontSize: 15 }}>
+            <span className="wbtn" style={{ cursor: "default", fontSize: 10, minHeight: 30, padding: "0 16px" }}>
               {Math.min(index + 1, Math.max(total, 1))} / {Math.max(total, 1)}
             </span>
+            <Star active={card.favorite} onClick={toggleStar} onPanel />
           </div>
         )}
         {loading}

@@ -522,6 +522,94 @@ button {
   font-weight: 700;
 }
 
+/* ── Нижняя таб-навигация (только мобильные) ────────────────────────────── */
+.mobile-nav {
+  display: none; /* десктоп — скрыта, показывается в @media ниже */
+}
+
+/* ── Адаптив: телефоны (скрываем «мусор», нижний бар, резиновые отступы) ── */
+@media (max-width: 720px) {
+  /* Меньше воздуха по краям + место под нижний бар */
+  .app-outer {
+    padding: 16px 16px calc(84px + env(safe-area-inset-bottom));
+    gap: 18px;
+  }
+  .content-col {
+    gap: 16px;
+  }
+
+  /* Убираем десктопный «мусор» из шапки */
+  .brand-sub,
+  .top-nav-links,
+  .nav-random,
+  .kbd-hints {
+    display: none !important;
+  }
+
+  /* Шапка: только логотип слева и «сессия →» справа */
+  .top-nav {
+    gap: 12px;
+  }
+
+  /* Прогресс-карточка сессии — компактная и во всю ширину */
+  .session-progress {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    border-radius: 16px;
+  }
+
+  /* Кружок-перевёртыш на мобиле лишний (ответ открывается кнопкой) и наезжает */
+  .flip-circle {
+    display: none !important;
+  }
+
+  /* Нижняя таб-панель */
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(4, 26, 96, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .mobile-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-height: 52px;
+    padding: 6px 2px;
+    border: none;
+    background: none;
+    color: rgba(255, 255, 255, 0.62);
+    cursor: pointer;
+    border-radius: 14px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .mobile-nav-item.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .mobile-nav-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .mobile-nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+}
+
 /* ── Легаси-классы диалогов ─────────────────────────────────────────────── */
 .btn {
   display: inline-flex;

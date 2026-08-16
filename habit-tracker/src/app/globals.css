@@ -503,6 +503,113 @@ main {
   background: var(--teal);
 }
 
+/* ── календарь ─────────────────────── */
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cal-nav button {
+  font-family: var(--mono), monospace;
+  font-size: 13px;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--card);
+  padding: 5px 10px;
+  line-height: 1;
+}
+.cal-nav button:hover {
+  border-color: #c9d2ce;
+}
+.cal-nav .cal-today {
+  font-size: 11.5px;
+}
+.cal-wd {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin: 18px 0 6px;
+}
+.cal-wd span {
+  font-family: var(--mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: left;
+  padding-left: 2px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(92px, auto);
+  gap: 6px;
+}
+.cal-cell {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--card);
+  padding: 5px 5px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.cal-cell:hover {
+  border-color: #c9d2ce;
+}
+.cal-cell.out {
+  background: transparent;
+  border-color: var(--line-2);
+}
+.cal-cell.out .cal-daynum {
+  color: var(--ink-3);
+}
+.cal-cell.today {
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal);
+}
+.cal-daynum {
+  font-family: var(--mono), monospace;
+  font-size: 11.5px;
+  color: var(--ink-2);
+  align-self: flex-end;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+.cal-cell.today .cal-daynum {
+  color: var(--teal);
+  font-weight: 500;
+}
+.cal-task {
+  display: block;
+  width: 100%;
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: left;
+  color: var(--ink);
+  background: var(--teal-soft);
+  border-radius: 3px;
+  padding: 2px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cal-task.done {
+  color: var(--ink-3);
+  background: var(--line-2);
+  text-decoration: line-through;
+}
+.cal-more {
+  font-family: var(--mono), monospace;
+  font-size: 9.5px;
+  color: var(--ink-3);
+  padding-left: 3px;
+}
+
 /* ── режим направления ─────────────── */
 .goal {
   background: var(--card);

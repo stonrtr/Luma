@@ -83,10 +83,13 @@ function playBuffer(name: Sfx, buf: AudioBuffer): void {
 export function primeSfx(): void {
   if (typeof window === "undefined" || unlockBound) return;
   unlockBound = true;
+  // Декодируем буферы СРАЗУ (decodeAudioData работает и на suspended-контексте).
+  // Это критично для мобильных: к моменту тапа буфер готов и src.start()
+  // вызывается синхронно внутри жеста — иначе iOS блокирует «поздний» звук.
+  (Object.keys(FILES) as Sfx[]).forEach((n) => void loadBuffer(n));
   const unlock = () => {
     const c = getCtx();
     if (c && c.state === "suspended") void c.resume().catch(() => {});
-    // Прогреваем буферы, чтобы первый звук проиграл без задержки.
     (Object.keys(FILES) as Sfx[]).forEach((n) => void loadBuffer(n));
     window.removeEventListener("pointerdown", unlock);
     window.removeEventListener("keydown", unlock);

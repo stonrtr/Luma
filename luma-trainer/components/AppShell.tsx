@@ -2,8 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { A } from "@/lib/api";
 import type { UserSettings } from "@/lib/types";
-import { AppContext, SECTIONS, type SectionId, type StudyScope } from "./app-context";
+import { AppContext, type SectionId, type StudyScope } from "./app-context";
 import { TopNav } from "./TopNav";
+import { MobileNav } from "./MobileNav";
 import { ToastProvider } from "./ui";
 import { TodaySection } from "./sections/TodaySection";
 import { LessonsSection } from "./sections/LessonsSection";
@@ -27,12 +28,7 @@ export function AppShell() {
     primeSfx();
     (async () => {
       const s = await A.settings().catch(() => null);
-      let initial: string | null = null;
-      try {
-        initial = localStorage.getItem(LS_KEY);
-      } catch {}
-      const wanted = initial || s?.lastSection || "today";
-      if (SECTIONS.some((x) => x.id === wanted)) setSection(wanted as SectionId);
+      // При открытии сайта всегда стартуем с «Сегодня» (последний раздел не восстанавливаем).
       if (s) setSettings(s);
       A.ttsInfo().then((t) => setTtsAvailable(t.available)).catch(() => {});
       ready.current = true;
@@ -97,7 +93,6 @@ export function AppShell() {
             <TopNav
               active={section}
               onNavigate={navigate}
-              onStartSession={() => setStudy({ scope: "today" })}
               onStartRandom={() => setStudy({ scope: "random" })}
             />
             {/* key=section перезапускает fade-up при смене раздела */}
@@ -108,6 +103,7 @@ export function AppShell() {
               {section === "progress" && <ProgressSection />}
               {section === "settings" && <SettingsSection />}
             </div>
+            <MobileNav active={section} onNavigate={navigate} />
           </div>
         )}
 

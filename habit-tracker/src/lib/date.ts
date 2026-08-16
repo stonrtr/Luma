@@ -45,6 +45,29 @@ export function endOfMonth(dateStr: string): string {
   return toStr(new Date(d.getFullYear(), d.getMonth() + 1, 0));
 }
 
+/** Первый день месяца */
+export function startOfMonth(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return toStr(new Date(d.getFullYear(), d.getMonth(), 1));
+}
+
+/** Сдвиг на n месяцев (к 1-му числу) */
+export function addMonths(dateStr: string, n: number): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return toStr(new Date(d.getFullYear(), d.getMonth() + n, 1));
+}
+
+const MONTHS_NOM = [
+  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь",
+];
+
+/** «Август 2026» */
+export function monthTitle(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return `${MONTHS_NOM[d.getMonth()]} ${d.getFullYear()}`;
+}
+
 const MONTHS = [
   "января", "февраля", "марта", "апреля", "мая", "июня",
   "июля", "августа", "сентября", "октября", "ноября", "декабря",
