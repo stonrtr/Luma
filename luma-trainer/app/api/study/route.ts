@@ -7,12 +7,16 @@ import {
 } from "@/lib/server/queue";
 import { warmPhrases } from "@/lib/server/tts";
 import { getSettingsRow } from "@/lib/server/settings";
+import { maybeRetryFailed } from "@/lib/server/translateWorker";
 import { json } from "@/lib/server/http";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const scope = url.searchParams.get("scope") || "today";
   const lessonId = url.searchParams.get("lessonId") || "";
+
+  // Тихо добить застрявшие переводы (failed/pending), если такие есть.
+  maybeRetryFailed();
 
   let cards;
   if (scope === "lesson" && lessonId) cards = await buildLessonQueue(lessonId);

@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { toPhrase } from "@/lib/serialize";
-import { translateCard } from "@/lib/server/translateWorker";
+import { translateCard, maybeRetryFailed } from "@/lib/server/translateWorker";
 import { estimateDifficulty } from "@/lib/difficulty";
 import { normalize } from "@/lib/lang";
 import { badRequest, clampInt, json, readJson, str } from "@/lib/server/http";
@@ -8,6 +8,9 @@ import { badRequest, clampInt, json, readJson, str } from "@/lib/server/http";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export async function GET(req: Request) {
+  // Тихо добить застрявшие переводы (failed/pending), если такие есть.
+  maybeRetryFailed();
+
   const url = new URL(req.url);
   const lessonId = url.searchParams.get("lessonId");
   const favorite = url.searchParams.get("favorite") === "true";

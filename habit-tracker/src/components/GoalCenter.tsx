@@ -29,7 +29,9 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
     <>
       <div className="head">
         <h1>{goal.name}</h1>
-        <div className="left">{goal.type === "maintenance" ? `удержание ${pct}%` : `${pct}%`}</div>
+        <div className="left">
+          {goal.status === "done" ? "достигнуто ✓" : goal.type === "maintenance" ? `удержание ${pct}%` : `${pct}%`}
+        </div>
       </div>
 
       <div className="goal-top">
@@ -77,9 +79,17 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
         <button className="mini-btn" onClick={add}>+ задача</button>
       </div>
 
-      {goal.type === "achievement" && (
+      {goal.status === "done" ? (
+        <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "active")}>
+          вернуть в активные
+        </button>
+      ) : goal.type === "achievement" ? (
         <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "done")}>
           завершить цель
+        </button>
+      ) : (
+        <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "done")}>
+          отметить достигнутой
         </button>
       )}
     </>

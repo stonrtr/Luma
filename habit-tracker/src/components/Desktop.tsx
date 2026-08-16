@@ -6,10 +6,12 @@ import { Rail } from "./Rail";
 import { TodayCenter } from "./TodayCenter";
 import { TimeCenter } from "./TimeCenter";
 import { GoalCenter } from "./GoalCenter";
+import { GoalsOverview } from "./GoalsOverview";
 import { HabitsRail } from "./HabitsRail";
 import { Modals, type ModalState } from "./modals";
 
-const HORIZONS = ["today", "week", "month", "future"] as const;
+// «страничные» view, не привязанные к конкретной цели
+const PAGE_VIEWS = ["today", "week", "month", "future", "goals"] as const;
 
 export function Desktop() {
   const { state, toggleTask } = useStore();
@@ -17,10 +19,10 @@ export function Desktop() {
   const [modal, setModal] = useState<ModalState>(null);
   const [sel, setSel] = useState(0);
 
-  // если выбранная цель исчезла (закрыта/архив) — вернуться на «Сегодня»
+  // если выбранная цель исчезла (архив) — вернуться на «Сегодня»
   useEffect(() => {
-    const isHorizon = (HORIZONS as readonly string[]).includes(view);
-    if (!isHorizon && !state.goals.some((g) => g.id === view)) setView("today");
+    const isPage = (PAGE_VIEWS as readonly string[]).includes(view);
+    if (!isPage && !state.goals.some((g) => g.id === view)) setView("today");
   }, [state.goals, view]);
 
   const closeModal = useCallback(() => setModal(null), []);
@@ -85,6 +87,8 @@ export function Desktop() {
           <TodayCenter selectedId={selectedId} onQuickAdd={() => setModal({ kind: "task" })} />
         ) : view === "week" || view === "month" || view === "future" ? (
           <TimeCenter horizon={view} />
+        ) : view === "goals" ? (
+          <GoalsOverview onOpenGoal={(id) => setView(id)} onAddGoal={() => setModal({ kind: "goal" })} />
         ) : (
           <GoalCenter goalId={view} onAddHabit={(goalId) => setModal({ kind: "habit", goalId })} />
         )}

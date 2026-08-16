@@ -17,6 +17,7 @@ export function Rail({
   const idx = useMemo(() => indexEntries(state.entries), [state.entries]);
 
   const goals = state.goals.filter((g) => g.status === "active").sort((a, b) => a.ord - b.ord);
+  const doneCount = state.goals.filter((g) => g.status === "done").length;
   const todayLeft = state.tasks.filter((t) => !t.doneAt && t.dueDate === state.today).length;
   const weekLeft = horizonCount(state, "week");
   const monthLeft = horizonCount(state, "month");
@@ -52,6 +53,12 @@ export function Rail({
       {goals.length === 0 && <div className="rail-empty" style={{ padding: "4px 10px 10px" }}>Пока нет целей.</div>}
       <button className="add" onClick={onAddGoal}>
         + цель
+      </button>
+      <button className={`nav-item${view === "goals" ? " sel" : ""}`} onClick={() => onSelect("goals")}>
+        <span className="nav-top">
+          <b>Все цели</b>
+          <i>{doneCount ? `✓ ${doneCount}` : ""}</i>
+        </span>
       </button>
 
       <div className="cap" style={{ marginTop: 22 }}>Задачи</div>

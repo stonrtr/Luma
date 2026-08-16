@@ -73,6 +73,37 @@ export async function translateCard(id: string): Promise<boolean> {
   }
 }
 
+// --- Авто-ретрай застрявших переводов ------------------------------------
+// Перевод может временно упасть (429 по квоте, таймаут холодного старта) и
+// карточка застревает в "failed". Чтобы чинилось само, самые частые чтения
+// (очередь «Сегодня», список «Фразы») тихо в фоне добивают такие карточки.
+// Троттлинг не даёт долбить LLM на каждом запросе.
+const RETRY_THROTTLE_MS = 60_000;
+let lastRetryAt = 0;
+let retryRunning = false;
+
+/** Fire-and-forget: если есть failed/pending карточки — добить их (с троттлингом). */
+export function maybeRetryFailed(): void {
+  if (retryRunning) return;
+  const now = Date.now();
+  if (now - lastRetryAt < RETRY_THROTTLE_MS) return;
+  lastRetryAt = now;
+  if (!hasAnyLLM()) return;
+  retryRunning = true;
+  void (async () => {
+    try {
+      const stuck = await db.phraseCard.count({
+        where: { translationStatus: { in: ["pending", "failed"] } },
+      });
+      if (stuck > 0) await translatePendingBatch();
+    } catch {
+      /* авто-ретрай — best effort */
+    } finally {
+      retryRunning = false;
+    }
+  })();
+}
+
 /** Process pending/failed cards sequentially (kind to rate limits). Returns how many succeeded. */
 export async function translatePendingBatch(limit = 50): Promise<number> {
   const pending = await db.phraseCard.findMany({
