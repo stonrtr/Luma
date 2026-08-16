@@ -117,14 +117,24 @@ export function StudySession({
     if (flipped || !card) return;
     playSfx("flip");
     setFlipped(true);
-    if (settings.autoPlay) setTimeout(playEnglish, 250);
-  }, [flipped, card, settings.autoPlay, playEnglish]);
+    // Английский озвучиваем при показе ответа только если он на стороне ответа
+    // (showFirst==="ru"). Если вопрос уже на английском — озвучили при появлении.
+    if (settings.autoPlay && showFirst === "ru") setTimeout(playEnglish, 250);
+  }, [flipped, card, settings.autoPlay, playEnglish, showFirst]);
 
   const close = useCallback(() => {
     if (!flipped) return;
     playSfx("flip");
     setFlipped(false);
   }, [flipped]);
+
+  // Автоозвучка английского при ПОЯВЛЕНИИ карточки, если вопрос уже на английском
+  // (showFirst==="en"). Срабатывает на каждую новую карточку, не на переворот.
+  useEffect(() => {
+    if (!card || !settings.autoPlay || showFirst !== "en") return;
+    const t = setTimeout(playEnglish, 300);
+    return () => clearTimeout(t);
+  }, [card, settings.autoPlay, showFirst, playEnglish]);
 
   const doHint = useCallback(() => {
     if (!answer || flipped) return;
