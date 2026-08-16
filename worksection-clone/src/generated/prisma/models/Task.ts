@@ -399,7 +399,7 @@ export type TaskWhereInput = {
   tags?: Prisma.TaskTagListRelationFilter
   dependsOn?: Prisma.TaskDependencyListRelationFilter
   dependedBy?: Prisma.TaskDependencyListRelationFilter
-  planItem?: Prisma.XOR<Prisma.WeeklyPlanItemNullableScalarRelationFilter, Prisma.WeeklyPlanItemWhereInput> | null
+  planItems?: Prisma.WeeklyPlanItemListRelationFilter
 }
 
 export type TaskOrderByWithRelationInput = {
@@ -443,7 +443,7 @@ export type TaskOrderByWithRelationInput = {
   tags?: Prisma.TaskTagOrderByRelationAggregateInput
   dependsOn?: Prisma.TaskDependencyOrderByRelationAggregateInput
   dependedBy?: Prisma.TaskDependencyOrderByRelationAggregateInput
-  planItem?: Prisma.WeeklyPlanItemOrderByWithRelationInput
+  planItems?: Prisma.WeeklyPlanItemOrderByRelationAggregateInput
 }
 
 export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -490,7 +490,7 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   tags?: Prisma.TaskTagListRelationFilter
   dependsOn?: Prisma.TaskDependencyListRelationFilter
   dependedBy?: Prisma.TaskDependencyListRelationFilter
-  planItem?: Prisma.XOR<Prisma.WeeklyPlanItemNullableScalarRelationFilter, Prisma.WeeklyPlanItemWhereInput> | null
+  planItems?: Prisma.WeeklyPlanItemListRelationFilter
 }, "id">
 
 export type TaskOrderByWithAggregationInput = {
@@ -592,7 +592,7 @@ export type TaskCreateInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateInput = {
@@ -630,7 +630,7 @@ export type TaskUncheckedCreateInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUpdateInput = {
@@ -668,7 +668,7 @@ export type TaskUpdateInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateInput = {
@@ -706,7 +706,7 @@ export type TaskUncheckedUpdateInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateManyInput = {
@@ -1305,20 +1305,20 @@ export type TaskUpdateOneRequiredWithoutTimeLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TaskUpdateToOneWithWhereWithoutTimeLogsInput, Prisma.TaskUpdateWithoutTimeLogsInput>, Prisma.TaskUncheckedUpdateWithoutTimeLogsInput>
 }
 
-export type TaskCreateNestedOneWithoutPlanItemInput = {
-  create?: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemInput, Prisma.TaskUncheckedCreateWithoutPlanItemInput>
-  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutPlanItemInput
+export type TaskCreateNestedOneWithoutPlanItemsInput = {
+  create?: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemsInput, Prisma.TaskUncheckedCreateWithoutPlanItemsInput>
+  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutPlanItemsInput
   connect?: Prisma.TaskWhereUniqueInput
 }
 
-export type TaskUpdateOneWithoutPlanItemNestedInput = {
-  create?: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemInput, Prisma.TaskUncheckedCreateWithoutPlanItemInput>
-  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutPlanItemInput
-  upsert?: Prisma.TaskUpsertWithoutPlanItemInput
+export type TaskUpdateOneWithoutPlanItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemsInput, Prisma.TaskUncheckedCreateWithoutPlanItemsInput>
+  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutPlanItemsInput
+  upsert?: Prisma.TaskUpsertWithoutPlanItemsInput
   disconnect?: Prisma.TaskWhereInput | boolean
   delete?: Prisma.TaskWhereInput | boolean
   connect?: Prisma.TaskWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TaskUpdateToOneWithWhereWithoutPlanItemInput, Prisma.TaskUpdateWithoutPlanItemInput>, Prisma.TaskUncheckedUpdateWithoutPlanItemInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TaskUpdateToOneWithWhereWithoutPlanItemsInput, Prisma.TaskUpdateWithoutPlanItemsInput>, Prisma.TaskUncheckedUpdateWithoutPlanItemsInput>
 }
 
 export type TaskCreateWithoutCreatedByInput = {
@@ -1355,7 +1355,7 @@ export type TaskCreateWithoutCreatedByInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutCreatedByInput = {
@@ -1392,7 +1392,7 @@ export type TaskUncheckedCreateWithoutCreatedByInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutCreatedByInput = {
@@ -1439,7 +1439,7 @@ export type TaskCreateWithoutWaitingForInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutWaitingForInput = {
@@ -1476,7 +1476,7 @@ export type TaskUncheckedCreateWithoutWaitingForInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutWaitingForInput = {
@@ -1586,7 +1586,7 @@ export type TaskCreateWithoutProjectInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutProjectInput = {
@@ -1623,7 +1623,7 @@ export type TaskUncheckedCreateWithoutProjectInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutProjectInput = {
@@ -1686,7 +1686,7 @@ export type TaskCreateWithoutSubtasksInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutSubtasksInput = {
@@ -1723,7 +1723,7 @@ export type TaskUncheckedCreateWithoutSubtasksInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutSubtasksInput = {
@@ -1765,7 +1765,7 @@ export type TaskCreateWithoutParentInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutParentInput = {
@@ -1802,7 +1802,7 @@ export type TaskUncheckedCreateWithoutParentInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutParentInput = {
@@ -1860,7 +1860,7 @@ export type TaskUpdateWithoutSubtasksInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutSubtasksInput = {
@@ -1897,7 +1897,7 @@ export type TaskUncheckedUpdateWithoutSubtasksInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUpsertWithWhereUniqueWithoutParentInput = {
@@ -1950,7 +1950,7 @@ export type TaskCreateWithoutAssigneesInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutAssigneesInput = {
@@ -1987,7 +1987,7 @@ export type TaskUncheckedCreateWithoutAssigneesInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutAssigneesInput = {
@@ -2040,7 +2040,7 @@ export type TaskUpdateWithoutAssigneesInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutAssigneesInput = {
@@ -2077,7 +2077,7 @@ export type TaskUncheckedUpdateWithoutAssigneesInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutDependedByInput = {
@@ -2114,7 +2114,7 @@ export type TaskCreateWithoutDependedByInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutTaskInput
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutDependedByInput = {
@@ -2151,7 +2151,7 @@ export type TaskUncheckedCreateWithoutDependedByInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutTaskInput
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutDependedByInput = {
@@ -2193,7 +2193,7 @@ export type TaskCreateWithoutDependsOnInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutTaskInput
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutDependsOnInput = {
@@ -2230,7 +2230,7 @@ export type TaskUncheckedCreateWithoutDependsOnInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutTaskInput
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutDependsOnInput = {
@@ -2283,7 +2283,7 @@ export type TaskUpdateWithoutDependedByInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutTaskNestedInput
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutDependedByInput = {
@@ -2320,7 +2320,7 @@ export type TaskUncheckedUpdateWithoutDependedByInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutTaskNestedInput
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUpsertWithoutDependsOnInput = {
@@ -2368,7 +2368,7 @@ export type TaskUpdateWithoutDependsOnInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutTaskNestedInput
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutDependsOnInput = {
@@ -2405,7 +2405,7 @@ export type TaskUncheckedUpdateWithoutDependsOnInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutTaskNestedInput
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutMilestoneInput = {
@@ -2442,7 +2442,7 @@ export type TaskCreateWithoutMilestoneInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutMilestoneInput = {
@@ -2479,7 +2479,7 @@ export type TaskUncheckedCreateWithoutMilestoneInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutMilestoneInput = {
@@ -2542,7 +2542,7 @@ export type TaskCreateWithoutChecklistInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutChecklistInput = {
@@ -2579,7 +2579,7 @@ export type TaskUncheckedCreateWithoutChecklistInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutChecklistInput = {
@@ -2632,7 +2632,7 @@ export type TaskUpdateWithoutChecklistInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutChecklistInput = {
@@ -2669,7 +2669,7 @@ export type TaskUncheckedUpdateWithoutChecklistInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutRecurringTaskInput = {
@@ -2706,7 +2706,7 @@ export type TaskCreateWithoutRecurringTaskInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutRecurringTaskInput = {
@@ -2743,7 +2743,7 @@ export type TaskUncheckedCreateWithoutRecurringTaskInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutRecurringTaskInput = {
@@ -2806,7 +2806,7 @@ export type TaskCreateWithoutTagsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutTagsInput = {
@@ -2843,7 +2843,7 @@ export type TaskUncheckedCreateWithoutTagsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutTagsInput = {
@@ -2896,7 +2896,7 @@ export type TaskUpdateWithoutTagsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutTagsInput = {
@@ -2933,7 +2933,7 @@ export type TaskUncheckedUpdateWithoutTagsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutCommentsInput = {
@@ -2970,7 +2970,7 @@ export type TaskCreateWithoutCommentsInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutCommentsInput = {
@@ -3007,7 +3007,7 @@ export type TaskUncheckedCreateWithoutCommentsInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutCommentsInput = {
@@ -3060,7 +3060,7 @@ export type TaskUpdateWithoutCommentsInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutCommentsInput = {
@@ -3097,7 +3097,7 @@ export type TaskUncheckedUpdateWithoutCommentsInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutAttachmentsInput = {
@@ -3134,7 +3134,7 @@ export type TaskCreateWithoutAttachmentsInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutAttachmentsInput = {
@@ -3171,7 +3171,7 @@ export type TaskUncheckedCreateWithoutAttachmentsInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutAttachmentsInput = {
@@ -3224,7 +3224,7 @@ export type TaskUpdateWithoutAttachmentsInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutAttachmentsInput = {
@@ -3261,7 +3261,7 @@ export type TaskUncheckedUpdateWithoutAttachmentsInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutTimeLogsInput = {
@@ -3298,7 +3298,7 @@ export type TaskCreateWithoutTimeLogsInput = {
   tags?: Prisma.TaskTagCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutTimeLogsInput = {
@@ -3335,7 +3335,7 @@ export type TaskUncheckedCreateWithoutTimeLogsInput = {
   tags?: Prisma.TaskTagUncheckedCreateNestedManyWithoutTaskInput
   dependsOn?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutSuccessorInput
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutTimeLogsInput = {
@@ -3388,7 +3388,7 @@ export type TaskUpdateWithoutTimeLogsInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutTimeLogsInput = {
@@ -3425,10 +3425,10 @@ export type TaskUncheckedUpdateWithoutTimeLogsInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
-export type TaskCreateWithoutPlanItemInput = {
+export type TaskCreateWithoutPlanItemsInput = {
   id?: string
   title: string
   description?: string | null
@@ -3465,7 +3465,7 @@ export type TaskCreateWithoutPlanItemInput = {
   dependedBy?: Prisma.TaskDependencyCreateNestedManyWithoutPredecessorInput
 }
 
-export type TaskUncheckedCreateWithoutPlanItemInput = {
+export type TaskUncheckedCreateWithoutPlanItemsInput = {
   id?: string
   title: string
   description?: string | null
@@ -3502,23 +3502,23 @@ export type TaskUncheckedCreateWithoutPlanItemInput = {
   dependedBy?: Prisma.TaskDependencyUncheckedCreateNestedManyWithoutPredecessorInput
 }
 
-export type TaskCreateOrConnectWithoutPlanItemInput = {
+export type TaskCreateOrConnectWithoutPlanItemsInput = {
   where: Prisma.TaskWhereUniqueInput
-  create: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemInput, Prisma.TaskUncheckedCreateWithoutPlanItemInput>
+  create: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemsInput, Prisma.TaskUncheckedCreateWithoutPlanItemsInput>
 }
 
-export type TaskUpsertWithoutPlanItemInput = {
-  update: Prisma.XOR<Prisma.TaskUpdateWithoutPlanItemInput, Prisma.TaskUncheckedUpdateWithoutPlanItemInput>
-  create: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemInput, Prisma.TaskUncheckedCreateWithoutPlanItemInput>
+export type TaskUpsertWithoutPlanItemsInput = {
+  update: Prisma.XOR<Prisma.TaskUpdateWithoutPlanItemsInput, Prisma.TaskUncheckedUpdateWithoutPlanItemsInput>
+  create: Prisma.XOR<Prisma.TaskCreateWithoutPlanItemsInput, Prisma.TaskUncheckedCreateWithoutPlanItemsInput>
   where?: Prisma.TaskWhereInput
 }
 
-export type TaskUpdateToOneWithWhereWithoutPlanItemInput = {
+export type TaskUpdateToOneWithWhereWithoutPlanItemsInput = {
   where?: Prisma.TaskWhereInput
-  data: Prisma.XOR<Prisma.TaskUpdateWithoutPlanItemInput, Prisma.TaskUncheckedUpdateWithoutPlanItemInput>
+  data: Prisma.XOR<Prisma.TaskUpdateWithoutPlanItemsInput, Prisma.TaskUncheckedUpdateWithoutPlanItemsInput>
 }
 
-export type TaskUpdateWithoutPlanItemInput = {
+export type TaskUpdateWithoutPlanItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3555,7 +3555,7 @@ export type TaskUpdateWithoutPlanItemInput = {
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
 }
 
-export type TaskUncheckedUpdateWithoutPlanItemInput = {
+export type TaskUncheckedUpdateWithoutPlanItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3680,7 +3680,7 @@ export type TaskUpdateWithoutCreatedByInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutCreatedByInput = {
@@ -3717,7 +3717,7 @@ export type TaskUncheckedUpdateWithoutCreatedByInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutCreatedByInput = {
@@ -3781,7 +3781,7 @@ export type TaskUpdateWithoutWaitingForInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutWaitingForInput = {
@@ -3818,7 +3818,7 @@ export type TaskUncheckedUpdateWithoutWaitingForInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutWaitingForInput = {
@@ -3909,7 +3909,7 @@ export type TaskUpdateWithoutProjectInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutProjectInput = {
@@ -3946,7 +3946,7 @@ export type TaskUncheckedUpdateWithoutProjectInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutProjectInput = {
@@ -4037,7 +4037,7 @@ export type TaskUpdateWithoutParentInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutParentInput = {
@@ -4074,7 +4074,7 @@ export type TaskUncheckedUpdateWithoutParentInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutParentInput = {
@@ -4165,7 +4165,7 @@ export type TaskUpdateWithoutMilestoneInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutMilestoneInput = {
@@ -4202,7 +4202,7 @@ export type TaskUncheckedUpdateWithoutMilestoneInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutMilestoneInput = {
@@ -4293,7 +4293,7 @@ export type TaskUpdateWithoutRecurringTaskInput = {
   tags?: Prisma.TaskTagUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutRecurringTaskInput = {
@@ -4330,7 +4330,7 @@ export type TaskUncheckedUpdateWithoutRecurringTaskInput = {
   tags?: Prisma.TaskTagUncheckedUpdateManyWithoutTaskNestedInput
   dependsOn?: Prisma.TaskDependencyUncheckedUpdateManyWithoutSuccessorNestedInput
   dependedBy?: Prisma.TaskDependencyUncheckedUpdateManyWithoutPredecessorNestedInput
-  planItem?: Prisma.WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput
+  planItems?: Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutRecurringTaskInput = {
@@ -4375,6 +4375,7 @@ export type TaskCountOutputType = {
   tags: number
   dependsOn: number
   dependedBy: number
+  planItems: number
 }
 
 export type TaskCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4387,6 +4388,7 @@ export type TaskCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tags?: boolean | TaskCountOutputTypeCountTagsArgs
   dependsOn?: boolean | TaskCountOutputTypeCountDependsOnArgs
   dependedBy?: boolean | TaskCountOutputTypeCountDependedByArgs
+  planItems?: boolean | TaskCountOutputTypeCountPlanItemsArgs
 }
 
 /**
@@ -4462,6 +4464,13 @@ export type TaskCountOutputTypeCountDependedByArgs<ExtArgs extends runtime.Types
   where?: Prisma.TaskDependencyWhereInput
 }
 
+/**
+ * TaskCountOutputType without action
+ */
+export type TaskCountOutputTypeCountPlanItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WeeklyPlanItemWhereInput
+}
+
 
 export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4504,7 +4513,7 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tags?: boolean | Prisma.Task$tagsArgs<ExtArgs>
   dependsOn?: boolean | Prisma.Task$dependsOnArgs<ExtArgs>
   dependedBy?: boolean | Prisma.Task$dependedByArgs<ExtArgs>
-  planItem?: boolean | Prisma.Task$planItemArgs<ExtArgs>
+  planItems?: boolean | Prisma.Task$planItemsArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
 
@@ -4621,7 +4630,7 @@ export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tags?: boolean | Prisma.Task$tagsArgs<ExtArgs>
   dependsOn?: boolean | Prisma.Task$dependsOnArgs<ExtArgs>
   dependedBy?: boolean | Prisma.Task$dependedByArgs<ExtArgs>
-  planItem?: boolean | Prisma.Task$planItemArgs<ExtArgs>
+  planItems?: boolean | Prisma.Task$planItemsArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4659,7 +4668,7 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tags: Prisma.$TaskTagPayload<ExtArgs>[]
     dependsOn: Prisma.$TaskDependencyPayload<ExtArgs>[]
     dependedBy: Prisma.$TaskDependencyPayload<ExtArgs>[]
-    planItem: Prisma.$WeeklyPlanItemPayload<ExtArgs> | null
+    planItems: Prisma.$WeeklyPlanItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -5096,7 +5105,7 @@ export interface Prisma__TaskClient<T, Null = never, ExtArgs extends runtime.Typ
   tags<T extends Prisma.Task$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   dependsOn<T extends Prisma.Task$dependsOnArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$dependsOnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskDependencyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   dependedBy<T extends Prisma.Task$dependedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$dependedByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskDependencyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  planItem<T extends Prisma.Task$planItemArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$planItemArgs<ExtArgs>>): Prisma.Prisma__WeeklyPlanItemClient<runtime.Types.Result.GetResult<Prisma.$WeeklyPlanItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  planItems<T extends Prisma.Task$planItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$planItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WeeklyPlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5863,9 +5872,9 @@ export type Task$dependedByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Task.planItem
+ * Task.planItems
  */
-export type Task$planItemArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Task$planItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the WeeklyPlanItem
    */
@@ -5879,6 +5888,11 @@ export type Task$planItemArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.WeeklyPlanItemInclude<ExtArgs> | null
   where?: Prisma.WeeklyPlanItemWhereInput
+  orderBy?: Prisma.WeeklyPlanItemOrderByWithRelationInput | Prisma.WeeklyPlanItemOrderByWithRelationInput[]
+  cursor?: Prisma.WeeklyPlanItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WeeklyPlanItemScalarFieldEnum | Prisma.WeeklyPlanItemScalarFieldEnum[]
 }
 
 /**

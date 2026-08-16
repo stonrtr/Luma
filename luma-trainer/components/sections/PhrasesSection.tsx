@@ -58,7 +58,6 @@ export function PhrasesSection() {
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <div className="overline" style={{ marginBottom: 12 }}>Коллекция</div>
           <div className="title-hero">
             мои фразы<span className="dim">.</span>
           </div>

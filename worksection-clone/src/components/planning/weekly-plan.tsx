@@ -82,10 +82,10 @@ export function WeeklyPlan({
           <StatusBadge status={status} locale={locale} />
         </h3>
         <div className="flex items-center gap-1.5">
-          {/* Руководитель утверждает (создаёт задачи) */}
-          {canManage && unapproved > 0 && (
+          {/* Руководитель утверждает: для присланного плана (PENDING) — всегда; либо когда есть неутверждённые пункты */}
+          {canManage && (status === "PENDING" || unapproved > 0) && (
             <Button size="sm" onClick={() => start(async () => { const r = await approvePlan({ userId, weekStart }); if (r?.error) toast.error(r.error); else { toast.success(t(locale, "plan.approvedCreated")); router.refresh(); } })} disabled={pending}>
-              <CheckCheck className="size-4" /> {t(locale, "plan.approve")} ({unapproved})
+              <CheckCheck className="size-4" /> {t(locale, "plan.approve")}{unapproved > 0 ? ` (${unapproved})` : ""}
             </Button>
           )}
           {/* Руководитель возвращает на доработку — инлайн-поле с комментарием */}

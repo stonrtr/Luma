@@ -27,7 +27,6 @@ export function SettingsSection() {
   return (
     <>
       <div>
-        <div className="overline" style={{ marginBottom: 12 }}>Параметры</div>
         <div className="title-hero">
           настройки<span className="dim">.</span>
         </div>

@@ -109,6 +109,7 @@ model WeeklyPlanApproval {
   weekStart   DateTime
   status      PlanStatus @default(DRAFT)
   comment     String?    // комментарий при возврате
+  submittedItems String? // JSON списка приоритетов на момент отправки — для диффа изменений руководителя
   reviewerId  String?
   submittedAt DateTime?
   decidedAt   DateTime?
@@ -340,7 +341,7 @@ model Task {
   tags        TaskTag[]
   dependsOn   TaskDependency[] @relation("DependencySuccessor")
   dependedBy  TaskDependency[] @relation("DependencyPredecessor")
-  planItem    WeeklyPlanItem?
+  planItems   WeeklyPlanItem[]
 
   @@index([projectId, status, position])
   @@index([parentId])
@@ -637,7 +638,7 @@ model WeeklyPlanItem {
   user   User   @relation("PlanOwner", fields: [userId], references: [id], onDelete: Cascade)
 
   // связь с созданной задачей (после утверждения)
-  taskId String? @unique
+  taskId String?
   task   Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
 
   @@index([userId, weekStart])

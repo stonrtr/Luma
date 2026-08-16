@@ -74,7 +74,6 @@ export function RulesSection() {
   return (
     <>
       <div>
-        <div className="overline" style={{ marginBottom: 12 }}>Грамматика</div>
         <div className="title-hero">
           правила<span className="dim">.</span>
         </div>

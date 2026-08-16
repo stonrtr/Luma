@@ -279,6 +279,13 @@ export function StudySession({
         padding: "clamp(20px, 3.5vh, 40px) clamp(18px, 4vw, 40px)",
         border: "1.5px dashed rgba(255,255,255,0.35)",
         borderRadius: 28,
+        cursor: "pointer",
+      }}
+      onClick={(e) => {
+        // Тап/клик по карточке переворачивает её. Клики по кнопкам и полям — не трогаем.
+        if ((e.target as HTMLElement).closest("button, a, input, select, textarea")) return;
+        if (flipped) close();
+        else open();
       }}
     >
       {!flipped ? (
@@ -355,10 +362,10 @@ export function StudySession({
 
           {/* Действия сразу под фразой: Подсказка (слева), Показать ответ (справа) */}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 4 }}>
-            <button className="gbtn" style={{ minHeight: 34, padding: "0 18px", fontSize: 11 }} onClick={doHint} disabled={hintDone}>
-              Подсказка ↑
+            <button className="gbtn study-cta" onClick={doHint} disabled={hintDone}>
+              Подсказка<span className="kbd-arrow"> ↑</span>
             </button>
-            <button className="wbtn" style={{ minHeight: 34, padding: "0 20px", fontSize: 11 }} onClick={open}>
+            <button className="wbtn study-cta" onClick={open}>
               Показать ответ
             </button>
           </div>
@@ -425,7 +432,7 @@ export function StudySession({
                 style={{ minHeight: 52, padding: "0 30px", fontSize: 16, color: "#d6403f" }}
                 onClick={() => grade("again")}
               >
-                Не вспомнил →
+                Не вспомнил<span className="kbd-arrow"> →</span>
               </button>
             </div>
           ) : (
@@ -435,13 +442,13 @@ export function StudySession({
                 style={{ minHeight: 52, padding: "0 26px", fontSize: 16, color: "#d6403f" }}
                 onClick={() => grade("again")}
               >
-                ← Не вспомнил
+                <span className="kbd-arrow">← </span>Не вспомнил
               </button>
               <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
-                ↓ С трудом
+                <span className="kbd-arrow">↓ </span>С трудом
               </button>
               <button className="wbtn" style={{ minHeight: 52, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
-                Легко →
+                Легко<span className="kbd-arrow"> →</span>
               </button>
             </div>
           )}

@@ -543,6 +543,13 @@ button {
   font-weight: 700;
 }
 
+/* Кнопки «Подсказка»/«Показать ответ» под фразой: мелкие на десктопе. */
+.study-cta {
+  min-height: 34px;
+  padding: 0 18px;
+  font-size: 11px;
+}
+
 /* ── Нижняя таб-навигация (только мобильные) ────────────────────────────── */
 .mobile-nav {
   display: none; /* десктоп — скрыта, показывается в @media ниже */
@@ -550,9 +557,11 @@ button {
 
 /* ── Адаптив: телефоны (скрываем «мусор», нижний бар, резиновые отступы) ── */
 @media (max-width: 720px) {
-  /* Меньше воздуха по краям + место под нижний бар */
+  /* Меньше воздуха по краям + учёт вырезов (safe-area) + место под нижний бар */
   .app-outer {
-    padding: 16px 16px calc(84px + env(safe-area-inset-bottom));
+    min-height: 100dvh; /* динамическая высота — без «прыжков» под адресной строкой */
+    padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+      calc(84px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
     gap: 18px;
   }
   .content-col {
@@ -579,9 +588,43 @@ button {
     border-radius: 16px;
   }
 
-  /* Кружок-перевёртыш на мобиле лишний (ответ открывается кнопкой) и наезжает */
+  /* Кружок-перевёртыш на мобиле лишний (тап по карточке переворачивает) */
   .flip-circle {
     display: none !important;
+  }
+
+  /* Кнопки «Подсказка»/«Показать ответ» на мобиле крупнее (удобно для тача) */
+  .study-cta {
+    min-height: 52px !important;
+    padding: 0 26px !important;
+    font-size: 17px !important;
+  }
+
+  /* Стрелки-подсказки клавиш на мобиле не нужны (нет клавиатуры) */
+  .kbd-arrow {
+    display: none;
+  }
+
+  /* «Уроки»: Темы/Импорт/＋Урок в одну строку, равной ширины */
+  .lessons-actions {
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+  .lessons-actions > button {
+    flex: 1;
+    min-width: 0;
+    padding: 0 10px !important;
+    font-size: 13px;
+    min-height: 40px !important;
+    white-space: nowrap;
+  }
+
+  /* Компактные выпадающие списки (переключатель Активные/Архив и сортировка) */
+  .select-onpanel {
+    min-height: 32px;
+    font-size: 12px;
+    padding: 0 32px 0 12px;
+    background-position: right 12px center;
   }
 
   /* Нижняя таб-панель */

@@ -127,6 +127,7 @@ export async function addExistingTaskToPlan(input: z.infer<typeof fromTaskSchema
   if (!task) return { error: "Задачу не знайдено" };
 
   const ws = mondayUtc(new Date(data.weekStart));
+  // задача уже в плане этой недели? (unique на taskId снят — задача может быть в планах разных недель)
   const dup = await db.weeklyPlanItem.findFirst({ where: { userId: data.userId, weekStart: ws, taskId: task.id } });
   if (dup) return { error: "Задача вже в плані" };
 
@@ -193,6 +194,15 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
     await db.weeklyPlanItem.update({ where: { id: item.id }, data: { approved: true, taskId: task.id } });
   }
 
+  // Дифф изменений руководителя: что было на момент отправки vs что утверждено
+  const prevAppr = await db.weeklyPlanApproval.findUnique({ where: { userId_weekStart: { userId: input.userId, weekStart: ws } }, select: { submittedItems: true } });
+  const finalItems = await db.weeklyPlanItem.findMany({ where: { userId: input.userId, weekStart: ws }, orderBy: { order: "asc" }, select: { title: true } });
+  const finalTitles = finalItems.map((i) => i.title);
+  let submitted: string[] = [];
+  try { submitted = prevAppr?.submittedItems ? JSON.parse(prevAppr.submittedItems) : []; } catch { submitted = []; }
+  const added = finalTitles.filter((t) => !submitted.includes(t));
+  const removed = submitted.filter((t) => !finalTitles.includes(t));
+
   await db.weeklyPlanApproval.upsert({
     where: { userId_weekStart: { userId: input.userId, weekStart: ws } },
     create: { userId: input.userId, weekStart: ws, status: "APPROVED", reviewerId: viewer.id, decidedAt: new Date() },
@@ -200,7 +210,16 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
   });
 
   if (viewer.id !== input.userId) {
-    await notify({ recipientId: input.userId, type: "assignment", message: `${viewer.name} затвердив ваш план тижня`, link: "/planning", actorId: viewer.id }).catch(() => {});
+    const changed = added.length > 0 || removed.length > 0;
+    const parts = [`${viewer.name} затвердив ваш план тижня ✅`];
+    if (changed) {
+      parts.push("Зміни керівника:");
+      for (const t of added) parts.push(`+ ${t}`);
+      for (const t of removed) parts.push(`− ${t}`);
+    } else {
+      parts.push("Без змін.");
+    }
+    await notify({ recipientId: input.userId, type: "assignment", message: parts.join("\n"), link: "/planning", actorId: viewer.id }).catch(() => {});
   }
   revalidatePath("/planning");
   return { error: null };
@@ -210,13 +229,14 @@ export async function approvePlan(input: { userId: string; weekStart: string }) 
 export async function submitPlanForApproval(input: { weekStart: string }) {
   const viewer = await requireUser();
   const ws = mondayUtc(new Date(input.weekStart));
-  const count = await db.weeklyPlanItem.count({ where: { userId: viewer.id, weekStart: ws } });
-  if (count === 0) return { error: "Додайте хоча б одну задачу" };
+  const itemsNow = await db.weeklyPlanItem.findMany({ where: { userId: viewer.id, weekStart: ws }, orderBy: { order: "asc" }, select: { title: true } });
+  if (itemsNow.length === 0) return { error: "Додайте хоча б одну задачу" };
+  const snapshot = JSON.stringify(itemsNow.map((i) => i.title)); // что именно отправил сотрудник
 
   await db.weeklyPlanApproval.upsert({
     where: { userId_weekStart: { userId: viewer.id, weekStart: ws } },
-    create: { userId: viewer.id, weekStart: ws, status: "PENDING", submittedAt: new Date() },
-    update: { status: "PENDING", submittedAt: new Date(), comment: null },
+    create: { userId: viewer.id, weekStart: ws, status: "PENDING", submittedAt: new Date(), submittedItems: snapshot },
+    update: { status: "PENDING", submittedAt: new Date(), comment: null, submittedItems: snapshot },
   });
 
   // уведомляем руководителя (или всех админов/владельцев)

@@ -3055,6 +3055,7 @@ export const WeeklyPlanApprovalScalarFieldEnum = {
   weekStart: 'weekStart',
   status: 'status',
   comment: 'comment',
+  submittedItems: 'submittedItems',
   reviewerId: 'reviewerId',
   submittedAt: 'submittedAt',
   decidedAt: 'decidedAt',

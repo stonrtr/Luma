@@ -281,7 +281,6 @@ export type WeeklyPlanItemOrderByWithRelationInput = {
 
 export type WeeklyPlanItemWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  taskId?: string
   AND?: Prisma.WeeklyPlanItemWhereInput | Prisma.WeeklyPlanItemWhereInput[]
   OR?: Prisma.WeeklyPlanItemWhereInput[]
   NOT?: Prisma.WeeklyPlanItemWhereInput | Prisma.WeeklyPlanItemWhereInput[]
@@ -293,9 +292,10 @@ export type WeeklyPlanItemWhereUniqueInput = Prisma.AtLeast<{
   projectId?: Prisma.StringNullableFilter<"WeeklyPlanItem"> | string | null
   createdAt?: Prisma.DateTimeFilter<"WeeklyPlanItem"> | Date | string
   userId?: Prisma.StringFilter<"WeeklyPlanItem"> | string
+  taskId?: Prisma.StringNullableFilter<"WeeklyPlanItem"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   task?: Prisma.XOR<Prisma.TaskNullableScalarRelationFilter, Prisma.TaskWhereInput> | null
-}, "id" | "taskId">
+}, "id">
 
 export type WeeklyPlanItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -341,7 +341,7 @@ export type WeeklyPlanItemCreateInput = {
   projectId?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutWeeklyPlanItemsInput
-  task?: Prisma.TaskCreateNestedOneWithoutPlanItemInput
+  task?: Prisma.TaskCreateNestedOneWithoutPlanItemsInput
 }
 
 export type WeeklyPlanItemUncheckedCreateInput = {
@@ -367,7 +367,7 @@ export type WeeklyPlanItemUpdateInput = {
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutWeeklyPlanItemsNestedInput
-  task?: Prisma.TaskUpdateOneWithoutPlanItemNestedInput
+  task?: Prisma.TaskUpdateOneWithoutPlanItemsNestedInput
 }
 
 export type WeeklyPlanItemUncheckedUpdateInput = {
@@ -428,11 +428,6 @@ export type WeeklyPlanItemListRelationFilter = {
 
 export type WeeklyPlanItemOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type WeeklyPlanItemNullableScalarRelationFilter = {
-  is?: Prisma.WeeklyPlanItemWhereInput | null
-  isNot?: Prisma.WeeklyPlanItemWhereInput | null
 }
 
 export type WeeklyPlanItemCountOrderByAggregateInput = {
@@ -526,36 +521,46 @@ export type WeeklyPlanItemUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.WeeklyPlanItemScalarWhereInput | Prisma.WeeklyPlanItemScalarWhereInput[]
 }
 
-export type WeeklyPlanItemCreateNestedOneWithoutTaskInput = {
-  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
-  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput
-  connect?: Prisma.WeeklyPlanItemWhereUniqueInput
+export type WeeklyPlanItemCreateNestedManyWithoutTaskInput = {
+  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput> | Prisma.WeeklyPlanItemCreateWithoutTaskInput[] | Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput[]
+  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput | Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput[]
+  createMany?: Prisma.WeeklyPlanItemCreateManyTaskInputEnvelope
+  connect?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
 }
 
-export type WeeklyPlanItemUncheckedCreateNestedOneWithoutTaskInput = {
-  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
-  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput
-  connect?: Prisma.WeeklyPlanItemWhereUniqueInput
+export type WeeklyPlanItemUncheckedCreateNestedManyWithoutTaskInput = {
+  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput> | Prisma.WeeklyPlanItemCreateWithoutTaskInput[] | Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput[]
+  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput | Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput[]
+  createMany?: Prisma.WeeklyPlanItemCreateManyTaskInputEnvelope
+  connect?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
 }
 
-export type WeeklyPlanItemUpdateOneWithoutTaskNestedInput = {
-  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
-  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput
-  upsert?: Prisma.WeeklyPlanItemUpsertWithoutTaskInput
-  disconnect?: Prisma.WeeklyPlanItemWhereInput | boolean
-  delete?: Prisma.WeeklyPlanItemWhereInput | boolean
-  connect?: Prisma.WeeklyPlanItemWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.WeeklyPlanItemUpdateToOneWithWhereWithoutTaskInput, Prisma.WeeklyPlanItemUpdateWithoutTaskInput>, Prisma.WeeklyPlanItemUncheckedUpdateWithoutTaskInput>
+export type WeeklyPlanItemUpdateManyWithoutTaskNestedInput = {
+  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput> | Prisma.WeeklyPlanItemCreateWithoutTaskInput[] | Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput[]
+  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput | Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput[]
+  upsert?: Prisma.WeeklyPlanItemUpsertWithWhereUniqueWithoutTaskInput | Prisma.WeeklyPlanItemUpsertWithWhereUniqueWithoutTaskInput[]
+  createMany?: Prisma.WeeklyPlanItemCreateManyTaskInputEnvelope
+  set?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  disconnect?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  delete?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  connect?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  update?: Prisma.WeeklyPlanItemUpdateWithWhereUniqueWithoutTaskInput | Prisma.WeeklyPlanItemUpdateWithWhereUniqueWithoutTaskInput[]
+  updateMany?: Prisma.WeeklyPlanItemUpdateManyWithWhereWithoutTaskInput | Prisma.WeeklyPlanItemUpdateManyWithWhereWithoutTaskInput[]
+  deleteMany?: Prisma.WeeklyPlanItemScalarWhereInput | Prisma.WeeklyPlanItemScalarWhereInput[]
 }
 
-export type WeeklyPlanItemUncheckedUpdateOneWithoutTaskNestedInput = {
-  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
-  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput
-  upsert?: Prisma.WeeklyPlanItemUpsertWithoutTaskInput
-  disconnect?: Prisma.WeeklyPlanItemWhereInput | boolean
-  delete?: Prisma.WeeklyPlanItemWhereInput | boolean
-  connect?: Prisma.WeeklyPlanItemWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.WeeklyPlanItemUpdateToOneWithWhereWithoutTaskInput, Prisma.WeeklyPlanItemUpdateWithoutTaskInput>, Prisma.WeeklyPlanItemUncheckedUpdateWithoutTaskInput>
+export type WeeklyPlanItemUncheckedUpdateManyWithoutTaskNestedInput = {
+  create?: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput> | Prisma.WeeklyPlanItemCreateWithoutTaskInput[] | Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput[]
+  connectOrCreate?: Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput | Prisma.WeeklyPlanItemCreateOrConnectWithoutTaskInput[]
+  upsert?: Prisma.WeeklyPlanItemUpsertWithWhereUniqueWithoutTaskInput | Prisma.WeeklyPlanItemUpsertWithWhereUniqueWithoutTaskInput[]
+  createMany?: Prisma.WeeklyPlanItemCreateManyTaskInputEnvelope
+  set?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  disconnect?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  delete?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  connect?: Prisma.WeeklyPlanItemWhereUniqueInput | Prisma.WeeklyPlanItemWhereUniqueInput[]
+  update?: Prisma.WeeklyPlanItemUpdateWithWhereUniqueWithoutTaskInput | Prisma.WeeklyPlanItemUpdateWithWhereUniqueWithoutTaskInput[]
+  updateMany?: Prisma.WeeklyPlanItemUpdateManyWithWhereWithoutTaskInput | Prisma.WeeklyPlanItemUpdateManyWithWhereWithoutTaskInput[]
+  deleteMany?: Prisma.WeeklyPlanItemScalarWhereInput | Prisma.WeeklyPlanItemScalarWhereInput[]
 }
 
 export type WeeklyPlanItemCreateWithoutUserInput = {
@@ -567,7 +572,7 @@ export type WeeklyPlanItemCreateWithoutUserInput = {
   approved?: boolean
   projectId?: string | null
   createdAt?: Date | string
-  task?: Prisma.TaskCreateNestedOneWithoutPlanItemInput
+  task?: Prisma.TaskCreateNestedOneWithoutPlanItemsInput
 }
 
 export type WeeklyPlanItemUncheckedCreateWithoutUserInput = {
@@ -653,15 +658,85 @@ export type WeeklyPlanItemCreateOrConnectWithoutTaskInput = {
   create: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
 }
 
-export type WeeklyPlanItemUpsertWithoutTaskInput = {
-  update: Prisma.XOR<Prisma.WeeklyPlanItemUpdateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedUpdateWithoutTaskInput>
-  create: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
-  where?: Prisma.WeeklyPlanItemWhereInput
+export type WeeklyPlanItemCreateManyTaskInputEnvelope = {
+  data: Prisma.WeeklyPlanItemCreateManyTaskInput | Prisma.WeeklyPlanItemCreateManyTaskInput[]
+  skipDuplicates?: boolean
 }
 
-export type WeeklyPlanItemUpdateToOneWithWhereWithoutTaskInput = {
-  where?: Prisma.WeeklyPlanItemWhereInput
+export type WeeklyPlanItemUpsertWithWhereUniqueWithoutTaskInput = {
+  where: Prisma.WeeklyPlanItemWhereUniqueInput
+  update: Prisma.XOR<Prisma.WeeklyPlanItemUpdateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedUpdateWithoutTaskInput>
+  create: Prisma.XOR<Prisma.WeeklyPlanItemCreateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedCreateWithoutTaskInput>
+}
+
+export type WeeklyPlanItemUpdateWithWhereUniqueWithoutTaskInput = {
+  where: Prisma.WeeklyPlanItemWhereUniqueInput
   data: Prisma.XOR<Prisma.WeeklyPlanItemUpdateWithoutTaskInput, Prisma.WeeklyPlanItemUncheckedUpdateWithoutTaskInput>
+}
+
+export type WeeklyPlanItemUpdateManyWithWhereWithoutTaskInput = {
+  where: Prisma.WeeklyPlanItemScalarWhereInput
+  data: Prisma.XOR<Prisma.WeeklyPlanItemUpdateManyMutationInput, Prisma.WeeklyPlanItemUncheckedUpdateManyWithoutTaskInput>
+}
+
+export type WeeklyPlanItemCreateManyUserInput = {
+  id?: string
+  weekStart: Date | string
+  title: string
+  priority?: number
+  order?: number
+  approved?: boolean
+  projectId?: string | null
+  createdAt?: Date | string
+  taskId?: string | null
+}
+
+export type WeeklyPlanItemUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  approved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  task?: Prisma.TaskUpdateOneWithoutPlanItemsNestedInput
+}
+
+export type WeeklyPlanItemUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  approved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type WeeklyPlanItemUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  approved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type WeeklyPlanItemCreateManyTaskInput = {
+  id?: string
+  weekStart: Date | string
+  title: string
+  priority?: number
+  order?: number
+  approved?: boolean
+  projectId?: string | null
+  createdAt?: Date | string
+  userId: string
 }
 
 export type WeeklyPlanItemUpdateWithoutTaskInput = {
@@ -688,19 +763,7 @@ export type WeeklyPlanItemUncheckedUpdateWithoutTaskInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type WeeklyPlanItemCreateManyUserInput = {
-  id?: string
-  weekStart: Date | string
-  title: string
-  priority?: number
-  order?: number
-  approved?: boolean
-  projectId?: string | null
-  createdAt?: Date | string
-  taskId?: string | null
-}
-
-export type WeeklyPlanItemUpdateWithoutUserInput = {
+export type WeeklyPlanItemUncheckedUpdateManyWithoutTaskInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -709,31 +772,7 @@ export type WeeklyPlanItemUpdateWithoutUserInput = {
   approved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  task?: Prisma.TaskUpdateOneWithoutPlanItemNestedInput
-}
-
-export type WeeklyPlanItemUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  approved?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type WeeklyPlanItemUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  approved?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 

@@ -50,12 +50,11 @@ export function LessonsSection() {
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <div className="overline" style={{ marginBottom: 12 }}>Библиотека</div>
           <div className="title-hero">
             мои уроки<span className="dim">.</span>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <div className="lessons-actions" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button className="gbtn gbtn-sm" style={{ minHeight: 42 }} onClick={() => setDialog("topics")}>Темы</button>
           <button className="gbtn gbtn-sm" style={{ minHeight: 42 }} onClick={() => setDialog("import")}>Импорт</button>
           <button className="wbtn wbtn-sm" style={{ minHeight: 42 }} onClick={() => setDialog("create")}>＋ Урок</button>
@@ -63,10 +62,14 @@ export function LessonsSection() {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", gap: 6 }}>
-          <button className={tab === "active" ? "wbtn wbtn-sm" : "gbtn gbtn-sm"} onClick={() => setTab("active")}>Активные</button>
-          <button className={tab === "archive" ? "wbtn wbtn-sm" : "gbtn gbtn-sm"} onClick={() => setTab("archive")}>Архив</button>
-        </div>
+        <select
+          className="select-onpanel"
+          value={tab}
+          onChange={(e) => setTab(e.target.value as "active" | "archive")}
+        >
+          <option value="active">Активные</option>
+          <option value="archive">Архив</option>
+        </select>
         {tab === "active" && (
           <select className="select-onpanel" value={sort} onChange={(e) => setSort(e.target.value)}>
             {SORTS.map(([v, l]) => (

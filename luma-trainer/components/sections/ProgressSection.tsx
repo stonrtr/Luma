@@ -36,7 +36,6 @@ export function ProgressSection() {
   return (
     <>
       <div>
-        <div className="overline" style={{ marginBottom: 12 }}>Статистика</div>
         <div className="title-hero">
           прогресс<span className="dim">.</span>
         </div>

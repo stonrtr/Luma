@@ -30,6 +30,7 @@ export type WeeklyPlanApprovalMinAggregateOutputType = {
   weekStart: Date | null
   status: $Enums.PlanStatus | null
   comment: string | null
+  submittedItems: string | null
   reviewerId: string | null
   submittedAt: Date | null
   decidedAt: Date | null
@@ -42,6 +43,7 @@ export type WeeklyPlanApprovalMaxAggregateOutputType = {
   weekStart: Date | null
   status: $Enums.PlanStatus | null
   comment: string | null
+  submittedItems: string | null
   reviewerId: string | null
   submittedAt: Date | null
   decidedAt: Date | null
@@ -54,6 +56,7 @@ export type WeeklyPlanApprovalCountAggregateOutputType = {
   weekStart: number
   status: number
   comment: number
+  submittedItems: number
   reviewerId: number
   submittedAt: number
   decidedAt: number
@@ -68,6 +71,7 @@ export type WeeklyPlanApprovalMinAggregateInputType = {
   weekStart?: true
   status?: true
   comment?: true
+  submittedItems?: true
   reviewerId?: true
   submittedAt?: true
   decidedAt?: true
@@ -80,6 +84,7 @@ export type WeeklyPlanApprovalMaxAggregateInputType = {
   weekStart?: true
   status?: true
   comment?: true
+  submittedItems?: true
   reviewerId?: true
   submittedAt?: true
   decidedAt?: true
@@ -92,6 +97,7 @@ export type WeeklyPlanApprovalCountAggregateInputType = {
   weekStart?: true
   status?: true
   comment?: true
+  submittedItems?: true
   reviewerId?: true
   submittedAt?: true
   decidedAt?: true
@@ -177,6 +183,7 @@ export type WeeklyPlanApprovalGroupByOutputType = {
   weekStart: Date
   status: $Enums.PlanStatus
   comment: string | null
+  submittedItems: string | null
   reviewerId: string | null
   submittedAt: Date | null
   decidedAt: Date | null
@@ -210,6 +217,7 @@ export type WeeklyPlanApprovalWhereInput = {
   weekStart?: Prisma.DateTimeFilter<"WeeklyPlanApproval"> | Date | string
   status?: Prisma.EnumPlanStatusFilter<"WeeklyPlanApproval"> | $Enums.PlanStatus
   comment?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
+  submittedItems?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
   submittedAt?: Prisma.DateTimeNullableFilter<"WeeklyPlanApproval"> | Date | string | null
   decidedAt?: Prisma.DateTimeNullableFilter<"WeeklyPlanApproval"> | Date | string | null
@@ -223,6 +231,7 @@ export type WeeklyPlanApprovalOrderByWithRelationInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedItems?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -240,6 +249,7 @@ export type WeeklyPlanApprovalWhereUniqueInput = Prisma.AtLeast<{
   weekStart?: Prisma.DateTimeFilter<"WeeklyPlanApproval"> | Date | string
   status?: Prisma.EnumPlanStatusFilter<"WeeklyPlanApproval"> | $Enums.PlanStatus
   comment?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
+  submittedItems?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
   submittedAt?: Prisma.DateTimeNullableFilter<"WeeklyPlanApproval"> | Date | string | null
   decidedAt?: Prisma.DateTimeNullableFilter<"WeeklyPlanApproval"> | Date | string | null
@@ -253,6 +263,7 @@ export type WeeklyPlanApprovalOrderByWithAggregationInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedItems?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -271,6 +282,7 @@ export type WeeklyPlanApprovalScalarWhereWithAggregatesInput = {
   weekStart?: Prisma.DateTimeWithAggregatesFilter<"WeeklyPlanApproval"> | Date | string
   status?: Prisma.EnumPlanStatusWithAggregatesFilter<"WeeklyPlanApproval"> | $Enums.PlanStatus
   comment?: Prisma.StringNullableWithAggregatesFilter<"WeeklyPlanApproval"> | string | null
+  submittedItems?: Prisma.StringNullableWithAggregatesFilter<"WeeklyPlanApproval"> | string | null
   reviewerId?: Prisma.StringNullableWithAggregatesFilter<"WeeklyPlanApproval"> | string | null
   submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WeeklyPlanApproval"> | Date | string | null
   decidedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WeeklyPlanApproval"> | Date | string | null
@@ -282,6 +294,7 @@ export type WeeklyPlanApprovalCreateInput = {
   weekStart: Date | string
   status?: $Enums.PlanStatus
   comment?: string | null
+  submittedItems?: string | null
   reviewerId?: string | null
   submittedAt?: Date | string | null
   decidedAt?: Date | string | null
@@ -295,6 +308,7 @@ export type WeeklyPlanApprovalUncheckedCreateInput = {
   weekStart: Date | string
   status?: $Enums.PlanStatus
   comment?: string | null
+  submittedItems?: string | null
   reviewerId?: string | null
   submittedAt?: Date | string | null
   decidedAt?: Date | string | null
@@ -306,6 +320,7 @@ export type WeeklyPlanApprovalUpdateInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -319,6 +334,7 @@ export type WeeklyPlanApprovalUncheckedUpdateInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -331,6 +347,7 @@ export type WeeklyPlanApprovalCreateManyInput = {
   weekStart: Date | string
   status?: $Enums.PlanStatus
   comment?: string | null
+  submittedItems?: string | null
   reviewerId?: string | null
   submittedAt?: Date | string | null
   decidedAt?: Date | string | null
@@ -342,6 +359,7 @@ export type WeeklyPlanApprovalUpdateManyMutationInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -354,6 +372,7 @@ export type WeeklyPlanApprovalUncheckedUpdateManyInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -381,6 +400,7 @@ export type WeeklyPlanApprovalCountOrderByAggregateInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  submittedItems?: Prisma.SortOrder
   reviewerId?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -393,6 +413,7 @@ export type WeeklyPlanApprovalMaxOrderByAggregateInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  submittedItems?: Prisma.SortOrder
   reviewerId?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -405,6 +426,7 @@ export type WeeklyPlanApprovalMinOrderByAggregateInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  submittedItems?: Prisma.SortOrder
   reviewerId?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -462,6 +484,7 @@ export type WeeklyPlanApprovalCreateWithoutUserInput = {
   weekStart: Date | string
   status?: $Enums.PlanStatus
   comment?: string | null
+  submittedItems?: string | null
   reviewerId?: string | null
   submittedAt?: Date | string | null
   decidedAt?: Date | string | null
@@ -473,6 +496,7 @@ export type WeeklyPlanApprovalUncheckedCreateWithoutUserInput = {
   weekStart: Date | string
   status?: $Enums.PlanStatus
   comment?: string | null
+  submittedItems?: string | null
   reviewerId?: string | null
   submittedAt?: Date | string | null
   decidedAt?: Date | string | null
@@ -514,6 +538,7 @@ export type WeeklyPlanApprovalScalarWhereInput = {
   weekStart?: Prisma.DateTimeFilter<"WeeklyPlanApproval"> | Date | string
   status?: Prisma.EnumPlanStatusFilter<"WeeklyPlanApproval"> | $Enums.PlanStatus
   comment?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
+  submittedItems?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"WeeklyPlanApproval"> | string | null
   submittedAt?: Prisma.DateTimeNullableFilter<"WeeklyPlanApproval"> | Date | string | null
   decidedAt?: Prisma.DateTimeNullableFilter<"WeeklyPlanApproval"> | Date | string | null
@@ -525,6 +550,7 @@ export type WeeklyPlanApprovalCreateManyUserInput = {
   weekStart: Date | string
   status?: $Enums.PlanStatus
   comment?: string | null
+  submittedItems?: string | null
   reviewerId?: string | null
   submittedAt?: Date | string | null
   decidedAt?: Date | string | null
@@ -536,6 +562,7 @@ export type WeeklyPlanApprovalUpdateWithoutUserInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -547,6 +574,7 @@ export type WeeklyPlanApprovalUncheckedUpdateWithoutUserInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -558,6 +586,7 @@ export type WeeklyPlanApprovalUncheckedUpdateManyWithoutUserInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -572,6 +601,7 @@ export type WeeklyPlanApprovalSelect<ExtArgs extends runtime.Types.Extensions.In
   weekStart?: boolean
   status?: boolean
   comment?: boolean
+  submittedItems?: boolean
   reviewerId?: boolean
   submittedAt?: boolean
   decidedAt?: boolean
@@ -585,6 +615,7 @@ export type WeeklyPlanApprovalSelectCreateManyAndReturn<ExtArgs extends runtime.
   weekStart?: boolean
   status?: boolean
   comment?: boolean
+  submittedItems?: boolean
   reviewerId?: boolean
   submittedAt?: boolean
   decidedAt?: boolean
@@ -598,6 +629,7 @@ export type WeeklyPlanApprovalSelectUpdateManyAndReturn<ExtArgs extends runtime.
   weekStart?: boolean
   status?: boolean
   comment?: boolean
+  submittedItems?: boolean
   reviewerId?: boolean
   submittedAt?: boolean
   decidedAt?: boolean
@@ -611,13 +643,14 @@ export type WeeklyPlanApprovalSelectScalar = {
   weekStart?: boolean
   status?: boolean
   comment?: boolean
+  submittedItems?: boolean
   reviewerId?: boolean
   submittedAt?: boolean
   decidedAt?: boolean
   updatedAt?: boolean
 }
 
-export type WeeklyPlanApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "weekStart" | "status" | "comment" | "reviewerId" | "submittedAt" | "decidedAt" | "updatedAt", ExtArgs["result"]["weeklyPlanApproval"]>
+export type WeeklyPlanApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "weekStart" | "status" | "comment" | "submittedItems" | "reviewerId" | "submittedAt" | "decidedAt" | "updatedAt", ExtArgs["result"]["weeklyPlanApproval"]>
 export type WeeklyPlanApprovalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -639,6 +672,7 @@ export type $WeeklyPlanApprovalPayload<ExtArgs extends runtime.Types.Extensions.
     weekStart: Date
     status: $Enums.PlanStatus
     comment: string | null
+    submittedItems: string | null
     reviewerId: string | null
     submittedAt: Date | null
     decidedAt: Date | null
@@ -1072,6 +1106,7 @@ export interface WeeklyPlanApprovalFieldRefs {
   readonly weekStart: Prisma.FieldRef<"WeeklyPlanApproval", 'DateTime'>
   readonly status: Prisma.FieldRef<"WeeklyPlanApproval", 'PlanStatus'>
   readonly comment: Prisma.FieldRef<"WeeklyPlanApproval", 'String'>
+  readonly submittedItems: Prisma.FieldRef<"WeeklyPlanApproval", 'String'>
   readonly reviewerId: Prisma.FieldRef<"WeeklyPlanApproval", 'String'>
   readonly submittedAt: Prisma.FieldRef<"WeeklyPlanApproval", 'DateTime'>
   readonly decidedAt: Prisma.FieldRef<"WeeklyPlanApproval", 'DateTime'>
