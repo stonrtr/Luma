@@ -1,8 +1,10 @@
 "use client";
+import { useApp } from "../app-context";
 import { StudySession } from "../study/StudySession";
 
 // «Сегодня» — карточка для повторения сразу, без промежуточного экрана.
-// Встроенный режим StudySession рендерится прямо в панели раздела.
+// key=refreshKey: «На главную» из итога сессии ремонтирует сессию (сброс счётчиков).
 export function TodaySection() {
-  return <StudySession scope={{ scope: "today" }} embedded />;
+  const { refreshKey } = useApp();
+  return <StudySession key={refreshKey} scope={{ scope: "today" }} embedded />;
 }

@@ -9,6 +9,16 @@ import { useApp } from "../app-context";
 import type { StudyScope } from "../app-context";
 import { Spinner, Star, daysAgo } from "../ui";
 
+// Плитка итога сессии (число + подпись).
+function SummaryStat({ n, label, color }: { n: number; label: string; color: string }) {
+  return (
+    <div style={{ flex: 1, textAlign: "center" }}>
+      <div style={{ fontSize: 30, fontWeight: 800, color }}>{n}</div>
+      <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 600, marginTop: 2 }}>{label}</div>
+    </div>
+  );
+}
+
 // Иконка-динамик (SVG вместо эмодзи).
 function SpeakerIcon() {
   return (
@@ -50,6 +60,8 @@ export function StudySession({
   const [usedHint, setUsedHint] = useState(false);
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
   const [reviewedCount, setReviewedCount] = useState(0);
+  // Итог сессии: сколько ответов каждого типа (подсказка считается как «Не вспомнил»).
+  const [counts, setCounts] = useState({ easy: 0, hard: 0, again: 0 });
   // «Повторить приближающиеся»: внутренняя подмена scope при пустой очереди.
   const [scopeOverride, setScopeOverride] = useState<"upcoming" | null>(null);
   const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
@@ -134,6 +146,7 @@ export function StudySession({
       const effective: Rating = usedHint ? "again" : rating;
       busy.current = true;
       setFeedback(effective === "again" ? "bad" : "good");
+      setCounts((c) => ({ ...c, [effective]: c[effective] + 1 }));
       try {
         await A.review(card.id, effective, usedHint);
         setReviewedCount((n) => n + 1);
@@ -225,14 +238,22 @@ export function StudySession({
   const emptyFromStart = done && reviewedCount === 0 && total === 0;
   const fbClass = feedback === "good" ? "fb-good" : feedback === "bad" ? "fb-bad" : "";
 
-  // Пустая очередь «Сегодня» → узнаём, есть ли карточки, близкие к забыванию.
+  // Завершение «Сегодня» (пустая очередь или пройдено всё) → узнаём, есть ли
+  // карточки, близкие к забыванию, чтобы предложить повторить их заранее.
   useEffect(() => {
-    if (done && emptyFromStart && !scopeOverride && effScope === "today") {
+    if (done && !scopeOverride && effScope === "today") {
       A.study("upcoming")
         .then((r) => setUpcomingCount(r.cards.length))
         .catch(() => setUpcomingCount(0));
     }
-  }, [done, emptyFromStart, scopeOverride, effScope]);
+  }, [done, scopeOverride, effScope]);
+
+  // «На главную» из итога: встроенный режим ремонтируется (сброс счётчиков),
+  // полноэкранный — закрывается.
+  const goHome = () => {
+    if (embedded) refresh();
+    else if (onClose) onClose();
+  };
 
   /* ── Общие блоки разметки ─────────────────────────────────────────── */
 
@@ -474,40 +495,63 @@ export function StudySession({
     </div>
   );
 
+  const startUpcoming = () => {
+    setUpcomingCount(null);
+    setScopeOverride("upcoming");
+  };
+
   const doneBlock = done && (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 18, textAlign: "center", padding: "clamp(20px, 5vh, 50px) 0" }}>
+      <div className="overline" style={{ color: "rgba(255,255,255,0.55)" }}>
+        {emptyFromStart ? "Очередь пуста" : "Сессия завершена"}
+      </div>
       <div style={{ fontSize: "clamp(48px, 9vw, 140px)", fontWeight: 800, color: "#fff", lineHeight: 0.95, letterSpacing: "-0.02em" }}>
         {emptyFromStart ? "на сегодня всё" : "готово"}
         <span className="dim">.</span>
       </div>
-      <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 600 }}>
-        {emptyFromStart
-          ? upcomingCount && upcomingCount > 0
+
+      {emptyFromStart ? (
+        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 600, maxWidth: 520 }}>
+          {upcomingCount && upcomingCount > 0
             ? "Очередь пуста, но можно закрепить фразы, которые скоро начнут забываться."
-            : "Очередь повторения пуста. Загляни в уроки для дополнительного занятия."
-          : `Повторено карточек: ${reviewedCount}. Отличная работа!`}
-      </div>
+            : "Очередь повторения пуста. Загляни в уроки для дополнительного занятия."}
+        </div>
+      ) : (
+        <>
+          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 600 }}>
+            Повторено карточек: {reviewedCount}
+          </div>
+          <div className="wcard" style={{ display: "flex", gap: 8, padding: "18px 20px", width: "min(440px, 100%)" }}>
+            <SummaryStat n={counts.easy} label="Легко" color="var(--success)" />
+            <SummaryStat n={counts.hard} label="С трудом" color="var(--warning)" />
+            <SummaryStat n={counts.again} label="Не вспомнил" color="var(--danger)" />
+          </div>
+        </>
+      )}
+
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 6 }}>
-        {emptyFromStart && (upcomingCount ?? 0) > 0 && (
-          <button
-            className="wbtn wbtn-lg"
-            onClick={() => {
-              setUpcomingCount(null);
-              setScopeOverride("upcoming");
-            }}
-          >
-            Повторить приближающиеся ({upcomingCount})
+        {(upcomingCount ?? 0) > 0 && (
+          <button className="wbtn wbtn-lg" onClick={startUpcoming}>
+            Повторить заранее ({upcomingCount})
           </button>
         )}
-        {embedded ? (
-          emptyFromStart && (
-            <button className="gbtn" style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }} onClick={() => goTo("lessons")}>
-              Открыть уроки
-            </button>
-          )
-        ) : (
-          <button className={emptyFromStart && (upcomingCount ?? 0) > 0 ? "gbtn" : "wbtn wbtn-lg"} style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }} onClick={onClose}>
-            Готово
+        <button
+          className={(upcomingCount ?? 0) > 0 ? "gbtn" : "wbtn wbtn-lg"}
+          style={{ minHeight: 56, padding: "0 28px", fontSize: 16 }}
+          onClick={goHome}
+        >
+          На главную
+        </button>
+        {emptyFromStart && (upcomingCount ?? 0) === 0 && (
+          <button
+            className="gbtn"
+            style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }}
+            onClick={() => {
+              goTo("lessons");
+              if (!embedded && onClose) onClose();
+            }}
+          >
+            Открыть уроки
           </button>
         )}
       </div>
