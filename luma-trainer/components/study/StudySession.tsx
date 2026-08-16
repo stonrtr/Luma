@@ -460,9 +460,9 @@ export function StudySession({
       <div className="wcard session-progress" style={{ padding: "18px 22px", width: "min(300px, 100%)" }}>
         <div className="overline-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Прогресс фразы</div>
         <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, margin: "6px 0 12px" }}>
-          повторено сегодня: {reviewedCount}
+          {card.known ? "выучено" : `${Math.round(card.progress)}%`} · повторений этой фразы: {card.reviewCount}
         </div>
-        <div className="track" style={{ height: 9 }}>
+        <div className={`track ${card.known ? "is-known" : ""}`} style={{ height: 9 }}>
           <span style={{ width: `${card.progress}%` }} />
         </div>
       </div>

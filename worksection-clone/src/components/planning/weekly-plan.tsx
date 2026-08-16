@@ -31,10 +31,10 @@ const MIN_SLOTS = 3;
 type PlanStatus = "DRAFT" | "PENDING" | "APPROVED" | "RETURNED";
 
 export function WeeklyPlan({
-  userId, weekStart, items, projects, availableTasks, canEdit, status = "DRAFT", comment = null, isSelf = false, canManage = false, locale = "uk",
+  userId, weekStart, items, projects, availableTasks, canEdit, status = "DRAFT", comment = null, isSelf = false, canManage = false, ownerIsTopAdmin = false, locale = "uk",
 }: {
   userId: string; weekStart: string; items: Item[]; projects: Project[]; availableTasks: AvailableTask[]; canEdit: boolean;
-  status?: PlanStatus; comment?: string | null; isSelf?: boolean; canManage?: boolean; locale?: string;
+  status?: PlanStatus; comment?: string | null; isSelf?: boolean; canManage?: boolean; ownerIsTopAdmin?: boolean; locale?: string;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<"create" | "existing">("create");
@@ -82,8 +82,8 @@ export function WeeklyPlan({
           <StatusBadge status={status} locale={locale} />
         </h3>
         <div className="flex items-center gap-1.5">
-          {/* Сотрудник отправляет руководителю на утверждение */}
-          {isSelf && !canManage && (status === "DRAFT" || status === "RETURNED") && (
+          {/* Владелец плана отправляет свой план на утверждение. Кроме главного админа (OWNER) — ему некому отправлять */}
+          {isSelf && !ownerIsTopAdmin && (status === "DRAFT" || status === "RETURNED") && (
             <Button size="sm" onClick={() => start(async () => { const r = await submitPlanForApproval({ weekStart }); if (r?.error) toast.error(r.error); else { toast.success(t(locale, "plan.sentToManager")); router.refresh(); } })} disabled={pending}>
               <Send className="size-4" /> {t(locale, "plan.submitApproval")}
             </Button>

@@ -179,6 +179,7 @@ export default async function PlanningPage({
             comment={planApproval?.comment ?? null}
             isSelf={isSelf}
             canManage={canManage}
+            ownerIsTopAdmin={plan.user?.role === "OWNER"}
           />
         </div>
         <div className="rounded-xl border bg-card p-5">

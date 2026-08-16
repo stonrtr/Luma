@@ -10,7 +10,7 @@ export async function getPlanning(userId: string, ref: Date = new Date()) {
   const weekStart = weekStartInTz(tz, ref);
 
   const [user, goals, kpis, planItems, projects, recurring] = await Promise.all([
-    db.user.findUnique({ where: { id: userId }, select: { id: true, name: true, title: true, managerId: true } }),
+    db.user.findUnique({ where: { id: userId }, select: { id: true, name: true, title: true, managerId: true, role: true } }),
     db.monthlyGoal.findMany({ where: { userId, year, month }, orderBy: { createdAt: "asc" } }),
     db.kpi.findMany({ where: { userId, year, month }, orderBy: { createdAt: "asc" } }),
     db.weeklyPlanItem.findMany({
