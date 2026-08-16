@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
-import { getSettingsRow, toSrsSettings } from "@/lib/server/settings";
-import { recomputeAllProgress } from "@/lib/server/recompute";
+import { getSettingsRow } from "@/lib/server/settings";
 import { toSettings } from "@/lib/serialize";
 import { clampInt, json, readJson, str } from "@/lib/server/http";
 
@@ -34,18 +33,5 @@ export async function PATCH(req: Request) {
   if ("lastSection" in body) data.lastSection = str(body.lastSection, 40);
 
   const row = await db.userSettings.update({ where: { id: "default" }, data });
-
-  // Recompute card statuses when the "learned" criteria change (§9.4).
-  const criteriaKeys = [
-    "requiredSuccess",
-    "requiredStreak",
-    "minIntervalDays",
-    "countHardAsCorrect",
-    "progressThreshold",
-  ];
-  if (criteriaKeys.some((k) => k in body)) {
-    await recomputeAllProgress(toSrsSettings(row));
-  }
-
   return json(toSettings(row));
 }

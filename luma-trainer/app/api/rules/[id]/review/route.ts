@@ -20,6 +20,7 @@ export async function POST(req: Request, { params }: Ctx) {
 
   const settings = await getSrsSettings();
   const state: SrsState = {
+    progress: rule.progress,
     stability: rule.stability,
     difficulty: rule.difficulty,
     reviewCount: rule.reviewCount,

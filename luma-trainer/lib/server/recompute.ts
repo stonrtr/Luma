@@ -1,26 +1,16 @@
 import "server-only";
 import { db } from "../db";
-import { computeProgress, type SrsSettings } from "../srs";
-import type { Rating } from "../types";
+import { LEARNED_POINTS } from "../srs";
 
-/** Recompute progress/known for every phrase after study-settings change (§9.4). */
-export async function recomputeAllProgress(settings: SrsSettings): Promise<void> {
-  const cards = await db.phraseCard.findMany();
+/**
+ * Синхронизировать флаг «выучено» с баллами прогресса (known ⟺ progress ≥ 100).
+ * В балльной модели сам прогресс хранится в поле progress и меняется только при
+ * ответе — пересчитывать его не нужно, лишь выровнять known.
+ */
+export async function recomputeAllProgress(): Promise<void> {
+  const cards = await db.phraseCard.findMany({ select: { id: true, progress: true, known: true } });
   for (const c of cards) {
-    const { progress, known } = computeProgress(
-      {
-        reviewCount: c.reviewCount,
-        successfulReviewCount: c.successfulReviewCount,
-        consecutiveCorrect: c.consecutiveCorrect,
-        stability: c.stability,
-        lapseCount: c.lapseCount,
-        hintCount: c.hintCount,
-        lastRating: (c.lastRating as Rating | null) ?? null,
-      },
-      settings
-    );
-    if (progress !== c.progress || known !== c.known) {
-      await db.phraseCard.update({ where: { id: c.id }, data: { progress, known } });
-    }
+    const known = c.progress >= LEARNED_POINTS;
+    if (known !== c.known) await db.phraseCard.update({ where: { id: c.id }, data: { known } });
   }
 }

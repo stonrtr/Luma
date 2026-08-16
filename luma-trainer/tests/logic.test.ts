@@ -4,10 +4,10 @@ import { parseImport, parseImportLine } from "../lib/importParser";
 import { estimateDifficulty } from "../lib/difficulty";
 import { maskAnswer, hintLetterCount, isFullyRevealed } from "../lib/hint";
 import { checkAnswer } from "../lib/answerCheck";
-import { review, computeProgress, DEFAULT_SRS_SETTINGS, type SrsState } from "../lib/srs";
-import type { Rating } from "../lib/types";
+import { review, nextProgress, type SrsState } from "../lib/srs";
 
 const newState = (over: Partial<SrsState> = {}): SrsState => ({
+  progress: 0,
   stability: 0,
   difficulty: 5,
   reviewCount: 0,
@@ -86,102 +86,63 @@ describe("checkAnswer (flexible, §20.4)", () => {
   it("rejects wrong answers", () => expect(checkAnswer("has sent", answers)).toBe(false));
 });
 
-describe("SRS — new cards start at 0 (§9.3, §31)", () => {
-  it("a brand-new card has progress 0 and known false", () => {
-    const { progress, known } = computeProgress(newState(), DEFAULT_SRS_SETTINGS);
-    expect(progress).toBe(0);
-    expect(known).toBe(false);
-  });
-  it("'again' on a new card never yields 100 and reschedules ~10 min", () => {
-    const out = review(newState(), "again");
-    expect(out.progress).toBeLessThan(100);
-    expect(out.known).toBe(false);
-    expect(out.consecutiveCorrect).toBe(0);
-    expect(out.lapseCount).toBe(1);
-    expect(out.intervalDays).toBeLessThan(0.02); // < ~30 min
-  });
-  it("'easy' grows the interval and streak", () => {
-    const out = review(newState(), "easy");
-    expect(out.consecutiveCorrect).toBe(1);
-    expect(out.intervalDays).toBeGreaterThan(1);
-    expect(out.progress).toBeGreaterThan(0);
-  });
-});
-
-describe("SRS — known transition (§9.4)", () => {
-  it("reaches known only after criteria are met", () => {
-    let s = newState();
-    const grade = (r: Rating) => {
-      const o = review(s, r);
-      s = { ...s, stability: o.stability, difficulty: o.difficulty, reviewCount: o.reviewCount, successfulReviewCount: o.successfulReviewCount, consecutiveCorrect: o.consecutiveCorrect, lapseCount: o.lapseCount, lastRating: o.lastRating, lastReviewedAt: o.lastReviewedAt, dueAt: o.dueAt };
-      return o;
-    };
-    // Simulate spaced successful reviews with elapsed time so stability compounds.
-    let last = grade("easy");
-    for (let i = 0; i < 6; i++) {
-      // advance clock to the due date so retrievability logic runs naturally
-      s.lastReviewedAt = new Date(Date.now() - (last.intervalDays + 1) * 86400000);
-      last = grade("easy");
-    }
-    expect(last.successfulReviewCount).toBeGreaterThanOrEqual(DEFAULT_SRS_SETTINGS.requiredSuccess);
-    expect(last.stability).toBeGreaterThanOrEqual(DEFAULT_SRS_SETTINGS.minIntervalDays);
-    expect(last.known).toBe(true);
-    expect(last.progress).toBe(100);
+describe("Баллы прогресса (100 = выучено, Легко +25, С трудом +15)", () => {
+  it("новая карточка — 0 баллов, не выучена", () => {
+    expect(newState().progress).toBe(0);
   });
 
-  it("an 'again' after being known drops it below 100", () => {
-    const known = newState({ stability: 30, successfulReviewCount: 5, consecutiveCorrect: 5, reviewCount: 5, lastRating: "easy", lastReviewedAt: new Date() });
-    const out = review(known, "again");
-    expect(out.known).toBe(false);
-    expect(out.progress).toBeLessThan(100);
-  });
-
-  it("a lapse does NOT permanently block 'known' — streak forgives the penalty", () => {
-    // Карточка с одним провалом в истории, но восстановленной серией и интервалом.
-    const recovered = newState({
-      stability: 30,
-      successfulReviewCount: 6,
-      consecutiveCorrect: 3,
-      reviewCount: 8,
-      lapseCount: 1,
-      lastRating: "easy",
-      lastReviewedAt: new Date(Date.now() - 31 * 86400000),
-    });
-    const out = review(recovered, "easy");
-    expect(out.progress).toBe(100);
-    expect(out.known).toBe(true);
-  });
-
-  it("progress is linear: each correct answer adds an equal step (requiredSuccess=4 → 25/50/75/100)", () => {
+  it("«Легко» даёт +25 каждый раз: 25 → 50 → 75 → 100 и «выучено»", () => {
     let s = newState();
     const steps: number[] = [];
     for (let i = 0; i < 4; i++) {
       const o = review(s, "easy", { now: new Date(Date.now() + i * 1000) });
       steps.push(o.progress);
-      s = { ...s, consecutiveCorrect: o.consecutiveCorrect, reviewCount: o.reviewCount, successfulReviewCount: o.successfulReviewCount, stability: o.stability, lastRating: o.lastRating, lastReviewedAt: o.lastReviewedAt };
+      s = { ...s, progress: o.progress, stability: o.stability, reviewCount: o.reviewCount, lastRating: o.lastRating, lastReviewedAt: o.lastReviewedAt };
     }
     expect(steps).toEqual([25, 50, 75, 100]);
   });
 
-  it("'again' zeroes the progress bar (streak reset)", () => {
-    const mid = newState({ stability: 5, reviewCount: 2, successfulReviewCount: 2, consecutiveCorrect: 2, lastRating: "easy", lastReviewedAt: new Date() });
-    expect(computeProgress(mid, DEFAULT_SRS_SETTINGS).progress).toBe(50);
-    const out = review(mid, "again");
-    expect(out.progress).toBe(0);
+  it("«С трудом» даёт +15", () => {
+    const o1 = review(newState(), "hard");
+    expect(o1.progress).toBe(15);
+    const o2 = review(newState({ progress: 90, reviewCount: 4, lastReviewedAt: new Date() }), "hard");
+    expect(o2.progress).toBe(100); // 90+15 упирается в потолок 100
+    expect(o2.known).toBe(true);
   });
 
-  it("using a hint forces the answer to be treated as 'again'", () => {
-    // Даже с оценкой «Легко»: подсказка = не вспомнил.
-    const out = review(newState({ stability: 10, reviewCount: 2, successfulReviewCount: 2, consecutiveCorrect: 2, lastReviewedAt: new Date() }), "easy", {
-      usedHint: true,
-    });
-    expect(out.lastRating).toBe("again");
-    expect(out.consecutiveCorrect).toBe(0);
-    expect(out.lapseCount).toBe(1);
+  it("смешанные оценки складываются: Легко+С трудом+Легко = 65", () => {
+    let s = newState();
+    let o = review(s, "easy"); // 25
+    s = { ...s, progress: o.progress, reviewCount: o.reviewCount, lastReviewedAt: o.lastReviewedAt };
+    o = review(s, "hard"); // 40
+    s = { ...s, progress: o.progress, reviewCount: o.reviewCount, lastReviewedAt: o.lastReviewedAt };
+    o = review(s, "easy"); // 65
+    expect(o.progress).toBe(65);
+  });
+
+  it("«Не вспомнил» обнуляет баллы до 0", () => {
+    const mid = newState({ progress: 75, reviewCount: 3, lastRating: "easy", lastReviewedAt: new Date() });
+    const out = review(mid, "again");
+    expect(out.progress).toBe(0);
+    expect(out.known).toBe(false);
     expect(out.intervalDays).toBeLessThan(0.02); // ~10 мин
   });
 
-  it("interval never exceeds 365 days", () => {
+  it("подсказка приравнивается к «Не вспомнил» — баллы в 0", () => {
+    const out = review(newState({ progress: 50, reviewCount: 2, lastReviewedAt: new Date() }), "easy", { usedHint: true });
+    expect(out.lastRating).toBe("again");
+    expect(out.progress).toBe(0);
+    expect(out.intervalDays).toBeLessThan(0.02);
+  });
+
+  it("nextProgress — чистая функция баллов", () => {
+    expect(nextProgress(0, "easy")).toBe(25);
+    expect(nextProgress(50, "hard")).toBe(65);
+    expect(nextProgress(90, "easy")).toBe(100);
+    expect(nextProgress(80, "again")).toBe(0);
+  });
+
+  it("интервал в днях не превышает 365 (расписание отдельно от баллов)", () => {
     const veteran = newState({
       stability: 300,
       successfulReviewCount: 10,

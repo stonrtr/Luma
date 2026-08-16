@@ -11,7 +11,13 @@ const AGAIN_DELAY_DAYS = 10 * MINUTE_DAYS; // ~10 minutes (§9.2)
 // Потолок интервала: без него после 5–6 «Легко» карточка уходила на годы.
 const MAX_STABILITY_DAYS = 365;
 
+// Балльный прогресс: нужно набрать 100 очков, чтобы слово стало «выучено».
+export const LEARNED_POINTS = 100;
+export const EASY_POINTS = 25;
+export const HARD_POINTS = 15;
+
 export interface SrsState {
+  progress: number; // накопленные баллы 0..100
   stability: number; // days of memory strength
   difficulty: number; // 1..10 (intrinsic phrase difficulty, drifts slightly)
   reviewCount: number;
@@ -69,31 +75,20 @@ export function retrievability(state: SrsState, now: Date = new Date()): number 
 
 /**
  * Прогресс слова — простая линейная логика:
- *   прогресс = (правильных ответов подряд) / (нужно для «выучено») × 100.
- * Каждый верный ответ («Легко», а также «С трудом» если он засчитывается)
- * добавляет одну равную долю. «Не вспомнил» и подсказка обнуляют серию → 0%.
- * Дойдя до нужного числа подряд — 100% и статус «выучено».
+ * Балльная система: нужно набрать 100 очков. «Легко» +25, «С трудом» +15,
+ * «Не вспомнил» (и подсказка) обнуляют прогресс до 0. 100 очков = «выучено».
  * Это НЕ про интервал в днях: расписание считается отдельно (см. review).
  */
-export function computeProgress(
-  state: Pick<
-    SrsState,
-    | "reviewCount"
-    | "successfulReviewCount"
-    | "consecutiveCorrect"
-    | "stability"
-    | "lapseCount"
-    | "hintCount"
-    | "lastRating"
-  >,
-  settings: SrsSettings
-): { progress: number; known: boolean } {
-  if (state.reviewCount === 0) return { progress: 0, known: false };
-  const target = Math.max(1, settings.requiredSuccess);
-  const ratio = state.consecutiveCorrect / target;
-  const known = ratio >= 1;
-  const progress = known ? 100 : Math.round(clamp(ratio, 0, 1) * 100);
-  return { progress, known };
+
+/** Очки за оценку. «again» обрабатывается отдельно (обнуление). */
+export function pointsFor(rating: Rating): number {
+  return rating === "easy" ? EASY_POINTS : rating === "hard" ? HARD_POINTS : 0;
+}
+
+/** Новый прогресс из предыдущего и оценки. */
+export function nextProgress(prev: number, rating: Rating): number {
+  if (rating === "again") return 0;
+  return clamp(prev + pointsFor(rating), 0, LEARNED_POINTS);
 }
 
 /**
@@ -109,7 +104,6 @@ export function review(
 ): ReviewOutcome {
   const now = opts.now ?? new Date();
   const usedHint = opts.usedHint ?? false;
-  const settings = opts.settings ?? DEFAULT_SRS_SETTINGS;
   if (usedHint) rating = "again";
 
   const rNow = retrievability(state, now);
@@ -130,10 +124,8 @@ export function review(
     stability = Math.max(AGAIN_DELAY_DAYS, state.stability * 0.2);
     intervalDays = AGAIN_DELAY_DAYS; // reschedule in ~10 min (§9.2)
   } else {
-    // «С трудом» продвигает полоску, только если засчитывается как правильный.
-    const countsSuccess = rating === "easy" || settings.countHardAsCorrect;
-    consecutiveCorrect = countsSuccess ? state.consecutiveCorrect + 1 : state.consecutiveCorrect;
-    if (countsSuccess) successfulReviewCount += 1;
+    consecutiveCorrect = state.consecutiveCorrect + 1;
+    successfulReviewCount += 1;
 
     // Easy eases difficulty a touch; hard nudges it up slightly (§9.2).
     difficulty =
@@ -157,16 +149,9 @@ export function review(
 
   const dueAt = new Date(now.getTime() + intervalDays * DAY_MS);
 
-  const progressInput = {
-    reviewCount,
-    successfulReviewCount,
-    consecutiveCorrect,
-    stability,
-    lapseCount,
-    hintCount: state.hintCount,
-    lastRating: rating,
-  };
-  const { progress, known } = computeProgress(progressInput, settings);
+  // Балльный прогресс: +25 / +15 / обнуление.
+  const progress = nextProgress(state.progress, rating);
+  const known = progress >= LEARNED_POINTS;
 
   return {
     stability,

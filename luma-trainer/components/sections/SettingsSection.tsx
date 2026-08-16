@@ -43,28 +43,18 @@ export function SettingsSection() {
         </Row>
       </Group>
 
-      <Group title="Критерии «выучено»">
-        <NumberRow label="Правильных ответов подряд для «выучено»" value={settings.requiredSuccess} min={1} max={20} onChange={(v) => updateSettings({ requiredSuccess: v })} />
-        <ToggleRow label="Считать «С трудом» правильным ответом" checked={settings.countHardAsCorrect} onChange={(v) => updateSettings({ countHardAsCorrect: v })} />
-        <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>
-          При изменении этих настроек прогресс всех карточек пересчитывается.
-        </p>
-      </Group>
-
       <Group title="Как считается прогресс слова">
-        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.65, margin: 0 }}>
-          Прогресс — это <b>сколько правильных ответов подряд</b> ты дал, делённое на нужное число. Логика линейная:
-          каждый верный ответ добавляет равную долю. При настройке «{settings.requiredSuccess}» шаг = {Math.round(100 / Math.max(1, settings.requiredSuccess))}%.
+        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+          Чтобы слово стало «выучено», нужно набрать <b>100 баллов</b>:
         </p>
-        <ul style={{ margin: 0, paddingLeft: 18, color: "var(--ink-body)", fontSize: 14, lineHeight: 1.7, display: "flex", flexDirection: "column", gap: 6 }}>
-          <li><b>«Легко» / «С трудом»</b> — +1 шаг (у «С трудом» — только если включён тумблер выше).</li>
-          <li><b>«Не вспомнил» и подсказка</b> — полоска обнуляется до 0%, серию набираешь заново.</li>
-          <li>Набрал нужное число подряд → <b>100% и «выучено»</b>.</li>
+        <ul style={{ margin: 0, paddingLeft: 18, color: "var(--ink-body)", fontSize: 15, lineHeight: 1.8, display: "flex", flexDirection: "column", gap: 6 }}>
+          <li><b>«Легко»</b> — +25 баллов</li>
+          <li><b>«С трудом»</b> — +15 баллов</li>
+          <li><b>«Не вспомнил» и подсказка</b> — сбрасывают баллы в 0</li>
         </ul>
-        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.65, margin: 0 }}>
-          <b>Отдельно</b> от процентов работает расписание — через сколько дней показать фразу снова. Оно зависит от оценки
-          («Легко» растягивает интервал сильнее «С трудом») и сложности фразы (сложные повторяются чаще). Проценты и дни —
-          разные вещи: полоска не умножается, она просто набирается по шагам.
+        <p style={{ color: "var(--ink-2)", fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+          Отдельно работает расписание — через сколько дней показать слово снова: «Легко» растягивает интервал сильнее
+          «С трудом», а сложные слова повторяются чаще. Баллы и дни — разные вещи.
         </p>
       </Group>
 
