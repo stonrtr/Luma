@@ -68,9 +68,12 @@ export function retrievability(state: SrsState, now: Date = new Date()): number 
 }
 
 /**
- * Progress (§9.5): not just "recall probability now". Blends successful reps,
- * streak length, achieved interval, and the last answer; then softly penalizes
- * lapses and hint use. New cards are always 0. "again" can never yield 100.
+ * Прогресс слова — простая линейная логика:
+ *   прогресс = (правильных ответов подряд) / (нужно для «выучено») × 100.
+ * Каждый верный ответ («Легко», а также «С трудом» если он засчитывается)
+ * добавляет одну равную долю. «Не вспомнил» и подсказка обнуляют серию → 0%.
+ * Дойдя до нужного числа подряд — 100% и статус «выучено».
+ * Это НЕ про интервал в днях: расписание считается отдельно (см. review).
  */
 export function computeProgress(
   state: Pick<
@@ -86,32 +89,10 @@ export function computeProgress(
   settings: SrsSettings
 ): { progress: number; known: boolean } {
   if (state.reviewCount === 0) return { progress: 0, known: false };
-
-  const repScore = clamp(state.successfulReviewCount / Math.max(1, settings.requiredSuccess), 0, 1);
-  const streakScore = clamp(state.consecutiveCorrect / Math.max(1, settings.requiredStreak), 0, 1);
-  const intervalScore = clamp(state.stability / Math.max(0.01, settings.minIntervalDays), 0, 1);
-  const lastGood = state.lastRating && state.lastRating !== "again" ? 1 : 0;
-
-  // Штрафы «прощаются» серией правильных ответов: сразу после провала прогресс
-  // проседает, но каждая ступень серии гасит один старый провал/подсказку.
-  // Иначе одна ошибка навсегда запирала карточку ниже 100% («выучено»
-  // становилось недостижимым — вечный потолок 95%).
-  const effLapses = Math.max(0, state.lapseCount - state.consecutiveCorrect);
-  const effHints = Math.max(0, state.hintCount - state.consecutiveCorrect);
-  const errorPenalty = Math.max(0.85, 1 - effLapses * 0.05);
-  const hintPenalty = Math.max(0.8, 1 - effHints * 0.03);
-
-  const base = 0.3 * repScore + 0.25 * streakScore + 0.35 * intervalScore + 0.1 * lastGood;
-  const computed = base * errorPenalty * hintPenalty * 100;
-
-  const metCriteria =
-    state.successfulReviewCount >= settings.requiredSuccess &&
-    state.consecutiveCorrect >= settings.requiredStreak &&
-    state.stability >= settings.minIntervalDays &&
-    state.lastRating !== "again";
-
-  const known = metCriteria && computed >= settings.progressThreshold;
-  const progress = known ? 100 : Math.round(clamp(computed, 0, 99));
+  const target = Math.max(1, settings.requiredSuccess);
+  const ratio = state.consecutiveCorrect / target;
+  const known = ratio >= 1;
+  const progress = known ? 100 : Math.round(clamp(ratio, 0, 1) * 100);
   return { progress, known };
 }
 
@@ -149,8 +130,9 @@ export function review(
     stability = Math.max(AGAIN_DELAY_DAYS, state.stability * 0.2);
     intervalDays = AGAIN_DELAY_DAYS; // reschedule in ~10 min (§9.2)
   } else {
-    consecutiveCorrect = state.consecutiveCorrect + 1;
+    // «С трудом» продвигает полоску, только если засчитывается как правильный.
     const countsSuccess = rating === "easy" || settings.countHardAsCorrect;
+    consecutiveCorrect = countsSuccess ? state.consecutiveCorrect + 1 : state.consecutiveCorrect;
     if (countsSuccess) successfulReviewCount += 1;
 
     // Easy eases difficulty a touch; hard nudges it up slightly (§9.2).

@@ -152,6 +152,24 @@ describe("SRS — known transition (§9.4)", () => {
     expect(out.known).toBe(true);
   });
 
+  it("progress is linear: each correct answer adds an equal step (requiredSuccess=4 → 25/50/75/100)", () => {
+    let s = newState();
+    const steps: number[] = [];
+    for (let i = 0; i < 4; i++) {
+      const o = review(s, "easy", { now: new Date(Date.now() + i * 1000) });
+      steps.push(o.progress);
+      s = { ...s, consecutiveCorrect: o.consecutiveCorrect, reviewCount: o.reviewCount, successfulReviewCount: o.successfulReviewCount, stability: o.stability, lastRating: o.lastRating, lastReviewedAt: o.lastReviewedAt };
+    }
+    expect(steps).toEqual([25, 50, 75, 100]);
+  });
+
+  it("'again' zeroes the progress bar (streak reset)", () => {
+    const mid = newState({ stability: 5, reviewCount: 2, successfulReviewCount: 2, consecutiveCorrect: 2, lastRating: "easy", lastReviewedAt: new Date() });
+    expect(computeProgress(mid, DEFAULT_SRS_SETTINGS).progress).toBe(50);
+    const out = review(mid, "again");
+    expect(out.progress).toBe(0);
+  });
+
   it("using a hint forces the answer to be treated as 'again'", () => {
     // Даже с оценкой «Легко»: подсказка = не вспомнил.
     const out = review(newState({ stability: 10, reviewCount: 2, successfulReviewCount: 2, consecutiveCorrect: 2, lastReviewedAt: new Date() }), "easy", {

@@ -44,44 +44,27 @@ export function SettingsSection() {
       </Group>
 
       <Group title="Критерии «выучено»">
-        <NumberRow label="Успешных ответов для изучения" value={settings.requiredSuccess} min={1} max={20} onChange={(v) => updateSettings({ requiredSuccess: v })} />
-        <NumberRow label="Серия правильных ответов" value={settings.requiredStreak} min={1} max={20} onChange={(v) => updateSettings({ requiredStreak: v })} />
-        <NumberRow label="Минимальный интервал, дней" value={settings.minIntervalDays} min={1} max={365} onChange={(v) => updateSettings({ minIntervalDays: v })} />
-        <NumberRow label="Порог прогресса, %" value={settings.progressThreshold} min={50} max={100} onChange={(v) => updateSettings({ progressThreshold: v })} />
+        <NumberRow label="Правильных ответов подряд для «выучено»" value={settings.requiredSuccess} min={1} max={20} onChange={(v) => updateSettings({ requiredSuccess: v })} />
         <ToggleRow label="Считать «С трудом» правильным ответом" checked={settings.countHardAsCorrect} onChange={(v) => updateSettings({ countHardAsCorrect: v })} />
         <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>
-          При изменении этих настроек статусы всех карточек пересчитываются.
+          При изменении этих настроек прогресс всех карточек пересчитывается.
         </p>
       </Group>
 
-      <Group title="Как рассчитывается повторение">
-        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-          Интервал до следующего показа фразы (её «стабильность в памяти») зависит от нескольких факторов:
+      <Group title="Как считается прогресс слова">
+        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.65, margin: 0 }}>
+          Прогресс — это <b>сколько правильных ответов подряд</b> ты дал, делённое на нужное число. Логика линейная:
+          каждый верный ответ добавляет равную долю. При настройке «{settings.requiredSuccess}» шаг = {Math.round(100 / Math.max(1, settings.requiredSuccess))}%.
         </p>
-        <ul style={{ margin: 0, paddingLeft: 18, color: "var(--ink-body)", fontSize: 14, lineHeight: 1.7, display: "flex", flexDirection: "column", gap: 8 }}>
-          <li>
-            <b>Оценка ответа.</b> «Легко» умножает интервал примерно ×3, «С трудом» — лишь ×1.4, «Не вспомнил» сбрасывает
-            стабильность впятеро и возвращает карточку через ~10 минут.
-          </li>
-          <li>
-            <b>Сложность фразы (1–10).</b> Чем сложнее, тем медленнее растёт интервал: у фразы 10/10 он увеличивается почти
-            вдвое медленнее, чем у 1/10. Сложность сама подстраивается — «Легко» её слегка снижает, ошибки повышают.
-          </li>
-          <li>
-            <b>Насколько вовремя ты вспомнил.</b> Если фраза почти забылась, а ты её вспомнил — интервал вырастает сильнее
-            (сигнал прочной памяти). Ответ сразу после показа прибавляет мало.
-          </li>
-          <li>
-            <b>Подсказка = «Не вспомнил».</b> Открыл буквы — ответ засчитывается как провал, интервал не растёт.
-          </li>
+        <ul style={{ margin: 0, paddingLeft: 18, color: "var(--ink-body)", fontSize: 14, lineHeight: 1.7, display: "flex", flexDirection: "column", gap: 6 }}>
+          <li><b>«Легко» / «С трудом»</b> — +1 шаг (у «С трудом» — только если включён тумблер выше).</li>
+          <li><b>«Не вспомнил» и подсказка</b> — полоска обнуляется до 0%, серию набираешь заново.</li>
+          <li>Набрал нужное число подряд → <b>100% и «выучено»</b>.</li>
         </ul>
-        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-          Настройки выше задают, <b>когда фраза считается выученной</b> (сколько успешных ответов, какая серия, минимальный
-          интервал и порог прогресса), а не саму частоту — частоту определяет алгоритм по факторам выше. Интервал ограничен
-          365 днями.
-        </p>
-        <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>
-          Пример при оценках «Легко» и средней сложности: повторения примерно через 3 → 10 → 34 → 113 дней, дальше — раз в год.
+        <p style={{ color: "var(--ink-body)", fontSize: 14, lineHeight: 1.65, margin: 0 }}>
+          <b>Отдельно</b> от процентов работает расписание — через сколько дней показать фразу снова. Оно зависит от оценки
+          («Легко» растягивает интервал сильнее «С трудом») и сложности фразы (сложные повторяются чаще). Проценты и дни —
+          разные вещи: полоска не умножается, она просто набирается по шагам.
         </p>
       </Group>
 
