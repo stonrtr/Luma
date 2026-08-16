@@ -122,6 +122,7 @@ export type UserSettings = {
   countHardAsCorrect: boolean;
   progressThreshold: number;
   animationsEnabled: boolean;
+  refreshLearned: boolean;
   theme: HueTheme;
   lastSection: string;
 };

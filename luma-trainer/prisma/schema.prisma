@@ -168,6 +168,7 @@ model UserSettings {
   countHardAsCorrect Boolean @default(true)
   progressThreshold  Int     @default(100)
   animationsEnabled  Boolean @default(true)
+  refreshLearned     Boolean @default(true) // подмешивать выученные для освежения (п.3)
   theme              String  @default("blue") // blue | green | purple | red
   lastSection        String  @default("today")
   updatedAt          DateTime @updatedAt

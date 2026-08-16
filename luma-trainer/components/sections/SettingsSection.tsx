@@ -41,6 +41,11 @@ export function SettingsSection() {
             <button className={`toggle-pill ${settings.showFirst === "ru" ? "on" : ""}`} onClick={() => updateSettings({ showFirst: "ru" })}>Русский</button>
           </div>
         </Row>
+        <ToggleRow label="Освежать выученные слова" checked={settings.refreshLearned} onChange={(v) => updateSettings({ refreshLearned: v })} />
+        <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>
+          Подмешивает в «Сегодня» несколько выученных слов чуть раньше срока, чтобы память не проседала. Если ошибёшься —
+          слово теряет статус «выучено» и возвращается в обычную очередь.
+        </p>
       </Group>
 
       <Group title="Как считается прогресс слова">

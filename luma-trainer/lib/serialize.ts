@@ -155,6 +155,7 @@ export function toSettings(row: any): UserSettings {
     countHardAsCorrect: row.countHardAsCorrect,
     progressThreshold: row.progressThreshold,
     animationsEnabled: row.animationsEnabled,
+    refreshLearned: row.refreshLearned ?? true,
     theme: row.theme ?? "blue",
     lastSection: row.lastSection,
   };

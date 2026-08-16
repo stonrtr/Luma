@@ -47,7 +47,26 @@ export async function buildTodayQueue(): Promise<PhraseCard[]> {
     .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
     .slice(0, newLimit);
 
-  const combined = [...due, ...fresh].slice(0, settings.cardsPerDay);
+  // Освежение выученных (п.3): подмешиваем ~REFRESH_COUNT самых «залежавшихся»
+  // выученных слов, ещё не наступивших по расписанию и не повторявшихся сегодня.
+  // Так база не копит тихо забытое, но и не заваливает одними и теми же словами.
+  const REFRESH_COUNT = 5;
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const refresh = settings.refreshLearned
+    ? ready
+        .filter(
+          (c) =>
+            c.known &&
+            c.dueAt &&
+            c.dueAt.getTime() > now.getTime() && // ещё не «пора» — берём чуть раньше срока
+            (!c.lastReviewedAt || c.lastReviewedAt.getTime() < startOfToday.getTime())
+        )
+        .sort((a, b) => (a.lastReviewedAt?.getTime() ?? 0) - (b.lastReviewedAt?.getTime() ?? 0))
+        .slice(0, REFRESH_COUNT)
+    : [];
+
+  const combined = [...due, ...refresh, ...fresh].slice(0, settings.cardsPerDay);
   return combined.map((c) => toPhrase(c, c.lesson?.title));
 }
 

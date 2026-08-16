@@ -26,6 +26,7 @@ export async function PATCH(req: Request) {
   if ("countHardAsCorrect" in body) data.countHardAsCorrect = !!body.countHardAsCorrect;
   if ("progressThreshold" in body) data.progressThreshold = clampInt(body.progressThreshold, 50, 100, 100);
   if ("animationsEnabled" in body) data.animationsEnabled = !!body.animationsEnabled;
+  if ("refreshLearned" in body) data.refreshLearned = !!body.refreshLearned;
   if ("theme" in body)
     data.theme = ["blue", "green", "purple", "red"].includes(body.theme as string)
       ? body.theme

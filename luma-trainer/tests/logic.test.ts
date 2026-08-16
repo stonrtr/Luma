@@ -135,6 +135,14 @@ describe("Баллы прогресса (100 = выучено, Легко +25, �
     expect(out.intervalDays).toBeLessThan(0.02);
   });
 
+  it("демоция: «Не вспомнил» на выученном слове снимает статус (п.4)", () => {
+    const learned = newState({ progress: 100, reviewCount: 6, consecutiveCorrect: 6, stability: 60, lastRating: "easy", lastReviewedAt: new Date() });
+    const out = review(learned, "again");
+    expect(out.progress).toBe(0);
+    expect(out.known).toBe(false);
+    expect(out.intervalDays).toBeLessThan(0.02); // вернулось в активную очередь (~10 мин)
+  });
+
   it("nextProgress — чистая функция баллов", () => {
     expect(nextProgress(0, "easy")).toBe(25);
     expect(nextProgress(50, "hard")).toBe(65);
