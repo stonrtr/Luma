@@ -4,6 +4,7 @@ import { A } from "@/lib/api";
 import type { PhraseCard, Rating } from "@/lib/types";
 import { maskAnswer, isFullyRevealed, hintLetterCount } from "@/lib/hint";
 import { difficultyBand } from "@/lib/difficulty";
+import { nextProgress } from "@/lib/srs";
 import { prefetchEnglish, speakEnglish } from "@/lib/tts-client";
 import { playSfx } from "@/lib/sfx";
 import { useApp } from "../app-context";
@@ -164,19 +165,24 @@ export function StudySession({
       playSfx(effective === "easy" ? "success" : effective === "hard" ? "so-so" : "mistake");
       setFeedback(effective === "again" ? "bad" : "good");
       setCounts((c) => ({ ...c, [effective]: c[effective] + 1 }));
+      // Сразу двигаем прогресс-бар текущей карточки (анимация width 0.5s в .track),
+      // чтобы был мгновенный отклик на ответ, до перехода к следующей.
+      const newProgress = nextProgress(card.progress, effective);
+      setCards((cs) => (cs ? cs.map((c, i) => (i === index ? { ...c, progress: newProgress } : c)) : cs));
       try {
         await A.review(card.id, effective, usedHint);
         setReviewedCount((n) => n + 1);
       } catch {
         /* не блокируем сессию при ошибке сохранения */
       }
-      const delay = settings.animationsEnabled ? 380 : 0;
+      // Держим карточку чуть дольше, чтобы движение бара было заметно.
+      const delay = settings.animationsEnabled ? 600 : 0;
       setTimeout(() => {
         busy.current = false;
         advance();
       }, delay);
     },
-    [card, usedHint, advance, settings.animationsEnabled]
+    [card, usedHint, advance, index, settings.animationsEnabled]
   );
 
   // Хоткеи (§6): не срабатывают в полях ввода. Встроенная карточка
@@ -300,7 +306,7 @@ export function StudySession({
   const stage = card && (
     <div
       key={`${index}-${flipped ? "b" : "f"}`}
-      className="stage"
+      className="stage study-card"
       style={{
         flex: 1,
         display: "grid",
@@ -592,7 +598,7 @@ export function StudySession({
   if (embedded) {
     return (
       <div
-        className={fbClass}
+        className={`study-embed ${fbClass}`}
         style={{ flex: 1, display: "flex", flexDirection: "column", gap: "clamp(14px, 2.5vh, 24px)", position: "relative" }}
       >
         {card && (

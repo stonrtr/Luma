@@ -560,9 +560,19 @@ button {
   /* Меньше воздуха по краям + учёт вырезов (safe-area) + место под нижний бар */
   .app-outer {
     min-height: 100dvh; /* динамическая высота — без «прыжков» под адресной строкой */
-    padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+    padding: calc(10px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
       calc(84px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
-    gap: 18px;
+    gap: 10px;
+  }
+
+  /* Карточка сессии на мобиле короче (компактные вертикальные отступы),
+     чтобы блок «Прогресс фразы» помещался над нижней панелью, без прокрутки. */
+  .study-embed {
+    gap: 10px !important;
+  }
+  .study-card {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
   }
   .content-col {
     gap: 16px;

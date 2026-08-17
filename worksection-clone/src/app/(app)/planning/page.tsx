@@ -82,7 +82,9 @@ export default async function PlanningPage({
 }) {
   const viewer = await requireUser();
   const sp = await searchParams;
-  const targets = await getPlanningTargets(viewer.id, viewer.role);
+  const targetsRaw = await getPlanningTargets(viewer.id, viewer.role);
+  // «Я» (сам пользователь) — всегда первым в переключателе, остальные по имени
+  const targets = [...targetsRaw].sort((a, b) => (a.id === viewer.id ? -1 : b.id === viewer.id ? 1 : 0));
   // Статус плана на ТЕКУЩУЮ неделю для галочек на плашках (сбрасывается с новой неделей)
   const weekMarker = weekStartInTz(viewer.timezone || "Europe/Kyiv");
   const targetApprovals = await db.weeklyPlanApproval.findMany({

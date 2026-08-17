@@ -36,6 +36,11 @@ export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: bool
   useEffect(() => setMounted(true), []);
   useEffect(() => setOpen(false), [pathname]); // переход по ссылке закрывает меню
 
+  // Звук-«щелчок» при переключении вкладки (клик по гесту — autoplay разрешён)
+  const playSwitch = () => {
+    try { const a = new Audio("/tab-switch.mp3"); a.volume = 0.5; a.play().catch(() => {}); } catch { /* звук необязателен */ }
+  };
+
   // Быстрые переходы: цифра 1..9 открывает вкладку по её порядку в хедере.
   // Игнорируем ввод в полях и модификаторы (Cmd+1 и т.п.).
   const hrefs = items.map((it) => it.href);
@@ -48,7 +53,7 @@ export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: bool
       if (el?.closest?.("[data-sheet-editor]") || document.querySelector("[data-sheet-editor]")) return; // не мешаем таблице
       if (e.key >= "1" && e.key <= "9") {
         const idx = Number(e.key) - 1;
-        if (idx < hrefs.length) { e.preventDefault(); router.push(hrefs[idx]); }
+        if (idx < hrefs.length && hrefs[idx] !== pathname) { e.preventDefault(); playSwitch(); router.push(hrefs[idx]); }
       }
     };
     window.addEventListener("keydown", onKey);
@@ -62,7 +67,7 @@ export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: bool
         {items.map((it) => {
           const Icon = it.icon;
           return (
-            <Link key={it.href} href={it.href} className={cn(base, isActive(it.href) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground")}>
+            <Link key={it.href} href={it.href} onClick={() => { if (!isActive(it.href)) playSwitch(); }} className={cn(base, isActive(it.href) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground")}>
               <Icon className="size-4" />
               <span>{t(locale, it.key)}</span>
             </Link>
@@ -92,7 +97,7 @@ export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: bool
                 <Link
                   key={it.href}
                   href={it.href}
-                  onClick={() => setOpen(false)}
+                  onClick={() => { if (!isActive(it.href)) playSwitch(); setOpen(false); }}
                   className={cn(
                     "flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium",
                     isActive(it.href) ? "bg-accent text-accent-foreground" : "text-foreground hover:bg-muted",
