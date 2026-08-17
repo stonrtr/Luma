@@ -108,7 +108,6 @@ export function StudySession({
   const answer = card ? (showFirst === "en" ? card.russian : card.english) : "";
   const questionIsEn = showFirst === "en";
   const exampleQ = card ? (questionIsEn ? card.exampleEn : card.exampleRu) : "";
-  const exampleOther = card ? (questionIsEn ? card.exampleRu : card.exampleEn) : "";
 
   const playEnglish = useCallback(() => {
     if (card?.english) speakEnglish(card.english, settings.voice, settings.speechRate);
@@ -432,16 +431,6 @@ export function StudySession({
               <span className="gpill" style={{ color: "rgba(255,255,255,0.85)", padding: "5px 14px" }}>
                 {card.alternativeTranslations.join(" · ")}
               </span>
-            )}
-            {(exampleQ || exampleOther) && (
-              <div style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 6 }}>
-                {exampleQ && (
-                  <div style={{ color: "rgba(255,255,255,0.9)", fontStyle: "italic", fontSize: "clamp(14px, 1.4vw, 17px)" }}>{exampleQ}</div>
-                )}
-                {exampleOther && (
-                  <div style={{ color: "rgba(255,255,255,0.65)", fontStyle: "italic", fontSize: "clamp(13px, 1.3vw, 15px)" }}>{exampleOther}</div>
-                )}
-              </div>
             )}
             {usedHint ? (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
