@@ -216,6 +216,31 @@ export async function bulkSetStatus(input: { taskIds: string[]; status: TaskStat
   revalidatePath("/", "layout");
 }
 
+// Массовое удаление выбранных задач. Право: владелец/админ, автор,
+// исполнитель или руководитель исполнителя — по каждой задаче отдельно.
+export async function bulkDeleteTasks(input: { taskIds: string[] }) {
+  const user = await requireUser();
+  const ids = [...new Set(input.taskIds)].filter(Boolean);
+  if (ids.length === 0) return { deleted: 0 };
+  const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
+  const tasks = await db.task.findMany({
+    where: { id: { in: ids } },
+    include: { assignees: { include: { user: { select: { id: true, managerId: true } } } } },
+  });
+  const allowed = tasks.filter((t) => {
+    if (isAdmin) return true;
+    if (t.createdById === user.id) return true;
+    if (t.assignees.some((a) => a.user.id === user.id)) return true;
+    return t.assignees.some((a) => a.user.managerId === user.id);
+  }).map((t) => t.id);
+  if (allowed.length === 0) return { deleted: 0 };
+  // «Перевірити …», привязанные к удаляемым задачам, тоже убираем
+  await db.task.deleteMany({ where: { description: { in: allowed.map((id) => `/tasks/${id}`) }, status: { not: "DONE" } } });
+  await db.task.deleteMany({ where: { id: { in: allowed } } });
+  revalidatePath("/", "layout");
+  return { deleted: allowed.length };
+}
+
 // Полное удаление задачи. Право: владелец/админ, автор, исполнитель
 // или руководитель исполнителя. Каскады подчищают чек-лист/комментарии/сабтаски.
 export async function deleteTask(taskId: string) {

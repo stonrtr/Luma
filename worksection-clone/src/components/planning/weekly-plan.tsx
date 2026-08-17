@@ -26,7 +26,7 @@ type Item = {
 type Project = { id: string; name: string; color: string };
 type AvailableTask = { id: string; title: string; priority: number };
 
-const MIN_SLOTS = 3;
+const MIN_SLOTS = 5;
 
 type PlanStatus = "DRAFT" | "PENDING" | "APPROVED" | "RETURNED";
 

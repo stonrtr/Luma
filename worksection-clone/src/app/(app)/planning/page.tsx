@@ -8,8 +8,8 @@ import { KpiBlock, KpiAchievedToggle } from "@/components/planning/kpi-block";
 import { WeeklyPlan } from "@/components/planning/weekly-plan";
 import { WeeklyWins, WeeklyWinsArchive } from "@/components/planning/weekly-wins";
 import { db } from "@/server/db";
-import { Gauge, ListChecks, ChevronDown, Trophy } from "lucide-react";
-import { monthLabel, weekLabel, isoWeekNumber } from "@/lib/week";
+import { Gauge, ListChecks, ChevronDown, Trophy, CircleCheck, Circle } from "lucide-react";
+import { monthLabel, weekLabel, isoWeekNumber, weekStartInTz } from "@/lib/week";
 import { priorityTone } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 
@@ -83,6 +83,13 @@ export default async function PlanningPage({
   const viewer = await requireUser();
   const sp = await searchParams;
   const targets = await getPlanningTargets(viewer.id, viewer.role);
+  // Статус плана на ТЕКУЩУЮ неделю для галочек на плашках (сбрасывается с новой неделей)
+  const weekMarker = weekStartInTz(viewer.timezone || "Europe/Kyiv");
+  const targetApprovals = await db.weeklyPlanApproval.findMany({
+    where: { userId: { in: targets.map((x) => x.id) }, weekStart: weekMarker },
+    select: { userId: true, status: true },
+  });
+  const planStatusByUser = new Map(targetApprovals.map((a) => [a.userId, a.status]));
 
   const targetId = sp.user && targets.some((t) => t.id === sp.user) ? sp.user : viewer.id;
   // авто-KPI: если на этот месяц целей нет — переносим из прошлого
@@ -142,18 +149,29 @@ export default async function PlanningPage({
         </div>
         {targets.length > 1 && (
           <div className="flex flex-wrap gap-1">
-            {targets.map((t) => (
-              <Link
-                key={t.id}
-                href={`/planning?user=${t.id}`}
-                className={cn(
-                  "rounded-full px-3 py-1 text-sm transition-colors",
-                  t.id === targetId ? "border border-[#B7EE7A] bg-accent text-accent-foreground dark:border-[#3f5a2e]" : "bg-muted text-muted-foreground hover:bg-accent",
-                )}
-              >
-                {t.id === viewer.id ? "Я" : t.name}
-              </Link>
-            ))}
+            {targets.map((tg) => {
+              const st = planStatusByUser.get(tg.id); // PENDING=подан, APPROVED=утверждён
+              return (
+                <Link
+                  key={tg.id}
+                  href={`/planning?user=${tg.id}`}
+                  className={cn(
+                    "relative rounded-full px-3 py-1 text-sm transition-colors",
+                    tg.id === targetId ? "border border-[#B7EE7A] bg-accent text-accent-foreground dark:border-[#3f5a2e]" : "bg-muted text-muted-foreground hover:bg-accent",
+                  )}
+                >
+                  {/* Значок в правом верхнем углу, выступает за плашку:
+                      план подан — зелёный кружок; утверждён — зелёный кружок с галочкой */}
+                  {st === "PENDING" && (
+                    <Circle className="absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background text-[#3D6B26] dark:text-[#A9D97F]" />
+                  )}
+                  {st === "APPROVED" && (
+                    <CircleCheck className="absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background text-[#3D6B26] dark:text-[#A9D97F]" />
+                  )}
+                  {tg.id === viewer.id ? "Я" : tg.name}
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

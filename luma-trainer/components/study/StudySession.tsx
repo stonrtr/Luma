@@ -304,8 +304,11 @@ export function StudySession({
       style={{
         flex: 1,
         display: "grid",
-        gridTemplateRows: "1fr auto 1fr",
+        // minmax(0,1fr) держит верх и низ строго равными → слово всегда точно по центру,
+        // независимо от объёма контента (синонимы, примеры) сверху/снизу.
+        gridTemplateRows: "minmax(0, 1fr) auto minmax(0, 1fr)",
         justifyItems: "center",
+        alignItems: "center",
         rowGap: "clamp(10px, 2vh, 18px)",
         textAlign: "center",
         padding: "clamp(20px, 3.5vh, 40px) clamp(18px, 4vw, 40px)",

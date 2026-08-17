@@ -1,12 +1,12 @@
 "use client";
 import { useT } from "@/lib/locale-context";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { CheckCircle2, X, ArrowRightLeft } from "lucide-react";
+import { CheckCircle2, X, ArrowRightLeft, Trash2 } from "lucide-react";
 import type { TaskStatus } from "@/generated/prisma/enums";
-import { bulkSetStatus } from "@/server/actions/tasks";
+import { bulkSetStatus, bulkDeleteTasks } from "@/server/actions/tasks";
 import { useSelection } from "./selection-context";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TASK_STATUSES, TASK_STATUS_LABEL, TASK_STATUS_DOT } from "@/lib/domain";
@@ -17,6 +17,7 @@ export function BulkBar() {
   const router = useRouter();
   const tr = useT();
   const [pending, start] = useTransition();
+  const [confirmDel, setConfirmDel] = useState(false);
   if (!sel || sel.selected.size === 0) return null;
 
   const ids = [...sel.selected];
@@ -25,6 +26,16 @@ export function BulkBar() {
     start(async () => {
       await bulkSetStatus({ taskIds: ids, status });
       toast.success(`${tr("bulk.updated")}: ${ids.length}`);
+      sel!.clear();
+      router.refresh();
+    });
+  }
+
+  function del() {
+    start(async () => {
+      const r = await bulkDeleteTasks({ taskIds: ids });
+      toast.success(`${tr("bulk.delete")}: ${r?.deleted ?? 0}`);
+      setConfirmDel(false);
       sel!.clear();
       router.refresh();
     });
@@ -53,6 +64,19 @@ export function BulkBar() {
           ))}
         </PopoverContent>
       </Popover>
+      {confirmDel ? (
+        <span className="flex items-center gap-1.5">
+          <span className="px-1 text-xs text-muted-foreground">{tr("bulk.deleteConfirm")}</span>
+          <button onClick={del} disabled={pending} className="flex items-center gap-1 rounded-full bg-destructive px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-destructive/90 disabled:opacity-50">
+            <Trash2 className="size-4" /> {tr("bulk.delete")}
+          </button>
+          <button onClick={() => setConfirmDel(false)} className="rounded-full px-2 py-1 text-sm text-muted-foreground hover:bg-muted">{tr("common.cancel")}</button>
+        </span>
+      ) : (
+        <button onClick={() => setConfirmDel(true)} className="flex items-center gap-1 rounded-full border border-destructive/40 px-3 py-1.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10">
+          <Trash2 className="size-4" /> {tr("bulk.delete")}
+        </button>
+      )}
       <button onClick={() => sel.clear()} className="rounded-full p-1.5 text-muted-foreground hover:bg-muted" title={tr("bb.clearSel")}>
         <X className="size-4" />
       </button>

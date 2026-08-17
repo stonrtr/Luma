@@ -51,12 +51,12 @@ export function ReviewDecision({ taskId }: { taskId: string }) {
   }
 
   return (
-    <div className="flex gap-2">
-      <Button size="sm" className="flex-1" disabled={pending} onClick={approve}>
-        <Check className="size-4" /> {tr("rb.approve")}
+    <div className="flex flex-col gap-2">
+      <Button size="sm" className="w-full" disabled={pending} onClick={approve}>
+        <Check className="size-4 shrink-0" /> {tr("rb.approve")}
       </Button>
-      <Button size="sm" variant="outline" className="flex-1" disabled={pending} onClick={() => setRejecting(true)}>
-        <Undo2 className="size-4" /> {tr("rb.return")}
+      <Button size="sm" variant="outline" className="h-auto w-full whitespace-normal py-1.5 text-center leading-tight" disabled={pending} onClick={() => setRejecting(true)}>
+        <Undo2 className="size-4 shrink-0" /> {tr("rb.return")}
       </Button>
     </div>
   );

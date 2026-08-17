@@ -125,7 +125,7 @@ async function buildWeek(userId: string, ws?: string): Promise<WeekData> {
 // Плашка счётчиков сотрудника: «Активні N», «Завершені N» + всплывающий список задач
 function MemberCounters({ m, locale }: { m: Awaited<ReturnType<typeof getTeamOverview>>["members"][number]; locale: string }) {
   return (
-    <span className="ml-1 flex flex-col items-start gap-0.5 text-[11px]">
+    <span className="flex items-center gap-3 text-[11px]">
       <span className="group/act relative flex items-center gap-1">
         <span className="text-muted-foreground">{t(locale, "team.active")}</span>
         <span className="rounded-full bg-[#DCEAF6] px-1.5 py-0.5 font-semibold text-[#2C5E7A] dark:bg-[#132a36] dark:text-[#8fc6e2]">{m.weekActive}</span>
@@ -156,9 +156,9 @@ function MemberWeekLoad({ used, cap, locale }: { used: number; cap: number; loca
   const over = used > cap;
   return (
     <div className="mt-1 w-full">
-      <div className="mb-0.5 flex items-center justify-between text-[10px]">
+      <div className="mb-0.5 flex items-center justify-between gap-2 text-[10px]">
         <span className="text-muted-foreground">{t(locale, "team.load")}</span>
-        <span className={cn("font-semibold", over && "text-destructive")}>{formatMinutes(used, locale)} / {formatMinutes(cap, locale)}</span>
+        <span className={cn("shrink-0 font-semibold", over && "text-destructive")}>{formatMinutes(used, locale)} / {formatMinutes(cap, locale)}</span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-muted">
         <div className={cn("h-full rounded-full", over ? "bg-destructive" : "bg-primary")} style={{ width: `${pct}%` }} />
@@ -191,7 +191,7 @@ export default async function TeamPage({
           <Link
             key={m.id}
             href={`/team?member=${m.id}&view=${view}`}
-            className={cn("flex min-w-[210px] flex-col gap-1.5 rounded-xl border bg-card px-3 py-2 transition-colors hover:bg-muted", member === m.id && "border-primary ring-1 ring-primary")}
+            className={cn("flex min-w-[150px] flex-col gap-1.5 rounded-xl border bg-card px-3 py-2 transition-colors hover:bg-muted", member === m.id && "border-primary ring-1 ring-primary")}
           >
             <div className="flex items-center gap-2">
               <Avatar className="size-8"><AvatarFallback className="text-[10px]">{initials(m.name)}</AvatarFallback></Avatar>
@@ -199,8 +199,8 @@ export default async function TeamPage({
                 <p className="truncate text-sm font-medium leading-tight">{m.name}</p>
                 <p className="truncate text-xs text-muted-foreground leading-tight">{m.title ?? "—"}</p>
               </div>
-              <MemberCounters m={m} locale={viewer.locale} />
             </div>
+            <MemberCounters m={m} locale={viewer.locale} />
             <MemberWeekLoad used={m.weekMin} cap={m.weekCap} locale={viewer.locale} />
           </Link>
         ))}
