@@ -274,17 +274,39 @@ export function StudySession({
 
   /* ── Общие блоки разметки ─────────────────────────────────────────── */
 
+  // Строка «сложность + озвучка» — одинаково на обеих сторонах (верхний ряд).
+  const topRow = card && (
+    <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", justifyContent: "center" }}>
+      <span className="gpill">
+        <span
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            background: DIFF_ON_PANEL[difficultyBand(card.difficulty)],
+            display: "inline-block",
+          }}
+        />
+        сложность {card.difficulty}/10
+      </span>
+      <button aria-label="Озвучить" className="icon-btn icon-btn-sm" onClick={playEnglish}>
+        <SpeakerIcon />
+      </button>
+    </div>
+  );
+
+  // Карточка — сетка из 3 рядов (1fr auto 1fr): главное слово всегда в центре,
+  // поэтому при перевороте перевод оказывается ровно там же, где было англ. слово.
   const stage = card && (
     <div
       key={`${index}-${flipped ? "b" : "f"}`}
       className="stage"
       style={{
         flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "clamp(14px, 2.5vh, 26px)",
+        display: "grid",
+        gridTemplateRows: "1fr auto 1fr",
+        justifyItems: "center",
+        rowGap: "clamp(10px, 2vh, 18px)",
         textAlign: "center",
         padding: "clamp(20px, 3.5vh, 40px) clamp(18px, 4vw, 40px)",
         border: "1.5px dashed rgba(255,255,255,0.35)",
@@ -298,172 +320,151 @@ export function StudySession({
         else open();
       }}
     >
-      {!flipped ? (
-        <>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", justifyContent: "center" }}>
-            <span className="gpill">
-              <span
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  background: DIFF_ON_PANEL[difficultyBand(card.difficulty)],
-                  display: "inline-block",
-                }}
-              />
-              сложность {card.difficulty}/10
-            </span>
-            <button aria-label="Озвучить" className="icon-btn icon-btn-sm" onClick={playEnglish}>
-              <SpeakerIcon />
-            </button>
-          </div>
+      {/* Верхний ряд */}
+      <div style={{ alignSelf: "end" }}>{topRow}</div>
 
-          <div
-            style={{
-              fontSize: embedded ? "clamp(40px, 7vw, 110px)" : "clamp(46px, 9vw, 150px)",
-              fontWeight: 800,
-              color: "#fff",
-              lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              textWrap: "balance",
-              maxWidth: "15ch",
-            }}
-          >
-            {question}
-          </div>
+      {/* Средний ряд — главное слово (вопрос или перевод), фиксированный центр */}
+      <div
+        style={{
+          alignSelf: "center",
+          fontSize: embedded ? "clamp(38px, 6.5vw, 100px)" : "clamp(42px, 8vw, 130px)",
+          fontWeight: 800,
+          color: "#fff",
+          lineHeight: 0.98,
+          letterSpacing: "-0.02em",
+          textWrap: "balance",
+          maxWidth: flipped ? "18ch" : "15ch",
+        }}
+      >
+        {flipped ? answer : question}
+      </div>
 
-          {exampleQ && (
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "flex-start",
-                gap: 10,
-                maxWidth: 560,
-                background: "rgba(255,255,255,0.13)",
-                backdropFilter: "blur(10px)",
-                border: "none",
-                borderRadius: 18,
-                padding: "12px 18px",
-                color: "rgba(255,255,255,0.92)",
-                fontSize: "clamp(14px, 1.4vw, 17px)",
-                textAlign: "left",
-              }}
-            >
-              <span
+      {/* Нижний ряд — примеры и действия/оценка */}
+      <div
+        style={{
+          alignSelf: "start",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "clamp(12px, 2vh, 20px)",
+        }}
+      >
+        {!flipped ? (
+          <>
+            {exampleQ && (
+              <div
                 style={{
-                  flex: "none",
-                  width: 22,
-                  height: 22,
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.25)",
                   display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  marginTop: 1,
+                  alignItems: "flex-start",
+                  gap: 10,
+                  maxWidth: 560,
+                  background: "rgba(255,255,255,0.13)",
+                  backdropFilter: "blur(10px)",
+                  border: "none",
+                  borderRadius: 18,
+                  padding: "12px 18px",
+                  color: "rgba(255,255,255,0.92)",
+                  fontSize: "clamp(14px, 1.4vw, 17px)",
+                  textAlign: "left",
                 }}
               >
-                +
-              </span>
-              <span style={{ fontStyle: "italic" }}>{exampleQ}</span>
-            </div>
-          )}
-
-          {/* Действия сразу под фразой: Подсказка (слева), Показать ответ (справа) */}
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 4 }}>
-            <button className="gbtn study-cta" onClick={doHint} disabled={hintDone}>
-              Подсказка<span className="kbd-arrow"> ↑</span>
-            </button>
-            <button className="wbtn study-cta" onClick={open}>
-              Показать ответ
-            </button>
-          </div>
-
-          {reveal > 0 && (
-            <div
-              style={{
-                display: "inline-block",
-                background: "rgba(255,255,255,0.16)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.28)",
-                borderRadius: 999,
-                padding: "10px 26px",
-                color: "#fff",
-                fontWeight: 700,
-                fontSize: "clamp(18px, 2.6vw, 30px)",
-                letterSpacing: 3,
-              }}
-            >
-              {revealText}
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <div
-            style={{
-              fontSize: embedded ? "clamp(34px, 5.5vw, 90px)" : "clamp(38px, 7vw, 110px)",
-              fontWeight: 800,
-              color: "#fff",
-              lineHeight: 0.98,
-              letterSpacing: "-0.02em",
-              textWrap: "balance",
-              maxWidth: "18ch",
-            }}
-          >
-            {answer}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-            {card.transcription && (
-              <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, fontWeight: 600 }}>{card.transcription}</span>
+                <span
+                  style={{
+                    flex: "none",
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.25)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    marginTop: 1,
+                  }}
+                >
+                  +
+                </span>
+                <span style={{ fontStyle: "italic" }}>{exampleQ}</span>
+              </div>
             )}
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+              <button className="gbtn study-cta" onClick={doHint} disabled={hintDone}>
+                Подсказка<span className="kbd-arrow"> ↑</span>
+              </button>
+              <button className="wbtn study-cta" onClick={open}>
+                Показать ответ
+              </button>
+            </div>
+
+            {reveal > 0 && (
+              <div
+                style={{
+                  display: "inline-block",
+                  background: "rgba(255,255,255,0.16)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255,255,255,0.28)",
+                  borderRadius: 999,
+                  padding: "10px 26px",
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "clamp(18px, 2.6vw, 30px)",
+                  letterSpacing: 3,
+                }}
+              >
+                {revealText}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
             {card.alternativeTranslations.length > 0 && (
               <span className="gpill" style={{ color: "rgba(255,255,255,0.85)", padding: "5px 14px" }}>
                 {card.alternativeTranslations.join(" · ")}
               </span>
             )}
-          </div>
-          {(exampleQ || exampleOther) && (
-            <div style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 6 }}>
-              {exampleQ && (
-                <div style={{ color: "rgba(255,255,255,0.9)", fontStyle: "italic", fontSize: "clamp(14px, 1.4vw, 17px)" }}>{exampleQ}</div>
-              )}
-              {exampleOther && (
-                <div style={{ color: "rgba(255,255,255,0.65)", fontStyle: "italic", fontSize: "clamp(13px, 1.3vw, 15px)" }}>{exampleOther}</div>
-              )}
-            </div>
-          )}
-          {usedHint ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, marginTop: 8 }}>
-              <span className="gpill" style={{ fontSize: 13 }}>подсказка использована — засчитывается как «Не вспомнил»</span>
-              <button
-                className="wbtn"
-                style={{ minHeight: 52, padding: "0 30px", fontSize: 16, color: "#d6403f" }}
-                onClick={() => grade("again")}
-              >
-                Не вспомнил<span className="kbd-arrow"> →</span>
-              </button>
-            </div>
-          ) : (
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
-              <button
-                className="wbtn"
-                style={{ minHeight: 52, padding: "0 26px", fontSize: 16, color: "#d6403f" }}
-                onClick={() => grade("again")}
-              >
-                <span className="kbd-arrow">← </span>Не вспомнил
-              </button>
-              <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
-                <span className="kbd-arrow">↓ </span>С трудом
-              </button>
-              <button className="wbtn" style={{ minHeight: 52, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
-                Легко<span className="kbd-arrow"> →</span>
-              </button>
-            </div>
-          )}
-        </>
-      )}
+            {(exampleQ || exampleOther) && (
+              <div style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 6 }}>
+                {exampleQ && (
+                  <div style={{ color: "rgba(255,255,255,0.9)", fontStyle: "italic", fontSize: "clamp(14px, 1.4vw, 17px)" }}>{exampleQ}</div>
+                )}
+                {exampleOther && (
+                  <div style={{ color: "rgba(255,255,255,0.65)", fontStyle: "italic", fontSize: "clamp(13px, 1.3vw, 15px)" }}>{exampleOther}</div>
+                )}
+              </div>
+            )}
+            {usedHint ? (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                <span className="gpill" style={{ fontSize: 13 }}>подсказка использована — засчитывается как «Не вспомнил»</span>
+                <button
+                  className="wbtn"
+                  style={{ minHeight: 52, padding: "0 30px", fontSize: 16, color: "#d6403f" }}
+                  onClick={() => grade("again")}
+                >
+                  Не вспомнил<span className="kbd-arrow"> →</span>
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+                <button
+                  className="wbtn"
+                  style={{ minHeight: 52, padding: "0 26px", fontSize: 16, color: "#d6403f" }}
+                  onClick={() => grade("again")}
+                >
+                  <span className="kbd-arrow">← </span>Не вспомнил
+                </button>
+                <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
+                  <span className="kbd-arrow">↓ </span>С трудом
+                </button>
+                <button className="wbtn" style={{ minHeight: 52, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
+                  Легко<span className="kbd-arrow"> →</span>
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 
