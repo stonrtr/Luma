@@ -1,15 +1,15 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum, streak } from "@/lib/progress";
 import { MomentumTag, ActivityStrip, Tally } from "./Momentum";
-import { humanFull } from "@/lib/date";
+import { dayMonth, dayMonthFull } from "@/lib/date";
+import { goalColor } from "@/lib/goalColor";
 import { Tick } from "./icons";
 
-export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit: (goalId: string) => void }) {
-  const { state, toggleTask, addTask, setGoalStatus } = useStore();
+export function GoalCenter({ goalId, onAddHabit, onQuickAdd }: { goalId: string; onAddHabit: (goalId: string) => void; onQuickAdd: () => void }) {
+  const { state, toggleTask, setGoalStatus } = useStore();
   const idx = useMemo(() => indexEntries(state.entries), [state.entries]);
-  const [draft, setDraft] = useState("");
 
   const goal = state.goals.find((g) => g.id === goalId);
   if (!goal) return null;
@@ -20,13 +20,6 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
   const openTasks = tasks.filter((t) => !t.doneAt);
   const doneTasks = tasks.filter((t) => t.doneAt);
 
-  const add = () => {
-    const title = draft.trim();
-    if (!title) return;
-    setDraft("");
-    addTask(goal.id, title, null);
-  };
-
   return (
     <>
       <div className="head">
@@ -35,17 +28,16 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
 
       <div className="goal-tally">
         <Tally m={m} size="lg" />
-        <span className="goal-tally-hint">на пути к цели</span>
       </div>
       <div className="goal-top">
-        <MomentumTag m={m} />
+        <MomentumTag m={m} color={goalColor(goal.id, state.goals)} />
         <ActivityStrip dots={m.dots} />
         <span className="goal-maint">
-          {m.lastActive ? `Последняя активность: ${humanFull(m.lastActive).toLowerCase()}` : "Последняя активность: —"}
+          {m.lastActive ? `Последняя активность: ${dayMonthFull(m.lastActive)}` : "Последняя активность: —"}
         </span>
       </div>
 
-      <div className="section-label">Привычки — ведут к цели</div>
+      <div className="section-label">Related habits</div>
       {habits.length === 0 ? (
         <div className="muted-note">Нет привычек. Добавь ту, что двигает цель.</div>
       ) : (
@@ -73,15 +65,12 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
               <Tick />
             </button>
             <span className="lab">{t.title}</span>
-            <span className="due">{t.dueDate ? t.dueDate.slice(5) : ""}</span>
+            <span className="due">{t.dueDate ? dayMonth(t.dueDate) : ""}</span>
           </div>
         ))}
         {tasks.length === 0 && <div className="muted-note" style={{ padding: "14px 2px" }}>Задач пока нет.</div>}
       </div>
-      <div className="goal-add">
-        <input placeholder="Новая задача…" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} />
-        <button className="mini-btn" onClick={add}>+ задача</button>
-      </div>
+      <button className="add-task" onClick={onQuickAdd}>+ задача</button>
 
       {goal.status === "done" ? (
         <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "active")}>

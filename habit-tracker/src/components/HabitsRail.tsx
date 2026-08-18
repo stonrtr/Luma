@@ -42,7 +42,7 @@ export function HabitsRail({ view }: { view: string }) {
                 {!isGoalView && <u>{goalName(h)}</u>}
               </div>
               <div className="days">
-                {[-3, -2, -1, 0, 1, 2, 3].map((off) => {
+                {[-6, -5, -4, -3, -2, -1, 0].map((off) => {
                   const date = addDays(state.today, off);
                   const lab = wdShort(date);
                   const future = off > 0;
@@ -88,7 +88,7 @@ export function HabitsRail({ view }: { view: string }) {
         })}
 
         <div className="note">
-          Три дня назад можно доотметить, будущие — только план. Серия считается подряд от сегодня назад.
+          Последние 7 дней, сегодня — крайний справа. Прошедшие дни можно доотметить. Серия — подряд от сегодня назад.
         </div>
       </div>
     </div>

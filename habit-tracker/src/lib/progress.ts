@@ -62,45 +62,22 @@ export function adherence(habit: Habit, idx: EntryIndex, today: string, N = 30):
 }
 
 /**
- * Серия. Для daily/weekdays — подряд выполненные запланированные дни от сегодня назад
- * (незапланированные пропускаются, не рвут серию). Для weekly — подряд закрытые недели.
+ * Серия — подряд идущие выполненные дни от сегодня назад (по галочкам, без учёта
+ * расписания). Сегодня не рвёт серию, если ещё не отмечено.
  */
 export function streak(
   habit: Habit,
   idx: EntryIndex,
   today: string,
-): { value: number; unit: "дней" | "недель" } {
-  if (habit.schedule.type === "weekly") {
-    const per = Math.max(1, habit.schedule.timesPerWeek ?? 1);
-    const doneInWeek = (monday: string) => {
-      let n = 0;
-      for (let i = 0; i < 7; i++) if (doneOn(idx, habit.id, addDays(monday, i))) n++;
-      return n;
-    };
-    const mondayOfToday = addDays(today, 1 - isoWeekday(today));
-    let weeks = 0;
-    // текущая неделя засчитывается только если цель уже достигнута
-    if (doneInWeek(mondayOfToday) >= per) weeks++;
-    let m = addDays(mondayOfToday, -7);
-    while (doneInWeek(m) >= per) {
-      weeks++;
-      m = addDays(m, -7);
-      if (weeks > 520) break;
-    }
-    return { value: weeks, unit: "недель" };
-  }
-
+): { value: number; unit: "дней" } {
   const createdDay = habit.createdAt.slice(0, 10);
   let count = 0;
   let d = today;
-  // сегодня не рвёт серию, если ещё не отмечено
-  if (isScheduled(habit, d) && doneOn(idx, habit.id, d)) count++;
+  if (doneOn(idx, habit.id, d)) count++;
   d = addDays(d, -1);
   while (d >= createdDay) {
-    if (isScheduled(habit, d)) {
-      if (doneOn(idx, habit.id, d)) count++;
-      else break;
-    }
+    if (doneOn(idx, habit.id, d)) count++;
+    else break;
     d = addDays(d, -1);
   }
   return { value: count, unit: "дней" };

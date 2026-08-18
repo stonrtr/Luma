@@ -82,6 +82,20 @@ export function humanFull(dateStr: string): string {
   return `${WEEKDAYS_FULL[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 
+const MONTHS_SHORT = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+
+/** «16 авг» — число цифрой, месяц коротко */
+export function dayMonth(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;
+}
+
+/** «18 августа» — число и месяц словом, без дня недели */
+export function dayMonthFull(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
 export const WD_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
 /** Короткий ярлык дня недели для даты */

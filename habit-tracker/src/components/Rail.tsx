@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
 import { horizonCount } from "@/lib/selectors";
 import { MomentumDot, Counts } from "./Momentum";
+import { goalColor } from "@/lib/goalColor";
 
 export function Rail({
   view,
@@ -47,7 +48,7 @@ export function Rail({
           <button key={g.id} className={`nav-item${view === g.id ? " sel" : ""}`} onClick={() => onSelect(g.id)}>
             <span className="nav-top">
               <b>{g.name}</b>
-              <MomentumDot m={m} />
+              <MomentumDot m={m} color={goalColor(g.id, state.goals)} />
             </span>
             <Counts m={m} />
           </button>

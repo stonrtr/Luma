@@ -2,17 +2,21 @@ import type { Momentum } from "@/lib/progress";
 import { jumpsText, stepsText } from "@/lib/plural";
 import { TaskIcon, HabitIcon } from "./icons";
 
-export function MomentumTag({ m }: { m: Momentum }) {
+export function MomentumTag({ m, color }: { m: Momentum; color?: string }) {
   return (
     <span className={`mo ${m.status}`}>
-      <span className="mo-dot" />
+      <span className="mo-dot" style={color ? { background: color, boxShadow: "none" } : undefined} />
       {m.label}
     </span>
   );
 }
 
-export function MomentumDot({ m }: { m: Momentum }) {
-  return <span className={`mo ${m.status}`}><span className="mo-dot" /></span>;
+export function MomentumDot({ m, color }: { m: Momentum; color?: string }) {
+  return (
+    <span className={`mo ${m.status}`}>
+      <span className="mo-dot" style={color ? { background: color, boxShadow: "none" } : undefined} />
+    </span>
+  );
 }
 
 /** Счёт достижений к цели: задачи и привычки, словами. Без процентов. */

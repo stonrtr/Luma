@@ -1,7 +1,7 @@
 "use client";
 import { useStore } from "@/lib/store";
 import { todayOpenTasks, todayDoneTasks } from "@/lib/selectors";
-import { humanFull } from "@/lib/date";
+import { humanFull, dayMonth } from "@/lib/date";
 import type { Task } from "@/lib/types";
 import { Tick } from "./icons";
 
@@ -73,7 +73,7 @@ function Row({
       </button>
       <span className="lab">{task.title}</span>
       {inbox ? <span className="tag inbox">инбокс</span> : goal ? <span className="tag">{goal}</span> : null}
-      {overdue ? <span className="due overdue-date">просрочено · {task.dueDate!.slice(5)}</span> : <span className="due" />}
+      {overdue ? <span className="due overdue-date">просрочено · {dayMonth(task.dueDate!)}</span> : <span className="due" />}
     </div>
   );
 }

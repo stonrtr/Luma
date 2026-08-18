@@ -103,16 +103,17 @@ body::after {
   animation: drift 20s ease-in-out infinite reverse;
 }
 
-/* ── оболочка ──────────────────────── */
+/* ── оболочка (резиновая) ──────────── */
 .page {
   position: relative;
   z-index: 1;
-  padding: 30px 40px 44px;
+  padding: clamp(12px, 2.6vw, 40px);
+  padding-bottom: 44px;
 }
 .shell {
   position: relative;
+  width: 100%;
   max-width: 1280px;
-  min-width: 1000px;
   margin: 0 auto;
   background: var(--card);
   border: 1px solid var(--line);
@@ -128,24 +129,57 @@ body::after {
 }
 .app {
   display: grid;
-  grid-template-columns: 244px minmax(380px, 1fr) 322px;
+  grid-template-columns: clamp(210px, 20vw, 250px) minmax(0, 1fr) clamp(280px, 26vw, 330px);
+  grid-template-areas: "nav main habits";
   align-items: stretch;
 }
 aside {
+  grid-area: nav;
+  min-width: 0;
   padding: 24px 18px;
   border-right: 1px solid var(--line2);
 }
 main {
-  padding: 26px 28px;
+  grid-area: main;
+  padding: clamp(18px, 2.2vw, 28px);
   min-width: 0;
+}
+
+/* планшет: привычки уезжают вниз на всю ширину */
+@media (max-width: 1080px) {
+  .app {
+    grid-template-columns: clamp(200px, 26vw, 240px) minmax(0, 1fr);
+    grid-template-areas:
+      "nav main"
+      "habits habits";
+  }
+  .rail {
+    border-left: 0 !important;
+    border-top: 1px solid var(--line2);
+  }
+}
+
+/* узкий экран: одна колонка */
+@media (max-width: 720px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "nav"
+      "main"
+      "habits";
+  }
+  aside {
+    border-right: 0;
+    border-bottom: 1px solid var(--line2);
+  }
 }
 
 /* ── рейка ─────────────────────────── */
 .cap {
   font-family: var(--mono), monospace;
   font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   color: var(--ink3);
   margin: 16px 4px 8px;
 }
@@ -192,8 +226,8 @@ main {
 }
 .nav-item.horizon.sel {
   border-color: transparent;
-  background: var(--iri);
-  box-shadow: 0 6px 18px rgba(99, 212, 106, 0.28);
+  background: var(--iri-soft);
+  box-shadow: 0 4px 14px rgba(99, 212, 106, 0.14);
 }
 .nav-top {
   display: flex;
@@ -251,17 +285,20 @@ main {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px 18px;
+  flex-wrap: wrap;
   margin: 0 2px 2px;
 }
 .head h1 {
   font-family: var(--sans), system-ui, sans-serif;
   font-weight: 400;
-  font-size: 40px;
-  line-height: 0.98;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1;
   margin: 0;
   color: var(--ink);
   letter-spacing: -0.02em;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .left {
   font-family: var(--mono), monospace;
@@ -282,7 +319,8 @@ main {
   border-bottom: 1px solid var(--line2);
 }
 .item.sel-row {
-  box-shadow: inset 3px 0 0 var(--green);
+  background: rgba(10, 10, 14, 0.025);
+  border-radius: 8px;
 }
 .box {
   width: 24px;
@@ -486,8 +524,8 @@ main {
 .section-label {
   font-family: var(--mono), monospace;
   font-size: 10.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   color: var(--ink2);
   margin: 26px 2px 12px;
 }
@@ -516,7 +554,7 @@ main {
   font-family: var(--mono), monospace;
   font-size: 10px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--ink2);
   padding: 5px 12px;
   border-radius: 100px;
@@ -577,7 +615,7 @@ main {
 
 .goal-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
 }
 .goal-card {
@@ -614,7 +652,7 @@ main {
   font-family: var(--mono), monospace;
   font-size: 10.5px;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--ink2);
   margin: 24px 2px 4px;
 }
@@ -625,6 +663,8 @@ main {
 
 /* ── привычки (правая колонка) ─────── */
 .rail {
+  grid-area: habits;
+  min-width: 0;
   padding: 24px 20px;
   border-left: 1px solid var(--line2);
   background: rgba(10, 10, 14, 0.015);
@@ -638,8 +678,8 @@ main {
 .hbox-h b {
   font-family: var(--mono), monospace;
   font-size: 10.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   color: var(--ink2);
   font-weight: 400;
 }
@@ -665,8 +705,8 @@ main {
 }
 .hab-n u {
   text-decoration: none;
-  font-family: var(--mono), monospace;
-  font-size: 10px;
+  font-family: var(--sans), system-ui, sans-serif;
+  font-size: 13px;
   color: var(--ink3);
 }
 .days {
@@ -791,7 +831,7 @@ main {
   font-family: var(--mono), monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--ink3);
   margin: 0 0 7px;
 }
@@ -930,7 +970,7 @@ main {
   font-family: var(--mono), monospace;
   font-size: 10px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--ink3);
   padding-left: 4px;
 }

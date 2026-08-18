@@ -154,12 +154,14 @@ export function StudySession({
   }, [flipped]);
 
   // Автоозвучка английского при ПОЯВЛЕНИИ карточки, если вопрос уже на английском
-  // (showFirst==="en"). Срабатывает на каждую новую карточку, не на переворот.
+  // (showFirst==="en"). Ключ по card?.id → срабатывает только на НОВУЮ карточку,
+  // а не на мутации (прогресс/избранное) и не на переворот.
   useEffect(() => {
     if (!card || !settings.autoPlay || showFirst !== "en") return;
     const t = setTimeout(playEnglish, 300);
     return () => clearTimeout(t);
-  }, [card, settings.autoPlay, showFirst, playEnglish]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [card?.id, settings.autoPlay, showFirst]);
 
   const doHint = useCallback(() => {
     if (!answer || flipped) return;
@@ -187,6 +189,9 @@ export function StudySession({
       const effective: Rating = usedHint ? "again" : rating;
       busy.current = true;
       playSfx(effective === "easy" ? "success" : effective === "hard" ? "so-so" : "mistake");
+      // Проговорить английский при оценке (звуковое закрепление) — чуть позже
+      // звука-отклика, чтобы не наслаивались.
+      if (settings.autoPlay && card.english) setTimeout(playEnglish, 180);
       setFeedback(effective === "again" ? "bad" : "good");
       setCounts((c) => ({ ...c, [effective]: c[effective] + 1 }));
       // Сразу двигаем прогресс-бар текущей карточки (анимация width 0.5s в .track),
@@ -206,7 +211,7 @@ export function StudySession({
         advance();
       }, delay);
     },
-    [card, usedHint, advance, index, settings.animationsEnabled]
+    [card, usedHint, advance, index, settings.animationsEnabled, settings.autoPlay, playEnglish]
   );
 
   // Хоткеи (§6): не срабатывают в полях ввода. Встроенная карточка

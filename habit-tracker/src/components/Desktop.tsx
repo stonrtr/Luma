@@ -96,7 +96,11 @@ export function Desktop() {
             ) : view === "calendar" ? (
               <CalendarCenter onAddForDate={(date) => setModal({ kind: "task", date })} />
             ) : (
-              <GoalCenter goalId={view} onAddHabit={(goalId) => setModal({ kind: "habit", goalId })} />
+              <GoalCenter
+                goalId={view}
+                onAddHabit={(goalId) => setModal({ kind: "habit", goalId })}
+                onQuickAdd={() => setModal({ kind: "task", goalId: view })}
+              />
             )}
           </main>
 
