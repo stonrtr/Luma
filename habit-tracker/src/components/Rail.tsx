@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
 import { horizonCount } from "@/lib/selectors";
-import { MomentumDot, Counts } from "./Momentum";
+import { MomentumDot, Counts, TrendIcon } from "./Momentum";
 import { goalColor } from "@/lib/goalColor";
 
 export function Rail({
@@ -47,7 +47,10 @@ export function Rail({
         return (
           <button key={g.id} className={`nav-item${view === g.id ? " sel" : ""}`} onClick={() => onSelect(g.id)}>
             <span className="nav-top">
-              <b>{g.name}</b>
+              <span className="nav-goal">
+                <TrendIcon status={m.status} />
+                <b>{g.name}</b>
+              </span>
               <MomentumDot m={m} color={goalColor(g.id, state.goals)} />
             </span>
             <Counts m={m} />

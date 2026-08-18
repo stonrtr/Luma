@@ -5,9 +5,8 @@ import { WD_SHORT, todayStr } from "@/lib/date";
 import type { GoalType, Schedule, ScheduleType } from "@/lib/types";
 
 export type ModalState =
-  | { kind: "task"; goalId?: string | null; date?: string }
+  | { kind: "create"; goalId?: string | null; date?: string; defaultType?: "task" | "habit" }
   | { kind: "goal" }
-  | { kind: "habit"; goalId: string | null }
   | null;
 
 function Shell({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
@@ -23,35 +22,75 @@ function Shell({ title, children, onClose }: { title: string; children: React.Re
 
 export function Modals({ modal, onClose }: { modal: ModalState; onClose: () => void }) {
   if (!modal) return null;
-  if (modal.kind === "task") return <TaskModal defaultGoal={modal.goalId ?? ""} defaultDate={modal.date} onClose={onClose} />;
   if (modal.kind === "goal") return <GoalModal onClose={onClose} />;
-  return <HabitModal goalId={modal.goalId} onClose={onClose} />;
+  return <CreateModal defaultGoal={modal.goalId ?? ""} defaultDate={modal.date} defaultType={modal.defaultType ?? "task"} onClose={onClose} />;
 }
 
-function TaskModal({ defaultGoal, defaultDate, onClose }: { defaultGoal: string; defaultDate?: string; onClose: () => void }) {
-  const { state, addTask } = useStore();
+/** Единая форма: создать задачу ИЛИ привычку. */
+function CreateModal({
+  defaultGoal,
+  defaultDate,
+  defaultType,
+  onClose,
+}: {
+  defaultGoal: string;
+  defaultDate?: string;
+  defaultType: "task" | "habit";
+  onClose: () => void;
+}) {
+  const { state, addTask, addHabit } = useStore();
+  const [type, setType] = useState<"task" | "habit">(defaultType);
   const [title, setTitle] = useState("");
-  const [goalId, setGoalId] = useState<string>(defaultGoal); // "" = инбокс
+  const [goalId, setGoalId] = useState<string>(defaultGoal);
   const [due, setDue] = useState(defaultDate ?? todayStr());
+  const [sched, setSched] = useState<ScheduleType>("daily");
+  const [days, setDays] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [per, setPer] = useState(3);
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => ref.current?.focus(), []);
 
   const save = () => {
     if (!title.trim()) return;
-    addTask(goalId || null, title.trim(), due || null);
+    if (type === "task") {
+      addTask(goalId || null, title.trim(), due || null);
+    } else {
+      const schedule: Schedule =
+        sched === "daily" ? { type: "daily" } : sched === "weekdays" ? { type: "weekdays", days } : { type: "weekly", timesPerWeek: per };
+      addHabit(goalId || null, title.trim(), schedule);
+    }
     onClose();
   };
 
   return (
-    <Shell title="Быстрая задача" onClose={onClose}>
+    <Shell title="Создать" onClose={onClose}>
       <div className="row">
-        <label>Что сделать</label>
-        <input ref={ref} type="text" value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && save()} placeholder="Например: продлить страховку" />
+        <label>Тип</label>
+        <div className="seg">
+          <button className={type === "task" ? "on" : ""} onClick={() => setType("task")}>
+            Задача
+          </button>
+          <button className={type === "habit" ? "on" : ""} onClick={() => setType("habit")}>
+            ↻ Привычка
+          </button>
+        </div>
       </div>
+
+      <div className="row">
+        <label>{type === "task" ? "Что сделать" : "Название привычки"}</label>
+        <input
+          ref={ref}
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && save()}
+          placeholder={type === "task" ? "Например: продлить страховку" : "Например: 20 минут чтения"}
+        />
+      </div>
+
       <div className="row">
         <label>Цель</label>
         <select value={goalId} onChange={(e) => setGoalId(e.target.value)}>
-          <option value="">— Инбокс (без цели) —</option>
+          <option value="">— {type === "task" ? "Инбокс (без цели)" : "Без цели"} —</option>
           {state.goals
             .filter((g) => g.status === "active")
             .map((g) => (
@@ -61,17 +100,59 @@ function TaskModal({ defaultGoal, defaultDate, onClose }: { defaultGoal: string;
             ))}
         </select>
       </div>
-      <div className="row">
-        <label>Дата</label>
-        <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
-        <div className="hint">Пусто у инбокса — задача просто висит в «Сегодня».</div>
-      </div>
+
+      {type === "task" ? (
+        <div className="row">
+          <label>Дата</label>
+          <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+        </div>
+      ) : (
+        <>
+          <div className="row">
+            <label>Расписание</label>
+            <div className="seg">
+              <button className={sched === "daily" ? "on" : ""} onClick={() => setSched("daily")}>
+                Ежедневно
+              </button>
+              <button className={sched === "weekdays" ? "on" : ""} onClick={() => setSched("weekdays")}>
+                По дням
+              </button>
+              <button className={sched === "weekly" ? "on" : ""} onClick={() => setSched("weekly")}>
+                N в неделю
+              </button>
+            </div>
+          </div>
+          {sched === "weekdays" && (
+            <div className="row">
+              <label>Дни недели</label>
+              <div className="wd-pick">
+                {WD_SHORT.map((w, i) => {
+                  const day = i + 1;
+                  const on = days.includes(day);
+                  return (
+                    <button key={day} className={on ? "on" : ""} onClick={() => setDays((s) => (on ? s.filter((x) => x !== day) : [...s, day]))}>
+                      {w}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {sched === "weekly" && (
+            <div className="row">
+              <label>Сколько раз в неделю</label>
+              <input type="text" inputMode="numeric" value={String(per)} onChange={(e) => setPer(Math.max(1, Math.min(7, Number(e.target.value) || 1)))} />
+            </div>
+          )}
+        </>
+      )}
+
       <div className="modal-foot">
         <button className="btn ghost" onClick={onClose}>
           Отмена
         </button>
         <button className="btn primary" onClick={save} disabled={!title.trim()}>
-          Добавить
+          Создать
         </button>
       </div>
     </Shell>
@@ -107,11 +188,6 @@ function GoalModal({ onClose }: { onClose: () => void }) {
             <small>удержание режима</small>
           </button>
         </div>
-        <div className="hint">
-          {type === "achievement"
-            ? "Есть финиш — однажды отметишь достигнутой."
-            : "Финиша нет — держишь ритм. Прогресс не показываем, только движение."}
-        </div>
       </div>
       <div className="modal-foot">
         <button className="btn ghost" onClick={onClose}>
@@ -119,77 +195,6 @@ function GoalModal({ onClose }: { onClose: () => void }) {
         </button>
         <button className="btn primary" onClick={save} disabled={!name.trim()}>
           Создать
-        </button>
-      </div>
-    </Shell>
-  );
-}
-
-function HabitModal({ goalId, onClose }: { goalId: string | null; onClose: () => void }) {
-  const { addHabit } = useStore();
-  const [name, setName] = useState("");
-  const [type, setType] = useState<ScheduleType>("daily");
-  const [days, setDays] = useState<number[]>([1, 2, 3, 4, 5]);
-  const [per, setPer] = useState(3);
-  const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => ref.current?.focus(), []);
-
-  const save = () => {
-    if (!name.trim()) return;
-    const schedule: Schedule =
-      type === "daily" ? { type: "daily" } : type === "weekdays" ? { type: "weekdays", days } : { type: "weekly", timesPerWeek: per };
-    addHabit(goalId, name.trim(), schedule);
-    onClose();
-  };
-
-  return (
-    <Shell title="Новая привычка" onClose={onClose}>
-      <div className="row">
-        <label>Название</label>
-        <input ref={ref} type="text" value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && save()} placeholder="Например: 20 минут чтения" />
-      </div>
-      <div className="row">
-        <label>Расписание</label>
-        <div className="seg">
-          <button className={type === "daily" ? "on" : ""} onClick={() => setType("daily")}>
-            Ежедневно
-          </button>
-          <button className={type === "weekdays" ? "on" : ""} onClick={() => setType("weekdays")}>
-            По дням
-          </button>
-          <button className={type === "weekly" ? "on" : ""} onClick={() => setType("weekly")}>
-            N в неделю
-          </button>
-        </div>
-      </div>
-      {type === "weekdays" && (
-        <div className="row">
-          <label>Дни недели</label>
-          <div className="wd-pick">
-            {WD_SHORT.map((w, i) => {
-              const day = i + 1;
-              const on = days.includes(day);
-              return (
-                <button key={day} className={on ? "on" : ""} onClick={() => setDays((s) => (on ? s.filter((x) => x !== day) : [...s, day]))}>
-                  {w}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      {type === "weekly" && (
-        <div className="row">
-          <label>Сколько раз в неделю</label>
-          <input type="text" inputMode="numeric" value={String(per)} onChange={(e) => setPer(Math.max(1, Math.min(7, Number(e.target.value) || 1)))} />
-        </div>
-      )}
-      <div className="modal-foot">
-        <button className="btn ghost" onClick={onClose}>
-          Отмена
-        </button>
-        <button className="btn primary" onClick={save} disabled={!name.trim()}>
-          Добавить
         </button>
       </div>
     </Shell>

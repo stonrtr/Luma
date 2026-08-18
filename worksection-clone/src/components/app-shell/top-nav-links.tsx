@@ -8,13 +8,13 @@ import { LayoutDashboard, ClipboardList, FolderOpen, Network, UsersRound, Folder
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-export function TopNavLinks({ locale, isAdmin }: { locale: string; isAdmin: boolean }) {
+export function TopNavLinks({ locale, isAdmin, isManager = false }: { locale: string; isAdmin: boolean; isManager?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const items = [
     { href: "/", key: "nav.myspace", icon: LayoutDashboard },
-    // Команда — вторым пунктом (только руководителям)
-    ...(isAdmin ? [{ href: "/team", key: "nav.team", icon: UsersRound }] : []),
+    // Команда — вторым пунктом (всем руководителям: админ/владелец или у кого есть подчинённые)
+    ...(isManager ? [{ href: "/team", key: "nav.team", icon: UsersRound }] : []),
     { href: "/planning", key: "nav.planning", icon: ClipboardList },
     // Звонки — 4-м пунктом (после Планирования)
     { href: "/calls", key: "nav.calls", icon: PhoneCall },

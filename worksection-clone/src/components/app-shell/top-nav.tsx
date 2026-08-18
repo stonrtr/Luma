@@ -9,11 +9,12 @@ import { HelpDialog } from "./help-dialog";
 type Notif = { id: string; message: string; link: string | null; readAt: string | null; createdAt: string };
 
 export function TopNav({
-  user, notifications, noteBody,
+  user, notifications, noteBody, isManager = false,
 }: {
   user: { name: string; email: string; title: string | null; role: string; locale: string; avatarUrl: string | null };
   notifications: { items: Notif[]; unread: number };
   noteBody: string;
+  isManager?: boolean;
 }) {
   const isAdmin = user.role === "OWNER" || user.role === "ADMIN";
   return (
@@ -29,7 +30,7 @@ export function TopNav({
       </Link>
       <Scratchpad initialBody={noteBody} />
       <div className="nav-scroll flex-1">
-        <TopNavLinks locale={user.locale} isAdmin={isAdmin} />
+        <TopNavLinks locale={user.locale} isAdmin={isAdmin} isManager={isManager} />
       </div>
       <div className="flex shrink-0 items-center gap-1">
         <GlobalSearch />

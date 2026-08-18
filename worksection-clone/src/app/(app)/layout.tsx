@@ -1,4 +1,5 @@
 import { requireUser } from "@/server/dal";
+import { db } from "@/server/db";
 import { getProjectsForUser } from "@/server/queries/projects";
 import { getAssignableMembers } from "@/server/queries/team";
 import { getNotifications } from "@/server/queries/notifications";
@@ -20,19 +21,23 @@ export default async function AppLayout({
   // выполняет ТОЛЬКО планировщик /api/cron/run (runScheduledMaintenance), а НЕ каждый рендер —
   // иначе каждая навигация тянет кучу запросов к БД (медленно на serverless + удалённый Neon).
   // Все запросы страницы — параллельно; отметка визита едет в той же пачке (троттлинг внутри).
-  const [projects, notifications, assignable, noteBody] = await Promise.all([
+  const [projects, notifications, assignable, noteBody, , reportCount] = await Promise.all([
     getProjectsForUser(user.id),
     getNotifications(user.id),
     getAssignableMembers(user.id, user.role),
     getUserNote(user.id),
     touchLastSeen(user.id, user.lastSeenAt),
+    db.user.count({ where: { managerId: user.id } }),
   ]);
+  // «Команда» доступна руководителям: админ/владелец ИЛИ у кого есть подчинённые
+  const isManager = user.role === "OWNER" || user.role === "ADMIN" || reportCount > 0;
 
   return (
     <LocaleProvider locale={user.locale}>
     <ThemeSync theme={user.theme} />
     <div className={`app-shell flex min-h-screen flex-col ${user.theme === "dark" ? "dark" : ""}`}>
       <TopNav
+        isManager={isManager}
         user={{ name: user.name, email: user.email, title: user.title, role: user.role, locale: user.locale, avatarUrl: user.avatarUrl }}
         notifications={{
           items: notifications.items.map((n) => ({

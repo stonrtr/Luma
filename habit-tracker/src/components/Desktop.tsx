@@ -27,12 +27,14 @@ export function Desktop() {
   }, [state.goals, view]);
 
   const closeModal = useCallback(() => setModal(null), []);
+  const isGoalView = !(PAGE_VIEWS as readonly string[]).includes(view);
+  const openCreate = () => setModal({ kind: "create", goalId: isGoalView ? view : null });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.key === "n" || e.key === "N" || e.key === "т" || e.key === "Т") && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setModal({ kind: "task" });
+        setModal({ kind: "create", goalId: null });
         return;
       }
       if (e.key === "Escape") {
@@ -88,25 +90,25 @@ export function Desktop() {
 
           <main>
             {view === "today" ? (
-              <TodayCenter selectedId={selectedId} onQuickAdd={() => setModal({ kind: "task" })} />
+              <TodayCenter selectedId={selectedId} />
             ) : view === "week" || view === "month" || view === "future" ? (
               <TimeCenter horizon={view} />
             ) : view === "goals" ? (
               <GoalsOverview onOpenGoal={(id) => setView(id)} onAddGoal={() => setModal({ kind: "goal" })} />
             ) : view === "calendar" ? (
-              <CalendarCenter onAddForDate={(date) => setModal({ kind: "task", date })} />
+              <CalendarCenter onAddForDate={(date) => setModal({ kind: "create", date })} />
             ) : (
-              <GoalCenter
-                goalId={view}
-                onAddHabit={(goalId) => setModal({ kind: "habit", goalId })}
-                onQuickAdd={() => setModal({ kind: "task", goalId: view })}
-              />
+              <GoalCenter goalId={view} />
             )}
           </main>
 
           <HabitsRail view={view} />
         </div>
       </div>
+
+      <button className="fab" onClick={openCreate} aria-label="Создать задачу или привычку" title="Создать (⌘N)">
+        +
+      </button>
 
       <Modals modal={modal} onClose={closeModal} />
     </div>

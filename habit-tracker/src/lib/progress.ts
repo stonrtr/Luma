@@ -154,8 +154,10 @@ export interface Momentum {
   activeDays: number; // дней с активностью за последние N
   lastActive: string | null;
   dots: boolean[]; // N дней (старый→новый): была ли активность по цели
-  jumps: number; // прыжки — закрытые задачи цели (всего)
-  steps: number; // шаги — выполненные привычки цели (всего отметок)
+  jumps: number; // закрытые задачи цели (всего) — накопительно
+  steps: number; // выполненные отметки привычек (всего) — накопительно
+  openTasks: number; // задач к исполнению (открытых)
+  habitCount: number; // активных привычек у цели
 }
 
 const MOMENTUM_LABEL: Record<MomentumStatus, string> = {
@@ -215,5 +217,6 @@ export function goalMomentum(
   else if (daysSince <= 6) status = "slowing";
   else status = "stalled";
 
-  return { status, label: MOMENTUM_LABEL[status], activeDays, lastActive, dots, jumps, steps };
+  const openTasks = gTasks.filter((t) => !t.doneAt).length;
+  return { status, label: MOMENTUM_LABEL[status], activeDays, lastActive, dots, jumps, steps, openTasks, habitCount: gHabits.length };
 }

@@ -19,7 +19,7 @@ export function todayOpenTasks(s: AppState): Task[] {
     });
 }
 
-/** Закрытые сегодня задачи из списка «Сегодня» (висят зачёркнутыми до завтра). */
+/** Закрытые сегодня задачи из списка «Сегодня» — свежие сверху (висят зачёркнутыми до завтра). */
 export function todayDoneTasks(s: AppState): Task[] {
   return s.tasks
     .filter(
@@ -28,7 +28,7 @@ export function todayDoneTasks(s: AppState): Task[] {
         t.doneAt.slice(0, 10) === s.today &&
         ((t.dueDate !== null && t.dueDate <= s.today) || (t.dueDate === null && t.goalId === null)),
     )
-    .sort((a, b) => a.ord - b.ord);
+    .sort((a, b) => (a.doneAt! < b.doneAt! ? 1 : a.doneAt! > b.doneAt! ? -1 : 0));
 }
 
 /** Просроченные незакрытые задачи (дедлайн в прошлом). */
@@ -42,13 +42,15 @@ export function overdueTasks(s: AppState): Task[] {
 
 export type Horizon = "week" | "month" | "future";
 
-export function horizonTasks(s: AppState, h: Horizon): Task[] {
+export function horizonTasks(s: AppState, h: Horizon, includeDoneToday = false): Task[] {
   const wEnd = sundayOf(s.today);
   const mEnd = endOfMonth(s.today);
   const later = wEnd > mEnd ? wEnd : mEnd;
   return s.tasks
     .filter((t) => {
-      if (t.doneAt || !t.dueDate || t.dueDate <= s.today) return false;
+      if (!t.dueDate || t.dueDate <= s.today) return false;
+      // закрытые: показываем зачёркнутыми только если закрыты сегодня (иначе «архив» с 00:00)
+      if (t.doneAt && (!includeDoneToday || t.doneAt.slice(0, 10) !== s.today)) return false;
       if (h === "week") return t.dueDate <= wEnd;
       if (h === "month") return t.dueDate > wEnd && t.dueDate <= mEnd;
       return t.dueDate > later; // future
@@ -56,6 +58,7 @@ export function horizonTasks(s: AppState, h: Horizon): Task[] {
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : a.dueDate! > b.dueDate! ? 1 : a.ord - b.ord));
 }
 
+/** Счётчик для рейки — только открытые. */
 export function horizonCount(s: AppState, h: Horizon): number {
   return horizonTasks(s, h).length;
 }

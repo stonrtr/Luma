@@ -37,16 +37,20 @@ export async function getAssignableMembers(userId: string, role: string) {
   });
 }
 
-// Обзор команды: участники + их незакрытые задачи с нагрузкой
-export async function getTeamOverview() {
+// Обзор команды: участники + их незакрытые задачи с нагрузкой.
+// managerId — для руководителя-не-админа: показываем только его подчинённых (+ его самого).
+export async function getTeamOverview(managerId?: string) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const tomorrow = addDays(today, 1);
   const weekStart = mondayOf(today);
   const weekEnd = addDays(weekStart, 7);
+  const memberWhere = managerId
+    ? { role: { not: "CLIENT" as const }, isActive: true, OR: [{ id: managerId }, { managerId }] }
+    : { role: { not: "CLIENT" as const }, isActive: true };
 
   const [members, tasks, doneThisWeek] = await Promise.all([
     db.user.findMany({
-      where: { role: { not: "CLIENT" }, isActive: true },
+      where: memberWhere,
       orderBy: { name: "asc" },
       select: { id: true, name: true, title: true, weeklyHours: true },
     }),

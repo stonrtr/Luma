@@ -2,8 +2,7 @@
 import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
-import { MomentumTag, ActivityStrip, Tally } from "./Momentum";
-import { goalColor } from "@/lib/goalColor";
+import { MomentumTag, Tally } from "./Momentum";
 import { Tick } from "./icons";
 
 export function GoalsOverview({ onOpenGoal, onAddGoal }: { onOpenGoal: (id: string) => void; onAddGoal: () => void }) {
@@ -33,10 +32,9 @@ export function GoalsOverview({ onOpenGoal, onAddGoal }: { onOpenGoal: (id: stri
               <button className="goal-card" key={g.id} onClick={() => onOpenGoal(g.id)}>
                 <div className="goal-card-h">
                   <b>{g.name}</b>
-                  <MomentumTag m={m} color={goalColor(g.id, state.goals)} />
+                  <MomentumTag m={m} />
                 </div>
                 <Tally m={m} />
-                <ActivityStrip dots={m.dots} />
               </button>
             );
           })}

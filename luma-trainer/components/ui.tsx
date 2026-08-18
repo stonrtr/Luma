@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { difficultyBand } from "@/lib/difficulty";
 
 export function DifficultyDot({ d, withNumber }: { d: number; withNumber?: boolean }) {
@@ -88,14 +89,17 @@ export function Modal({
   children: React.ReactNode;
   wide?: boolean;
 }) {
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
-  return (
+
+  const content = (
     <div className="overlay" onMouseDown={onClose}>
       <div className="modal" style={wide ? { maxWidth: 720 } : undefined} onMouseDown={(e) => e.stopPropagation()}>
         <div className="modal-head">
@@ -106,6 +110,11 @@ export function Modal({
       </div>
     </div>
   );
+
+  // Портал в body: выносим модалку из-под трансформированных предков
+  // (например .content-col со своей анимацией), иначе position:fixed
+  // считается относительно предка, а не вьюпорта, и модалка уезжает.
+  return mounted ? createPortal(content, document.body) : null;
 }
 
 export function Confirm({

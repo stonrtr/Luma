@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/server/dal";
+import { db } from "@/server/db";
 import { getTeamOverview } from "@/server/queries/team";
 import { getMyTasks, getAllTasks, getArchivedTasks, getRecentActivity } from "@/server/queries/tasks";
 import { getMyWeek } from "@/server/queries/calendar";
@@ -173,12 +174,18 @@ export default async function TeamPage({
   searchParams: Promise<{ member?: string; view?: string; ws?: string }>;
 }) {
   const viewer = await requireUser();
-  if (viewer.role !== "OWNER" && viewer.role !== "ADMIN") redirect("/");
+  const isAdmin = viewer.role === "OWNER" || viewer.role === "ADMIN";
+  // Доступ к «Команде»: админ/владелец — вся команда; руководитель — только если есть подчинённые
+  const reportCount = isAdmin ? 1 : await db.user.count({ where: { managerId: viewer.id } });
+  if (!isAdmin && reportCount === 0) redirect("/");
   const sp = await searchParams;
   const member = sp.member ?? "all";
   const view = sp.view ?? "day";
 
-  const { members } = await getTeamOverview();
+  // Руководитель-не-админ видит только своих подчинённых
+  const scopeManagerId = isAdmin ? undefined : viewer.id;
+  const { members } = await getTeamOverview(scopeManagerId);
+  const allowedIds = isAdmin ? undefined : members.map((m) => m.id);
 
   return (
     <div className="px-6 py-8">
@@ -207,7 +214,9 @@ export default async function TeamPage({
       </div>
 
       {member === "all" ? (
-        <AllView view={view} members={members.map((m) => ({ id: m.id, name: m.name }))} viewerId={viewer.id} locale={viewer.locale} />
+        <AllView view={view} members={members.map((m) => ({ id: m.id, name: m.name }))} viewerId={viewer.id} allowedIds={allowedIds} locale={viewer.locale} />
+      ) : allowedIds && !allowedIds.includes(member) ? (
+        redirect("/team")
       ) : (
         <MemberView memberId={member} view={view} ws={sp.ws} locale={viewer.locale} />
       )}
@@ -223,7 +232,7 @@ export default async function TeamPage({
 }
 
 // Переключатель видов для агрегата всех сотрудников
-async function AllView({ view, members, viewerId, locale }: { view: string; members: BoardMember[]; viewerId: string; locale: string }) {
+async function AllView({ view, members, viewerId, allowedIds, locale }: { view: string; members: BoardMember[]; viewerId: string; allowedIds?: string[]; locale: string }) {
   const tabs = [
     { key: "day", label: "view.day" },
     { key: "board", label: "view.board" },
@@ -245,11 +254,11 @@ async function AllView({ view, members, viewerId, locale }: { view: string; memb
         ))}
       </div>
       {active === "archive" ? (
-        <ArchiveList rows={excludeViewer(mapArchive(await getArchivedTasks()), viewerId)} />
+        <ArchiveList rows={keepScope(excludeViewer(mapArchive(await getArchivedTasks()), viewerId), allowedIds)} />
       ) : active === "board" ? (
-        <AllBoardView members={members} viewerId={viewerId} locale={locale} />
+        <AllBoardView members={members} viewerId={viewerId} allowedIds={allowedIds} locale={locale} />
       ) : (
-        <DayBoard initialTasks={excludeViewer(mapTasks(await getAllTasks()), viewerId)} locale={locale} />
+        <DayBoard initialTasks={keepScope(excludeViewer(mapTasks(await getAllTasks()), viewerId), allowedIds)} locale={locale} />
       )}
     </div>
   );
@@ -260,12 +269,19 @@ function excludeViewer<T extends { assignees: { id: string }[] }>(rows: T[], vie
   return rows.filter((r) => r.assignees.length === 0 || r.assignees.some((a) => a.id !== viewerId));
 }
 
-async function AllBoardView({ members, viewerId, locale }: { members: BoardMember[]; viewerId: string; locale: string }) {
+// Скоуп руководителя: оставить только задачи его подчинённых (для админа allowedIds не задан — всё).
+function keepScope<T extends { assignees: { id: string }[] }>(rows: T[], allowedIds?: string[]): T[] {
+  if (!allowedIds) return rows;
+  const set = new Set(allowedIds);
+  return rows.filter((r) => r.assignees.some((a) => set.has(a.id)));
+}
+
+async function AllBoardView({ members, viewerId, allowedIds, locale }: { members: BoardMember[]; viewerId: string; allowedIds?: string[]; locale: string }) {
   const [allTasks, projects] = await Promise.all([getAllTasks(), getProjectsForUser(viewerId)]);
   return (
     <KanbanBoard
       projectId=""
-      initialTasks={excludeViewer(mapTasks(allTasks), viewerId)}
+      initialTasks={keepScope(excludeViewer(mapTasks(allTasks), viewerId), allowedIds)}
       members={members}
       projects={projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))}
       collapseIdeaByDefault

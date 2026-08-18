@@ -13,7 +13,8 @@ const TITLES: Record<Horizon, string> = {
 
 export function TimeCenter({ horizon }: { horizon: Horizon }) {
   const { state, toggleTask } = useStore();
-  const tasks = horizonTasks(state, horizon);
+  const tasks = horizonTasks(state, horizon, true);
+  const openCount = tasks.filter((t) => !t.doneAt).length;
 
   const goalName = (goalId: string | null) =>
     goalId ? state.goals.find((g) => g.id === goalId)?.name ?? null : null;
@@ -30,7 +31,7 @@ export function TimeCenter({ horizon }: { horizon: Horizon }) {
     <>
       <div className="head">
         <h1>{TITLES[horizon]}</h1>
-        <div className="left">{tasks.length ? `${tasks.length} задач` : "пусто"}</div>
+        <div className="left">{openCount ? `${openCount} задач` : "всё закрыто"}</div>
       </div>
 
       {groups.length === 0 ? (
@@ -46,8 +47,8 @@ export function TimeCenter({ horizon }: { horizon: Horizon }) {
               {g.items.map((t) => {
                 const gn = goalName(t.goalId);
                 return (
-                  <div className="item" key={t.id}>
-                    <button className="box" onClick={() => toggleTask(t.id, true)} aria-label={t.title}>
+                  <div className={`item${t.doneAt ? " done" : ""}`} key={t.id}>
+                    <button className="box" onClick={() => toggleTask(t.id, !t.doneAt)} aria-label={t.title}>
                       <Tick />
                     </button>
                     <span className="lab">{t.title}</span>

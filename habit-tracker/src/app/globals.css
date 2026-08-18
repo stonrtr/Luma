@@ -1,18 +1,26 @@
 :root {
-  --ink: #0a0a0c;
-  --ink2: #5f6068;
-  --ink3: #a3a4ac;
-  --line: rgba(10, 10, 14, 0.1);
-  --line2: rgba(10, 10, 14, 0.055);
-  --paper: #f4f4f6;
+  --paper: #f3f3f5;
   --card: #ffffff;
+  --ink: #2f2f31;
+  --ink2: #6d6d73;
+  --ink3: #a6a6ad;
+  --line: rgba(0, 0, 0, 0.09);
+  --line2: rgba(0, 0, 0, 0.05);
 
-  --iri: linear-gradient(115deg, #e6f77a 0%, #c3ee5c 22%, #8fe04f 44%, #63d46a 64%, #a6ec7e 82%, #d8f58e 100%);
-  --iri-soft: linear-gradient(115deg, #f2fbcf, #e2f6b4, #cdf0a0, #c0ecad, #d7f5b8, #eafccb);
-  --green: #3fae56;
-  --green-bg: #f2fbcf;
-  --green-line: #b6f0a0;
+  --accent: #ffd400;
+  --accent-strong: #f2c500;
+  --accent-soft: #fff3bf;
+  --accent-line: #ffe067;
+  --accent-ink: #2f2f31;
+
+  /* семантика тренда/статуса (не зависит от темы) */
+  --up: #2ea24b;
+  --down: #e5484d;
+  --flat: #d69a00;
   --rose: #c98b9a;
+
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-lift: 0 10px 28px rgba(0, 0, 0, 0.09);
 }
 
 * {
@@ -45,91 +53,46 @@ select {
   color: inherit;
 }
 ::selection {
-  background: #c7a8ff;
-  color: #0a0a0c;
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 ::-webkit-scrollbar {
   width: 9px;
   height: 9px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(10, 10, 14, 0.14);
+  background: rgba(0, 0, 0, 0.14);
   border-radius: 8px;
 }
 :focus-visible {
-  outline: 2px solid #9db9ff;
+  outline: 2px solid var(--accent-strong);
   outline-offset: 2px;
   border-radius: 6px;
 }
-.mono {
-  font-family: var(--mono), ui-monospace, monospace;
-}
 
-/* фоновые иридесцентные блобы */
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(-2%, 2%) rotate(3deg);
-  }
-}
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  z-index: 0;
-  border-radius: 50%;
-  filter: blur(75px);
-  pointer-events: none;
-}
-body::before {
-  top: -280px;
-  right: -200px;
-  width: 900px;
-  height: 720px;
-  background: var(--iri);
-  opacity: 0.42;
-  animation: drift 16s ease-in-out infinite;
-}
-body::after {
-  bottom: -340px;
-  left: -160px;
-  width: 760px;
-  height: 620px;
-  background: var(--iri-soft);
-  opacity: 0.6;
-  animation: drift 20s ease-in-out infinite reverse;
-}
-
-/* ── оболочка (резиновая) ──────────── */
+/* ── оболочка: на весь экран ────────── */
 .page {
   position: relative;
   z-index: 1;
-  padding: clamp(12px, 2.6vw, 40px);
-  padding-bottom: 44px;
 }
 .shell {
   position: relative;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 26px;
-  overflow: hidden;
-  box-shadow: 0 30px 70px rgba(10, 10, 14, 0.09);
 }
 .shell-bar {
   display: block;
-  height: 8px;
+  height: 5px;
   width: 100%;
-  background: var(--iri);
+  background: var(--accent);
+  flex: none;
 }
 .app {
+  flex: 1;
   display: grid;
-  grid-template-columns: clamp(210px, 20vw, 250px) minmax(0, 1fr) clamp(280px, 26vw, 330px);
+  grid-template-columns: clamp(210px, 19vw, 260px) minmax(0, 1fr) clamp(280px, 25vw, 340px);
   grid-template-areas: "nav main habits";
   align-items: stretch;
 }
@@ -145,7 +108,6 @@ main {
   min-width: 0;
 }
 
-/* планшет: привычки уезжают вниз на всю ширину */
 @media (max-width: 1080px) {
   .app {
     grid-template-columns: clamp(200px, 26vw, 240px) minmax(0, 1fr);
@@ -158,8 +120,6 @@ main {
     border-top: 1px solid var(--line2);
   }
 }
-
-/* узкий экран: одна колонка */
 @media (max-width: 720px) {
   .app {
     grid-template-columns: 1fr;
@@ -174,12 +134,38 @@ main {
   }
 }
 
+/* ── плавающая кнопка «+» ───────────── */
+.fab {
+  position: fixed;
+  left: clamp(18px, 2.4vw, 40px);
+  bottom: clamp(18px, 2.4vw, 40px);
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--accent-ink);
+  padding-bottom: 3px;
+  box-shadow: 0 10px 24px rgba(255, 212, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.14);
+  z-index: 80;
+  transition: transform 0.16s, box-shadow 0.16s, background 0.16s;
+}
+.fab:hover {
+  background: var(--accent-strong);
+  transform: scale(1.06);
+}
+.fab:active {
+  transform: scale(0.97);
+}
+
 /* ── рейка ─────────────────────────── */
 .cap {
-  font-family: var(--mono), monospace;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.02em;
-  text-transform: none;
   color: var(--ink3);
   margin: 16px 4px 8px;
 }
@@ -201,33 +187,33 @@ main {
   border: 1px dashed var(--line);
   display: grid;
   place-items: center;
-  transition: color 0.16s, border-color 0.16s;
+  transition: color 0.16s, border-color 0.16s, background 0.16s;
 }
 .cap-add:hover {
-  color: var(--ink);
-  border-color: var(--ink3);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 .nav-item {
   display: block;
   width: 100%;
   padding: 11px 13px;
-  border-radius: 14px;
+  border-radius: 12px;
   margin-bottom: 6px;
   background: var(--card);
   border: 1px solid var(--line);
-  transition: border-color 0.16s, box-shadow 0.16s;
+  transition: border-color 0.16s, box-shadow 0.16s, background 0.16s;
 }
 .nav-item:hover {
   border-color: var(--ink3);
 }
 .nav-item.sel {
-  border-color: var(--ink);
-  box-shadow: 0 6px 18px rgba(10, 10, 14, 0.08);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 .nav-item.horizon.sel {
-  border-color: transparent;
-  background: var(--iri-soft);
-  box-shadow: 0 4px 14px rgba(99, 212, 106, 0.14);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 .nav-top {
   display: flex;
@@ -236,26 +222,35 @@ main {
   gap: 8px;
 }
 .nav-top b {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 13.5px;
   color: var(--ink);
 }
 .nav-top i {
   font-style: normal;
-  font-family: var(--mono), monospace;
   font-size: 11px;
   color: var(--ink2);
+  font-variant-numeric: tabular-nums;
 }
 .nav-sub {
   display: block;
-  font-family: var(--mono), monospace;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink3);
   margin-top: 8px;
 }
+.nav-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.nav-goal b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .today-nav b {
-  font-family: var(--sans), system-ui, sans-serif;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 15px;
 }
 .add {
@@ -264,8 +259,8 @@ main {
   padding: 11px;
   border-radius: 12px;
   border: 1px dashed var(--line);
-  font-family: var(--mono), monospace;
-  font-size: 11px;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--ink3);
   text-align: center;
   transition: border-color 0.16s, color 0.16s;
@@ -290,10 +285,9 @@ main {
   margin: 0 2px 2px;
 }
 .head h1 {
-  font-family: var(--sans), system-ui, sans-serif;
-  font-weight: 400;
-  font-size: clamp(28px, 3.4vw, 40px);
-  line-height: 1;
+  font-weight: 700;
+  font-size: clamp(26px, 3.2vw, 36px);
+  line-height: 1.05;
   margin: 0;
   color: var(--ink);
   letter-spacing: -0.02em;
@@ -301,10 +295,10 @@ main {
   overflow-wrap: anywhere;
 }
 .left {
-  font-family: var(--mono), monospace;
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--ink3);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .list {
@@ -319,19 +313,19 @@ main {
   border-bottom: 1px solid var(--line2);
 }
 .item.sel-row {
-  background: rgba(10, 10, 14, 0.025);
+  background: rgba(0, 0, 0, 0.025);
   border-radius: 8px;
 }
 .box {
   width: 24px;
   height: 24px;
   flex: 0 0 auto;
-  border-radius: 8px;
+  border-radius: 7px;
   background: var(--card);
   border: 1.6px solid var(--ink3);
   display: grid;
   place-items: center;
-  color: var(--green);
+  color: var(--accent-ink);
   transition: background 0.16s, border-color 0.16s;
 }
 .box svg {
@@ -342,8 +336,8 @@ main {
   transition: opacity 0.16s, transform 0.2s cubic-bezier(0.3, 1.4, 0.5, 1);
 }
 .done .box {
-  background: var(--green-bg);
-  border-color: var(--green-line);
+  background: var(--accent);
+  border-color: var(--accent-strong);
 }
 .done .box svg {
   opacity: 1;
@@ -352,8 +346,8 @@ main {
 .lab {
   flex: 1;
   min-width: 0;
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 17px;
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 .done .lab {
@@ -362,9 +356,8 @@ main {
   text-decoration-thickness: 1px;
 }
 .tag {
-  font-family: var(--mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.03em;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--ink2);
   border: 1px solid var(--line);
   border-radius: 100px;
@@ -376,15 +369,15 @@ main {
   color: var(--ink3);
 }
 .due {
-  font-family: var(--mono), monospace;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--ink3);
-  width: 52px;
+  width: 56px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 .due.overdue-date {
   width: auto;
-  color: var(--rose);
+  color: var(--down);
   white-space: nowrap;
 }
 .empty {
@@ -394,22 +387,10 @@ main {
 }
 .empty b {
   display: block;
-  font-family: var(--sans), system-ui, sans-serif;
-  font-size: 24px;
-  font-weight: 400;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--ink);
   margin-bottom: 6px;
-}
-.add-task {
-  margin: 14px 0 2px 2px;
-  padding: 6px 2px;
-  font-family: var(--mono), monospace;
-  font-size: 11.5px;
-  color: var(--ink3);
-  transition: color 0.16s;
-}
-.add-task:hover {
-  color: var(--ink);
 }
 .donebar {
   margin: 14px 2px 0;
@@ -418,7 +399,7 @@ main {
 }
 .donebar button {
   color: var(--ink2);
-  font-weight: 400;
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -428,8 +409,8 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--mono), monospace;
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 600;
   white-space: nowrap;
 }
 .mo-dot {
@@ -440,22 +421,13 @@ main {
   background: var(--ink3);
 }
 .mo.active {
-  color: var(--green);
-}
-.mo.active .mo-dot {
-  background: var(--iri);
+  color: var(--up);
 }
 .mo.slowing {
-  color: #b58a2e;
-}
-.mo.slowing .mo-dot {
-  background: #e6c14f;
+  color: var(--flat);
 }
 .mo.stalled {
-  color: #b0788a;
-}
-.mo.stalled .mo-dot {
-  background: var(--rose);
+  color: var(--down);
 }
 .mo.idle {
   color: var(--ink3);
@@ -468,33 +440,32 @@ main {
   width: 9px;
   height: 9px;
   border-radius: 3px;
-  background: rgba(10, 10, 14, 0.07);
+  background: rgba(0, 0, 0, 0.07);
 }
 .strip i.on {
-  background: var(--iri);
+  background: var(--accent);
 }
 .counts {
   display: flex;
   align-items: center;
   gap: 14px;
   margin-top: 9px;
-  font-family: var(--mono), monospace;
   font-size: 11px;
   color: var(--ink2);
+  font-variant-numeric: tabular-nums;
 }
 .tally {
   display: inline-flex;
   align-items: center;
   gap: 16px;
-  font-family: var(--mono), monospace;
   font-size: 12.5px;
   color: var(--ink2);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .tally.lg {
-  font-family: var(--sans), system-ui, sans-serif;
-  font-size: 21px;
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: 700;
   letter-spacing: -0.01em;
   gap: 22px;
   color: var(--ink);
@@ -510,22 +481,21 @@ main {
   align-items: center;
 }
 .ic-task {
-  color: var(--green);
+  color: var(--accent-strong);
 }
 .ic-habit {
   color: var(--ink3);
 }
 .chip-streak {
-  color: var(--green);
-  font-weight: 400;
+  color: var(--accent-strong);
+  font-weight: 700;
 }
 
 /* ── страница цели / горизонты ─────── */
 .section-label {
-  font-family: var(--mono), monospace;
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.02em;
-  text-transform: none;
   color: var(--ink2);
   margin: 26px 2px 12px;
 }
@@ -539,11 +509,6 @@ main {
   gap: 12px;
   margin: 18px 2px 8px;
 }
-.goal-tally-hint {
-  font-family: var(--mono), monospace;
-  font-size: 11px;
-  color: var(--ink3);
-}
 .goal-top {
   display: flex;
   align-items: center;
@@ -551,19 +516,21 @@ main {
   margin: 4px 2px 2px;
 }
 .goal-type {
-  font-family: var(--mono), monospace;
   font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--ink2);
   padding: 5px 12px;
   border-radius: 100px;
   border: 1px solid var(--line);
 }
 .goal-maint {
-  font-family: var(--mono), monospace;
-  font-size: 11px;
+  display: block;
+  font-size: 10.5px;
   color: var(--ink3);
+  white-space: nowrap;
+  text-align: left;
+  margin: 8px 2px 0;
 }
 .goal-habits {
   display: flex;
@@ -576,7 +543,7 @@ main {
   align-items: center;
   gap: 5px;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--ink2);
   padding: 7px 13px;
   border-radius: 100px;
@@ -600,17 +567,18 @@ main {
   color: var(--ink3);
 }
 .mini-btn {
-  font-family: var(--mono), monospace;
-  font-size: 11.5px;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--ink);
   padding: 9px 15px;
   border-radius: 100px;
   border: 1px solid var(--line);
   background: var(--card);
-  transition: border-color 0.16s;
+  transition: border-color 0.16s, background 0.16s;
 }
 .mini-btn:hover {
-  border-color: var(--ink);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .goal-grid {
@@ -621,13 +589,14 @@ main {
 .goal-card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 16px 17px;
-  transition: border-color 0.16s, box-shadow 0.16s;
+  box-shadow: var(--shadow);
+  transition: border-color 0.16s, box-shadow 0.16s, transform 0.16s;
 }
 .goal-card:hover {
-  border-color: var(--ink);
-  box-shadow: 0 10px 26px rgba(10, 10, 14, 0.07);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lift);
 }
 .goal-card-h {
   display: flex;
@@ -637,7 +606,7 @@ main {
 }
 .goal-card-h b {
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--ink);
 }
 .goal-card .goal-type {
@@ -649,10 +618,9 @@ main {
 }
 
 .tgroup-h {
-  font-family: var(--mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  text-transform: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--ink2);
   margin: 24px 2px 4px;
 }
@@ -667,7 +635,7 @@ main {
   min-width: 0;
   padding: 24px 20px;
   border-left: 1px solid var(--line2);
-  background: rgba(10, 10, 14, 0.015);
+  background: rgba(0, 0, 0, 0.012);
 }
 .hbox-h {
   display: flex;
@@ -676,18 +644,16 @@ main {
   margin-bottom: 4px;
 }
 .hbox-h b {
-  font-family: var(--mono), monospace;
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.02em;
-  text-transform: none;
   color: var(--ink2);
-  font-weight: 400;
 }
 .hbox-h i {
   font-style: normal;
-  font-family: var(--mono), monospace;
   font-size: 11.5px;
   color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 .hab {
   padding: 13px 0;
@@ -695,7 +661,7 @@ main {
 }
 .hab-n {
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--ink);
   margin-bottom: 9px;
   display: flex;
@@ -705,7 +671,6 @@ main {
 }
 .hab-n u {
   text-decoration: none;
-  font-family: var(--sans), system-ui, sans-serif;
   font-size: 13px;
   color: var(--ink3);
 }
@@ -722,23 +687,23 @@ main {
 }
 .day u {
   text-decoration: none;
-  font-family: var(--mono), monospace;
   font-size: 9px;
   letter-spacing: 0.02em;
   color: var(--ink3);
 }
 .day.now u {
   color: var(--ink);
+  font-weight: 600;
 }
 .cell {
   width: 24px;
   height: 24px;
   border-radius: 7px;
   background: var(--card);
-  border: 1.4px solid rgba(201, 139, 154, 0.45);
+  border: 1.4px solid var(--line);
   display: grid;
   place-items: center;
-  color: var(--green);
+  color: var(--accent-ink);
   transition: background 0.16s, border-color 0.16s;
 }
 .cell svg {
@@ -747,16 +712,15 @@ main {
   opacity: 0;
 }
 .cell.hit {
-  background: var(--green-bg);
-  border-color: var(--green-line);
+  background: var(--accent);
+  border-color: var(--accent-strong);
 }
 .cell.hit svg {
   opacity: 1;
 }
 .cell.miss {
-  color: var(--rose);
+  color: var(--ink3);
   font-size: 10px;
-  font-family: var(--mono), monospace;
 }
 .cell.fut {
   border: 1.4px dashed var(--line);
@@ -768,7 +732,7 @@ main {
   border-color: var(--ink);
 }
 .day.now .cell.hit {
-  border-color: #63d46a;
+  border-color: var(--accent-strong);
 }
 .streak {
   margin-left: auto;
@@ -777,19 +741,18 @@ main {
 }
 .streak b {
   display: block;
-  font-family: var(--sans), system-ui, sans-serif;
   font-size: 17px;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--ink);
   line-height: 1;
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 .streak u {
   text-decoration: none;
-  font-family: var(--mono), monospace;
   font-size: 9px;
   color: var(--ink3);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 .note {
   margin-top: 14px;
@@ -802,36 +765,32 @@ main {
 .scrim {
   position: fixed;
   inset: 0;
-  background: rgba(10, 10, 14, 0.32);
+  background: rgba(20, 20, 22, 0.34);
   display: grid;
   place-items: start center;
-  padding-top: 14vh;
+  padding-top: 12vh;
   z-index: 100;
-  backdrop-filter: blur(2px);
 }
 .modal {
   width: 460px;
   max-width: calc(100vw - 40px);
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 22px;
-  box-shadow: 0 40px 90px rgba(10, 10, 14, 0.28);
+  border-radius: 18px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.24);
   padding: 24px;
   overflow: hidden;
 }
 .modal h2 {
-  font-family: var(--sans), system-ui, sans-serif;
-  font-weight: 400;
-  font-size: 24px;
+  font-weight: 700;
+  font-size: 22px;
   margin: 0 0 18px;
   color: var(--ink);
 }
 .modal label {
   display: block;
-  font-family: var(--mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: none;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--ink3);
   margin: 0 0 7px;
 }
@@ -844,7 +803,7 @@ main {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 12px;
   background: var(--card);
   font-size: 14px;
   color: var(--ink);
@@ -856,22 +815,22 @@ main {
 .seg button {
   flex: 1;
   padding: 12px;
-  border-radius: 13px;
+  border-radius: 12px;
   border: 1px solid var(--line);
   background: var(--card);
   font-size: 12.5px;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--ink2);
   text-align: center;
-  transition: border-color 0.16s;
+  transition: border-color 0.16s, background 0.16s, color 0.16s;
 }
 .seg button.on {
-  border-color: var(--ink);
+  border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--ink);
 }
 .seg small {
   display: block;
-  font-family: var(--mono), monospace;
   font-size: 9.5px;
   font-weight: 400;
   color: var(--ink3);
@@ -884,17 +843,18 @@ main {
 .wd-pick button {
   flex: 1;
   padding: 9px 0;
-  border-radius: 11px;
+  border-radius: 10px;
   border: 1px solid var(--line);
   background: var(--card);
-  font-family: var(--mono), monospace;
   font-size: 11px;
+  font-weight: 600;
   color: var(--ink3);
   text-align: center;
-  transition: border-color 0.16s, color 0.16s;
+  transition: border-color 0.16s, background 0.16s, color 0.16s;
 }
 .wd-pick button.on {
-  border-color: var(--ink);
+  border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--ink);
 }
 .modal-foot {
@@ -907,20 +867,23 @@ main {
   padding: 11px 20px;
   border-radius: 100px;
   font-size: 13.5px;
-  font-weight: 400;
+  font-weight: 600;
   border: 1px solid var(--line);
   background: var(--card);
   color: var(--ink);
-  transition: border-color 0.16s;
+  transition: border-color 0.16s, background 0.16s;
 }
 .btn:hover {
-  border-color: var(--ink);
+  border-color: var(--ink3);
 }
 .btn.primary {
-  background: var(--iri);
-  border-color: transparent;
-  color: #0a0a0c;
-  font-weight: 400;
+  background: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.btn.primary:hover {
+  background: var(--accent-strong);
 }
 .btn.primary:disabled {
   opacity: 0.5;
@@ -930,8 +893,7 @@ main {
   color: var(--ink2);
 }
 .hint {
-  font-family: var(--mono), monospace;
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--ink3);
   margin-top: 8px;
 }
@@ -943,18 +905,19 @@ main {
   gap: 8px;
 }
 .cal-nav button {
-  font-family: var(--mono), monospace;
   font-size: 13px;
+  font-weight: 500;
   color: var(--ink2);
   border-radius: 100px;
   border: 1px solid var(--line);
   background: var(--card);
   padding: 7px 13px;
   line-height: 1;
-  transition: border-color 0.16s, color 0.16s;
+  transition: border-color 0.16s, background 0.16s, color 0.16s;
 }
 .cal-nav button:hover {
-  border-color: var(--ink);
+  border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--ink);
 }
 .cal-nav .cal-today {
@@ -967,10 +930,9 @@ main {
   margin: 20px 2px 8px;
 }
 .cal-wd span {
-  font-family: var(--mono), monospace;
   font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--ink3);
   padding-left: 4px;
 }
@@ -981,7 +943,7 @@ main {
   gap: 9px;
 }
 .cal-cell {
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--card);
   border: 1px solid var(--line);
   padding: 8px 8px 9px;
@@ -990,35 +952,35 @@ main {
   gap: 4px;
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.16s;
+  transition: border-color 0.16s, background 0.16s;
 }
 .cal-cell:hover {
-  border-color: var(--ink3);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 .cal-cell.out {
   border-color: var(--line2);
   background: transparent;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .cal-cell.today {
-  border-color: var(--ink);
-  box-shadow: 0 6px 16px rgba(10, 10, 14, 0.08);
+  border-color: var(--accent);
+  border-width: 2px;
 }
 .cal-daynum {
-  font-family: var(--mono), monospace;
   font-size: 11px;
   color: var(--ink3);
   align-self: flex-end;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 .cal-cell.today .cal-daynum {
   color: var(--ink);
-  font-weight: 400;
+  font-weight: 700;
 }
 .cal-task {
   display: block;
   width: 100%;
-  font-family: var(--mono), monospace;
   font-size: 10.5px;
   line-height: 1.3;
   text-align: left;
@@ -1036,7 +998,6 @@ main {
   text-decoration: line-through;
 }
 .cal-more {
-  font-family: var(--mono), monospace;
   font-size: 10px;
   color: var(--ink3);
   padding-left: 4px;

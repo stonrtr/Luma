@@ -768,24 +768,29 @@ button {
   box-shadow: 0 30px 80px rgba(2, 12, 60, 0.6);
   width: 100%;
   max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: 90dvh;
+  /* Флекс-колонка: шапка фикс, тело скроллится, прилипающий футер всегда виден */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   color: #fff;
   animation: pop 0.18s ease;
 }
 .modal-head {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  position: sticky;
-  top: 0;
   background: rgba(7, 34, 116, 0.96);
   z-index: 1;
 }
 .modal-body {
   padding: 20px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
 }
 .h2 {
   font-size: 17px;
@@ -801,7 +806,7 @@ button {
   .modal {
     max-width: 100%;
     border-radius: 24px 24px 0 0;
-    max-height: 92vh;
+    max-height: 92dvh;
     animation: sheet 0.22s ease;
   }
 }

@@ -338,6 +338,22 @@ export function NewTaskDialog({
                   {plannedLabel(m, locale)}
                 </button>
               ))}
+              {/* Шестой — свой время в минутах */}
+              <input
+                type="number"
+                min={1}
+                step={5}
+                inputMode="numeric"
+                value={(PLANNED_MINUTES as readonly number[]).includes(plannedMinutes) ? "" : String(plannedMinutes || "")}
+                onChange={(e) => { const v = Number(e.target.value); setPlannedMinutes(Number.isFinite(v) && v > 0 ? v : 0); }}
+                placeholder={t(locale, "dlg.customMin")}
+                className={cn(
+                  "w-16 flex-1 rounded-md border px-2 py-1.5 text-center text-sm font-medium outline-none transition-all",
+                  plannedMinutes > 0 && !(PLANNED_MINUTES as readonly number[]).includes(plannedMinutes)
+                    ? "border-primary bg-accent text-accent-foreground"
+                    : "border-border text-muted-foreground focus:border-ring",
+                )}
+              />
             </div>
           </div>
 

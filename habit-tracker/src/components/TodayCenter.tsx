@@ -5,7 +5,7 @@ import { humanFull, dayMonth } from "@/lib/date";
 import type { Task } from "@/lib/types";
 import { Tick } from "./icons";
 
-export function TodayCenter({ selectedId, onQuickAdd }: { selectedId: string | null; onQuickAdd: () => void }) {
+export function TodayCenter({ selectedId }: { selectedId: string | null }) {
   const { state, toggleTask } = useStore();
 
   const open = todayOpenTasks(state);
@@ -41,8 +41,6 @@ export function TodayCenter({ selectedId, onQuickAdd }: { selectedId: string | n
           ))
         )}
       </div>
-
-      <button className="add-task" onClick={onQuickAdd}>+ задача</button>
 
       {done.length > 0 && (
         <div className="donebar">Сделано сегодня: {done.length} · зачёркнутые уйдут завтра</div>
