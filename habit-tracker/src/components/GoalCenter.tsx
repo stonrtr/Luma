@@ -31,7 +31,6 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
     <>
       <div className="head">
         <h1>{goal.name}</h1>
-        <div className="left">{goal.status === "done" ? "достигнуто ✓" : goal.type === "achievement" ? "достижение" : "поддержание"}</div>
       </div>
 
       <div className="goal-tally">
@@ -42,7 +41,7 @@ export function GoalCenter({ goalId, onAddHabit }: { goalId: string; onAddHabit:
         <MomentumTag m={m} />
         <ActivityStrip dots={m.dots} />
         <span className="goal-maint">
-          {m.lastActive ? `последнее действие: ${humanFull(m.lastActive).toLowerCase()}` : "пока без активности"}
+          {m.lastActive ? `Последняя активность: ${humanFull(m.lastActive).toLowerCase()}` : "Последняя активность: —"}
         </span>
       </div>
 

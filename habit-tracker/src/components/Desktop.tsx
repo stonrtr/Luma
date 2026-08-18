@@ -73,31 +73,36 @@ export function Desktop() {
   const selectedId = view === "today" && openTasks[sel] ? openTasks[sel].id : null;
 
   return (
-    <div className="app">
-      <Rail
-        view={view}
-        onSelect={(v) => {
-          setView(v);
-          setSel(0);
-        }}
-        onAddGoal={() => setModal({ kind: "goal" })}
-      />
+    <div className="page">
+      <div className="shell">
+        <span className="shell-bar" />
+        <div className="app">
+          <Rail
+            view={view}
+            onSelect={(v) => {
+              setView(v);
+              setSel(0);
+            }}
+            onAddGoal={() => setModal({ kind: "goal" })}
+          />
 
-      <main>
-        {view === "today" ? (
-          <TodayCenter selectedId={selectedId} onQuickAdd={() => setModal({ kind: "task" })} />
-        ) : view === "week" || view === "month" || view === "future" ? (
-          <TimeCenter horizon={view} />
-        ) : view === "goals" ? (
-          <GoalsOverview onOpenGoal={(id) => setView(id)} onAddGoal={() => setModal({ kind: "goal" })} />
-        ) : view === "calendar" ? (
-          <CalendarCenter onAddForDate={(date) => setModal({ kind: "task", date })} />
-        ) : (
-          <GoalCenter goalId={view} onAddHabit={(goalId) => setModal({ kind: "habit", goalId })} />
-        )}
-      </main>
+          <main>
+            {view === "today" ? (
+              <TodayCenter selectedId={selectedId} onQuickAdd={() => setModal({ kind: "task" })} />
+            ) : view === "week" || view === "month" || view === "future" ? (
+              <TimeCenter horizon={view} />
+            ) : view === "goals" ? (
+              <GoalsOverview onOpenGoal={(id) => setView(id)} onAddGoal={() => setModal({ kind: "goal" })} />
+            ) : view === "calendar" ? (
+              <CalendarCenter onAddForDate={(date) => setModal({ kind: "task", date })} />
+            ) : (
+              <GoalCenter goalId={view} onAddHabit={(goalId) => setModal({ kind: "habit", goalId })} />
+            )}
+          </main>
 
-      <HabitsRail view={view} />
+          <HabitsRail view={view} />
+        </div>
+      </div>
 
       <Modals modal={modal} onClose={closeModal} />
     </div>

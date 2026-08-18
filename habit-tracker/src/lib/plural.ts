@@ -8,9 +8,9 @@ export function plural(n: number, one: string, few: string, many: string): strin
 }
 
 export function jumpsText(n: number): string {
-  return `${n} ${plural(n, "прыжок", "прыжка", "прыжков")}`;
+  return `${n} ${n === 1 ? "task" : "tasks"}`;
 }
 
 export function stepsText(n: number): string {
-  return `${n} ${plural(n, "шаг", "шага", "шагов")}`;
+  return `${n} ${n === 1 ? "habit" : "habits"}`;
 }

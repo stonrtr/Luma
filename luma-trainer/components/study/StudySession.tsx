@@ -32,6 +32,29 @@ function SpeakerIcon() {
   );
 }
 
+// Иконка «перемешать».
+function ShuffleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 3h5v5" />
+      <path d="M4 20 21 3" />
+      <path d="M21 16v5h-5" />
+      <path d="m15 15 6 6" />
+      <path d="M4 4l5 5" />
+    </svg>
+  );
+}
+
+// Перемешивание (Fisher–Yates) — новый массив, исходный не мутируем.
+function shuffled<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 // Цвета точки сложности на цветной панели (светлее обычных — по референсу).
 const DIFF_ON_PANEL: Record<string, string> = {
   green: "#54e6a1",
@@ -84,7 +107,9 @@ export function StudySession({
     setReveal(0);
     setUsedHint(false);
     A.study(effScope, scope.lessonId)
-      .then((r) => setCards(r.cards))
+      // «Сегодня» показываем в случайном порядке при первом отображении,
+      // чтобы первой не была всегда одна и та же карточка (нужные карточки те же).
+      .then((r) => setCards(effScope === "today" ? shuffled(r.cards) : r.cards))
       .catch(() => setCards([]));
   }, [scope, effScope, fetchKey, reloadTick]);
 
@@ -275,6 +300,18 @@ export function StudySession({
   const goHome = () => {
     if (embedded) refresh();
     else if (onClose) onClose();
+  };
+
+  // Перемешать текущую очередь и начать с начала.
+  const reshuffle = () => {
+    if (!cards || cards.length < 2) return;
+    playSfx("flip");
+    setCards(shuffled(cards));
+    setIndex(0);
+    setFlipped(false);
+    setReveal(0);
+    setUsedHint(false);
+    setFeedback(null);
   };
 
   /* ── Общие блоки разметки ─────────────────────────────────────────── */
@@ -596,6 +633,9 @@ export function StudySession({
               {card.lessonTitle || title}
             </span>
             <span style={{ flex: 1 }} />
+            <button aria-label="Перемешать" title="Перемешать карточки" className="icon-btn icon-btn-sm" onClick={reshuffle}>
+              <ShuffleIcon />
+            </button>
             <span className="wbtn" style={{ cursor: "default", fontSize: 10, minHeight: 30, padding: "0 16px" }}>
               {Math.min(index + 1, Math.max(total, 1))} / {Math.max(total, 1)}
             </span>
@@ -633,6 +673,11 @@ export function StudySession({
           <div className="brand-sub" style={{ letterSpacing: "0.18em" }}>Session</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {card && (
+            <button aria-label="Перемешать" title="Перемешать карточки" className="icon-btn" style={{ width: 46, height: 46 }} onClick={reshuffle}>
+              <ShuffleIcon />
+            </button>
+          )}
           {card && (
             <button aria-label="Озвучить" className="icon-btn" style={{ width: 46, height: 46 }} onClick={playEnglish}>
               <SpeakerIcon />

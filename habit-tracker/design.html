@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Comfortaa:wght@300;400;500;600;700&family=Golos+Text:wght@400;500;600;700;800&family=Onest:wght@300;400;500;600;700;800&family=Unbounded:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Rubik:wght@400;500;600;700&family=PT+Sans:wght@400;700&family=Fira+Sans:wght@400;500;700&family=Ubuntu:wght@400;500;700&family=Exo+2:wght@400;500;600;700&family=Jura:wght@400;500;600;700&family=Cuprum:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Cormorant:wght@400;500;600;700&family=Philosopher:wght@400;700&family=Oswald:wght@300;400;500;600;700&family=Podkova:wght@400;500;600;700&family=Yeseva+One&family=Prata&family=Forum&family=Rubik+Mono+One&family=Ruslan+Display&family=Marmelad&family=Pacifico&family=Pattaya&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#e8eaed;font-family:'Nunito',system-ui,sans-serif;color:#4a4e54;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+  a{color:#e59b1f;text-decoration:none}
+  a:hover{color:#c9820f}
+  ::selection{background:#ffe0a0;color:#4a4e54}
+  :focus-visible{outline:2px solid #ffb52e;outline-offset:3px;border-radius:8px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;padding:28px;display:grid;grid-template-columns:252px 1fr 366px;gap:26px;align-items:start">
+
+  <aside style="background:#e8eaed;border-radius:26px;padding:20px 16px;box-shadow:9px 9px 20px #c8cacd,-9px -9px 20px #ffffff">
+    <button style="{{ todayNav.style }}" onClick="{{ selectToday }}">
+      <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+        <b style="font-size:15px;font-weight:700;color:#4a4e54">Сегодня</b>
+        <span data-accent-font style="font-size:12px;font-weight:700;color:#9aa0a6;font-variant-numeric:tabular-nums">{{ todayNav.count }}</span>
+      </span>
+    </button>
+    <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#aeb4ba;font-weight:700;margin:20px 8px 12px">Направления</div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+      <button style="{{ n.style }}" onClick="{{ n.onClick }}">
+        <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <b style="font-size:14px;font-weight:600;color:#5a5f66">{{ n.name }}</b>
+          <span data-accent-font style="font-size:11.5px;font-weight:700;color:#9aa0a6;font-variant-numeric:tabular-nums">{{ n.pct }}%</span>
+        </span>
+        <div style="margin-top:9px">{{ n.barEl }}</div>
+      </button>
+    </sc-for>
+    <button style="width:100%;margin-top:16px;padding:11px;border-radius:13px;background:#e8eaed;box-shadow:4px 4px 10px #cbcdd1,-4px -4px 10px #ffffff;color:#9aa0a6;font-size:12.5px;font-weight:700;text-align:center" style-hover="box-shadow:inset 3px 3px 7px #c6c8cc,inset -3px -3px 7px #ffffff">+ направление</button>
+  </aside>
+
+  <main style="min-width:0">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin:4px 4px 2px">
+      <h1 data-accent-font style="font-weight:300;font-size:42px;line-height:1;margin:0;color:#4a4e54;letter-spacing:-.015em">{{ title }}</h1>
+      <span data-accent-font style="font-size:13px;color:#9aa0a6;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums">{{ headRight }}</span>
+    </div>
+
+    <div style="background:#e8eaed;border-radius:26px;padding:22px 24px;margin-top:16px;box-shadow:9px 9px 20px #c8cacd,-9px -9px 20px #ffffff">
+      {{ weekEl }}
+      <sc-if value="{{ hasList }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:12px">
+          <sc-for list="{{ todayList }}" as="it" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:16px;padding:13px 4px">
+              {{ it.checkbox }}
+              <span style="{{ it.labelStyle }}">{{ it.label }}</span>
+              <sc-if value="{{ it.tag }}" hint-placeholder-val="Здоровье">
+                <span style="font-size:11.5px;font-weight:600;color:#9aa0a6;padding:4px 11px;border-radius:100px;background:#e8eaed;box-shadow:inset 2px 2px 4px #cccdd1,inset -2px -2px 4px #ffffff;white-space:nowrap">{{ it.tag }}</span>
+              </sc-if>
+              <span style="font-size:13px;color:#aeb4ba;font-weight:600;width:52px;text-align:right;font-variant-numeric:tabular-nums">{{ it.due }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:34px 4px 22px">
+          <b data-accent-font style="display:block;font-weight:300;font-size:30px;color:#4a4e54;margin-bottom:6px">На сегодня всё</b>
+          <span style="font-size:14.5px;color:#9aa0a6;font-weight:600">Ближайшее — во вторник, ниже.</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:16px;font-size:13px;color:#aeb4ba;font-weight:600">Сделано: {{ doneCount }} · <button style="color:#e59b1f;font-weight:700" onClick="{{ toggleShowDone }}">{{ showDoneLabel }}</button></div>
+      </sc-if>
+    </div>
+
+    <section style="margin-top:30px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin:0 4px 14px">
+        <b style="font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:#9aa0a6;font-weight:700">Осталось на этой неделе</b>
+        <span data-accent-font style="font-size:11.5px;color:#aeb4ba;font-weight:600;font-variant-numeric:tabular-nums">{{ aheadSum }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px">
+        <sc-for list="{{ aheadCols }}" as="col" hint-placeholder-count="6">
+          <div style="{{ col.style }}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px">
+              <span style="{{ col.dayStyle }}">{{ col.day }}</span>
+              <span data-accent-font style="font-size:11px;color:#aeb4ba;font-weight:700;font-variant-numeric:tabular-nums">{{ col.count }}</span>
+            </div>
+            <sc-for list="{{ col.minis }}" as="m" hint-placeholder-count="2">
+              <div style="font-size:12px;color:#8b9198;font-weight:600;padding:3px 0;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m }}</div>
+            </sc-for>
+            <sc-if value="{{ col.moreLabel }}" hint-placeholder-val="">
+              <div style="font-size:11px;color:#aeb4ba;font-weight:700;margin-top:4px">{{ col.moreLabel }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+
+  <div style="background:#e8eaed;border-radius:26px;padding:22px 20px;box-shadow:9px 9px 20px #c8cacd,-9px -9px 20px #ffffff">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+      <b style="font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:#9aa0a6;font-weight:700">Привычки</b>
+      <span data-accent-font style="font-size:11.5px;color:#aeb4ba;font-weight:600;font-variant-numeric:tabular-nums">{{ habSum }}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;margin-top:14px">
+      <sc-for list="{{ habits }}" as="h" hint-placeholder-count="4">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:11px">
+            <span style="font-size:14px;font-weight:700;color:#5a5f66">{{ h.name }}</span>
+            <sc-if value="{{ h.dirName }}" hint-placeholder-val="Здоровье">
+              <span style="font-size:10.5px;color:#aeb4ba;font-weight:600">{{ h.dirName }}</span>
+            </sc-if>
+          </div>
+          {{ h.cellsEl }}
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:18px;font-size:11.5px;line-height:1.55;color:#aeb4ba;font-weight:600">Три дня назад можно доотметить, будущие — только план. Серия считается подряд от сегодня назад.</div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1260,&quot;height&quot;:880},&quot;accentFont&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Comfortaa&quot;,&quot;Unbounded&quot;,&quot;YesevaOne&quot;,&quot;Prata&quot;,&quot;Playfair&quot;,&quot;Cormorant&quot;,&quot;Forum&quot;,&quot;Podkova&quot;,&quot;Philosopher&quot;,&quot;Oswald&quot;,&quot;RubikMono&quot;,&quot;RuslanDisplay&quot;,&quot;Marmelad&quot;,&quot;Pacifico&quot;,&quot;Pattaya&quot;],&quot;default&quot;:&quot;Comfortaa&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Typography&quot;},&quot;bodyFont&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Manrope&quot;,&quot;Onest&quot;,&quot;Golos&quot;,&quot;Nunito&quot;,&quot;Inter&quot;,&quot;Roboto&quot;,&quot;OpenSans&quot;,&quot;Montserrat&quot;,&quot;Rubik&quot;,&quot;PTSans&quot;,&quot;FiraSans&quot;,&quot;Ubuntu&quot;,&quot;Exo2&quot;,&quot;Jura&quot;,&quot;Cuprum&quot;,&quot;Comfortaa&quot;],&quot;default&quot;:&quot;Nunito&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Typography&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;amber&quot;,&quot;cyan&quot;,&quot;rose&quot;],&quot;default&quot;:&quot;amber&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;markStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;raised&quot;,&quot;pressed&quot;],&quot;default&quot;:&quot;raised&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    var hist = function(p){var a=[];for(var i=0;i<30;i++)a.push(p[i%p.length]);return a;};
+    this.DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+    this.TODAY = 0;
+    this.data = { dirs:[
+      {id:'health',name:'Здоровье',goals:[
+        {name:'Набрать 5 кг',tasks:[
+          {t:'Тренировка',d:0,h:'18:00',done:false},
+          {t:'Закупить продукты',d:2,done:false},
+          {t:'Записаться к тренеру',d:4,done:false},
+          {t:'Замеры и взвешивание',d:6,done:false},
+          {t:'План питания',d:-1,done:true},{t:'Абонемент',d:-1,done:true},{t:'Анализы',d:-1,done:true}],
+         habits:[{n:'Силовая тренировка',log:hist([1,1,0,1,1,1,0])},{n:'150 г белка',log:hist([1,1,1,0,1,0,1])}]},
+        {name:'Режим сна',tasks:[{t:'Шторы блэкаут',d:1,done:false},{t:'Телефон из спальни',d:-1,done:true}],
+         habits:[{n:'Отбой до 23:30',log:hist([1,0,1,1,0,0,1])}]}]},
+      {id:'edu',name:'Образование',goals:[
+        {name:'Английский B2',tasks:[
+          {t:'Урок английского',d:0,h:'20:00',done:false},
+          {t:'Домашнее задание',d:1,done:false},{t:'Оплатить месяц',d:3,done:false},
+          {t:'Пробный тест',d:-1,done:true},{t:'Выбрать препода',d:-1,done:true}],
+         habits:[{n:'20 минут чтения',log:hist([1,1,1,1,1,1,0])}]},
+        {name:'Курс аналитики',tasks:[{t:'Модуль 3',d:4,done:false},{t:'Модуль 4',d:6,done:false},{t:'Оплатить курс',d:-1,done:true},{t:'Модуль 5',d:-1,done:false}],habits:[]}]},
+      {id:'family',name:'Семья',goals:[
+        {name:'Больше времени вместе',tasks:[
+          {t:'Позвонить родителям',d:0,h:'21:00',done:false},
+          {t:'Столик на субботу',d:2,done:false},{t:'Фотоархив',d:-1,done:true}],
+         habits:[{n:'Ужин без телефонов',log:hist([1,1,1,1,0,1,1])}]}]},
+      {id:'work',name:'Работа',goals:[
+        {name:'Запуск лендинга',tasks:[
+          {t:'Закончить презентацию',d:0,h:'17:00',done:false},
+          {t:'Согласовать тексты',d:1,done:false},{t:'Бриф на дизайн',d:-1,done:true},{t:'Аналитика',d:-1,done:true}],habits:[]},
+        {name:'Найм в команду',tasks:[{t:'Отсмотреть 5 резюме',d:2,done:false},{t:'Собес с кандидатом',d:3,done:false},
+          {t:'Описать вакансию',d:-1,done:true},{t:'Опубликовать',d:-1,done:true},{t:'Вилка',d:-1,done:true}],habits:[]}]},
+      {id:'money',name:'Финансы',goals:[
+        {name:'Подушка 6 мес.',tasks:[{t:'Перевести в накопления',d:1,done:false},{t:'Открыть счёт',d:-1,done:true}],
+         habits:[{n:'Записать траты дня',log:hist([1,0,1,1,0,1,1])}]},
+        {name:'Учёт расходов',tasks:[{t:'Внести расходы за неделю',d:0,h:'22:00',done:false},{t:'Категории',d:-1,done:true},{t:'Отчёт за февраль',d:5,done:false}],habits:[]}]}
+    ]};
+    this.state = { view:'today', showDone:false };
+  }
+
+  fontStack(name){
+    var S="system-ui,sans-serif", SE="Georgia,serif", SC="cursive";
+    var F={
+      Manrope:"'Manrope',"+S, Onest:"'Onest',"+S, Golos:"'Golos Text',"+S, Nunito:"'Nunito',"+S,
+      Inter:"'Inter',"+S, Roboto:"'Roboto',"+S, OpenSans:"'Open Sans',"+S, Montserrat:"'Montserrat',"+S,
+      Rubik:"'Rubik',"+S, PTSans:"'PT Sans',"+S, FiraSans:"'Fira Sans',"+S, Ubuntu:"'Ubuntu',"+S,
+      Exo2:"'Exo 2',"+S, Jura:"'Jura',"+S, Cuprum:"'Cuprum',"+S, Comfortaa:"'Comfortaa',"+S, Unbounded:"'Unbounded',"+S,
+      Oswald:"'Oswald',"+S, Philosopher:"'Philosopher',"+S, Marmelad:"'Marmelad',"+S,
+      YesevaOne:"'Yeseva One',"+SE, Prata:"'Prata',"+SE, Playfair:"'Playfair Display',"+SE,
+      Cormorant:"'Cormorant',"+SE, Forum:"'Forum',"+SE, Podkova:"'Podkova',"+SE,
+      RubikMono:"'Rubik Mono One',monospace", RuslanDisplay:"'Ruslan Display',"+SE,
+      Pacifico:"'Pacifico',"+SC, Pattaya:"'Pattaya',"+SC
+    };
+    return F[name]||F.Manrope;
+  }
+  bodyStack(){ return this.fontStack(this.props.bodyFont||'Manrope'); }
+  accentStack(){ return this.fontStack(this.props.accentFont||'Comfortaa'); }
+  applyFont(){
+    if(typeof document==='undefined')return;
+    document.body.style.fontFamily=this.bodyStack();
+    var af=this.accentStack(), els=document.querySelectorAll('[data-accent-font]');
+    for(var i=0;i<els.length;i++){els[i].style.fontFamily=af;}
+  }
+  componentDidMount(){ this.applyFont(); }
+  componentDidUpdate(){ this.applyFont(); }
+
+  rate(l){var s=0;for(var i=0;i<l.length;i++)s+=l[i];return s/l.length;}
+  goalPct(g){
+    var self=this;
+    var t=g.tasks.length?g.tasks.filter(function(x){return x.done;}).length/g.tasks.length:0;
+    if(!g.habits.length)return Math.round(t*100);
+    var h=0;g.habits.forEach(function(x){h+=self.rate(x.log);});h/=g.habits.length;
+    return Math.round((t*0.7+h*0.3)*100);
+  }
+  dirPct(d){var self=this,s=0;d.goals.forEach(function(g){s+=self.goalPct(g);});return Math.round(s/d.goals.length);}
+  scope(view){return view==='today'?this.data.dirs:this.data.dirs.filter(function(d){return d.id===view;});}
+  tasksAt(day,view){var o=[];this.scope(view).forEach(function(d){d.goals.forEach(function(g){g.tasks.forEach(function(t){if(t.d===day)o.push({dir:d,ref:t});});});});return o;}
+  habitsAll(view){var o=[];this.scope(view).forEach(function(d){d.goals.forEach(function(g){g.habits.forEach(function(h){o.push({dir:d,ref:h});});});});return o;}
+  streak(h){var s=0;for(var i=29;i>=0;i--){if(h.log[i])s++;else break;}return s;}
+  todayPct(view){
+    var t=this.tasksAt(this.TODAY,view),h=this.habitsAll(view),n=t.length+h.length;if(!n)return 0;
+    var k=t.filter(function(x){return x.ref.done;}).length+h.filter(function(x){return x.ref.log[29]===1;}).length;
+    return k/n;
+  }
+
+  palette(){
+    var P={
+      amber:{g:'linear-gradient(145deg,#ffd766,#ffb52e)',lo:'#d3a53c',hi:'#ffe98e',text:'#e59b1f',fill:'linear-gradient(90deg,#ffce5a,#ffb52e)'},
+      cyan:{g:'linear-gradient(145deg,#5fd0e6,#12a3c4)',lo:'#2a94ad',hi:'#a9f0ff',text:'#0f8bab',fill:'linear-gradient(90deg,#49c7e0,#12a3c4)'},
+      rose:{g:'linear-gradient(145deg,#ff8fc0,#e0407f)',lo:'#c0356c',hi:'#ffc7e0',text:'#d6006c',fill:'linear-gradient(90deg,#ff7ab3,#e0407f)'}
+    };
+    return P[this.props.accent]||P.amber;
+  }
+  tick(c){
+    return React.createElement('svg',{viewBox:'0 0 12 12',fill:'none',width:11,height:11},
+      React.createElement('path',{d:'M2 6.3 4.6 9 10 3.2',stroke:c||'#fff',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round'}));
+  }
+  checkbox(done,onClick){
+    var A=this.palette(),pressed=this.props.markStyle==='pressed';
+    var sh = done ? (pressed?'inset 3px 3px 7px '+A.lo+',inset -3px -3px 7px '+A.hi:'3px 3px 7px '+A.lo+',-3px -3px 7px '+A.hi)
+                  : '4px 4px 9px #c4c6ca,-4px -4px 9px #ffffff';
+    return React.createElement('button',{onClick:onClick,'aria-pressed':done,style:{
+      width:28,height:28,flex:'0 0 auto',borderRadius:9,display:'grid',placeItems:'center',
+      background:done?A.g:'#e8eaed',boxShadow:sh,transition:'box-shadow .18s,background .18s'}},
+      done?this.tick('#fff'):null);
+  }
+  bar(pct){
+    var A=this.palette();
+    return React.createElement('div',{style:{height:8,borderRadius:6,background:'#e8eaed',boxShadow:'inset 2px 2px 5px #c6c8cc,inset -2px -2px 5px #ffffff',overflow:'hidden'}},
+      React.createElement('div',{style:{height:'100%',width:pct+'%',borderRadius:6,background:A.fill,transition:'width .45s cubic-bezier(.22,.8,.3,1)'}}));
+  }
+  weekEl(segs,label){
+    var A=this.palette();
+    var kids=segs.map(function(s,i){
+      return React.createElement('div',{key:i,style:{flex:1,height:s.now?9:6,borderRadius:6,background:'#e8eaed',boxShadow:'inset 2px 2px 4px #c8cace,inset -2px -2px 4px #ffffff',overflow:'hidden'}},
+        React.createElement('div',{style:{height:'100%',width:(Math.round(s.pct*100))+'%',borderRadius:6,background:s.now?A.fill:'linear-gradient(90deg,#c9ccd1,#b7bac0)',transition:'width .5s'}}));
+    });
+    kids.push(React.createElement('span',{key:'l',style:{fontFamily:this.accentStack(),fontSize:12,color:'#9aa0a6',marginLeft:8,whiteSpace:'nowrap',fontWeight:700,fontVariantNumeric:'tabular-nums'}},label));
+    return React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},kids);
+  }
+  cellsEl(cells,streak){
+    var self=this,A=this.palette(),pressed=this.props.markStyle==='pressed';
+    var kids=cells.map(function(c,i){
+      var cellNode;
+      if(c.state==='fut'){
+        cellNode=React.createElement('div',{style:{width:24,height:24,borderRadius:8,background:'#e8eaed',boxShadow:'inset 2px 2px 4px #cbcdd1,inset -2px -2px 4px #ffffff',opacity:.55}});
+      }else{
+        var hit=c.state==='hit';
+        var sh = hit ? (pressed?'inset 3px 3px 6px '+A.lo+',inset -3px -3px 6px '+A.hi:'3px 3px 6px '+A.lo+',-3px -3px 6px '+A.hi)
+                     : 'inset 2px 2px 5px #c8cace,inset -2px -2px 5px #ffffff';
+        cellNode=React.createElement('button',{onClick:c.onClick,style:{
+          width:24,height:24,borderRadius:8,display:'grid',placeItems:'center',
+          background:hit?A.g:'#e8eaed',boxShadow:sh,transition:'box-shadow .18s,background .18s',
+          outline:c.now?'2px solid '+A.text+'55':'none',outlineOffset:2}},
+          hit?self.tick('#fff'):React.createElement('span',{style:{fontSize:10,color:'#c99a9a',fontWeight:700,opacity:c.state==='miss'?1:0}},'✕'));
+      }
+      return React.createElement('div',{key:i,style:{display:'flex',flexDirection:'column',alignItems:'center',gap:5}},
+        React.createElement('span',{style:{fontSize:9,letterSpacing:'.04em',color:c.now?A.text:'#aeb4ba',textTransform:'uppercase',fontWeight:700}},c.label),
+        cellNode);
+    });
+    kids.push(React.createElement('div',{key:'st',style:{marginLeft:'auto',textAlign:'right',whiteSpace:'nowrap'}},
+      React.createElement('b',{style:{fontFamily:self.accentStack(),display:'block',fontSize:19,fontWeight:700,color:A.text,lineHeight:1,fontVariantNumeric:'tabular-nums'}},String(streak)),
+      React.createElement('span',{style:{fontSize:9.5,color:'#aeb4ba',letterSpacing:'.06em',fontWeight:700}},'дней')));
+    return React.createElement('div',{style:{display:'flex',alignItems:'flex-end',gap:6}},kids);
+  }
+
+  navBase(){return {display:'block',width:'100%',padding:'12px 14px',borderRadius:14,marginBottom:6,transition:'box-shadow .18s'};}
+  navStyle(sel){
+    var s=this.navBase();
+    if(sel){s.background='#e8eaed';s.boxShadow='inset 3px 3px 7px #c6c8cc,inset -3px -3px 7px #ffffff';}
+    else{s.background='transparent';s.boxShadow='none';}
+    return s;
+  }
+
+  renderVals(){
+    var self=this, view=this.state.view, showDone=this.state.showDone, A=this.palette();
+
+    var navItems=this.data.dirs.map(function(d){
+      return {name:d.name,pct:self.dirPct(d),barEl:self.bar(self.dirPct(d)),
+        style:self.navStyle(view===d.id),
+        onClick:function(){self.setState({view:d.id,showDone:false});}};
+    });
+    var navLeftCount=0;
+    this.data.dirs.forEach(function(dd){dd.goals.forEach(function(g){g.tasks.forEach(function(t){if(t.d===self.TODAY&&!t.done)navLeftCount++;});});});
+    var todayNav={count:navLeftCount||'✓',style:this.navStyle(view==='today')};
+
+    var dir=this.data.dirs.filter(function(x){return x.id===view;})[0];
+    var title=dir?dir.name:'Понедельник, 17 марта';
+
+    var items=this.tasksAt(this.TODAY,view);
+    var open=items.filter(function(x){return !x.ref.done;});
+    var done=items.filter(function(x){return x.ref.done;});
+    this._today=open.concat(showDone?done:[]);
+    var todayList=this._today.map(function(x,idx){
+      var isDone=x.ref.done;
+      return {
+        label:x.ref.t,
+        labelStyle:{flex:1,minWidth:0,fontSize:18,fontWeight:600,letterSpacing:'-.005em',
+          overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',
+          color:isDone?'#b3b8bd':'#4a4e54',textDecoration:isDone?'line-through':'none',textDecorationThickness:'1px'},
+        tag:(view==='today')?x.dir.name:null,
+        due:x.ref.h||'',
+        checkbox:self.checkbox(isDone,(function(ref){return function(){ref.done=!ref.done;self.forceUpdate();};})(x.ref))
+      };
+    });
+    var hasList=todayList.length>0;
+
+    var dayPct=this.todayPct(view);
+    var segs=[],sum=0,cnt=0;
+    for(var i=0;i<7;i++){
+      var v=(i===this.TODAY)?dayPct:null;
+      if(v!==null){sum+=v;cnt++;}
+      segs.push({pct:v||0,now:i===this.TODAY});
+    }
+    var weekEl=this.weekEl(segs,'неделя '+(cnt?Math.round(sum/cnt*100)+'%':'—'));
+
+    var total=0;
+    var aheadCols=[1,2,3,4,5,6].map(function(day){
+      var ts=self.tasksAt(day,view).filter(function(x){return !x.ref.done;});
+      total+=ts.length;
+      var load=ts.length>2;
+      var st={background:'#e8eaed',borderRadius:16,padding:'12px 12px 14px',minHeight:106,
+        boxShadow:load?'5px 5px 12px #c8cacd,-5px -5px 12px #ffffff, inset 0 0 0 1.5px '+A.text+'40':'5px 5px 12px #c8cacd,-5px -5px 12px #ffffff'};
+      return {day:self.DAYS[day],count:ts.length||'',style:st,
+        dayStyle:{fontSize:10.5,letterSpacing:'.1em',textTransform:'uppercase',fontWeight:700,color:load?A.text:'#9aa0a6'},
+        minis:ts.slice(0,3).map(function(x){return x.ref.t;}),
+        moreLabel:ts.length>3?('+'+(ts.length-3)):''};
+    });
+    var aheadSum=total+' задач до воскресенья';
+
+    var hs=this.habitsAll(view);
+    this._habits=hs.map(function(x){return x.ref;});
+    var habSum=hs.filter(function(x){return x.ref.log[29]===1;}).length+' / '+hs.length+' сегодня';
+    var habits=hs.map(function(x,hIdx){
+      var cells=[];
+      for(var off=-3;off<=3;off++){
+        var di=(self.TODAY+off+7)%7,lab=self.DAYS[di],li=29+off;
+        if(off>0){cells.push({state:'fut',label:lab,now:false});}
+        else{
+          var on=x.ref.log[li]===1;
+          cells.push({state:on?'hit':'miss',label:lab,now:off===0,
+            onClick:(function(ref,idx){return function(){ref.log[idx]=ref.log[idx]?0:1;self.forceUpdate();};})(x.ref,li)});
+        }
+      }
+      return {name:x.ref.n,dirName:(view==='today')?x.dir.name:null,cellsEl:self.cellsEl(cells,self.streak(x.ref))};
+    });
+
+    return {
+      navItems:navItems, todayNav:todayNav, selectToday:function(){self.setState({view:'today',showDone:false});},
+      title:title, headRight: view==='today' ? (open.length?('осталось '+open.length):'всё закрыто') : (dir?self.dirPct(dir)+'%':''),
+      weekEl:weekEl,
+      hasList:hasList, todayList:todayList, isEmpty:!hasList,
+      hasDone:done.length>0, doneCount:done.length, showDoneLabel:showDone?'скрыть':'показать',
+      toggleShowDone:function(){self.setState({showDone:!self.state.showDone});},
+      aheadCols:aheadCols, aheadSum:aheadSum,
+      habits:habits, habSum:habSum
+    };
+  }
+}
+</script>
+</body>
+</html>

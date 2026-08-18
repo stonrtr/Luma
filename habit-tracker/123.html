@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Expanded:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sans:'Archivo',system-ui,sans-serif; --exp:'Archivo Expanded','Archivo',sans-serif; --mono:'Space Mono',ui-monospace,monospace;
+  --ink:#0a0a0c; --ink2:#5f6068; --ink3:#a3a4ac; --line:rgba(10,10,14,.10); --line2:rgba(10,10,14,.055);
+  --paper:#f4f4f6; --card:#ffffff;
+  --iri:linear-gradient(115deg,#e6f77a 0%,#c3ee5c 22%,#8fe04f 44%,#63d46a 64%,#a6ec7e 82%,#d8f58e 100%);
+  --iri-soft:linear-gradient(115deg,#f2fbcf,#e2f6b4,#cdf0a0,#c0ecad,#d7f5b8,#eafccb);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left;padding:0}
+input{font:inherit;color:inherit;background:none;border:0;outline:none}
+::selection{background:#c7a8ff;color:#0a0a0c}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgba(10,10,14,.14);border-radius:8px}
+:focus-visible{outline:2px solid #9db9ff;outline-offset:2px;border-radius:6px}
+@keyframes drift{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-2%,2%) rotate(3deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;width:100%;overflow:hidden;display:flex;justify-content:center;padding:30px 40px 44px 92px;font-family:var(--sans)">
+
+  <div style="position:absolute;top:-260px;right:-180px;width:900px;height:720px;z-index:0;border-radius:50%;background:var(--iri);filter:blur(70px);opacity:.5;animation:drift 16s ease-in-out infinite"></div>
+  <div style="position:absolute;bottom:-320px;left:-120px;width:760px;height:620px;z-index:0;border-radius:50%;background:var(--iri-soft);filter:blur(80px);opacity:.7;animation:drift 20s ease-in-out infinite reverse"></div>
+
+  <div style="position:absolute;left:24px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 7px;border-radius:26px;background:var(--card);border:1px solid var(--line);box-shadow:0 12px 34px rgba(10,10,14,.08)">
+    <sc-for list="{{ navIcons }}" as="ic" hint-placeholder-count="5">
+      <button title="{{ ic.title }}" onClick="{{ ic.onClick }}" style="{{ ic.style }}">
+        <span style="display:grid;place-items:center;width:19px;height:19px" innerHTML="{{ ic.svg }}"></span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="position:relative;z-index:3;width:100%;max-width:1220px;display:flex;flex-direction:column;gap:22px">
+
+    <header style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:4px 2px 0">
+      <div style="min-width:0">
+        <div style="display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink2)">
+          <span style="text-transform:uppercase;letter-spacing:.16em">Направления жизни</span>
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--ink3)"></span>
+          <span>{{ dateLine }}</span>
+        </div>
+        <h1 style="font-family:var(--exp);font-weight:800;font-size:56px;line-height:.94;letter-spacing:-.02em;margin:8px 0 0">Сегодня</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px;flex:0 0 auto">
+        <label style="display:flex;align-items:center;gap:11px;padding:12px 16px;border-radius:100px;background:var(--card);border:1px solid var(--line);min-width:320px">
+          <span style="width:16px;height:16px;flex:0 0 auto;color:var(--ink3)" innerHTML="{{ searchSvg }}"></span>
+          <input placeholder="Добавить задачу или спросить" style="flex:1;min-width:0;font-size:14px" />
+        </label>
+        <div style="display:flex;align-items:center;gap:11px">
+          <span style="width:40px;height:40px;border-radius:50%;background:var(--iri);display:grid;place-items:center;font-family:var(--exp);font-weight:700;font-size:16px;color:#0a0a0c">{{ profileInitial }}</span>
+          <div style="line-height:1.15">
+            <div style="font-size:13.5px;font-weight:600">{{ profileName }}</div>
+            <div style="font-family:var(--mono);font-size:10.5px;color:var(--ink3)">{{ profileEmail }}</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div style="width:100%;position:relative;border-radius:26px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 70px rgba(10,10,14,.09)">
+      <div style="height:8px;width:100%;background:var(--iri)"></div>
+
+      <div style="display:grid;grid-template-columns:228px minmax(320px,1fr) 300px;gap:0;align-items:stretch">
+
+        <div style="padding:24px 20px;border-right:1px solid var(--line2);display:flex;flex-direction:column;gap:8px">
+          <button onClick="{{ selectToday }}" style="{{ todayTileStyle }}">
+            <span style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-family:var(--exp);font-weight:700;font-size:15px">Сегодня</span>
+              <span style="font-family:var(--mono);font-size:12px;color:var(--ink)">{{ todayCountText }}</span>
+            </span>
+          </button>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin:14px 2px 4px">Направления</div>
+          <sc-for list="{{ dirs }}" as="d" hint-placeholder-count="5">
+            <button onClick="{{ d.onClick }}" style="{{ d.style }}">
+              <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+                <span style="font-size:13.5px;font-weight:600">{{ d.name }}</span>
+                <span style="font-family:var(--mono);font-size:11px;color:var(--ink2)">{{ d.pctText }}</span>
+              </span>
+              <span style="display:block;height:5px;border-radius:100px;background:rgba(10,10,14,.07);overflow:hidden;margin-top:10px">
+                <span style="{{ d.barStyle }}"></span>
+              </span>
+            </button>
+          </sc-for>
+          <button style="margin-top:6px;padding:11px;border-radius:12px;border:1px dashed var(--line);font-family:var(--mono);font-size:11px;color:var(--ink3);text-align:center">+ направление</button>
+        </div>
+
+        <div style="padding:24px 26px;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin:0 0 22px">
+            <sc-for list="{{ weekSegs }}" as="w" hint-placeholder-count="7">
+              <span style="flex:1;text-align:center">
+                <span style="{{ w.trackStyle }}"><span style="{{ w.fillStyle }}"></span></span>
+                <span style="{{ w.labStyle }}">{{ w.lab }}</span>
+              </span>
+            </sc-for>
+          </div>
+
+          <div style="border-top:1px solid var(--line2)">
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:32px 2px;color:var(--ink2)">
+                <div style="font-family:var(--exp);font-weight:700;font-size:24px;color:var(--ink);margin-bottom:6px">На сегодня всё</div>
+                <div style="font-size:14px">Ближайшее — во вторник, ниже.</div>
+              </div>
+            </sc-if>
+            <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:16px;padding:15px 2px;border-bottom:1px solid var(--line2)">
+                <button onClick="{{ t.onClick }}" style="{{ t.boxStyle }}">
+                  <span style="{{ t.tickStyle }}" innerHTML="{{ habitTickSvg }}"></span>
+                </button>
+                <span style="{{ t.labStyle }}">{{ t.title }}</span>
+                <sc-if value="{{ t.dir }}" hint-placeholder-val="">
+                  <span style="font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ink2);border:1px solid var(--line);border-radius:100px;padding:4px 11px;white-space:nowrap">{{ t.dir }}</span>
+                </sc-if>
+                <span style="font-family:var(--mono);font-size:12.5px;color:var(--ink3);width:52px;text-align:right">{{ t.time }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;font-size:13px;color:var(--ink3)">Сделано: {{ doneCount }} · <button onClick="{{ toggleDone }}" style="text-decoration:underline;text-underline-offset:3px;color:var(--ink2);display:inline">{{ doneToggleText }}</button></div>
+          </sc-if>
+
+          <sc-if value="{{ showUpcoming }}" hint-placeholder-val="{{ true }}">
+            <section style="margin-top:32px;border-top:1px solid var(--line2);padding-top:20px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+                <span style="font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)">Осталось на этой неделе</span>
+                <span style="font-family:var(--mono);font-size:11.5px;color:var(--ink3)">{{ aheadSum }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:9px">
+                <sc-for list="{{ ahead }}" as="c" hint-placeholder-count="6">
+                  <div style="{{ c.style }}">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px">
+                      <span style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)">{{ c.lab }}</span>
+                      <span style="font-family:var(--mono);font-size:11px;color:var(--ink3)">{{ c.count }}</span>
+                    </div>
+                    <sc-for list="{{ c.items }}" as="mi" hint-placeholder-count="2">
+                      <div style="font-size:11.5px;line-height:1.45;color:var(--ink2);padding:3px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ mi.t }}</div>
+                    </sc-for>
+                    <sc-if value="{{ c.more }}" hint-placeholder-val="">
+                      <div style="font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-top:5px">{{ c.more }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ showHabits }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:24px 20px;border-left:1px solid var(--line2);background:rgba(10,10,14,.015)">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+              <span style="font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)">Привычки</span>
+              <span style="font-family:var(--mono);font-size:11.5px;color:var(--ink)">{{ habitsSum }}</span>
+            </div>
+            <sc-for list="{{ habits }}" as="h" hint-placeholder-count="6">
+              <div style="padding:13px 0;border-top:1px solid var(--line2)">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:9px">
+                  <span style="font-size:13px;font-weight:600">{{ h.name }}</span>
+                  <span style="font-family:var(--mono);font-size:10px;color:var(--ink3)">{{ h.dir }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px">
+                  <sc-for list="{{ h.cells }}" as="cell" hint-placeholder-count="7">
+                    <span style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <span style="{{ cell.labStyle }}">{{ cell.lab }}</span>
+                      <button onClick="{{ cell.onClick }}" style="{{ cell.style }}">
+                        <sc-if value="{{ cell.tick }}" hint-placeholder-val="{{ false }}"><span style="width:12px;height:12px;display:grid;place-items:center" innerHTML="{{ habitTickSvg }}"></span></sc-if>
+                        <sc-if value="{{ cell.cross }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--mono);font-size:10px;color:#c98b9a">✕</span></sc-if>
+                      </button>
+                    </span>
+                  </sc-for>
+                  <span style="margin-left:auto;text-align:right;white-space:nowrap">
+                    <span style="display:block;font-family:var(--exp);font-weight:800;font-size:17px;line-height:1;letter-spacing:-.02em">{{ h.streak }}</span>
+                    <span style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.04em">дней</span>
+                  </span>
+                </div>
+              </div>
+            </sc-for>
+            <div style="margin-top:14px;font-size:11px;line-height:1.55;color:var(--ink3)">Три дня назад можно доотметить, будущие — только план. Серия считается подряд от сегодня назад.</div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:880},&quot;showHabits&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Разделы&quot;,&quot;label&quot;:&quot;Колонка привычек&quot;},&quot;showUpcoming&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Разделы&quot;,&quot;label&quot;:&quot;Блок «на этой неделе»&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.DAYS=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+    this.TODAY=0;
+    this.tickSvg='<svg viewBox="0 0 12 12" fill="none" style="width:100%;height:100%"><path d="M2 6.3 4.6 9 10 3.2" stroke="#0a0a0c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    this.state={ data:this.buildData(), showDone:false, sel:'today' };
+  }
+  hist(p){var a=[];for(var i=0;i<30;i++)a.push(p[i%p.length]);return a;}
+  buildData(){
+    var H=this.hist.bind(this);
+    return {week:[null,null,null,null,null,null,null], dirs:[
+      {id:'health',name:'Здоровье',goals:[
+        {name:'Набрать 5 кг',tasks:[{t:'Тренировка',d:0,h:'18:00',done:false},{t:'Закупить продукты',d:2,done:false},{t:'Записаться к тренеру',d:4,done:false},{t:'Замеры и взвешивание',d:6,done:false},{t:'План питания',d:-1,done:true},{t:'Абонемент',d:-1,done:true},{t:'Анализы',d:-1,done:true}],habits:[{n:'Силовая тренировка',log:H([1,1,0,1,1,1,0])},{n:'150 г белка',log:H([1,1,1,0,1,0,1])}]},
+        {name:'Режим сна',tasks:[{t:'Шторы блэкаут',d:1,done:false},{t:'Телефон из спальни',d:-1,done:true}],habits:[{n:'Отбой до 23:30',log:H([1,0,1,1,0,0,1])}]}]},
+      {id:'edu',name:'Образование',goals:[
+        {name:'Английский B2',tasks:[{t:'Урок английского',d:0,h:'20:00',done:false},{t:'Домашнее задание',d:1,done:false},{t:'Оплатить месяц',d:3,done:false},{t:'Пробный тест',d:-1,done:true},{t:'Выбрать препода',d:-1,done:true}],habits:[{n:'20 минут чтения',log:H([1,1,1,1,1,1,0])}]},
+        {name:'Курс аналитики',tasks:[{t:'Модуль 3',d:4,done:false},{t:'Модуль 4',d:6,done:false},{t:'Оплатить курс',d:-1,done:true},{t:'Модуль 5',d:-1,done:false}],habits:[]}]},
+      {id:'family',name:'Семья',goals:[
+        {name:'Больше времени вместе',tasks:[{t:'Позвонить родителям',d:0,h:'21:00',done:false},{t:'Столик на субботу',d:2,done:false},{t:'Фотоархив',d:-1,done:true}],habits:[{n:'Ужин без телефонов',log:H([1,1,1,1,0,1,1])}]}]},
+      {id:'work',name:'Работа',goals:[
+        {name:'Запуск лендинга',tasks:[{t:'Закончить презентацию',d:0,h:'17:00',done:false},{t:'Согласовать тексты',d:1,done:false},{t:'Бриф на дизайн',d:-1,done:true},{t:'Аналитика',d:-1,done:true}],habits:[]},
+        {name:'Найм в команду',tasks:[{t:'Отсмотреть 5 резюме',d:2,done:false},{t:'Собес с кандидатом',d:3,done:false},{t:'Описать вакансию',d:-1,done:true},{t:'Опубликовать',d:-1,done:true},{t:'Вилка',d:-1,done:true}],habits:[]}]},
+      {id:'money',name:'Финансы',goals:[
+        {name:'Подушка 6 мес.',tasks:[{t:'Перевести в накопления',d:1,done:false},{t:'Открыть счёт',d:-1,done:true}],habits:[{n:'Записать траты дня',log:H([1,0,1,1,0,1,1])}]},
+        {name:'Учёт расходов',tasks:[{t:'Внести расходы за неделю',d:0,h:'22:00',done:false},{t:'Категории',d:-1,done:true},{t:'Отчёт за февраль',d:5,done:false}],habits:[]}]}
+    ]};
+  }
+  rate(l){var s=0;for(var i=0;i<l.length;i++)s+=l[i];return s/l.length;}
+  goalPct(g){var t=g.tasks.length?g.tasks.filter(function(x){return x.done;}).length/g.tasks.length:0;if(!g.habits.length)return Math.round(t*100);var h=0,self=this;g.habits.forEach(function(x){h+=self.rate(x.log);});h/=g.habits.length;return Math.round((t*0.7+h*0.3)*100);}
+  dirPct(d){var s=0,self=this;d.goals.forEach(function(g){s+=self.goalPct(g);});return Math.round(s/d.goals.length);}
+  tasksAt(day){var o=[];this.state.data.dirs.forEach(function(d){d.goals.forEach(function(g){g.tasks.forEach(function(t){if(t.d===day)o.push({dir:d,ref:t});});});});return o;}
+  habitsAll(){var o=[];this.state.data.dirs.forEach(function(d){d.goals.forEach(function(g){g.habits.forEach(function(h){o.push({dir:d,ref:h});});});});return o;}
+  todayPct(){var t=this.tasksAt(this.TODAY),h=this.habitsAll(),n=t.length+h.length;if(!n)return 0;var k=t.filter(function(x){return x.ref.done;}).length+h.filter(function(x){return x.ref.log[29]===1;}).length;return k/n;}
+  streak(h){var s=0;for(var i=29;i>=0;i--){if(h.log[i])s++;else break;}return s;}
+
+  renderVals(){
+    var self=this, D=this.state.data, DAYS=this.DAYS, T=this.TODAY;
+    var IRI='linear-gradient(115deg,#e6f77a,#c3ee5c,#8fe04f,#63d46a,#a6ec7e,#d8f58e)';
+    var items=this.tasksAt(T);
+    var open=items.filter(function(x){return !x.ref.done;});
+    var done=items.filter(function(x){return x.ref.done;});
+    var shown=open.concat(this.state.showDone?done:[]);
+
+    var tasks=shown.map(function(x){
+      var isDone=x.ref.done;
+      return {
+        title:x.ref.t, dir:x.dir.name, time:x.ref.h||'',
+        onClick:function(){x.ref.done=!x.ref.done;self.forceUpdate();},
+        boxStyle:'width:24px;height:24px;flex:0 0 auto;border-radius:8px;display:grid;place-items:center;transition:.16s;'+(isDone?'background:#f2fbcf;border:1.6px solid #b6f0a0':'background:#fff;border:1.6px solid var(--ink3)'),
+        tickStyle:'width:12px;height:12px;transition:.16s;'+(isDone?'opacity:1;transform:scale(1)':'opacity:0;transform:scale(.5)'),
+        labStyle:'flex:1;min-width:0;font-size:18px;font-weight:500;letter-spacing:-.01em;'+(isDone?'color:var(--ink3);text-decoration:line-through':'color:var(--ink)')
+      };
+    });
+
+    var dirs=D.dirs.map(function(d){
+      var p=self.dirPct(d), selected=self.state.sel===d.id;
+      return {
+        name:d.name, pctText:p+'%',
+        onClick:function(){self.setState({sel:d.id});},
+        style:'display:block;width:100%;padding:12px 13px;border-radius:14px;transition:.16s;'+(selected?'background:#fff;border:1px solid var(--ink);box-shadow:0 6px 18px rgba(10,10,14,.08)':'background:#fff;border:1px solid var(--line)'),
+        barStyle:'display:block;height:100%;width:'+p+'%;border-radius:100px;background:'+IRI+';transition:width .5s cubic-bezier(.22,.8,.3,1)'
+      };
+    });
+    var todaySel=this.state.sel==='today';
+    var todayCount=open.length;
+
+    D.week[T]=this.todayPct();
+    var sum=0,n=0;
+    var weekSegs=DAYS.map(function(dd,i){
+      var v=D.week[i]; if(v!==null){sum+=v;n++;}
+      var now=i===T;
+      return {
+        lab:dd,
+        labStyle:'display:block;font-family:var(--mono);font-size:9.5px;margin-top:6px;color:'+(now?'var(--ink)':'var(--ink3)'),
+        trackStyle:'display:block;height:'+(now?'8px':'5px')+';background:rgba(10,10,14,.08);border-radius:100px;position:relative;overflow:hidden',
+        fillStyle:'position:absolute;inset:0;transform:scaleX('+(v||0)+');transform-origin:left;border-radius:100px;transition:transform .5s;background:'+(now?IRI:'rgba(10,10,14,.32)')
+      };
+    });
+
+    var total=0;
+    var ahead=[1,2,3,4,5,6].map(function(i){
+      var ts=self.tasksAt(i).filter(function(x){return !x.ref.done;});
+      total+=ts.length;
+      var load=ts.length>2;
+      return {
+        lab:DAYS[i], count:ts.length||'',
+        items:ts.slice(0,3).map(function(x){return {t:x.ref.t};}),
+        more:ts.length>3?('+'+(ts.length-3)):'',
+        style:'border-radius:14px;padding:12px 11px 13px;min-height:100px;background:#fff;border:1px solid '+(load?'var(--ink)':'var(--line)')
+      };
+    });
+
+    var hs=this.habitsAll();
+    var habits=hs.map(function(x){
+      var cells=[];
+      for(var off=-3;off<=3;off++){
+        var di=(T+off+7)%7, lab=DAYS[di], i=29+off, now=off===0;
+        var labStyle='font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:'+(now?'var(--ink)':'var(--ink3)');
+        if(off>0){
+          cells.push({lab:lab,labStyle:labStyle,tick:false,cross:false,onClick:null,
+            style:'width:24px;height:24px;border-radius:7px;border:1.4px dashed var(--line);background:transparent;cursor:default'});
+        }else{
+          var on=x.ref.log[i]===1;
+          (function(ref,logi){
+            cells.push({lab:lab,labStyle:labStyle,tick:on,cross:!on,
+              onClick:function(){ref.log[logi]=ref.log[logi]?0:1;self.forceUpdate();},
+              style:'width:24px;height:24px;border-radius:7px;display:grid;place-items:center;transition:.16s;'+(on?'background:#f2fbcf;border:'+(now?'2px solid #63d46a':'1.4px solid #b6f0a0'):'background:#fff;border:'+(now?'2px solid var(--ink)':'1.4px solid rgba(201,139,154,.5)'))});
+          })(x.ref,i);
+        }
+      }
+      return {name:x.ref.n, dir:x.dir.name, cells:cells, streak:self.streak(x.ref)};
+    });
+    var habitsSum=hs.filter(function(x){return x.ref.log[29]===1;}).length+' / '+hs.length+' сегодня';
+
+    var navIcons=[
+      {title:'Главная',svg:'<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>'},
+      {title:'Направления',svg:'<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg>'},
+      {title:'Привычки',svg:'<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%"><path d="M3 12h4l2-6 3 12 2.5-8 1.5 2H21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+      {title:'Статистика',svg:'<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%"><path d="M5 20V9M12 20V4M19 20v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'},
+      {title:'Настройки',svg:'<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'}
+    ].map(function(ic,i){
+      return {title:ic.title,svg:ic.svg,onClick:function(){},
+        style:'display:grid;place-items:center;width:42px;height:42px;border-radius:15px;transition:.16s;color:'+(i===0?'#0a0a0c':'var(--ink3)')+';background:'+(i===0?IRI:'transparent')};
+    });
+
+    return {
+      dateLine:'Понедельник, 17 марта',
+      profileInitial:'Т', profileName:'Таня', profileEmail:'cosmos@gmail.com',
+      searchSvg:'<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+      tickSvg:this.tickSvg,
+      habitTickSvg:'<svg viewBox="0 0 12 12" fill="none" style="width:100%;height:100%"><defs><linearGradient id="htg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c3ee5c"/><stop offset="0.5" stop-color="#8fe04f"/><stop offset="1" stop-color="#3bbf5a"/></linearGradient></defs><path d="M2 6.3 4.6 9 10 3.2" stroke="url(#htg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      navIcons:navIcons,
+      todayTileStyle:'display:block;width:100%;padding:14px 14px;border-radius:14px;transition:.16s;'+(todaySel?'background:'+IRI+';border:1px solid transparent':'background:#fff;border:1px solid var(--line)'),
+      selectToday:function(){self.setState({sel:'today'});},
+      todayCountText:todayCount?('осталось '+todayCount):'✓',
+      dirs:dirs,
+      weekSegs:weekSegs,
+      isEmpty:shown.length===0,
+      tasks:tasks,
+      hasDone:done.length>0, doneCount:done.length,
+      doneToggleText:this.state.showDone?'скрыть':'показать',
+      toggleDone:function(){self.setState({showDone:!self.state.showDone});},
+      showUpcoming:this.props.showUpcoming!==false,
+      ahead:ahead, aheadSum:total+' задач до воскресенья',
+      showHabits:this.props.showHabits!==false,
+      habits:habits, habitsSum:habitsSum
+    };
+  }
+}
+</script>
+</body>
+</html>

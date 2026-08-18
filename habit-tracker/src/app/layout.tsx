@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin", "cyrillic"], weight: ["400", "500", "600"], variable: "--sans" });
-const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--serif" });
-const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--mono" });
+const sans = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"], variable: "--sans" });
+const mono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], variable: "--mono" });
 
 export const metadata: Metadata = {
   title: "Направления жизни",
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${inter.variable} ${serif.variable} ${mono.variable}`}>
+    <html lang="ru" className={`${sans.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );
