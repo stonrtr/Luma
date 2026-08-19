@@ -142,10 +142,7 @@ export function StudySession({
     if (flipped || !card) return;
     playSfx("flip");
     setFlipped(true);
-    // Английский озвучиваем при показе ответа только если он на стороне ответа
-    // (showFirst==="ru"). Если вопрос уже на английском — озвучили при появлении.
-    if (settings.autoPlay && showFirst === "ru") setTimeout(playEnglish, 250);
-  }, [flipped, card, settings.autoPlay, playEnglish, showFirst]);
+  }, [flipped, card]);
 
   const close = useCallback(() => {
     if (!flipped) return;
@@ -153,15 +150,17 @@ export function StudySession({
     setFlipped(false);
   }, [flipped]);
 
-  // Автоозвучка английского при ПОЯВЛЕНИИ карточки, если вопрос уже на английском
-  // (showFirst==="en"). Ключ по card?.id → срабатывает только на НОВУЮ карточку,
-  // а не на мутации (прогресс/избранное) и не на переворот.
+  // Английский проговаривается, КОГДА видна английская сторона карточки:
+  // - showFirst="en" → английский на лице (виден при !flipped);
+  // - showFirst="ru" → английский на обороте (виден при flipped).
+  // Триггеры: новая карточка (card?.id) и переворот (flipped). Не на оценку.
+  const englishVisible = (showFirst === "en" && !flipped) || (showFirst === "ru" && flipped);
   useEffect(() => {
-    if (!card || !settings.autoPlay || showFirst !== "en") return;
-    const t = setTimeout(playEnglish, 300);
+    if (!card || !settings.autoPlay || !englishVisible) return;
+    const t = setTimeout(playEnglish, 250);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [card?.id, settings.autoPlay, showFirst]);
+  }, [card?.id, flipped, showFirst, settings.autoPlay]);
 
   const doHint = useCallback(() => {
     if (!answer || flipped) return;
@@ -189,9 +188,6 @@ export function StudySession({
       const effective: Rating = usedHint ? "again" : rating;
       busy.current = true;
       playSfx(effective === "easy" ? "success" : effective === "hard" ? "so-so" : "mistake");
-      // Проговорить английский при оценке (звуковое закрепление) — чуть позже
-      // звука-отклика, чтобы не наслаивались.
-      if (settings.autoPlay && card.english) setTimeout(playEnglish, 180);
       setFeedback(effective === "again" ? "bad" : "good");
       setCounts((c) => ({ ...c, [effective]: c[effective] + 1 }));
       // Сразу двигаем прогресс-бар текущей карточки (анимация width 0.5s в .track),
@@ -211,7 +207,7 @@ export function StudySession({
         advance();
       }, delay);
     },
-    [card, usedHint, advance, index, settings.animationsEnabled, settings.autoPlay, playEnglish]
+    [card, usedHint, advance, index, settings.animationsEnabled]
   );
 
   // Хоткеи (§6): не срабатывают в полях ввода. Встроенная карточка
