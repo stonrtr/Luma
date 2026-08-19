@@ -14,6 +14,7 @@ import type { TaskStatus } from "@/generated/prisma/enums";
 const createTaskSchema = z.object({
   projectId: z.string().optional(),
   title: z.string().min(1, "Введіть назву").max(200),
+  description: z.string().max(10000).optional(),
   status: z.enum(["IDEA", "TODO", "IN_PROGRESS", "TO_REVIEW", "DONE"]).default("TODO"),
   priority: z.number().int().min(1).max(10).default(5),
   plannedMinutes: z.number().int().positive().nullable().optional(),
@@ -62,6 +63,7 @@ export async function createTask(input: z.infer<typeof createTaskSchema>) {
   const task = await db.task.create({
     data: {
       title: data.title,
+      description: data.description?.trim() || null,
       status: data.status,
       priority: data.priority,
       plannedMinutes: data.plannedMinutes ?? null,

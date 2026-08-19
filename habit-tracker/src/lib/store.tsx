@@ -20,17 +20,33 @@ function reduce(s: AppState, m: Mutation): AppState {
         ? { ...s, goals: s.goals.filter((g) => g.id !== m.id) }
         : { ...s, goals: s.goals.map((g) => (g.id === m.id ? { ...g, status: m.status } : g)) };
     case "addTask":
-      return { ...s, tasks: [...s.tasks, { id: m.id, goalId: m.goalId, title: m.title, dueDate: m.dueDate, doneAt: null, ord: s.tasks.length, createdAt: nowIso, updatedAt: nowIso }] };
+      return { ...s, tasks: [...s.tasks, { id: m.id, goalId: m.goalId, title: m.title, description: "", dueDate: m.dueDate, doneAt: null, ord: s.tasks.length, createdAt: nowIso, updatedAt: nowIso }] };
     case "toggleTask":
       return { ...s, tasks: s.tasks.map((t) => (t.id === m.id ? { ...t, doneAt: m.done ? nowIso : null, updatedAt: nowIso } : t)) };
     case "setTaskDue":
       return { ...s, tasks: s.tasks.map((t) => (t.id === m.id ? { ...t, dueDate: m.dueDate, updatedAt: nowIso } : t)) };
+    case "updateTask":
+      return { ...s, tasks: s.tasks.map((t) => (t.id === m.id ? { ...t, title: m.title, description: m.description, goalId: m.goalId, dueDate: m.dueDate, updatedAt: nowIso } : t)) };
     case "deleteTask":
       return { ...s, tasks: s.tasks.filter((t) => t.id !== m.id) };
     case "addHabit":
       return { ...s, habits: [...s.habits, { id: m.id, goalId: m.goalId, directionId: null, name: m.name, schedule: m.schedule, archived: false, ord: s.habits.length, createdAt: nowIso }] };
-    case "archiveHabit":
-      return { ...s, habits: s.habits.filter((h) => h.id !== m.id) };
+    case "archiveHabit": {
+      const h = s.habits.find((x) => x.id === m.id);
+      return {
+        ...s,
+        habits: s.habits.filter((x) => x.id !== m.id),
+        archivedHabits: h ? [...s.archivedHabits, { ...h, archived: true }] : s.archivedHabits,
+      };
+    }
+    case "restoreHabit": {
+      const h = s.archivedHabits.find((x) => x.id === m.id);
+      return {
+        ...s,
+        archivedHabits: s.archivedHabits.filter((x) => x.id !== m.id),
+        habits: h ? [...s.habits, { ...h, archived: false }] : s.habits,
+      };
+    }
     case "toggleHabitEntry": {
       if (m.date > s.today) return s;
       const existing = s.entries.find((e) => e.habitId === m.habitId && e.date === m.date);
@@ -64,9 +80,11 @@ interface Store {
   addTask: (goalId: string | null, title: string, dueDate: string | null) => void;
   toggleTask: (id: string, done: boolean) => void;
   setTaskDue: (id: string, dueDate: string | null) => void;
+  updateTask: (id: string, patch: { title: string; description: string; goalId: string | null; dueDate: string | null }) => void;
   deleteTask: (id: string) => void;
   addHabit: (goalId: string | null, name: string, schedule: Schedule) => void;
   archiveHabit: (id: string) => void;
+  restoreHabit: (id: string) => void;
   toggleHabitEntry: (habitId: string, date: string) => void;
 }
 
@@ -88,9 +106,11 @@ export function StoreProvider({ initial, children }: { initial: AppState; childr
     addTask: (goalId, title, dueDate) => run({ action: "addTask", id: uid(), goalId, title, dueDate }),
     toggleTask: (id, done) => run({ action: "toggleTask", id, done }),
     setTaskDue: (id, dueDate) => run({ action: "setTaskDue", id, dueDate }),
+    updateTask: (id, patch) => run({ action: "updateTask", id, ...patch }),
     deleteTask: (id) => run({ action: "deleteTask", id }),
     addHabit: (goalId, name, schedule) => run({ action: "addHabit", id: uid(), goalId, name, schedule }),
     archiveHabit: (id) => run({ action: "archiveHabit", id }),
+    restoreHabit: (id) => run({ action: "restoreHabit", id }),
     toggleHabitEntry: (habitId, date) => run({ action: "toggleHabitEntry", id: uid(), habitId, date }),
   };
 

@@ -350,10 +350,36 @@ main {
   font-weight: 500;
   letter-spacing: -0.01em;
 }
+.lab-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.lab-btn:hover {
+  color: var(--accent-strong);
+}
 .done .lab {
   color: var(--ink3);
   text-decoration: line-through;
   text-decoration-thickness: 1px;
+}
+.modal-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  font-size: 14px;
+  color: var(--ink);
+  font-family: inherit;
+  resize: vertical;
+  min-height: 68px;
+}
+.modal-textarea::placeholder {
+  color: var(--ink3);
 }
 .tag {
   font-size: 11px;
@@ -648,6 +674,78 @@ main {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--ink2);
+}
+.hbox-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.16s;
+}
+.hbox-title:hover {
+  color: var(--ink);
+}
+.hbox-arrow {
+  font-size: 14px;
+  line-height: 1;
+  color: var(--ink3);
+}
+
+/* ── страница привычек ─────────────── */
+.hlist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hrow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+.hrow-main {
+  flex: 1;
+  min-width: 140px;
+}
+.hrow-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.hrow-meta {
+  font-size: 12px;
+  color: var(--ink3);
+  margin-top: 3px;
+}
+.hrow-stat {
+  text-align: center;
+  white-space: nowrap;
+}
+.hrow-stat b {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.hrow-stat u {
+  text-decoration: none;
+  font-size: 10px;
+  color: var(--ink3);
+}
+.hrow-period {
+  font-size: 12px;
+  color: var(--ink2);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .hbox-h i {
   font-style: normal;

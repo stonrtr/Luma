@@ -268,6 +268,15 @@ export function StudySession({
     if (!embedded) refresh();
   };
 
+  // Выбор основного перевода (первые 2 показа карточки с вариантами): выбранный
+  // становится основным, остальные варианты убираются и больше не показываются.
+  const chooseTranslation = async (chosen: string) => {
+    if (!card || !cards) return;
+    playSfx("flip");
+    setCards(cards.map((c, i) => (i === index ? { ...c, russian: chosen, alternativeTranslations: [] } : c)));
+    await A.updatePhrase(card.id, { russian: chosen, alternativeTranslations: [] }).catch(() => {});
+  };
+
   const title =
     scopeOverride === "upcoming"
       ? "Пока не забыл"
@@ -465,10 +474,42 @@ export function StudySession({
           </>
         ) : (
           <>
-            {card.alternativeTranslations.length > 0 && (
-              <span className="gpill" style={{ color: "rgba(255,255,255,0.85)", padding: "5px 14px" }}>
-                {card.alternativeTranslations.join(" · ")}
-              </span>
+            {card.alternativeTranslations.length > 0 && card.reviewCount < 2 ? (
+              // Первые 2 показа: выбор основного перевода — тап по варианту.
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: 560 }}>
+                <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 600 }}>
+                  Выберите основной перевод
+                </span>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                  {Array.from(new Set([card.russian, ...card.alternativeTranslations])).map((t) => {
+                    const primary = t === card.russian;
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => chooseTranslation(t)}
+                        className="gpill"
+                        style={{
+                          cursor: "pointer",
+                          padding: "8px 16px",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: primary ? "var(--deep)" : "#fff",
+                          background: primary ? "#fff" : "var(--glass)",
+                          border: primary ? "none" : "1px solid var(--glass-border-strong)",
+                        }}
+                      >
+                        {t}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              card.alternativeTranslations.length > 0 && (
+                <span className="gpill" style={{ color: "rgba(255,255,255,0.85)", padding: "5px 14px" }}>
+                  {card.alternativeTranslations.join(" · ")}
+                </span>
+              )
             )}
             {usedHint ? (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>

@@ -35,6 +35,7 @@ export interface Task {
   id: string;
   goalId: string | null; // null = инбокс (задача без цели)
   title: string;
+  description: string;
   dueDate: string | null;
   doneAt: string | null;
   ord: number;
@@ -65,7 +66,8 @@ export interface AppState {
   directions: Direction[];
   goals: Goal[];
   tasks: Task[];
-  habits: Habit[];
+  habits: Habit[]; // активные (не архивные)
+  archivedHabits: Habit[]; // архив
   entries: HabitEntry[];
   today: string; // серверное «сегодня», чтобы клиент и БД совпадали
 }

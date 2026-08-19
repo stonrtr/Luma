@@ -12,6 +12,7 @@ import { createRecurringTask } from "@/server/actions/recurring";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -87,6 +88,7 @@ export function NewTaskDialog({
   const router = useRouter();
   const [pending, start] = useTransition();
   const [title, setTitle] = useState(initialTitle ?? "");
+  const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<number>(DEFAULT_PRIORITY);
   const [taskStatus, setTaskStatus] = useState<TaskStatus>(initialStatus ?? "TODO");
   const [plannedMinutes, setPlannedMinutes] = useState<number>(30);
@@ -121,6 +123,7 @@ export function NewTaskDialog({
 
   function reset() {
     setTitle("");
+    setDescription("");
     setPriority(DEFAULT_PRIORITY);
     setTaskStatus("TODO");
     setPlannedMinutes(30);
@@ -193,6 +196,7 @@ export function NewTaskDialog({
         const created = await Promise.all(targets.map((assignee) => createTask({
           projectId: chosenProject,
           title: fTitle,
+          description: description.trim() || undefined,
           status: taskStatus,
           priority: fPriority,
           plannedMinutes: fPlanned,
@@ -232,6 +236,17 @@ export function NewTaskDialog({
               placeholder={t(locale, "dlg.taskNamePh")}
               autoFocus
               onKeyDown={(e) => e.key === "Enter" && submit()}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="task-desc">{t(locale, "dlg.description")}</Label>
+            <Textarea
+              id="task-desc"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={t(locale, "dlg.descriptionPh")}
+              rows={2}
             />
           </div>
 

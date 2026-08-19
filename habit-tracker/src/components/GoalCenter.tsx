@@ -6,7 +6,7 @@ import { MomentumTag, Tally } from "./Momentum";
 import { dayMonth, dayMonthFull } from "@/lib/date";
 import { Tick } from "./icons";
 
-export function GoalCenter({ goalId }: { goalId: string }) {
+export function GoalCenter({ goalId, onOpenTask }: { goalId: string; onOpenTask: (id: string) => void }) {
   const { state, toggleTask, setGoalStatus } = useStore();
   const idx = useMemo(() => indexEntries(state.entries), [state.entries]);
 
@@ -60,7 +60,7 @@ export function GoalCenter({ goalId }: { goalId: string }) {
             <button className="box" onClick={() => toggleTask(t.id, !t.doneAt)} aria-label={t.title}>
               <Tick />
             </button>
-            <span className="lab">{t.title}</span>
+            <button className="lab lab-btn" onClick={() => onOpenTask(t.id)}>{t.title}</button>
             <span className="due">{t.dueDate ? dayMonth(t.dueDate) : ""}</span>
           </div>
         ))}
@@ -70,13 +70,15 @@ export function GoalCenter({ goalId }: { goalId: string }) {
         <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "active")}>
           вернуть в активные
         </button>
-      ) : goal.type === "achievement" ? (
-        <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "done")}>
-          завершить цель
-        </button>
       ) : (
-        <button className="mini-btn" style={{ marginTop: 22 }} onClick={() => setGoalStatus(goal.id, "done")}>
-          отметить достигнутой
+        <button
+          className="mini-btn"
+          style={{ marginTop: 22 }}
+          onClick={() => {
+            if (confirm(`Отметить цель «${goal.name}» достигнутой?`)) setGoalStatus(goal.id, "done");
+          }}
+        >
+          {goal.type === "achievement" ? "завершить цель" : "отметить достигнутой"}
         </button>
       )}
     </>

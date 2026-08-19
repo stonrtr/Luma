@@ -7,6 +7,7 @@ import type { GoalType, Schedule, ScheduleType } from "@/lib/types";
 export type ModalState =
   | { kind: "create"; goalId?: string | null; date?: string; defaultType?: "task" | "habit" }
   | { kind: "goal" }
+  | { kind: "task"; id: string }
   | null;
 
 function Shell({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
@@ -23,7 +24,74 @@ function Shell({ title, children, onClose }: { title: string; children: React.Re
 export function Modals({ modal, onClose }: { modal: ModalState; onClose: () => void }) {
   if (!modal) return null;
   if (modal.kind === "goal") return <GoalModal onClose={onClose} />;
+  if (modal.kind === "task") return <TaskDetailModal id={modal.id} onClose={onClose} />;
   return <CreateModal defaultGoal={modal.goalId ?? ""} defaultDate={modal.date} defaultType={modal.defaultType ?? "task"} onClose={onClose} />;
+}
+
+function TaskDetailModal({ id, onClose }: { id: string; onClose: () => void }) {
+  const { state, updateTask, deleteTask } = useStore();
+  const task = state.tasks.find((t) => t.id === id);
+  const [title, setTitle] = useState(task?.title ?? "");
+  const [desc, setDesc] = useState(task?.description ?? "");
+  const [goalId, setGoalId] = useState<string>(task?.goalId ?? "");
+  const [due, setDue] = useState(task?.dueDate ?? "");
+
+  if (!task) return null;
+
+  const save = () => {
+    updateTask(id, { title: title.trim() || task.title, description: desc, goalId: goalId || null, dueDate: due || null });
+    onClose();
+  };
+  const remove = () => {
+    if (confirm(`Удалить задачу «${task.title}»?`)) {
+      deleteTask(id);
+      onClose();
+    }
+  };
+
+  return (
+    <Shell title="Задача" onClose={onClose}>
+      <div className="row">
+        <label>Название</label>
+        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && save()} />
+      </div>
+      <div className="row">
+        <label>Описание</label>
+        <textarea className="modal-textarea" rows={3} value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Заметки, детали, ссылки…" />
+      </div>
+      <div className="row">
+        <label>Цель</label>
+        <select value={goalId} onChange={(e) => setGoalId(e.target.value)}>
+          <option value="">— Инбокс (без цели) —</option>
+          {state.goals
+            .filter((g) => g.status === "active")
+            .map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+        </select>
+      </div>
+      <div className="row">
+        <label>Дедлайн</label>
+        <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+      </div>
+      <div className="hint">Создана {task.createdAt.slice(0, 10)}</div>
+      <div className="modal-foot" style={{ justifyContent: "space-between" }}>
+        <button className="btn ghost" onClick={remove} style={{ color: "var(--down)" }}>
+          Удалить
+        </button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button className="btn ghost" onClick={onClose}>
+            Отмена
+          </button>
+          <button className="btn primary" onClick={save}>
+            Сохранить
+          </button>
+        </div>
+      </div>
+    </Shell>
+  );
 }
 
 /** Единая форма: создать задачу ИЛИ привычку. */

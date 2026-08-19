@@ -48,15 +48,15 @@ export function MomentumDot({ m, color }: { m: Momentum; color?: string }) {
   );
 }
 
-/** Счёт достижений к цели: задачи и привычки, словами. Без процентов. */
+/** Счёт цели: задач к исполнению и активных привычек (как в рейке). */
 export function Tally({ m, size }: { m: Momentum; size?: "lg" }) {
   return (
     <span className={`tally${size === "lg" ? " lg" : ""}`}>
       <span className="tally-j">
-        <span className="ic ic-task"><TaskIcon /></span> {jumpsText(m.jumps)}
+        <span className="ic ic-task"><TaskIcon /></span> {jumpsText(m.openTasks)}
       </span>
       <span className="tally-s">
-        <span className="ic ic-habit"><HabitIcon /></span> {stepsText(m.steps)}
+        <span className="ic ic-habit"><HabitIcon /></span> {stepsText(m.habitCount)}
       </span>
     </span>
   );

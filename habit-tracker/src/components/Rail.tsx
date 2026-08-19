@@ -3,8 +3,7 @@ import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum } from "@/lib/progress";
 import { horizonCount } from "@/lib/selectors";
-import { MomentumDot, Counts, TrendIcon } from "./Momentum";
-import { goalColor } from "@/lib/goalColor";
+import { Counts, TrendIcon } from "./Momentum";
 
 export function Rail({
   view,
@@ -51,7 +50,6 @@ export function Rail({
                 <TrendIcon status={m.status} />
                 <b>{g.name}</b>
               </span>
-              <MomentumDot m={m} color={goalColor(g.id, state.goals)} />
             </span>
             <Counts m={m} />
           </button>

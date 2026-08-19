@@ -7,12 +7,13 @@ import { TodayCenter } from "./TodayCenter";
 import { TimeCenter } from "./TimeCenter";
 import { GoalCenter } from "./GoalCenter";
 import { GoalsOverview } from "./GoalsOverview";
+import { HabitsOverview } from "./HabitsOverview";
 import { CalendarCenter } from "./CalendarCenter";
 import { HabitsRail } from "./HabitsRail";
 import { Modals, type ModalState } from "./modals";
 
 // «страничные» view, не привязанные к конкретной цели
-const PAGE_VIEWS = ["today", "week", "month", "future", "goals", "calendar"] as const;
+const PAGE_VIEWS = ["today", "week", "month", "future", "goals", "calendar", "habits"] as const;
 
 export function Desktop() {
   const { state, toggleTask } = useStore();
@@ -29,6 +30,7 @@ export function Desktop() {
   const closeModal = useCallback(() => setModal(null), []);
   const isGoalView = !(PAGE_VIEWS as readonly string[]).includes(view);
   const openCreate = () => setModal({ kind: "create", goalId: isGoalView ? view : null });
+  const openTask = (id: string) => setModal({ kind: "task", id });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -90,19 +92,21 @@ export function Desktop() {
 
           <main>
             {view === "today" ? (
-              <TodayCenter selectedId={selectedId} />
+              <TodayCenter selectedId={selectedId} onOpenTask={openTask} />
             ) : view === "week" || view === "month" || view === "future" ? (
-              <TimeCenter horizon={view} />
+              <TimeCenter horizon={view} onOpenTask={openTask} />
             ) : view === "goals" ? (
               <GoalsOverview onOpenGoal={(id) => setView(id)} onAddGoal={() => setModal({ kind: "goal" })} />
             ) : view === "calendar" ? (
               <CalendarCenter onAddForDate={(date) => setModal({ kind: "create", date })} />
+            ) : view === "habits" ? (
+              <HabitsOverview />
             ) : (
-              <GoalCenter goalId={view} />
+              <GoalCenter goalId={view} onOpenTask={openTask} />
             )}
           </main>
 
-          <HabitsRail view={view} />
+          <HabitsRail view={view} onOpen={() => setView("habits")} />
         </div>
       </div>
 

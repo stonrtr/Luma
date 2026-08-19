@@ -6,7 +6,7 @@ import { addDays, wdShort } from "@/lib/date";
 import type { Habit } from "@/lib/types";
 import { Tick } from "./icons";
 
-export function HabitsRail({ view }: { view: string }) {
+export function HabitsRail({ view, onOpen }: { view: string; onOpen: () => void }) {
   const { state, toggleHabitEntry } = useStore();
   const idx = useMemo(() => indexEntries(state.entries), [state.entries]);
 
@@ -20,7 +20,9 @@ export function HabitsRail({ view }: { view: string }) {
     <div className="rail">
       <div className="hbox">
         <div className="hbox-h">
-          <b>Привычки</b>
+          <button className="hbox-title" onClick={onOpen} title="Все привычки и архив">
+            Привычки <span className="hbox-arrow">›</span>
+          </button>
           <i>{habits.length ? `${doneCount} / ${habits.length} сегодня` : "—"}</i>
         </div>
 

@@ -37,6 +37,7 @@ function init(d: Database.Database) {
       id TEXT PRIMARY KEY,
       goal_id TEXT,
       title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
       due_date TEXT,
       done_at TEXT,
       ord INTEGER NOT NULL DEFAULT 0,
@@ -64,6 +65,11 @@ function init(d: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_entry_habit ON habit_entry(habit_id, date);
     CREATE INDEX IF NOT EXISTS idx_task_due ON task(due_date);
   `);
+  // миграция: добавить description к старым БД
+  const taskCols = d.prepare("PRAGMA table_info(task)").all() as { name: string }[];
+  if (!taskCols.some((c) => c.name === "description")) {
+    d.exec("ALTER TABLE task ADD COLUMN description TEXT NOT NULL DEFAULT ''");
+  }
   const n = (d.prepare("SELECT COUNT(*) c FROM goal").get() as { c: number }).c;
   if (n === 0) seed(d);
 }
@@ -76,8 +82,9 @@ export function getState(): AppState {
   const goals = (d.prepare("SELECT * FROM goal WHERE status!='archived' ORDER BY ord, created_at").all() as RowGoal[]).map(mapGoal);
   const tasks = (d.prepare("SELECT * FROM task ORDER BY ord, created_at").all() as RowTask[]).map(mapTask);
   const habits = (d.prepare("SELECT * FROM habit WHERE archived=0 ORDER BY ord, created_at").all() as RowHabit[]).map(mapHabit);
+  const archivedHabits = (d.prepare("SELECT * FROM habit WHERE archived=1 ORDER BY created_at").all() as RowHabit[]).map(mapHabit);
   const entries = (d.prepare("SELECT * FROM habit_entry").all() as RowEntry[]).map(mapEntry);
-  return { directions, goals, tasks, habits, entries, today: todayStr() };
+  return { directions, goals, tasks, habits, archivedHabits, entries, today: todayStr() };
 }
 
 // ---------- mutations ----------
@@ -89,9 +96,11 @@ export type Mutation =
   | { action: "addTask"; id: string; goalId: string | null; title: string; dueDate: string | null }
   | { action: "toggleTask"; id: string; done: boolean }
   | { action: "setTaskDue"; id: string; dueDate: string | null }
+  | { action: "updateTask"; id: string; title: string; description: string; goalId: string | null; dueDate: string | null }
   | { action: "deleteTask"; id: string }
   | { action: "addHabit"; id: string; goalId: string | null; name: string; schedule: Schedule }
   | { action: "archiveHabit"; id: string }
+  | { action: "restoreHabit"; id: string }
   | { action: "toggleHabitEntry"; id: string; habitId: string; date: string };
 
 export function applyMutation(m: Mutation): void {
@@ -124,6 +133,11 @@ export function applyMutation(m: Mutation): void {
     case "setTaskDue":
       d.prepare("UPDATE task SET due_date=?, updated_at=? WHERE id=?").run(m.dueDate, now, m.id);
       break;
+    case "updateTask":
+      d.prepare("UPDATE task SET title=?, description=?, goal_id=?, due_date=?, updated_at=? WHERE id=?").run(
+        m.title, m.description, m.goalId, m.dueDate, now, m.id,
+      );
+      break;
     case "deleteTask":
       d.prepare("DELETE FROM task WHERE id=?").run(m.id);
       break;
@@ -136,6 +150,9 @@ export function applyMutation(m: Mutation): void {
     }
     case "archiveHabit":
       d.prepare("UPDATE habit SET archived=1 WHERE id=?").run(m.id);
+      break;
+    case "restoreHabit":
+      d.prepare("UPDATE habit SET archived=0 WHERE id=?").run(m.id);
       break;
     case "toggleHabitEntry": {
       // Записи на будущее запрещены на уровне данных.
@@ -165,13 +182,13 @@ function nextOrd(d: Database.Database, table: string, col?: string, val?: string
 
 type RowDir = { id: string; name: string; ord: number; archived: number; created_at: string };
 type RowGoal = { id: string; direction_id: string | null; name: string; type: string; ord: number; status: string; created_at: string };
-type RowTask = { id: string; goal_id: string | null; title: string; due_date: string | null; done_at: string | null; ord: number; created_at: string; updated_at: string };
+type RowTask = { id: string; goal_id: string | null; title: string; description: string; due_date: string | null; done_at: string | null; ord: number; created_at: string; updated_at: string };
 type RowHabit = { id: string; goal_id: string | null; direction_id: string | null; name: string; schedule: string; archived: number; ord: number; created_at: string };
 type RowEntry = { id: string; habit_id: string; date: string; done: number; updated_at: string };
 
 const mapDir = (r: RowDir): Direction => ({ id: r.id, name: r.name, ord: r.ord, archived: !!r.archived, createdAt: r.created_at });
 const mapGoal = (r: RowGoal): Goal => ({ id: r.id, directionId: r.direction_id, name: r.name, type: r.type as Goal["type"], ord: r.ord, status: r.status as Goal["status"], createdAt: r.created_at });
-const mapTask = (r: RowTask): Task => ({ id: r.id, goalId: r.goal_id, title: r.title, dueDate: r.due_date, doneAt: r.done_at, ord: r.ord, createdAt: r.created_at, updatedAt: r.updated_at });
+const mapTask = (r: RowTask): Task => ({ id: r.id, goalId: r.goal_id, title: r.title, description: r.description ?? "", dueDate: r.due_date, doneAt: r.done_at, ord: r.ord, createdAt: r.created_at, updatedAt: r.updated_at });
 const mapHabit = (r: RowHabit): Habit => ({ id: r.id, goalId: r.goal_id, directionId: r.direction_id, name: r.name, schedule: JSON.parse(r.schedule), archived: !!r.archived, ord: r.ord, createdAt: r.created_at });
 const mapEntry = (r: RowEntry): HabitEntry => ({ id: r.id, habitId: r.habit_id, date: r.date, done: !!r.done, updatedAt: r.updated_at });
 

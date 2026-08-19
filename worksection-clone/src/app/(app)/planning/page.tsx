@@ -8,7 +8,7 @@ import { KpiBlock, KpiAchievedToggle } from "@/components/planning/kpi-block";
 import { WeeklyPlan } from "@/components/planning/weekly-plan";
 import { WeeklyWins, WeeklyWinsArchive } from "@/components/planning/weekly-wins";
 import { db } from "@/server/db";
-import { Gauge, ListChecks, ChevronDown, Trophy, CircleCheck, Circle } from "lucide-react";
+import { Gauge, ListChecks, ChevronDown, Trophy, CircleCheck, Circle, Undo2 } from "lucide-react";
 import { monthLabel, weekLabel, isoWeekNumber, weekStartInTz } from "@/lib/week";
 import { priorityTone } from "@/lib/domain";
 import { cn } from "@/lib/utils";
@@ -92,6 +92,9 @@ export default async function PlanningPage({
     select: { userId: true, status: true },
   });
   const planStatusByUser = new Map(targetApprovals.map((a) => [a.userId, a.status]));
+  // Прямые подчинённые (managerId = я) — зелёный значок; кто ниже по иерархии — жёлтый
+  const targetManagers = await db.user.findMany({ where: { id: { in: targets.map((x) => x.id) } }, select: { id: true, managerId: true } });
+  const managerOf = new Map(targetManagers.map((u) => [u.id, u.managerId]));
 
   const targetId = sp.user && targets.some((t) => t.id === sp.user) ? sp.user : viewer.id;
   // авто-KPI: если на этот месяц целей нет — переносим из прошлого
@@ -153,6 +156,9 @@ export default async function PlanningPage({
           <div className="flex flex-wrap gap-1">
             {targets.map((tg) => {
               const st = planStatusByUser.get(tg.id); // PENDING=подан, APPROVED=утверждён
+              // Прямой подчинённый (или сам) — зелёный; кто ниже по иерархии — жёлтый
+              const direct = tg.id === viewer.id || managerOf.get(tg.id) === viewer.id;
+              const okColor = direct ? "text-[#3D6B26] dark:text-[#A9D97F]" : "text-[#B8860B] dark:text-[#E0B84A]";
               return (
                 <Link
                   key={tg.id}
@@ -163,12 +169,16 @@ export default async function PlanningPage({
                   )}
                 >
                   {/* Значок в правом верхнем углу, выступает за плашку:
-                      план подан — зелёный кружок; утверждён — зелёный кружок с галочкой */}
+                      подан — зелёный кружок; утверждён — зелёный кружок с галочкой;
+                      возвращён на доработку — красная стрелка разворота */}
                   {st === "PENDING" && (
-                    <Circle className="absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background text-[#3D6B26] dark:text-[#A9D97F]" />
+                    <Circle className={cn("absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background", okColor)} />
                   )}
                   {st === "APPROVED" && (
-                    <CircleCheck className="absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background text-[#3D6B26] dark:text-[#A9D97F]" />
+                    <CircleCheck className={cn("absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background", okColor)} />
+                  )}
+                  {st === "RETURNED" && (
+                    <Undo2 className="absolute -right-1.5 -top-1.5 size-4 rounded-full bg-background text-destructive" />
                   )}
                   {tg.id === viewer.id ? "Я" : tg.name}
                 </Link>

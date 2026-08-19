@@ -53,11 +53,14 @@ export default async function TaskDetailPage({
   const linkedTask = linkedId && linkedId !== task.id
     ? await db.task.findUnique({
         where: { id: linkedId },
-        select: { id: true, title: true, status: true, assignees: { select: { user: { select: { managerId: true } } } } },
+        select: { id: true, title: true, status: true, assignees: { select: { user: { select: { id: true, name: true, avatarUrl: true, managerId: true } } } } },
       })
     : null;
-  const canReviewLinked = !!linkedTask && linkedTask.status === "TO_REVIEW" &&
+  const canManageLinked = !!linkedTask &&
     (user.role === "OWNER" || user.role === "ADMIN" || linkedTask.assignees.some((a) => a.user.managerId === user.id));
+  const canReviewLinked = canManageLinked && linkedTask!.status === "TO_REVIEW";
+  // Автор задачи-«Перевірити …» — подчинённый, приславший на проверку (исполнитель связанной задачи)
+  const linkedAuthor = linkedTask?.assignees[0]?.user ?? null;
 
   // Кандидаты для «жду коллегу»
   const waitCandidates = (await db.user.findMany({
@@ -174,11 +177,24 @@ export default async function TaskDetailPage({
 
         {/* Правая колонка — минимум полей */}
         <aside className="space-y-4">
-          {/* Вердикт по связанной задаче — для «Перевірити …» */}
-          {canReviewLinked && linkedTask && (
-            <div className="space-y-2 rounded-xl border bg-card p-4">
-              <p className="text-sm font-medium">{t(user.locale, "rb.linkedVerdict")} «{linkedTask.title.length > 60 ? linkedTask.title.slice(0, 60) + "…" : linkedTask.title}»</p>
-              <ReviewDecision taskId={linkedTask.id} />
+          {/* Панель проверки — для задачи-«Перевірити …»: автор + вердикт */}
+          {linkedTask && canManageLinked && (
+            <div className="space-y-3 rounded-xl border bg-card p-4">
+              {/* Чья это задача — подчинённый, приславший на проверку */}
+              {linkedAuthor && (
+                <div className="flex items-center gap-2">
+                  <Avatar className="size-7">{linkedAuthor.avatarUrl && <AvatarImage src={linkedAuthor.avatarUrl} alt="" />}<AvatarFallback className="text-[10px]">{initials(linkedAuthor.name)}</AvatarFallback></Avatar>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-muted-foreground leading-none">{t(user.locale, "rb.fromEmployee")}</p>
+                    <p className="truncate text-sm font-medium">{linkedAuthor.name}</p>
+                  </div>
+                </div>
+              )}
+              {canReviewLinked ? (
+                <ReviewDecision taskId={linkedTask.id} />
+              ) : (
+                <p className="text-xs text-muted-foreground">{t(user.locale, "rb.notInReview")}</p>
+              )}
             </div>
           )}
           {task.status !== "DONE" && (

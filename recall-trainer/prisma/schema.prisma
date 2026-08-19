@@ -1,0 +1,192 @@
+// Recall — персональная база знаний с AI (ТЗ §39–42).
+// Цепочка: Source → Draft → DraftBlock → (выбор) → Knowledge.
+// JSON-поля хранятся как TEXT и (де)сериализуются в lib/db-mappers.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── Темы / подтемы (§18, §19) ────────────────────────────────────────────
+model Topic {
+  id        String   @id @default(cuid())
+  name      String
+  parentId  String? // null = тема верхнего уровня; иначе подтема
+  parent    Topic?   @relation("TopicChildren", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Topic[]  @relation("TopicChildren")
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  knowledge   Knowledge[]
+  draftBlocks DraftBlock[]
+
+  @@index([parentId])
+}
+
+// ─── Источник (§14, §39) ──────────────────────────────────────────────────
+model Source {
+  id          String   @id @default(cuid())
+  type        String   @default("TEXT") // YOUTUBE | TEXT | ARTICLE | PDF | SITE | PODCAST | COURSE | THOUGHT | OTHER
+  title       String
+  author      String? // канал / автор
+  url         String?
+  thumbnail   String?
+  duration    Int? // секунды (для видео/аудио)
+  publishedAt DateTime?
+  rawContent  String? // полный transcript / текст — неизменяемый оригинал (§44)
+  segments    String? // JSON: [{start,end,text}] — транскрипт с таймкодами
+  language    String   @default("en")
+  status      String   @default("NEW") // NEW|TRANSCRIBING|ANALYZING|DRAFT_READY|EDITING|COMPLETED|ERROR
+  error       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  drafts    Draft[]
+  knowledge Knowledge[]
+
+  @@index([status])
+  @@index([type])
+}
+
+// ─── AI-черновик (§40) ────────────────────────────────────────────────────
+model Draft {
+  id        String   @id @default(cuid())
+  sourceId  String
+  source    Source   @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  status    String   @default("READY") // READY | PUBLISHED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blocks DraftBlock[]
+
+  @@index([sourceId])
+}
+
+// ─── Смысловой блок черновика (§41) ───────────────────────────────────────
+model DraftBlock {
+  id             String   @id @default(cuid())
+  draftId        String
+  draft          Draft    @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  title          String
+  summary        String   @default("")
+  content        String   @default("")
+  keyPoints      String   @default("[]") // JSON string[]
+  terms          String   @default("[]") // JSON string[]
+  examples       String   @default("[]") // JSON string[]
+  takeaways      String   @default("[]") // JSON string[] — практические выводы
+  startTimestamp Int? // секунды
+  endTimestamp   Int?
+  selected       Boolean  @default(true)
+  order          Int      @default(0)
+  topicId        String?
+  topic          Topic?   @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  suggestedTopic String? // "Маркетинг → Branding" — AI-подсказка до публикации
+  userEdited     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([draftId])
+}
+
+// ─── Финальное знание (§42) ───────────────────────────────────────────────
+model Knowledge {
+  id              String   @id @default(cuid())
+  title           String
+  content         String   @default("")
+  keyPoints       String   @default("[]") // JSON string[]
+  topicId         String?
+  topic           Topic?   @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  sourceId        String?
+  source          Source?  @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  sourceStart     Int?
+  sourceEnd       Int?
+  tags            String   @default("[]") // JSON string[]
+  personalComment String   @default("")
+  importance      Int      @default(2) // 1..3
+  favorite        Boolean  @default(false)
+  embedding       String? // JSON number[] — вектор для semantic search
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastReviewedAt  DateTime?
+
+  card      Card?
+  linksFrom KnowledgeLink[] @relation("LinkFrom")
+  linksTo   KnowledgeLink[] @relation("LinkTo")
+
+  @@index([topicId])
+  @@index([sourceId])
+  @@index([favorite])
+}
+
+// ─── Связи между знаниями (§37) ───────────────────────────────────────────
+model KnowledgeLink {
+  id        String    @id @default(cuid())
+  fromId    String
+  from      Knowledge @relation("LinkFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      String
+  to        Knowledge @relation("LinkTo", fields: [toId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([fromId, toId])
+  @@index([toId])
+}
+
+// ─── Карточка повторения (§26, §27) ───────────────────────────────────────
+model Card {
+  id          String    @id @default(cuid())
+  knowledgeId String    @unique
+  knowledge   Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
+  question    String
+  answer      String
+
+  // FSRS-состояние (см. lib/srs.ts)
+  progress             Int      @default(0)
+  stability            Float    @default(0)
+  difficulty           Float    @default(5)
+  reviewCount          Int      @default(0)
+  successfulReviewCount Int     @default(0)
+  consecutiveCorrect   Int      @default(0)
+  lapseCount           Int      @default(0)
+  lastRating           String? // again | hard | easy
+  lastReviewedAt       DateTime?
+  dueAt                DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logs ReviewLog[]
+
+  @@index([dueAt])
+}
+
+model ReviewLog {
+  id           String   @id @default(cuid())
+  cardId       String
+  card         Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  rating       String
+  intervalDays Float
+  createdAt    DateTime @default(now())
+
+  @@index([cardId])
+}
+
+model UserSettings {
+  id                String   @id @default("singleton")
+  requiredSuccess   Int      @default(4)
+  requiredStreak    Int      @default(3)
+  minIntervalDays   Int      @default(7)
+  countHardAsCorrect Boolean @default(true)
+  updatedAt         DateTime @updatedAt
+}
+
+model DailyActivity {
+  id       String @id @default(cuid())
+  day      String @unique // YYYY-MM-DD
+  reviewed Int    @default(0)
+  created  Int    @default(0)
+}

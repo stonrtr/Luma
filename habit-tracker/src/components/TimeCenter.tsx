@@ -11,7 +11,7 @@ const TITLES: Record<Horizon, string> = {
   future: "Будущее",
 };
 
-export function TimeCenter({ horizon }: { horizon: Horizon }) {
+export function TimeCenter({ horizon, onOpenTask }: { horizon: Horizon; onOpenTask: (id: string) => void }) {
   const { state, toggleTask } = useStore();
   const tasks = horizonTasks(state, horizon, true);
   const openCount = tasks.filter((t) => !t.doneAt).length;
@@ -51,7 +51,7 @@ export function TimeCenter({ horizon }: { horizon: Horizon }) {
                     <button className="box" onClick={() => toggleTask(t.id, !t.doneAt)} aria-label={t.title}>
                       <Tick />
                     </button>
-                    <span className="lab">{t.title}</span>
+                    <button className="lab lab-btn" onClick={() => onOpenTask(t.id)}>{t.title}</button>
                     {gn ? <span className="tag">{gn}</span> : <span className="tag inbox">инбокс</span>}
                     <span className="due" />
                   </div>
