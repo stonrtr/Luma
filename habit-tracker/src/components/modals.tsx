@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
+import { useConfirm } from "./confirm";
 import { WD_SHORT, todayStr } from "@/lib/date";
 import type { GoalType, Schedule, ScheduleType } from "@/lib/types";
 
@@ -30,6 +31,7 @@ export function Modals({ modal, onClose }: { modal: ModalState; onClose: () => v
 
 function TaskDetailModal({ id, onClose }: { id: string; onClose: () => void }) {
   const { state, updateTask, deleteTask } = useStore();
+  const ask = useConfirm();
   const task = state.tasks.find((t) => t.id === id);
   const [title, setTitle] = useState(task?.title ?? "");
   const [desc, setDesc] = useState(task?.description ?? "");
@@ -42,8 +44,8 @@ function TaskDetailModal({ id, onClose }: { id: string; onClose: () => void }) {
     updateTask(id, { title: title.trim() || task.title, description: desc, goalId: goalId || null, dueDate: due || null });
     onClose();
   };
-  const remove = () => {
-    if (confirm(`Удалить задачу «${task.title}»?`)) {
+  const remove = async () => {
+    if (await ask(`Удалить задачу «${task.title}»?`, "Удалить")) {
       deleteTask(id);
       onClose();
     }

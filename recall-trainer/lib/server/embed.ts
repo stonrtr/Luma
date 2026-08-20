@@ -4,7 +4,7 @@
 import "server-only";
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY || "";
-const EMBED_MODEL = process.env.GEMINI_EMBED_MODEL || "text-embedding-004";
+const EMBED_MODEL = process.env.GEMINI_EMBED_MODEL || "gemini-embedding-001";
 
 export function hasEmbeddings(): boolean {
   return GEMINI_KEY.length > 0;

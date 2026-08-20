@@ -258,7 +258,8 @@ export function KanbanBoard({
               dotClass={TASK_STATUS_DOT[status]}
               tasks={viewColumns[status]}
               onAdd={(id) => setDialogStatus(id as TaskStatus)}
-              collapsed={isCollapsed(status)}
+              // во время перетаскивания разворачиваем все колонки — чтобы в любую можно было бросить
+              collapsed={isCollapsed(status) && !activeTask}
               onToggle={(id) => toggleCollapse(id as TaskStatus)}
             />
           ))}

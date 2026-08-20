@@ -995,6 +995,14 @@ main {
   color: var(--ink3);
   margin-top: 8px;
 }
+.confirm-modal {
+  width: 380px;
+}
+.confirm-msg {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink);
+}
 
 /* ── календарь ─────────────────────── */
 .cal-nav {

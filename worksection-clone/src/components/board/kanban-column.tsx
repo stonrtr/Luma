@@ -74,7 +74,7 @@ export function KanbanColumn({
       <div
         ref={setNodeRef}
         className={cn(
-          "flex flex-1 flex-col gap-2 rounded-xl bg-muted/40 p-2 transition-colors",
+          "flex min-h-24 flex-1 flex-col gap-2 rounded-xl bg-muted/40 p-2 transition-colors",
           isOver && "bg-accent/60 ring-2 ring-primary/30",
         )}
       >

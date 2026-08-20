@@ -68,9 +68,11 @@ export function Rail({
       {horizon("week", "Неделя", weekLeft)}
       {horizon("month", "Текущий месяц", monthLeft)}
       {horizon("future", "Будущее", futureLeft)}
+
+      <div className="cap" style={{ marginTop: 22 }}>Календарь</div>
       <button className={`nav-item horizon${view === "calendar" ? " sel" : ""}`} onClick={() => onSelect("calendar")}>
         <span className="nav-top">
-          <b>Календарь</b>
+          <b>Открыть календарь</b>
           <i />
         </span>
       </button>

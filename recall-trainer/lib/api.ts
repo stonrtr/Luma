@@ -27,6 +27,7 @@ export const api = {
       "POST"
     ),
 
+  getDraft: (id: string) => req<import("./types").DraftDTO>(`/api/drafts/${id}`, "GET"),
   patchBlock: (id: string, b: Record<string, unknown>) => req(`/api/blocks/${id}`, "PATCH", b),
   deleteBlock: (id: string) => req(`/api/blocks/${id}`, "DELETE"),
   splitBlock: (id: string, keyPointIndex?: number) =>

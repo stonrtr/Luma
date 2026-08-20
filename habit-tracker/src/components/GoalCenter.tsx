@@ -4,10 +4,12 @@ import { useStore } from "@/lib/store";
 import { indexEntries, goalMomentum, streak } from "@/lib/progress";
 import { MomentumTag, Tally } from "./Momentum";
 import { dayMonth, dayMonthFull } from "@/lib/date";
+import { useConfirm } from "./confirm";
 import { Tick } from "./icons";
 
 export function GoalCenter({ goalId, onOpenTask }: { goalId: string; onOpenTask: (id: string) => void }) {
   const { state, toggleTask, setGoalStatus } = useStore();
+  const ask = useConfirm();
   const idx = useMemo(() => indexEntries(state.entries), [state.entries]);
 
   const goal = state.goals.find((g) => g.id === goalId);
@@ -74,8 +76,8 @@ export function GoalCenter({ goalId, onOpenTask }: { goalId: string; onOpenTask:
         <button
           className="mini-btn"
           style={{ marginTop: 22 }}
-          onClick={() => {
-            if (confirm(`Отметить цель «${goal.name}» достигнутой?`)) setGoalStatus(goal.id, "done");
+          onClick={async () => {
+            if (await ask(`Отметить цель «${goal.name}» достигнутой?`, "Завершить")) setGoalStatus(goal.id, "done");
           }}
         >
           {goal.type === "achievement" ? "завершить цель" : "отметить достигнутой"}
