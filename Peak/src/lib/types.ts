@@ -128,6 +128,7 @@ export interface AppSettings {
   lang: "ru" | "en";
   notifications: boolean;
   telegram?: { token: string; chatId: string; enabled: boolean };
+  captureBot?: { token: string; enabled: boolean };
 }
 
 export interface AppData {

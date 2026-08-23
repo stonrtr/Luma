@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StoreProvider, useStore } from "@/lib/store";
 import { todayKey, dayOfWeekMon0 } from "@/lib/date";
 import { View } from "@/lib/types";
@@ -71,6 +71,53 @@ function ReminderScheduler() {
   return null;
 }
 
+/** Захват идей из Telegram: приложение само опрашивает getUpdates отдельного бота
+ *  и создаёт «Входящие» задачи. «!текст» — задача на сегодня. Работает пока вкладка открыта. */
+function TelegramCapture() {
+  const { data, addTask } = useStore();
+  const addRef = useRef(addTask); addRef.current = addTask;
+  const busy = useRef(false);
+  const token = data.settings?.captureBot?.token;
+  const enabled = data.settings?.captureBot?.enabled;
+  useEffect(() => {
+    if (!enabled || !token) return;
+    const key = "peak-capture-offset";
+    const tick = async () => {
+      if (busy.current) return;
+      busy.current = true;
+      try {
+        const off = Number(localStorage.getItem(key) || 0);
+        const url = `https://api.telegram.org/bot${token}/getUpdates?timeout=0&allowed_updates=%5B%22message%22%5D${off ? `&offset=${off}` : ""}`;
+        const r = await fetch(url);
+        const j = await r.json();
+        if (!j.ok || !Array.isArray(j.result)) return;
+        let maxId = off - 1;
+        for (const u of j.result) {
+          if (typeof u.update_id === "number") maxId = Math.max(maxId, u.update_id);
+          const msg = u.message;
+          const text: string | undefined = msg?.text?.trim();
+          if (!text || text.startsWith("/")) continue;
+          const today = text.startsWith("!");
+          const title = (today ? text.slice(1) : text).trim();
+          if (!title) continue;
+          addRef.current({ title, date: today ? todayKey() : null });
+          const chatId = msg.chat?.id;
+          if (chatId) {
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(today ? "✓ Задача на сегодня добавлена в Peak" : "✓ Идея добавлена в Peak")}`);
+          }
+        }
+        if (j.result.length) localStorage.setItem(key, String(maxId + 1));
+      } catch { /* сеть/битый токен — молча повторим позже */ } finally {
+        busy.current = false;
+      }
+    };
+    tick();
+    const id = setInterval(tick, 15000);
+    return () => clearInterval(id);
+  }, [token, enabled]);
+  return null;
+}
+
 function Shell() {
   const [view, setView] = useState<View>({ kind: "today" });
   const [sidebarHidden, setSidebarHidden] = useState(false);
@@ -136,6 +183,7 @@ function Shell() {
   return (
     <div className="shell">
       <ReminderScheduler />
+      <TelegramCapture />
       {!sidebarHidden && (
         <div className="sidebar-desktop">
           <Sidebar view={view} setView={setView} onHide={() => setSidebarHidden(true)} onOpenSettings={() => setSettingsOpen(true)} />

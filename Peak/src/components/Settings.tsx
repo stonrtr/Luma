@@ -22,6 +22,9 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const { data, updateSettings } = useStore();
   const st = data.settings ?? { theme: "system" as const, lang: "ru" as const, notifications: false };
   const tg = st.telegram ?? { token: "", chatId: "", enabled: false };
+  const cap = st.captureBot ?? { token: "", enabled: false };
+  const saveCap = (patch: Partial<typeof cap>) =>
+    updateSettings({ captureBot: { token: cap.token, enabled: cap.enabled, ...patch } });
   const [calOpen, setCalOpen] = useState(false);
   const [tgStatus, setTgStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [notifStatus, setNotifStatus] = useState<string | null>(null);
@@ -127,6 +130,27 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
                 onClick={testTg}>Отправить тест</button>
             </div>
             {tgStatus && <div className={`set-status ${tgStatus.ok ? "ok" : "err"}`}>{tgStatus.text}</div>}
+          </div>
+        </div>
+
+        {/* Идеи из Telegram */}
+        <div className="set-section">
+          <div className="set-section-title">Идеи из Telegram</div>
+          <div className="set-row">
+            <span className="fic"><Send size={18} /></span>
+            <div className="set-label">
+              <div className="set-title">Отдельный бот для быстрого ввода</div>
+              <div className="set-sub">Пишете боту — текст попадает во «Входящие». Префикс «!» делает задачу на сегодня.</div>
+            </div>
+            <Toggle on={cap.enabled} onChange={(v) => saveCap({ enabled: v })} />
+          </div>
+          <div className="tg-fields">
+            <input className="finput" placeholder="Токен отдельного бота захвата" value={cap.token}
+              onChange={(e) => saveCap({ token: e.target.value })} />
+            <div className="set-sub" style={{ paddingLeft: 0 }}>
+              Создайте отдельного бота через @BotFather, вставьте токен, включите тумблер и напишите боту.
+              Идеи подтягиваются, пока открыта вкладка Peak.
+            </div>
           </div>
         </div>
 
