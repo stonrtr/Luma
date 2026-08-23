@@ -2,11 +2,14 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Griply",
-  description: "Приложение для достижения целей",
+  title: "Peak",
+  description: "Цели, привычки и задачи",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/icon-192.png",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", sizes: "64x64", type: "image/png" },
+    ],
     apple: "/apple-touch-icon.png",
   },
 };
