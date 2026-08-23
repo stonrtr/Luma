@@ -1010,14 +1010,14 @@ h1.page-title, .page-title { font-weight: 300; }
 
 /* ===== Editorial dark: чекбоксы ===== */
 
-:root[data-theme="dark"] .task-check { border-color: #3a3d43; }
+:root[data-theme="dark"] .task-check { border-color: #3a3d43; background: transparent; }
 :root[data-theme="dark"] .task-check.p-high { border-color: #f4f5f7; }
 :root[data-theme="dark"] .task-check.p-medium { border-color: #a0a4ab; }
 :root[data-theme="dark"] .task-check.p-low { border-color: #6f747b; }
 :root[data-theme="dark"] .task-check.overdue { border-color: var(--red); }
 @media (prefers-color-scheme: dark) {
 
-:root:not([data-theme="light"]) .task-check { border-color: #3a3d43; }
+:root:not([data-theme="light"]) .task-check { border-color: #3a3d43; background: transparent; }
 :root:not([data-theme="light"]) .task-check.p-high { border-color: #f4f5f7; }
 :root:not([data-theme="light"]) .task-check.p-medium { border-color: #a0a4ab; }
 :root:not([data-theme="light"]) .task-check.p-low { border-color: #6f747b; }
