@@ -123,7 +123,15 @@ export interface CalEvent {
   timeEnd?: string | null;
 }
 
+export interface AppSettings {
+  theme: "light" | "dark" | "system";
+  lang: "ru" | "en";
+  notifications: boolean;
+  telegram?: { token: string; chatId: string; enabled: boolean };
+}
+
 export interface AppData {
+  settings?: AppSettings;
   calendarEvents?: CalEvent[];
   areas: LifeArea[];
   goals: Goal[];

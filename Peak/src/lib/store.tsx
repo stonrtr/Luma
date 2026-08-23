@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AppData, Goal, Habit, HabitDayStatus, HabitLog, LifeArea, Tag, Task, ID } from "./types";
+import { AppData, AppSettings, Goal, Habit, HabitDayStatus, HabitLog, LifeArea, Tag, Task, ID } from "./types";
 import { todayKey, addDays, toKey, fromKey } from "./date";
 
 const LS_KEY = "griply-clone-v1";
@@ -37,6 +37,7 @@ const AREA_NAME_MIGRATION: Record<string, string> = {
 
 function seed(): AppData {
   return {
+    settings: { theme: "system", lang: "ru", notifications: false },
     calendarEvents: [],
     areas: DEFAULT_AREAS.map((a) => ({ ...a, id: uid() })),
     goals: [],
@@ -86,6 +87,7 @@ export interface Store {
   moveTaskBefore: (dragId: ID, targetId: ID) => void;
   logHabit: (habitId: ID, date: string, count: number, status?: HabitDayStatus | null, movedTo?: string | null) => void;
   habitCount: (habitId: ID, date: string) => number;
+  updateSettings: (patch: Partial<AppSettings>) => void;
 }
 
 const Ctx = createContext<Store | null>(null);
@@ -122,6 +124,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     window.addEventListener("storage", fn);
     return () => window.removeEventListener("storage", fn);
   }, []);
+
+  // применяем тему к <html data-theme>
+  useEffect(() => {
+    const theme = data.settings?.theme ?? "system";
+    const root = document.documentElement;
+    if (theme === "system") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", theme);
+    root.setAttribute("lang", data.settings?.lang ?? "ru");
+  }, [data.settings?.theme, data.settings?.lang]);
 
   const store = useMemo<Store>(() => {
     const set = (fn: (d: AppData) => AppData) => setData((d) => fn(d));
@@ -263,6 +274,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       habitCount(habitId, date) {
         const l = data.habitLogs.find((l) => l.habitId === habitId && l.date === date);
         return l ? l.count : 0;
+      },
+      updateSettings(patch) {
+        set((d) => ({
+          ...d,
+          settings: { theme: "system", lang: "ru", notifications: false, ...d.settings, ...patch },
+        }));
       },
     };
   }, [data]);

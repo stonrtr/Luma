@@ -50,7 +50,7 @@ export function DataMenuItems({ close }: { close: () => void }) {
   );
 }
 
-export default function Sidebar({ view, setView, onHide }: { view: View; setView: (v: View) => void; onHide?: () => void }) {
+export default function Sidebar({ view, setView, onHide, onOpenSettings }: { view: View; setView: (v: View) => void; onHide?: () => void; onOpenSettings?: () => void }) {
   const { data, set, deleteTag } = useStore();
   const [todoOpen, setTodoOpen] = useState(true);
   const [lifeOpen, setLifeOpen] = useState(true);
@@ -92,7 +92,12 @@ export default function Sidebar({ view, setView, onHide }: { view: View; setView
             <ChevronDown size={13} className="muted" />
           </span>
         }>
-          {(close) => <DataMenuItems close={close} />}
+          {(close) => (
+            <>
+              <MenuItem onClick={() => { onOpenSettings?.(); close(); }}>Настройки</MenuItem>
+              <DataMenuItems close={close} />
+            </>
+          )}
         </Dropdown>
         <div className="sb-top-icons">
           <button className="icon-btn" onClick={() => setSearchOpen(true)}><Search size={17} /></button>

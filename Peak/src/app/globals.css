@@ -9,6 +9,9 @@
   --accent: #4c48e3;
   --accent-soft: #eceafb;
   --accent-softer: #c9c6f4;
+  --raise: #ffffff;
+  --hover: #efefef;
+  --shadow: rgba(0,0,0,0.16);
   --green: #12a150;
   --red: #e5484d;
   --radius: 16px;
@@ -756,7 +759,7 @@ input:focus, select:focus, textarea:focus { outline: none; }
   }
   .mobile-avatar {
     display: flex; position: absolute; top: 14px; right: 10px; z-index: 60;
-    background: #fff; border: 1px solid var(--border); border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border); border-radius: 50%;
   }
   .page-head { padding-right: 52px; }
   .page-head { padding: 14px 14px 10px 52px; gap: 8px; flex-wrap: wrap; min-height: 56px; }
@@ -824,3 +827,132 @@ input:focus, select:focus, textarea:focus { outline: none; }
   .insight-card { padding: 14px; border-right: none; }
   .vision-wrap { padding: 14px; }
 }
+
+
+/* ================= Dark theme ================= */
+:root[data-theme="dark"] {
+  --bg: #0d0e11;
+  --card: #16181d;
+  --raise: #1e2027;
+  --hover: #20232a;
+  --text: #e9e9ec;
+  --text-soft: #a2a2ab;
+  --text-faint: #6b6d76;
+  --border: #282b33;
+  --border-soft: #202329;
+  --accent: #7c78f5;
+  --accent-soft: #23233f;
+  --accent-softer: #37356e;
+  --green: #3ec77e;
+  --red: #f16a6f;
+  --shadow: rgba(0,0,0,0.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --bg: #0d0e11;
+  --card: #16181d;
+  --raise: #1e2027;
+  --hover: #20232a;
+  --text: #e9e9ec;
+  --text-soft: #a2a2ab;
+  --text-faint: #6b6d76;
+  --border: #282b33;
+  --border-soft: #202329;
+  --accent: #7c78f5;
+  --accent-soft: #23233f;
+  --accent-softer: #37356e;
+  --green: #3ec77e;
+  --red: #f16a6f;
+  --shadow: rgba(0,0,0,0.5);
+}
+}
+
+:root[data-theme="dark"] .sb-profile:hover, :root[data-theme="dark"] .sb-item:hover, :root[data-theme="dark"] .icon-btn:hover,
+:root[data-theme="dark"] .sb-h-actions button:hover, :root[data-theme="dark"] .head-tab:hover, :root[data-theme="dark"] .pill-nav button:hover,
+:root[data-theme="dark"] .cm-nav button:hover, :root[data-theme="dark"] .wn-arrow:hover, :root[data-theme="dark"] .group-action:hover, :root[data-theme="dark"] .group-chev:hover,
+:root[data-theme="dark"] .cm-day:hover, :root[data-theme="dark"] .color-opt:hover, :root[data-theme="dark"] .menu-item:hover, :root[data-theme="dark"] .chip:hover { background: var(--hover); }
+:root[data-theme="dark"] .sb-item.active, :root[data-theme="dark"] .tabbar button.active { background: var(--hover); }
+:root[data-theme="dark"] .head-tab.active, :root[data-theme="dark"] .seg button.active { background: var(--raise); box-shadow: 0 1px 3px var(--shadow); }
+:root[data-theme="dark"] .seg, :root[data-theme="dark"] .pill-nav, :root[data-theme="dark"] .hd-tabs { background: var(--raise); }
+:root[data-theme="dark"] .btn-secondary { background: var(--raise); border-color: var(--border); }
+:root[data-theme="dark"] .btn-secondary:hover { background: var(--hover); }
+:root[data-theme="dark"] .modal, :root[data-theme="dark"] .menu-pop, :root[data-theme="dark"] .popover, :root[data-theme="dark"] .color-pop, :root[data-theme="dark"] .tabbar,
+:root[data-theme="dark"] .today-right, :root[data-theme="dark"] .cal-mini { background: var(--card); }
+:root[data-theme="dark"] .popover.filter-pop { background: var(--card); }
+:root[data-theme="dark"] .finput, :root[data-theme="dark"] .select, :root[data-theme="dark"] .num-input, :root[data-theme="dark"] .vision-input, :root[data-theme="dark"] .stepper,
+:root[data-theme="dark"] .stepper input, :root[data-theme="dark"] .psel { background: var(--raise); border-color: var(--border); color: var(--text); }
+:root[data-theme="dark"] input, :root[data-theme="dark"] textarea, :root[data-theme="dark"] select { color: var(--text); }
+:root[data-theme="dark"] .task-row:hover, :root[data-theme="dark"] .table-row:hover, :root[data-theme="dark"] .goal-card:hover,
+:root[data-theme="dark"] .habit-card:hover, :root[data-theme="dark"] .hd-row.click:hover { background: var(--hover); }
+:root[data-theme="dark"] .stat-card, :root[data-theme="dark"] .hd-card, :root[data-theme="dark"] .habit-card, :root[data-theme="dark"] .goal-card, :root[data-theme="dark"] .habit-row,
+:root[data-theme="dark"] .insight-card, :root[data-theme="dark"] .hd-right, :root[data-theme="dark"] .m-icon, :root[data-theme="dark"] .ic-icon { background: var(--card); }
+:root[data-theme="dark"] .hd-right { background: var(--bg); }
+:root[data-theme="dark"] .cal-event { background: #23233f; border-color: #33335a; color: #cfceff; }
+:root[data-theme="dark"] .cal-event.ghost { background: var(--raise); border-color: var(--border); color: var(--text-soft); }
+:root[data-theme="dark"] .mg-cell.out { background: #121318; color: var(--text-faint); }
+:root[data-theme="dark"] .mg-task { background: #23233f; border-color: #33335a; color: #cfceff; }
+:root[data-theme="dark"] .pop-head, :root[data-theme="dark"] .pop-sep, :root[data-theme="dark"] .pop-reset, :root[data-theme="dark"] .hd-sep,
+:root[data-theme="dark"] .menu-sep, :root[data-theme="dark"] .fsep, :root[data-theme="dark"] .frow-sep, :root[data-theme="dark"] .table-head,
+:root[data-theme="dark"] .group-head { border-color: var(--border); }
+:root[data-theme="dark"] .hcell.off, :root[data-theme="dark"] .hcell.future { color: var(--text-faint); }
+:root[data-theme="dark"] .hcell.plus { background: var(--accent-softer); }
+:root[data-theme="dark"] .hm-stats, :root[data-theme="dark"] .mi-check { color: var(--text-soft); }
+:root[data-theme="dark"] .badge.medium { background: #3a3320; }
+:root[data-theme="dark"] .dl-chip { background: #3a3320; }
+:root[data-theme="dark"] .connect-banner, :root[data-theme="dark"] .goal-card, :root[data-theme="dark"] .habit-card { border-color: var(--border); }
+
+@media (prefers-color-scheme: dark) {
+
+:root:not([data-theme="light"]) .sb-profile:hover, :root:not([data-theme="light"]) .sb-item:hover, :root:not([data-theme="light"]) .icon-btn:hover,
+:root:not([data-theme="light"]) .sb-h-actions button:hover, :root:not([data-theme="light"]) .head-tab:hover, :root:not([data-theme="light"]) .pill-nav button:hover,
+:root:not([data-theme="light"]) .cm-nav button:hover, :root:not([data-theme="light"]) .wn-arrow:hover, :root:not([data-theme="light"]) .group-action:hover, :root:not([data-theme="light"]) .group-chev:hover,
+:root:not([data-theme="light"]) .cm-day:hover, :root:not([data-theme="light"]) .color-opt:hover, :root:not([data-theme="light"]) .menu-item:hover, :root:not([data-theme="light"]) .chip:hover { background: var(--hover); }
+:root:not([data-theme="light"]) .sb-item.active, :root:not([data-theme="light"]) .tabbar button.active { background: var(--hover); }
+:root:not([data-theme="light"]) .head-tab.active, :root:not([data-theme="light"]) .seg button.active { background: var(--raise); box-shadow: 0 1px 3px var(--shadow); }
+:root:not([data-theme="light"]) .seg, :root:not([data-theme="light"]) .pill-nav, :root:not([data-theme="light"]) .hd-tabs { background: var(--raise); }
+:root:not([data-theme="light"]) .btn-secondary { background: var(--raise); border-color: var(--border); }
+:root:not([data-theme="light"]) .btn-secondary:hover { background: var(--hover); }
+:root:not([data-theme="light"]) .modal, :root:not([data-theme="light"]) .menu-pop, :root:not([data-theme="light"]) .popover, :root:not([data-theme="light"]) .color-pop, :root:not([data-theme="light"]) .tabbar,
+:root:not([data-theme="light"]) .today-right, :root:not([data-theme="light"]) .cal-mini { background: var(--card); }
+:root:not([data-theme="light"]) .popover.filter-pop { background: var(--card); }
+:root:not([data-theme="light"]) .finput, :root:not([data-theme="light"]) .select, :root:not([data-theme="light"]) .num-input, :root:not([data-theme="light"]) .vision-input, :root:not([data-theme="light"]) .stepper,
+:root:not([data-theme="light"]) .stepper input, :root:not([data-theme="light"]) .psel { background: var(--raise); border-color: var(--border); color: var(--text); }
+:root:not([data-theme="light"]) input, :root:not([data-theme="light"]) textarea, :root:not([data-theme="light"]) select { color: var(--text); }
+:root:not([data-theme="light"]) .task-row:hover, :root:not([data-theme="light"]) .table-row:hover, :root:not([data-theme="light"]) .goal-card:hover,
+:root:not([data-theme="light"]) .habit-card:hover, :root:not([data-theme="light"]) .hd-row.click:hover { background: var(--hover); }
+:root:not([data-theme="light"]) .stat-card, :root:not([data-theme="light"]) .hd-card, :root:not([data-theme="light"]) .habit-card, :root:not([data-theme="light"]) .goal-card, :root:not([data-theme="light"]) .habit-row,
+:root:not([data-theme="light"]) .insight-card, :root:not([data-theme="light"]) .hd-right, :root:not([data-theme="light"]) .m-icon, :root:not([data-theme="light"]) .ic-icon { background: var(--card); }
+:root:not([data-theme="light"]) .hd-right { background: var(--bg); }
+:root:not([data-theme="light"]) .cal-event { background: #23233f; border-color: #33335a; color: #cfceff; }
+:root:not([data-theme="light"]) .cal-event.ghost { background: var(--raise); border-color: var(--border); color: var(--text-soft); }
+:root:not([data-theme="light"]) .mg-cell.out { background: #121318; color: var(--text-faint); }
+:root:not([data-theme="light"]) .mg-task { background: #23233f; border-color: #33335a; color: #cfceff; }
+:root:not([data-theme="light"]) .pop-head, :root:not([data-theme="light"]) .pop-sep, :root:not([data-theme="light"]) .pop-reset, :root:not([data-theme="light"]) .hd-sep,
+:root:not([data-theme="light"]) .menu-sep, :root:not([data-theme="light"]) .fsep, :root:not([data-theme="light"]) .frow-sep, :root:not([data-theme="light"]) .table-head,
+:root:not([data-theme="light"]) .group-head { border-color: var(--border); }
+:root:not([data-theme="light"]) .hcell.off, :root:not([data-theme="light"]) .hcell.future { color: var(--text-faint); }
+:root:not([data-theme="light"]) .hcell.plus { background: var(--accent-softer); }
+:root:not([data-theme="light"]) .hm-stats, :root:not([data-theme="light"]) .mi-check { color: var(--text-soft); }
+:root:not([data-theme="light"]) .badge.medium { background: #3a3320; }
+:root:not([data-theme="light"]) .dl-chip { background: #3a3320; }
+:root:not([data-theme="light"]) .connect-banner, :root:not([data-theme="light"]) .goal-card, :root:not([data-theme="light"]) .habit-card { border-color: var(--border); }
+
+}
+
+/* ---------- Settings hub ---------- */
+.set-section { margin-bottom: 18px; }
+.set-section-title { font-size: 12.5px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.4px; margin: 0 0 8px 0; }
+.set-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border-soft); }
+.set-row:last-child { border-bottom: none; }
+.set-row .set-label { flex: 1; min-width: 0; }
+.set-row .set-label .set-title { font-size: 14.5px; }
+.set-row .set-label .set-sub { font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
+.set-row .fic { color: var(--text-soft); display: flex; width: 20px; flex-shrink: 0; }
+.set-seg { display: flex; background: var(--raise); border-radius: 10px; padding: 3px; gap: 2px; }
+.set-seg button { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text-soft); }
+.set-seg button.active { background: var(--card); color: var(--text); box-shadow: 0 1px 3px var(--shadow); }
+.tg-fields { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 2px 32px; }
+.tg-fields .finput { width: 100%; }
+.set-status { font-size: 12.5px; margin-top: 4px; }
+.set-status.ok { color: var(--green); }
+.set-status.err { color: var(--red); }

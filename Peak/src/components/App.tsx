@@ -5,6 +5,8 @@ import { StoreProvider, useStore } from "@/lib/store";
 import { todayKey, dayOfWeekMon0 } from "@/lib/date";
 import { View } from "@/lib/types";
 import Sidebar, { SearchModal, DataMenuItems } from "./Sidebar";
+import { SettingsModal, sendTelegram } from "./Settings";
+import { MenuItem } from "./ui";
 import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User } from "./icons";
 import { Dropdown } from "./ui";
 import { InboxView, TodayView, UpcomingView, AllTasksView, CompletedView, TrashView, TagView } from "./TaskViews";
@@ -29,7 +31,15 @@ function ReminderScheduler() {
   const fired = React.useRef<Set<string>>(new Set());
   useEffect(() => {
     const tick = () => {
-      if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+      const s = data.settings;
+      const notifOn = !!s?.notifications && typeof Notification !== "undefined" && Notification.permission === "granted";
+      const tg = s?.telegram;
+      const tgOn = !!(tg?.enabled && tg.token && tg.chatId);
+      if (!notifOn && !tgOn) return;
+      const notify = (title: string, body: string) => {
+        if (notifOn) new Notification(title, { body });
+        if (tgOn) sendTelegram(tg!.token, tg!.chatId, `${title}: ${body}`);
+      };
       const now = new Date();
       const hm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
       const t = todayKey();
@@ -39,7 +49,7 @@ function ReminderScheduler() {
           const key = `t:${task.id}:${t}`;
           if (!fired.current.has(key)) {
             fired.current.add(key);
-            new Notification("Задача", { body: task.title });
+            notify("Задача", task.title);
           }
         }
       }
@@ -52,7 +62,7 @@ function ReminderScheduler() {
         const key = `h:${h.id}:${t}`;
         if (!fired.current.has(key)) {
           fired.current.add(key);
-          new Notification("Привычка", { body: h.name });
+          notify("Привычка", h.name);
         }
       }
     };
@@ -68,6 +78,7 @@ function Shell() {
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const nav = (v: View) => {
     setView(v);
@@ -129,14 +140,14 @@ function Shell() {
       <ReminderScheduler />
       {!sidebarHidden && (
         <div className="sidebar-desktop">
-          <Sidebar view={view} setView={setView} onHide={() => setSidebarHidden(true)} />
+          <Sidebar view={view} setView={setView} onHide={() => setSidebarHidden(true)} onOpenSettings={() => setSettingsOpen(true)} />
         </div>
       )}
 
       {mobileMenu && (
         <div className="drawer-backdrop" onClick={(e) => e.target === e.currentTarget && setMobileMenu(false)}>
           <div className="drawer">
-            <Sidebar view={view} setView={nav} onHide={() => setMobileMenu(false)} />
+            <Sidebar view={view} setView={nav} onHide={() => setMobileMenu(false)} onOpenSettings={() => setSettingsOpen(true)} />
           </div>
         </div>
       )}
@@ -152,7 +163,12 @@ function Shell() {
         </button>
         <span className="mobile-avatar">
           <Dropdown align="right" trigger={<span className="icon-btn"><User size={18} /></span>}>
-            {(close) => <DataMenuItems close={close} />}
+            {(close) => (
+              <>
+                <MenuItem onClick={() => { setSettingsOpen(true); close(); }}>Настройки</MenuItem>
+                <DataMenuItems close={close} />
+              </>
+            )}
           </Dropdown>
         </span>
         {content}
@@ -160,6 +176,7 @@ function Shell() {
       </div>
 
       {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} setView={nav} />}
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
 
       <nav className="tabbar">
         <button className={TASK_KINDS.includes(view.kind) ? "active" : ""} onClick={() => nav({ kind: "today" })}>
