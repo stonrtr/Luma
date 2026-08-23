@@ -9,8 +9,8 @@ import {
 } from "@/lib/date";
 // eslint-disable-next-line
 import {
-  CheckSmall, Check, FilterLines, Settings2, Plus, ChevronLeft, ChevronRight,
-  Dots, CalendarDay, Clock, Flag, TagIcon, Bolt, Trash, Bell, Repeat, InfoCircle, Flame,
+  CheckSmall, Check, FilterLines, Settings2, Plus, ChevronLeft, ChevronRight, ChevronDown,
+  Dots, CalendarDay, Clock, Flag, TagIcon, Bolt, Trash, Bell, Repeat, InfoCircle, Flame, ListIcon,
 } from "./icons";
 import { Modal, Pop, Select, Toggle, Dropdown, MenuItem, DateMenu, PSel } from "./ui";
 import { HabitDetailModal, habitStreak, promptHabitValue } from "./Habits";
@@ -1301,6 +1301,7 @@ export function UpcomingView() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
+  const [planScope, setPlanScope] = useState<"all" | "unplanned">("all");
   const [showCompleted, setShowCompleted] = useState(true);
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_FILTERS);
   const all = applyTaskFilters(useVisibleTasks(), filters);
@@ -1369,29 +1370,8 @@ export function UpcomingView() {
           </div>
         </Pop>
       )}
-      {planOpen && (
-        <Pop onClose={() => setPlanOpen(false)} style={{ top: 58, right: 90, width: 400 }}>
-          <div className="pop-title">Планирование</div>
-          <div className="pop-sub">Задачи без даты</div>
-          {unplanned.length === 0 && (
-            <div className="sb-empty" style={{ textAlign: "left", padding: "6px 0" }}>
-              Все задачи запланированы.
-            </div>
-          )}
-          {unplanned.map((x) => (
-            <div key={x.id} className="pop-row" draggable
-              onDragStart={(e) => e.dataTransfer.setData("text/task", x.id)}
-              style={{ cursor: "grab" }}>
-              <div className="flabel" style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.title}</div>
-              <button className="btn-secondary" style={{ padding: "4px 10px", fontSize: 13 }}
-                onClick={() => updateTask(x.id, { date: t })}>Сегодня</button>
-              <button className="btn-secondary" style={{ padding: "4px 10px", fontSize: 13 }}
-                onClick={() => updateTask(x.id, { date: addDays(t, 1) })}>Завтра</button>
-            </div>
-          ))}
-        </Pop>
-      )}
-
+      <div className="upcoming-split">
+        <div className="upcoming-main">
       {span === "M" ? (
         <div className="month-wrap">
           <div className="mg-dows">{DAY_SHORT.map((d) => <span key={d}>{d}</span>)}</div>
@@ -1534,6 +1514,33 @@ export function UpcomingView() {
           </div>
         </div>
       )}
+        </div>
+        {planOpen && (
+          <div className="plan-panel">
+            <div className="plan-head">
+              <span className="plan-list-icon"><ListIcon size={17} /></span>
+              <Dropdown trigger={
+                <span className="plan-title">{planScope === "all" ? "Все задачи" : "Без даты"} <ChevronDown size={14} /></span>
+              }>
+                {(close) => (
+                  <>
+                    <MenuItem selected={planScope === "all"} onClick={() => { setPlanScope("all"); close(); }}>Все задачи</MenuItem>
+                    <MenuItem selected={planScope === "unplanned"} onClick={() => { setPlanScope("unplanned"); close(); }}>Без даты</MenuItem>
+                  </>
+                )}
+              </Dropdown>
+              <span className="spacer" style={{ flex: 1 }} />
+              <button className="icon-btn" title="Закрыть" onClick={() => setPlanOpen(false)}>✕</button>
+            </div>
+            <div className="plan-list">
+              {(planScope === "all" ? all.filter((x) => !x.completedAt) : unplanned).map((x) => (
+                <TaskRow key={x.id} task={x} onClick={() => setEditing(x)} />
+              ))}
+              <AddTask />
+            </div>
+          </div>
+        )}
+      </div>
       {editing && <TaskModal task={editing} onClose={() => setEditing(null)} />}
     </>
   );
