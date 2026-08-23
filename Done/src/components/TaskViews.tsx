@@ -34,6 +34,19 @@ export function TaskCheck({ task }: { task: Task }) {
   );
 }
 
+/** Задача/идея выполнена сегодня — остаётся в списке зачёркнутой до полуночи. */
+export function completedToday(t: Task): boolean {
+  return !!t.completedAt && toKey(new Date(t.completedAt)) === todayKey();
+}
+/** В основном списке: активные + выполненные сегодня; выполненные вчера уходят в архив. */
+function inList(t: Task): boolean {
+  return !t.completedAt || completedToday(t);
+}
+/** Выполненные задачи — в конец списка (зачёркнутые под активными). */
+function doneLast(a: Task, b: Task): number {
+  return (a.completedAt ? 1 : 0) - (b.completedAt ? 1 : 0);
+}
+
 function taskSub(task: Task): React.ReactNode {
   if (!task.date) return null;
   const t = todayKey();
@@ -847,8 +860,8 @@ export function TagView({ id }: { id: string }) {
   const tag = data.tags.find((t) => t.id === id);
   const all = useVisibleTasks();
   if (!tag) return <div className="empty-state" style={{ paddingTop: 120 }}><p>Тег не найден</p></div>;
-  const tasks = all.filter((t) => t.tagIds.includes(id) && !t.completedAt);
-  const completed = all.filter((t) => t.tagIds.includes(id) && !!t.completedAt);
+  const tasks = all.filter((t) => t.tagIds.includes(id) && inList(t)).sort(doneLast);
+  const completed = all.filter((t) => t.tagIds.includes(id) && !!t.completedAt && !completedToday(t));
   return (
     <ListPage
       title={tag.name}
@@ -865,8 +878,8 @@ export function TagView({ id }: { id: string }) {
 
 export function InboxView() {
   const all = useVisibleTasks();
-  const tasks = all.filter((t) => !t.date && !t.completedAt && !t.goalId && !t.areaId);
-  const completed = all.filter((t) => !t.date && !!t.completedAt && !t.goalId && !t.areaId);
+  const tasks = all.filter((t) => !t.date && inList(t) && !t.goalId && !t.areaId).sort(doneLast);
+  const completed = all.filter((t) => !t.date && !!t.completedAt && !completedToday(t) && !t.goalId && !t.areaId);
   return <ListPage title="Идеи" tasks={tasks} completedTasks={completed} showAdd simpleAdd addDefaults={{}} />;
 }
 
@@ -874,9 +887,9 @@ export function AllTasksView() {
   const all = useVisibleTasks();
   // идеи (без даты и привязок) живут только в «Идеях»
   const isIdea = (t: Task) => !t.date && !t.goalId && !t.areaId;
-  const tasks = all.filter((t) => !t.completedAt && !isIdea(t))
-    .sort((a, b) => (a.date ?? "9999") < (b.date ?? "9999") ? -1 : 1);
-  const completed = all.filter((t) => !!t.completedAt && !isIdea(t));
+  const tasks = all.filter((t) => inList(t) && !isIdea(t))
+    .sort((a, b) => doneLast(a, b) || ((a.date ?? "9999") < (b.date ?? "9999") ? -1 : 1));
+  const completed = all.filter((t) => !!t.completedAt && !completedToday(t) && !isIdea(t));
   return <ListPage title="Все задачи" tasks={tasks} completedTasks={completed} showAdd addDefaults={{ date: todayKey() }} />;
 }
 
@@ -1038,17 +1051,17 @@ export function TodayView() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_FILTERS);
   const [calModal, setCalModal] = useState(false);
-  const tasks = applyTaskFilters(all.filter((x) => !x.completedAt && x.date && x.date <= t), filters);
+  const tasks = applyTaskFilters(all.filter((x) => inList(x) && x.date && x.date <= t), filters);
   const timed = tasks.filter((x) => x.timeStart);
   const allday = tasks.filter((x) => !x.timeStart);
 
-  const overdue = tasks.filter((x) => x.date! < t);
-  const todays = tasks.filter((x) => x.date === t);
+  const overdue = tasks.filter((x) => x.date! < t).sort(doneLast);
+  const todays = tasks.filter((x) => x.date === t).sort(doneLast);
   const habitsToday = data.habits.filter((h) => h.showInTasks && habitActiveToday(h, t));
-  const totalMin = tasks.reduce((sum, x) => sum + (x.duration ?? 0), 0);
+  const totalMin = tasks.filter((x) => !x.completedAt).reduce((sum, x) => sum + (x.duration ?? 0), 0);
 
   const reschedule = (date: string) => {
-    for (const x of overdue) updateTask(x.id, { date });
+    for (const x of overdue) if (!x.completedAt) updateTask(x.id, { date });
   };
 
   const overdueSub = (x: Task) => (
