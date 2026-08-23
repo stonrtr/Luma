@@ -68,6 +68,8 @@ export interface Task {
   habitId?: ID | null;
   completedAt?: string | null;
   deletedAt?: string | null;
+  googleEventId?: string | null;
+  googleHash?: string;
   createdAt: string;
   order: number;
 }
@@ -129,6 +131,7 @@ export interface AppSettings {
   notifications: boolean;
   telegram?: { token: string; chatId: string; enabled: boolean };
   captureBot?: { token: string; enabled: boolean };
+  google?: { clientId: string; enabled: boolean };
 }
 
 export interface AppData {

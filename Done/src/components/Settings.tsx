@@ -5,6 +5,7 @@ import { useStore } from "@/lib/store";
 import { Modal, Toggle } from "./ui";
 import { Sun, Moon, Globe, Bell, Send, CalendarDay } from "./icons";
 import { CalendarConnectModal } from "./TaskViews";
+import { connectGoogle, disconnectGoogle } from "@/lib/google";
 
 /** Отправка сообщения через Telegram Bot API прямо из браузера (GET, без preflight) */
 export async function sendTelegram(token: string, chatId: string, text: string): Promise<boolean> {
@@ -28,6 +29,17 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const [calOpen, setCalOpen] = useState(false);
   const [tgStatus, setTgStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [notifStatus, setNotifStatus] = useState<string | null>(null);
+  const gg = st.google ?? { clientId: "", enabled: false };
+  const [gStatus, setGStatus] = useState<string | null>(null);
+  const saveG = (patch: Partial<typeof gg>) =>
+    updateSettings({ google: { clientId: gg.clientId, enabled: gg.enabled, ...patch } });
+  const connectG = async () => {
+    if (!gg.clientId.trim()) return;
+    setGStatus("Подключаю…");
+    const ok = await connectGoogle(gg.clientId.trim(), true);
+    if (ok) { saveG({ enabled: true }); setGStatus("Подключено. Задачи с датой будут попадать в Google Календарь."); }
+    else setGStatus("Не удалось. Проверьте Client ID и что домен добавлен в разрешённые в Google Cloud.");
+  };
 
   const saveTg = (patch: Partial<typeof tg>) =>
     updateSettings({ telegram: { token: tg.token, chatId: tg.chatId, enabled: tg.enabled, ...patch } });
@@ -154,16 +166,36 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Google-календарь */}
+        {/* Google Календарь — прямая синхронизация */}
         <div className="set-section">
-          <div className="set-section-title">Календарь</div>
+          <div className="set-section-title">Google Календарь</div>
           <div className="set-row">
             <span className="fic"><CalendarDay size={18} /></span>
             <div className="set-label">
-              <div className="set-title">Google / Apple календарь</div>
-              <div className="set-sub">Импорт событий из файла .ics{(data.calendarEvents?.length ?? 0) > 0 ? ` · сейчас: ${data.calendarEvents!.length}` : ""}</div>
+              <div className="set-title">Синхронизация задач в Google Календарь</div>
+              <div className="set-sub">Задачи с датой автоматически создают события. Нужен OAuth Client ID из Google Cloud (публичный, не секрет).</div>
             </div>
-            <button className="btn-secondary" onClick={() => setCalOpen(true)}>Подключить</button>
+            {gg.enabled
+              ? <button className="btn-secondary" onClick={() => { disconnectGoogle(); saveG({ enabled: false }); setGStatus("Отключено."); }}>Отключить</button>
+              : <button className="btn-secondary" disabled={!gg.clientId.trim()} style={{ opacity: gg.clientId.trim() ? 1 : 0.5 }} onClick={connectG}>Подключить Google</button>}
+          </div>
+          <div className="tg-fields">
+            <input className="finput" placeholder="OAuth Client ID (…apps.googleusercontent.com)" value={gg.clientId}
+              onChange={(e) => saveG({ clientId: e.target.value })} />
+            {gStatus && <div className={`set-status ${gStatus.startsWith("Подключено") ? "ok" : gStatus.startsWith("Не удалось") ? "err" : ""}`}>{gStatus}</div>}
+          </div>
+        </div>
+
+        {/* Импорт .ics (одноразовый снимок) */}
+        <div className="set-section">
+          <div className="set-section-title">Импорт из файла (.ics)</div>
+          <div className="set-row">
+            <span className="fic"><CalendarDay size={18} /></span>
+            <div className="set-label">
+              <div className="set-title">Разовый импорт событий</div>
+              <div className="set-sub">Загрузить события из файла .ics{(data.calendarEvents?.length ?? 0) > 0 ? ` · сейчас: ${data.calendarEvents!.length}` : ""}</div>
+            </div>
+            <button className="btn-secondary" onClick={() => setCalOpen(true)}>Выбрать файл</button>
           </div>
         </div>
 

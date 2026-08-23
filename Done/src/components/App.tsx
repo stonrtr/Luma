@@ -6,6 +6,7 @@ import { todayKey, dayOfWeekMon0 } from "@/lib/date";
 import { View } from "@/lib/types";
 import Sidebar, { SearchModal } from "./Sidebar";
 import { SettingsModal, sendTelegram } from "./Settings";
+import { connectGoogle, isConnected, createEvent, updateEvent, deleteEvent, taskHash } from "@/lib/google";
 import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User, Plus } from "./icons";
 import { InboxView, TodayView, UpcomingView, AllTasksView, CompletedView, TrashView, TagView } from "./TaskViews";
 import { GoalsView, GoalDetail } from "./Goals";
@@ -118,6 +119,55 @@ function TelegramCapture() {
   return null;
 }
 
+/** Google Calendar: пуш задач с датой в календарь (создание/обновление/удаление).
+ *  Токен получаем в браузере (GIS), без сервера. Реконсиляция раз в 8 сек. */
+function GoogleSync() {
+  const { data, updateTask } = useStore();
+  const dataRef = useRef(data); dataRef.current = data;
+  const updRef = useRef(updateTask); updRef.current = updateTask;
+  const busy = useRef(false);
+  const g = data.settings?.google;
+  useEffect(() => {
+    if (!g?.enabled || !g.clientId) return;
+    let stop = false;
+    const reconcile = async () => {
+      if (busy.current || stop) return;
+      if (!isConnected()) {
+        const ok = await connectGoogle(g.clientId, false);
+        if (!ok) return;
+      }
+      busy.current = true;
+      try {
+        for (const t of dataRef.current.tasks) {
+          if (stop) break;
+          const active = !t.deletedAt && !t.completedAt && !!t.date;
+          const ct = { title: t.title, date: t.date!, timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes };
+          if (active) {
+            const h = taskHash(ct);
+            if (!t.googleEventId) {
+              const id = await createEvent(ct);
+              if (id) updRef.current(t.id, { googleEventId: id, googleHash: h });
+            } else if (t.googleHash !== h) {
+              await updateEvent(t.googleEventId, ct);
+              updRef.current(t.id, { googleHash: h });
+            }
+          } else if (t.googleEventId) {
+            await deleteEvent(t.googleEventId);
+            updRef.current(t.id, { googleEventId: null, googleHash: undefined });
+          }
+        }
+      } catch { /* токен протух/сеть — попробуем позже */ } finally {
+        busy.current = false;
+      }
+    };
+    reconcile();
+    const id = setInterval(reconcile, 8000);
+    return () => { stop = true; clearInterval(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [g?.enabled, g?.clientId]);
+  return null;
+}
+
 function Shell() {
   const [view, setView] = useState<View>({ kind: "today" });
   const [sidebarHidden, setSidebarHidden] = useState(false);
@@ -184,6 +234,7 @@ function Shell() {
     <div className="shell">
       <ReminderScheduler />
       <TelegramCapture />
+      <GoogleSync />
       {!sidebarHidden && (
         <div className="sidebar-desktop">
           <Sidebar view={view} setView={setView} onHide={() => setSidebarHidden(true)} onOpenSettings={() => setSettingsOpen(true)} />
