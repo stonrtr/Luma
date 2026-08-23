@@ -111,6 +111,7 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const [showUpcoming, setShowUpcoming] = useState(false);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [sort, setSort] = useState("");
   const [fArea, setFArea] = useState("");
@@ -118,7 +119,8 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
   const [fStart, setFStart] = useState("");
   const [fDeadline, setFDeadline] = useState("");
 
-  let goals = data.goals.filter((g) => !g.parentId && (showArchived || !g.archived) && (showCompleted || !g.completedAt));
+  const isUpcomingGoal = (g: Goal) => !!g.startDate && g.startDate > todayKey();
+  let goals = data.goals.filter((g) => !g.parentId && (showArchived || !g.archived) && (showCompleted || !g.completedAt) && (showUpcoming || !isUpcomingGoal(g)));
   if (fArea) goals = goals.filter((g) => g.areaId === fArea);
   if (fImpact) goals = goals.filter((g) => g.impact === fImpact);
   const inPeriod = (key: string | null | undefined, period: string): boolean => {
@@ -225,6 +227,10 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
           <div className="pop-row" style={{ padding: "2px 0" }}>
             <div className="flabel" style={{ fontSize: 15 }}>Показывать архивные</div>
             <Toggle on={showArchived} onChange={setShowArchived} />
+          </div>
+          <div className="pop-row" style={{ padding: "2px 0" }}>
+            <div className="flabel" style={{ fontSize: 15 }}>Показывать предстоящие</div>
+            <Toggle on={showUpcoming} onChange={setShowUpcoming} />
           </div>
         </Pop>
       )}
