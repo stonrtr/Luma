@@ -6,7 +6,7 @@ import { todayKey, dayOfWeekMon0 } from "@/lib/date";
 import { View } from "@/lib/types";
 import Sidebar, { SearchModal } from "./Sidebar";
 import { SettingsModal, sendTelegram } from "./Settings";
-import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User } from "./icons";
+import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User, Plus } from "./icons";
 import { InboxView, TodayView, UpcomingView, AllTasksView, CompletedView, TrashView, TagView } from "./TaskViews";
 import { GoalsView, GoalDetail } from "./Goals";
 import { LifeAreasView, AreaDetail } from "./LifeAreas";
@@ -163,7 +163,7 @@ function Shell() {
           <button className="icon-btn" onClick={() => setSettingsOpen(true)}><User size={18} /></button>
         </span>
         {content}
-        <button className="fab" onClick={fabClick}>+</button>
+        <button className="fab" onClick={fabClick}><Plus size={26} /></button>
       </div>
 
       {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} setView={nav} />}
