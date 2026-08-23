@@ -9,13 +9,13 @@ import {
 } from "./icons";
 import { Pop, Toggle } from "./ui";
 import { AreaIcon } from "./icons";
-import { Modal, Dropdown, MenuItem } from "./ui";
+import { Modal, Dropdown, MenuItem, InlineAdd } from "./ui";
 import { PALETTE } from "@/lib/colors";
 import { AddTask, TaskRow, TaskModal } from "./TaskViews";
 import { GoalModal, goalColor, goalProgress } from "./Goals";
 
 export function LifeAreasView({ setView }: { setView: (v: View) => void }) {
-  const { data, updateArea, deleteArea } = useStore();
+  const { data, updateArea, deleteArea, addArea } = useStore();
   const [modal, setModal] = useState(false);
   const [editArea, setEditArea] = useState<LifeArea | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -30,7 +30,6 @@ export function LifeAreasView({ setView }: { setView: (v: View) => void }) {
         <div className="page-title">Мои сферы жизни</div>
         <div className="spacer" />
         <button className="icon-btn" onClick={() => setSettingsOpen(true)}><Settings2 size={18} /></button>
-        <button className="btn-primary" onClick={() => setModal(true)}><Plus size={15} /> Добавить сферу</button>
       </div>
 
       {settingsOpen && (
@@ -98,6 +97,7 @@ export function LifeAreasView({ setView }: { setView: (v: View) => void }) {
             );
           })}
         </div>
+        <InlineAdd placeholder="Добавить сферу" onAdd={(name) => addArea({ name })} />
       </div>
       {modal && <AreaModal onClose={() => setModal(false)} />}
       {editArea && <AreaModal area={editArea} onClose={() => setEditArea(null)} />}
@@ -162,7 +162,7 @@ export function AreaModal({ area, onClose }: { area?: LifeArea; onClose: () => v
 }
 
 export function AreaDetail({ id, tab, setView }: { id: string; tab?: string; setView: (v: View) => void }) {
-  const { data, updateArea, deleteArea } = useStore();
+  const { data, updateArea, deleteArea, addArea } = useStore();
   const area = data.areas.find((a) => a.id === id);
   const [activeTab, setActiveTab] = useState(tab ?? "Обзор");
   const [goalModal, setGoalModal] = useState(false);

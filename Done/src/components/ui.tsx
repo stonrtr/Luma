@@ -108,6 +108,22 @@ export function MenuItem({ selected, onClick, children }: {
   );
 }
 
+/** Инлайн-строка добавления «как задача»: тонкое кольцо + поле, Enter создаёт. */
+export function InlineAdd({ placeholder, onAdd, variant }: {
+  placeholder: string; onAdd: (name: string) => void; variant?: "card";
+}) {
+  const [v, setV] = useState("");
+  const submit = () => { const t = v.trim(); if (!t) return; onAdd(t); setV(""); };
+  return (
+    <div className={`inline-add${variant === "card" ? " card" : ""}`}>
+      <span className="add-ring" />
+      <input placeholder={placeholder} value={v}
+        onChange={(e) => setV(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && submit()} />
+    </div>
+  );
+}
+
 /** Мини-календарь на месяц (Пн-первый), 6 недель */
 export function CalendarPanel({ value, onPick }: { value: string | null; onPick: (d: string) => void }) {
   const t = todayKey();

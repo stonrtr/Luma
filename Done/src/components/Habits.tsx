@@ -12,7 +12,7 @@ import {
   CalendarDay, Clock, Flag, TagIcon, Bell, Bolt, ListIcon, InfoCircle, Trash, Pencil,
   Target, Check, Heart, Flame, AreaIcon, AREA_ICONS,
 } from "./icons";
-import { Modal, Select, Stepper, Toggle, Dropdown, MenuItem, Pop } from "./ui";
+import { Modal, Select, Stepper, Toggle, Dropdown, MenuItem, Pop, InlineAdd } from "./ui";
 
 export function habitActiveOn(h: Habit, date: string): boolean {
   if (date < h.startDate) return false;
@@ -70,7 +70,7 @@ export function promptHabitValue(h: Habit, current: number): number | null {
 }
 
 export function HabitsView() {
-  const { data, logHabit } = useStore();
+  const { data, logHabit, addHabit } = useStore();
   const [start, setStart] = useState(() => weekStart(todayKey()));
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState<Habit | null>(null);
@@ -101,7 +101,6 @@ export function HabitsView() {
           </button>
         </div>
         <button className="icon-btn" onClick={() => setSettingsOpen(true)}><Settings2 size={18} /></button>
-        <button className="btn-primary" onClick={() => setModal(true)}><Plus size={15} /> Добавить привычку</button>
       </div>
 
       {settingsOpen && (
@@ -223,6 +222,9 @@ export function HabitsView() {
             </div>
           );
         })
+        )}
+        {data.habits.filter((h) => (showArchived || !h.archived) && h.showInHabits !== false).length > 0 && (
+          <InlineAdd variant="card" placeholder="Добавить привычку" onAdd={(name) => addHabit({ name })} />
         )}
       </div>
       {modal && <HabitModal onClose={() => setModal(false)} />}
@@ -804,7 +806,7 @@ function HdSettings({ habit, onClose }: { habit: Habit; onClose: () => void }) {
 /* ---------- Upcoming tab ---------- */
 
 function HdUpcoming({ habit }: { habit: Habit }) {
-  const { data, logHabit } = useStore();
+  const { data, logHabit, addHabit } = useStore();
   const t = todayKey();
   const thisWeek = weekDays(weekStart(t)).filter((d) => habitActiveOn(habit, d));
   const nextWeek = weekDays(addDays(weekStart(t), 7)).filter((d) => habitActiveOn(habit, d));

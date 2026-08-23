@@ -239,7 +239,7 @@ input:focus, select:focus, textarea:focus { outline: none; }
   padding: 9px 4px; color: #a8a8a8; font-size: 14.5px;
   border-radius: 10px; cursor: text; width: 100%; text-align: left;
 }
-.add-task .task-check { border-style: dashed; margin-top: 0; }
+.add-task .task-check { margin-top: 0; }
 .add-task input { flex: 1; border: none; background: transparent; font-size: 14.5px; }
 
 /* ---------- Habits page ---------- */
@@ -1031,3 +1031,10 @@ h1.page-title, .page-title { font-weight: 300; }
 :root:not([data-theme="light"]) .dl-chip.overdue { background: #2a1c1a; color: var(--red); }
 :root:not([data-theme="light"]) .badge.medium { background: var(--accent-soft); }
 }
+
+/* ---------- Inline add row ---------- */
+.inline-add { display: flex; align-items: center; gap: 12px; padding: 12px 24px; }
+.inline-add.card { margin: 0 24px 10px; padding: 14px 18px; border: 1px dashed var(--border); border-radius: 14px; }
+.inline-add .add-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.6px solid var(--border); flex-shrink: 0; }
+.inline-add input { flex: 1; border: none; background: transparent; font-size: 15px; color: inherit; }
+.inline-add input::placeholder { color: var(--text-faint); }

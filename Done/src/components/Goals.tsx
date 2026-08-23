@@ -9,7 +9,7 @@ import {
   Target, Plus, Dots, FilterLines, Settings2, ChevronRight, ChevronDown, ArrowLeft,
   Star, Heart, Bolt, CalendarDay, Flag, ChartBars, InfoCircle, Search, MapPin, Check, LineChart, Pencil, Trash, ListIcon,
 } from "./icons";
-import { Modal, Select, Stepper, Toggle, Dropdown, MenuItem, DateMenu, Pop, PSel } from "./ui";
+import { Modal, Select, Stepper, Toggle, Dropdown, MenuItem, DateMenu, Pop, PSel, InlineAdd } from "./ui";
 import { AddTask, TaskRow, TaskModal } from "./TaskViews";
 import { AreaIcon, AREA_ICONS } from "./icons";
 
@@ -105,7 +105,7 @@ function ProgressCircle({ pct, size = 16 }: { pct: number; size?: number }) {
 /* ------------ Goals list ------------ */
 
 export function GoalsView({ setView }: { setView: (v: View) => void }) {
-  const { data, updateGoal } = useStore();
+  const { data, updateGoal, addGoal } = useStore();
   const [modal, setModal] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -153,7 +153,6 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
         </div>
         <button className="icon-btn" onClick={() => setFilterOpen(true)}><FilterLines size={18} /></button>
         <button className="icon-btn" onClick={() => setSettingsOpen(true)}><Settings2 size={18} /></button>
-        <button className="btn-primary" onClick={() => setModal(true)}><Plus size={15} /> Добавить цель</button>
       </div>
 
       {filterOpen && (
@@ -348,6 +347,9 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
               );
             })}
           </div>
+        )}
+        {goals.length > 0 && (
+          <InlineAdd placeholder="Добавить цель" onAdd={(name) => addGoal({ name })} />
         )}
       </div>
       {modal && <GoalModal onClose={() => setModal(false)} />}

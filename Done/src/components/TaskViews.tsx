@@ -169,7 +169,7 @@ export function AddTask({ defaults, simple }: { defaults?: Partial<Task>; simple
   if (simple) {
     return (
       <div className="add-task">
-        <span className="task-check" style={{ borderStyle: "dashed" }} />
+        <span className="task-check" />
         <input
           placeholder="Быстрая идея — Enter, чтобы добавить"
           value={title}
@@ -185,7 +185,7 @@ export function AddTask({ defaults, simple }: { defaults?: Partial<Task>; simple
   return (
     <div className={open ? "composer" : undefined} ref={boxRef}>
       <div className={open ? "c-title-row" : "add-task"} onClick={() => !open && setOpen(true)}>
-        <span className="task-check" style={{ borderStyle: "dashed" }} />
+        <span className="task-check" />
         <input
           className={open ? "c-title" : undefined}
           placeholder="Добавить задачу"
@@ -634,7 +634,7 @@ export function SubtaskEditor({ subtasks, onChange }: {
         </div>
       ))}
       <div className="add-task" style={{ padding: "5px 0" }}>
-        <span className="task-check" style={{ borderStyle: "dashed", width: 16, height: 16 }} />
+        <span className="task-check" style={{ width: 16, height: 16 }} />
         <input placeholder="Подзадача" value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && add()}
