@@ -220,6 +220,8 @@ input:focus, select:focus, textarea:focus { outline: none; }
 }
 .task-check:hover { border-color: var(--accent); }
 .task-check.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.task-check.overdue { border-color: var(--red); border-width: 2px; }
+.task-check.overdue:hover { border-color: var(--red); }
 .task-check.habit { border-style: dashed; }
 .task-body { flex: 1; min-width: 0; }
 .task-title { font-size: 15px; font-weight: 450; letter-spacing: -0.006em; }
@@ -1012,12 +1014,14 @@ h1.page-title, .page-title { font-weight: 300; }
 :root[data-theme="dark"] .task-check.p-high { border-color: #f4f5f7; }
 :root[data-theme="dark"] .task-check.p-medium { border-color: #a0a4ab; }
 :root[data-theme="dark"] .task-check.p-low { border-color: #6f747b; }
+:root[data-theme="dark"] .task-check.overdue { border-color: var(--red); }
 @media (prefers-color-scheme: dark) {
 
 :root:not([data-theme="light"]) .task-check { border-color: #3a3d43; }
 :root:not([data-theme="light"]) .task-check.p-high { border-color: #f4f5f7; }
 :root:not([data-theme="light"]) .task-check.p-medium { border-color: #a0a4ab; }
 :root:not([data-theme="light"]) .task-check.p-low { border-color: #6f747b; }
+:root:not([data-theme="light"]) .task-check.overdue { border-color: var(--red); }
 }
 
 /* ===== Editorial dark: чипы дедлайна ===== */

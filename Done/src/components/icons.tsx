@@ -146,18 +146,106 @@ export const AreaRings = (p: P) => (
 export const AreaLotus = (p: P) => (
   <I {...p}><path d="M12 20c-5 0-9-3-9-7 2 0 4 .7 5.2 1.8C8.5 12 9 8 12 5c3 3 3.5 7 3.8 9.8C17 13.7 19 13 21 13c0 4-4 7-9 7z" /></I>
 );
+export const AreaHome = (p: P) => (
+  <I {...p}><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M9.5 21v-6h5v6" /></I>
+);
+export const AreaStar = (p: P) => (
+  <I {...p}><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.3l6.1-.7z" /></I>
+);
+export const AreaDumbbell = (p: P) => (
+  <I {...p}><path d="M6 8v8M4 10v4M18 8v8M20 10v4M6 12h12" /></I>
+);
+export const AreaMusic = (p: P) => (
+  <I {...p}><path d="M9 18V5l11-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="17" cy="16" r="3" /></I>
+);
+export const AreaCamera = (p: P) => (
+  <I {...p}><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" transform="translate(-1 0)" /><circle cx="12" cy="13" r="3.5" /></I>
+);
+export const AreaPlane = (p: P) => (
+  <I {...p}><path d="M17.8 19.2 16 11l4.5-4.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a1 1 0 0 0-.9 1.7L9 11l-2 3H4l-1 2 4 1 1 4 2-1v-3l3-2 3.1 5.1a1 1 0 0 0 1.7-.9z" /></I>
+);
+export const AreaCoffee = (p: P) => (
+  <I {...p}><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" /><path d="M17 9h2.5a2.5 2.5 0 0 1 0 5H17" /><path d="M7 2v2M11 2v2M15 2v2" /></I>
+);
+export const AreaLeaf = (p: P) => (
+  <I {...p}><path d="M4 20C3 12 8 4 20 4c0 12-8 17-16 16z" /><path d="M4 20c3-6 7-9 12-11" /></I>
+);
+export const AreaMoney = (p: P) => (
+  <I {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1-5 4a2.5 2 0 0 0 5 0" /></I>
+);
+export const AreaGrad = (p: P) => (
+  <I {...p}><path d="M2 9l10-4 10 4-10 4z" /><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5" /><path d="M22 9v6" /></I>
+);
+export const AreaGift = (p: P) => (
+  <I {...p}><rect x="3" y="8" width="18" height="4" rx="1" /><path d="M5 12v9h14v-9M12 8v13" /><path d="M12 8S9 3 6.5 4.5 8 8 12 8zm0 0s3-5 5.5-3.5S16 8 12 8z" /></I>
+);
+export const AreaPalette = (p: P) => (
+  <I {...p}><path d="M12 3a9 9 0 0 0 0 18c1.5 0 2-1 2-2 0-1.5 1-2 2.5-2H19a3 3 0 0 0 3-3c0-5-4.5-9-10-9z" /><circle cx="7.5" cy="12" r="1.2" fill="currentColor" stroke="none" /><circle cx="10" cy="7.5" r="1.2" fill="currentColor" stroke="none" /><circle cx="15" cy="7.5" r="1.2" fill="currentColor" stroke="none" /><circle cx="17.5" cy="11" r="1.2" fill="currentColor" stroke="none" /></I>
+);
+export const AreaGamepad = (p: P) => (
+  <I {...p}><path d="M6 8h12a4 4 0 0 1 4 4l-1 5a2.5 2.5 0 0 1-4.5 1L15 16H9l-1.5 2a2.5 2.5 0 0 1-4.5-1l-1-5a4 4 0 0 1 4-4z" /><path d="M7 12v3M5.5 13.5h3M15.5 12h.01M18 13.5h.01" /></I>
+);
+export const AreaCode = (p: P) => (
+  <I {...p}><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13 5l-2 14" /></I>
+);
+export const AreaPen = (p: P) => (
+  <I {...p}><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></I>
+);
+export const AreaSun = (p: P) => (
+  <I {...p}><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19" /></I>
+);
+export const AreaFlag = (p: P) => (
+  <I {...p}><path d="M5 21V4M5 4h11l-2 4 2 4H5" /></I>
+);
+export const AreaShield = (p: P) => (
+  <I {...p}><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" /><path d="m9 12 2 2 4-4" /></I>
+);
+export const AreaBulb = (p: P) => (
+  <I {...p}><path d="M9 18h6" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1.2 1.5 1.3 2.5h5.4c.1-1 .5-1.7 1.3-2.5A6 6 0 0 0 12 3z" /></I>
+);
+export const AreaCart = (p: P) => (
+  <I {...p}><circle cx="9" cy="20" r="1.4" /><circle cx="18" cy="20" r="1.4" /><path d="M2 3h2.5l2.2 12.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6" /></I>
+);
+export const AreaPaw = (p: P) => (
+  <I {...p}><circle cx="7" cy="8" r="1.8" /><circle cx="12" cy="6" r="1.8" /><circle cx="17" cy="8" r="1.8" /><path d="M8.5 14c1-2 5-2 6 0 1.5 3-1 5.5-3 5.5s-4.5-2.5-3-5.5z" /></I>
+);
+export const AreaClock = (p: P) => (
+  <I {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></I>
+);
 
 export const AREA_ICONS: Record<string, (p: P) => React.ReactElement> = {
   briefcase: AreaBriefcase,
   ball: AreaBall,
+  dumbbell: AreaDumbbell,
   card: AreaCard,
+  money: AreaMoney,
+  cart: AreaCart,
   person: AreaPerson,
   smile: AreaSmile,
   book: AreaBook,
+  grad: AreaGrad,
   people: AreaPeople,
   rings: AreaRings,
-  lotus: AreaLotus,
   heart: Heart,
+  home: AreaHome,
+  paw: AreaPaw,
+  lotus: AreaLotus,
+  leaf: AreaLeaf,
+  sun: AreaSun,
+  star: AreaStar,
+  music: AreaMusic,
+  camera: AreaCamera,
+  palette: AreaPalette,
+  pen: AreaPen,
+  code: AreaCode,
+  gamepad: AreaGamepad,
+  plane: AreaPlane,
+  coffee: AreaCoffee,
+  gift: AreaGift,
+  bulb: AreaBulb,
+  flag: AreaFlag,
+  shield: AreaShield,
+  clock: AreaClock,
 };
 
 export function AreaIcon({ icon, size }: { icon: string; size?: number }) {

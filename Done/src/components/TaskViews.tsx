@@ -19,10 +19,12 @@ import { HabitDetailModal, habitStreak, promptHabitValue } from "./Habits";
 
 export function TaskCheck({ task }: { task: Task }) {
   const { toggleTask } = useStore();
+  const overdue = !task.completedAt && !!task.date && task.date < todayKey();
   return (
     <button
       className={`task-check${task.completedAt ? " done" : ""}${task.habitId ? " habit" : ""}${
-        !task.completedAt && task.priority === "High" ? " p-high"
+        overdue ? " overdue"
+        : !task.completedAt && task.priority === "High" ? " p-high"
         : !task.completedAt && task.priority === "Medium" ? " p-medium"
         : !task.completedAt && task.priority === "Low" ? " p-low" : ""}`}
       onClick={(e) => { e.stopPropagation(); toggleTask(task.id); }}
