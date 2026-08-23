@@ -1,57 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { gettingStarted, useStore } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import { Task, View } from "@/lib/types";
 import { todayKey, timeLeft } from "@/lib/date";
 import {
   Inbox, CalendarDay, CalendarUp, ListIcon, Check, Trash, Heart, Target, Repeat,
-  ChartBars, Search, PanelLeft, ChevronDown, ChevronUp, Plus, User, CheckSmall, AreaIcon,
+  ChartBars, Search, PanelLeft, ChevronDown, ChevronUp, Plus, User, AreaIcon,
 } from "./icons";
 import { Modal, Dropdown, MenuItem } from "./ui";
 import { TaskModal } from "./TaskViews";
 import { PALETTE } from "@/lib/colors";
 
-/** Пункты экспорта/импорта данных */
-export function DataMenuItems({ close }: { close: () => void }) {
-  const { data } = useStore();
-  const importJson = (file: File) => {
-    const r = new FileReader();
-    r.onload = () => {
-      try {
-        const d = JSON.parse(String(r.result));
-        if (!d || !Array.isArray(d.tasks) || !Array.isArray(d.areas)) throw new Error("bad");
-        if (window.confirm("Заменить все текущие данные импортированными? Текущие данные будут перезаписаны.")) {
-          localStorage.setItem("griply-clone-v1", JSON.stringify(d));
-          location.reload();
-        }
-      } catch {
-        window.alert("Файл не похож на экспорт данных этого приложения.");
-      }
-    };
-    r.readAsText(file);
-  };
-  return (
-    <>
-      <MenuItem onClick={() => {
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "griply-data.json";
-        a.click();
-        close();
-      }}>Экспорт данных (JSON)</MenuItem>
-      <label className="menu-item" style={{ cursor: "pointer" }}>
-        <span className="mi-check" />Импорт данных (JSON)
-        <input type="file" accept="application/json,.json" style={{ display: "none" }}
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) importJson(f); close(); }} />
-      </label>
-    </>
-  );
-}
-
 export default function Sidebar({ view, setView, onHide, onOpenSettings }: { view: View; setView: (v: View) => void; onHide?: () => void; onOpenSettings?: () => void }) {
-  const { data, set, deleteTag } = useStore();
+  const { data, deleteTag } = useStore();
   const [todoOpen, setTodoOpen] = useState(true);
   const [lifeOpen, setLifeOpen] = useState(true);
   const [favOpen, setFavOpen] = useState(true);
@@ -66,7 +28,6 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
   ).length;
   const favorites = data.goals.filter((g) => g.favorite && !g.parentId && !g.archived);
   const favAreas = data.areas.filter((a) => a.favorite && !a.archived);
-  const gs = gettingStarted(data);
 
   const item = (
     v: View, icon: React.ReactNode, label: string,
@@ -85,20 +46,11 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
   return (
     <aside className="sidebar">
       <div className="sb-top">
-        <Dropdown trigger={
-          <span className="sb-profile">
-            <span className="sb-avatar"><User size={18} /></span>
-            Ston
-            <ChevronDown size={13} className="muted" />
-          </span>
-        }>
-          {(close) => (
-            <>
-              <MenuItem onClick={() => { onOpenSettings?.(); close(); }}>Настройки</MenuItem>
-              <DataMenuItems close={close} />
-            </>
-          )}
-        </Dropdown>
+        <button className="sb-profile" onClick={() => onOpenSettings?.()}>
+          <span className="sb-avatar"><User size={18} /></span>
+          Ston
+          <ChevronDown size={13} className="muted" />
+        </button>
         <div className="sb-top-icons">
           <button className="icon-btn" onClick={() => setSearchOpen(true)}><Search size={17} /></button>
           <button className="icon-btn" onClick={onHide}><PanelLeft size={17} /></button>
@@ -233,24 +185,6 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
         ))}
       </div>
 
-      {!data.gettingStartedDismissed && (
-        <div className="gs">
-          <div className="gs-head">
-            Начало работы
-            <span style={{ display: "flex", gap: 2 }}>
-              <button onClick={() => set((d) => ({ ...d, gettingStartedCollapsed: !d.gettingStartedCollapsed }))}>
-                {data.gettingStartedCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
-              </button>
-              <button title="Скрыть навсегда" onClick={() => set((d) => ({ ...d, gettingStartedDismissed: true }))}>✕</button>
-            </span>
-          </div>
-          <div className="gs-bar-row">
-            <div className="gs-bar"><div className="gs-bar-fill" style={{ width: `${gs.pct}%` }} /></div>
-            <span className="gs-pct">{gs.pct}%</span>
-          </div>
-          {!data.gettingStartedCollapsed && <GsSteps />}
-        </div>
-      )}
 
       {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} setView={setView} />}
       {tagModal && <TagModal onClose={() => setTagModal(false)} />}
@@ -350,23 +284,4 @@ function TagModal({ tag, onClose }: { tag?: import("@/lib/types").Tag; onClose: 
   );
 }
 
-function GsSteps() {
-  const { data } = useStore();
-  const steps: [string, boolean][] = [
-    ["Добавить первую задачу", data.tasks.length > 0],
-    ["Создать цель", data.goals.length > 0],
-    ["Завести привычку", data.habits.length > 0],
-    ["Написать видение", data.areas.some((a) => a.vision && a.vision.length > 0)],
-    ["Выполнить задачу", data.tasks.some((t) => !!t.completedAt)],
-  ];
-  return (
-    <div className="gs-steps">
-      {steps.map(([label, done]) => (
-        <div key={label} className={`gs-step${done ? " done" : ""}`}>
-          <span className="dot">{done && <CheckSmall size={9} />}</span>
-          {label}
-        </div>
-      ))}
-    </div>
-  );
-}
+

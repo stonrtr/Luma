@@ -23,18 +23,15 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const st = data.settings ?? { theme: "system" as const, lang: "ru" as const, notifications: false };
   const tg = st.telegram ?? { token: "", chatId: "", enabled: false };
   const [calOpen, setCalOpen] = useState(false);
-  const [tgToken, setTgToken] = useState(tg.token);
-  const [tgChat, setTgChat] = useState(tg.chatId);
   const [tgStatus, setTgStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [notifStatus, setNotifStatus] = useState<string | null>(null);
 
   const saveTg = (patch: Partial<typeof tg>) =>
-    updateSettings({ telegram: { token: tgToken, chatId: tgChat, enabled: tg.enabled, ...patch } });
+    updateSettings({ telegram: { token: tg.token, chatId: tg.chatId, enabled: tg.enabled, ...patch } });
 
   const testTg = async () => {
-    saveTg({ token: tgToken, chatId: tgChat });
     setTgStatus({ ok: true, text: "Отправляю…" });
-    const ok = await sendTelegram(tgToken.trim(), tgChat.trim(), "✅ Peak: тестовое уведомление");
+    const ok = await sendTelegram(tg.token.trim(), tg.chatId.trim(), "✅ Peak: тестовое уведомление");
     setTgStatus(ok
       ? { ok: true, text: "Отправлено — проверьте Telegram" }
       : { ok: false, text: "Не удалось. Проверьте токен и chat ID" });
@@ -56,30 +53,6 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
     }
     setNotifStatus(null);
     updateSettings({ notifications: v });
-  };
-
-  const exportJson = () => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "peak-data.json";
-    a.click();
-  };
-  const importJson = (file: File) => {
-    const r = new FileReader();
-    r.onload = () => {
-      try {
-        const d = JSON.parse(String(r.result));
-        if (!d || !Array.isArray(d.tasks) || !Array.isArray(d.areas)) throw new Error();
-        if (window.confirm("Заменить все текущие данные импортированными?")) {
-          localStorage.setItem("griply-clone-v1", JSON.stringify(d));
-          location.reload();
-        }
-      } catch {
-        window.alert("Файл не похож на экспорт данных этого приложения.");
-      }
-    };
-    r.readAsText(file);
   };
 
   return (
@@ -144,13 +117,13 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
             <Toggle on={tg.enabled} onChange={(v) => saveTg({ enabled: v })} />
           </div>
           <div className="tg-fields">
-            <input className="finput" placeholder="Токен бота (123456:ABC-...)" value={tgToken}
-              onChange={(e) => setTgToken(e.target.value)} onBlur={() => saveTg({ token: tgToken })} />
-            <input className="finput" placeholder="Chat ID (например 123456789)" value={tgChat}
-              onChange={(e) => setTgChat(e.target.value)} onBlur={() => saveTg({ chatId: tgChat })} />
+            <input className="finput" placeholder="Токен бота (123456:ABC-...)" value={tg.token}
+              onChange={(e) => saveTg({ token: e.target.value })} />
+            <input className="finput" placeholder="Chat ID (например 123456789)" value={tg.chatId}
+              onChange={(e) => saveTg({ chatId: e.target.value })} />
             <div>
-              <button className="btn-secondary" disabled={!tgToken.trim() || !tgChat.trim()}
-                style={{ opacity: !tgToken.trim() || !tgChat.trim() ? 0.5 : 1 }}
+              <button className="btn-secondary" disabled={!tg.token.trim() || !tg.chatId.trim()}
+                style={{ opacity: !tg.token.trim() || !tg.chatId.trim() ? 0.5 : 1 }}
                 onClick={testTg}>Отправить тест</button>
             </div>
             {tgStatus && <div className={`set-status ${tgStatus.ok ? "ok" : "err"}`}>{tgStatus.text}</div>}
@@ -170,24 +143,6 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Данные */}
-        <div className="set-section">
-          <div className="set-section-title">Данные</div>
-          <div className="set-row">
-            <div className="set-label">
-              <div className="set-title">Резервная копия</div>
-              <div className="set-sub">Данные хранятся в этом браузере. Перенос — через экспорт/импорт</div>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn-secondary" onClick={exportJson}>Экспорт</button>
-              <label className="btn-secondary" style={{ cursor: "pointer" }}>
-                Импорт
-                <input type="file" accept="application/json,.json" style={{ display: "none" }}
-                  onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />
-              </label>
-            </div>
-          </div>
-        </div>
       </div>
       <div className="modal-foot">
         <button className="btn-primary" onClick={onClose}>Готово</button>

@@ -313,7 +313,7 @@ input:focus, select:focus, textarea:focus { outline: none; }
 /* ---------- Modal ---------- */
 .overlay {
   position: fixed; inset: 0; background: rgba(20, 20, 20, 0.45);
-  display: flex; align-items: center; justify-content: center; z-index: 100;
+  display: flex; align-items: center; justify-content: center; z-index: 300;
 }
 .modal {
   background: #fff; border-radius: 18px; width: 580px; max-width: calc(100vw - 48px);

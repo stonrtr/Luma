@@ -4,11 +4,9 @@ import React, { useEffect, useState } from "react";
 import { StoreProvider, useStore } from "@/lib/store";
 import { todayKey, dayOfWeekMon0 } from "@/lib/date";
 import { View } from "@/lib/types";
-import Sidebar, { SearchModal, DataMenuItems } from "./Sidebar";
+import Sidebar, { SearchModal } from "./Sidebar";
 import { SettingsModal, sendTelegram } from "./Settings";
-import { MenuItem } from "./ui";
 import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User } from "./icons";
-import { Dropdown } from "./ui";
 import { InboxView, TodayView, UpcomingView, AllTasksView, CompletedView, TrashView, TagView } from "./TaskViews";
 import { GoalsView, GoalDetail } from "./Goals";
 import { LifeAreasView, AreaDetail } from "./LifeAreas";
@@ -147,7 +145,7 @@ function Shell() {
       {mobileMenu && (
         <div className="drawer-backdrop" onClick={(e) => e.target === e.currentTarget && setMobileMenu(false)}>
           <div className="drawer">
-            <Sidebar view={view} setView={nav} onHide={() => setMobileMenu(false)} onOpenSettings={() => setSettingsOpen(true)} />
+            <Sidebar view={view} setView={nav} onHide={() => setMobileMenu(false)} onOpenSettings={() => { setMobileMenu(false); setSettingsOpen(true); }} />
           </div>
         </div>
       )}
@@ -162,14 +160,7 @@ function Shell() {
           <Burger size={20} />
         </button>
         <span className="mobile-avatar">
-          <Dropdown align="right" trigger={<span className="icon-btn"><User size={18} /></span>}>
-            {(close) => (
-              <>
-                <MenuItem onClick={() => { setSettingsOpen(true); close(); }}>Настройки</MenuItem>
-                <DataMenuItems close={close} />
-              </>
-            )}
-          </Dropdown>
+          <button className="icon-btn" onClick={() => setSettingsOpen(true)}><User size={18} /></button>
         </span>
         {content}
         <button className="fab" onClick={fabClick}>+</button>
