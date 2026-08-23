@@ -1234,11 +1234,11 @@ function DayTimeline({ allday, timed, onOpen }: { allday: Task[]; timed: Task[];
           ))}
         </div>
       </div>
-      <div style={{ display: "flex", position: "relative" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "58px 1fr", position: "relative" }}>
         <div className="cal-hours">
-          {Array.from({ length: 24 }, (_, h) => (
-            <div key={h} className="cal-hour">{h > 0 ? `${String(h).padStart(2, "0")}:00` : ""}</div>
-          ))}
+          {Array.from({ length: 24 }, (_, h) => (h === 0 ? null : (
+            <span key={h} className="cal-hour" style={{ top: h * 60 }}>{`${String(h).padStart(2, "0")}:00`}</span>
+          )))}
         </div>
         <div className="cal-day-col"
           onDragOver={(e) => e.preventDefault()}
@@ -1252,7 +1252,7 @@ function DayTimeline({ allday, timed, onOpen }: { allday: Task[]; timed: Task[];
           }}
           onClick={(e) => {
             const el = e.target as HTMLElement;
-            if (!el.classList.contains("cal-line") && !el.classList.contains("cal-day-col")) return;
+            if (!el.classList.contains("cal-day-col")) return;
             const [start, total] = timeFromDropY(e, e.currentTarget);
             const endTotal = Math.min(24 * 60, total + 60);
             const created = addTask({
@@ -1262,7 +1262,6 @@ function DayTimeline({ allday, timed, onOpen }: { allday: Task[]; timed: Task[];
             onOpen(created);
           }}
         >
-          {Array.from({ length: 24 }, (_, h) => <div key={h} className="cal-line" />)}
           {timed.map((task) => {
             const top = hourToY(task.timeStart!);
             const bottom = task.timeEnd ? hourToY(task.timeEnd) : top + 60;
@@ -1434,6 +1433,9 @@ export function UpcomingView() {
         </div>
       ) : (
         <div className="cal-wrap">
+          <div className="cal-scroll"
+            ref={(el) => { if (el && !el.dataset.scrolled) { el.dataset.scrolled = "1"; el.scrollTop = 14 * 60; } }}>
+          <div className="cal-topbar">
           <div className="cal-head-row">
             <div className="cal-gutter" />
             {days.map((d) => {
@@ -1468,12 +1470,12 @@ export function UpcomingView() {
               </div>
             ))}
           </div>
-          <div className="cal-body"
-            ref={(el) => { if (el && !el.dataset.scrolled) { el.dataset.scrolled = "1"; el.scrollTop = 14 * 60; } }}>
+          </div>
+          <div className="cal-grid">
             <div className="cal-hours">
-              {Array.from({ length: 24 }, (_, h) => (
-                <div key={h} className="cal-hour">{h > 0 ? `${String(h).padStart(2, "0")}:00` : ""}</div>
-              ))}
+              {Array.from({ length: 24 }, (_, h) => (h === 0 ? null : (
+                <span key={h} className="cal-hour" style={{ top: h * 60 }}>{`${String(h).padStart(2, "0")}:00`}</span>
+              )))}
             </div>
             {days.map((d) => {
               const now = new Date();
@@ -1492,7 +1494,7 @@ export function UpcomingView() {
                   }}
                   onClick={(e) => {
                     const el = e.target as HTMLElement;
-                    if (!el.classList.contains("cal-line") && !el.classList.contains("cal-day-col")) return;
+                    if (!el.classList.contains("cal-day-col")) return;
                     const [start, total] = timeFromDropY(e, e.currentTarget);
                     const endTotal = Math.min(24 * 60, total + 60);
                     const created = addTask({
@@ -1502,8 +1504,7 @@ export function UpcomingView() {
                     setEditing(created);
                   }}
                 >
-                  {Array.from({ length: 24 }, (_, h) => <div key={h} className="cal-line" />)}
-                  {(data.calendarEvents ?? []).filter((e) => e.date === d && e.timeStart).map((e) => {
+                          {(data.calendarEvents ?? []).filter((e) => e.date === d && e.timeStart).map((e) => {
                     const top = hourToY(e.timeStart!);
                     const bottom = e.timeEnd ? hourToY(e.timeEnd) : top + 60;
                     return (
@@ -1529,6 +1530,7 @@ export function UpcomingView() {
                 </div>
               );
             })}
+          </div>
           </div>
         </div>
       )}
