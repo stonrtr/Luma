@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Archivo', system-ui, -apple-system, sans-serif; color:#f4f5f7; -webkit-font-smoothing:antialiased; background:#0a0b0d; }
+  a { color:#f4f5f7; text-decoration:none; }
+  a:hover { color:#a0a4ab; }
+  ::selection { background:#2f3237; }
+  ::-webkit-scrollbar { width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb { background:#33353a; border-radius:5px; border:2px solid transparent; background-clip:content-box; }
+  ::-webkit-scrollbar-track { background:transparent; }
+</style>
+</helmet>
+
+<div style="display:flex; flex-direction:column; gap:80px; padding:72px; min-height:100vh; background:radial-gradient(130% 90% at 72% -10%, #141517 0%, #0e0f11 45%, #0a0b0d 100%);">
+
+  <div style="display:flex; gap:72px; align-items:flex-start;">
+
+  <!-- ===================== DESKTOP SHELL ===================== -->
+  <div>
+    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:20px; width:1360px;">
+      <span style="font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#7a7f86; font-weight:600;">Desktop — 1440</span>
+      <span style="font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#62676d;">Done · навигация в меню</span>
+    </div>
+    <div style="width:1360px; height:900px; background:#16181b; border:1px solid #2a2c31; border-radius:26px; box-shadow:0 40px 90px -50px rgba(20,23,28,.4); overflow:hidden; display:flex;">
+      <dc-import name="IvorySidebarDark" active="{{ view }}" on-nav="{{ nav }}" style="width:270px; align-self:stretch;" hint-size="270px,100%"></dc-import>
+      <div style="flex:1; min-width:0; display:flex;">
+
+        <!-- ---- Сегодня ---- -->
+        <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1; min-width:0; display:flex;">
+          <div style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden;">
+            <div style="padding:40px 40px 0 40px;">
+              <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px;">
+                <div>
+                  <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#7a7f86; font-weight:600; margin-bottom:6px;">{{ weekday }}</div>
+                  <h1 style="font-size:40px; line-height:.9; font-weight:300; letter-spacing:-.03em;">Сегодня</h1>
+                </div>
+                <div style="display:flex; align-items:flex-end; gap:26px; padding-bottom:6px;">
+                  <div style="text-align:right;">
+                    <div style="font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#7a7f86; margin-bottom:5px;">Задач</div>
+                    <div style="font-size:34px; line-height:.8; font-weight:200; letter-spacing:-.02em;">{{ todayCount }}</div>
+                  </div>
+                  <div style="width:1px; height:36px; background:#2a2c31;"></div>
+                  <div style="text-align:right;">
+                    <div style="font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#7a7f86; margin-bottom:5px;">{{ monthWord }}</div>
+                    <div style="font-size:34px; line-height:.8; font-weight:200; letter-spacing:-.02em;">{{ dateNum }}</div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:26px; padding-bottom:18px; border-bottom:1px solid #202227;">
+                <span style="display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:#a0a4ab; background:#1c1e22; padding:6px 12px; border-radius:999px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                  {{ totalTime }}
+                </span>
+                <span style="flex:1;"></span>
+                <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"></path></svg></span>
+                <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M7 10h10M9 14h6"></path></svg></span>
+                <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg></span>
+                <span style="width:1px; height:20px; background:#2a2c31; margin:0 2px;"></span>
+                <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#f4f5f7; background:#26282d;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path><path d="M9 16l2 2 4-4"></path></svg></span>
+              </div>
+            </div>
+            <div style="flex:1; overflow-y:auto; padding:0 40px 40px 40px;">
+              <div style="display:flex; align-items:center; gap:12px; padding:26px 4px 10px;">
+                <span style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#d9663f;">Просрочено</span>
+                <span style="font-size:12px; color:#b56b60;">{{ overdueCount }}</span>
+                <span style="flex:1; height:1px; background:#202227;"></span>
+                <span style="font-size:12.5px; color:#8b9096; display:inline-flex; align-items:center; gap:3px; cursor:pointer;">Перенести <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"></path></svg></span>
+              </div>
+              <sc-for list="{{ overdue }}" as="row" hint-placeholder-count="2">
+                <div style="display:flex; align-items:flex-start; gap:14px; padding:11px 6px; border-radius:12px;" style-hover="background:#1b1d20;">
+                  <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+                  <div style="flex:1; min-width:0;">
+                    <div style="{{ row.titleStyle }}">{{ row.title }}</div>
+                    <div style="display:flex; gap:10px; align-items:center; margin-top:3px; font-size:12.5px;">
+                      <span style="color:#d9663f;">{{ row.sub }}</span>
+                      <sc-if value="{{ row.link }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:6px; color:#7a7f86;"><span style="width:3px; height:12px; border-radius:2px; background:{{ row.linkColor }};"></span>{{ row.link }}</span></sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="display:flex; align-items:center; gap:12px; padding:26px 4px 10px;">
+                <span style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096;">На сегодня</span>
+                <span style="font-size:12px; color:#62676d;">{{ dateLabel }}</span>
+                <span style="flex:1; height:1px; background:#202227;"></span>
+              </div>
+              <sc-for list="{{ todays }}" as="row" hint-placeholder-count="5">
+                <div style="display:flex; align-items:flex-start; gap:14px; padding:11px 6px; border-radius:12px;" style-hover="background:#1b1d20;">
+                  <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+                  <div style="flex:1; min-width:0;">
+                    <div style="{{ row.titleStyle }}">{{ row.title }}<sc-if value="{{ row.deadline }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:3px; margin-left:12px; padding:1px 8px; border-radius:6px; font-size:11.5px; font-weight:600; background:#26282d; color:#a0a4ab; vertical-align:1px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22V4c4-2 8 2 12 0v10c-4 2-8-2-12 0"></path></svg>{{ row.deadline }}</span></sc-if></div>
+                    <sc-if value="{{ row.hasMeta }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex; gap:10px; align-items:center; margin-top:3px; font-size:12.5px; color:#7a7f86;">
+                      <sc-if value="{{ row.time }}" hint-placeholder-val=""><span>{{ row.time }}</span></sc-if>
+                      <sc-if value="{{ row.link }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:3px; height:12px; border-radius:2px; background:{{ row.linkColor }};"></span>{{ row.link }}</span></sc-if>
+                      <sc-if value="{{ row.tag }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px; height:8px; border-radius:50%; background:#55595f;"></span>{{ row.tag }}</span></sc-if>
+                    </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="display:flex; align-items:center; gap:14px; padding:11px 6px; color:#6f747b; font-size:14.5px; cursor:text;">
+                <span style="width:20px; height:20px; border-radius:50%; border:1.6px dashed #3a3d43; flex-shrink:0;"></span>
+                Добавить задачу
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; padding:26px 4px 10px;">
+                <span style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096;">Привычки</span>
+                <span style="font-size:12px; color:#62676d;">{{ habitCount }}</span>
+                <span style="flex:1; height:1px; background:#202227;"></span>
+              </div>
+              <sc-for list="{{ habits }}" as="row" hint-placeholder-count="4">
+                <div style="display:flex; align-items:center; gap:14px; padding:11px 6px; border-radius:12px;" style-hover="background:#1b1d20;">
+                  <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+                  <div style="flex:1; min-width:0;">
+                    <div style="{{ row.titleStyle }}">{{ row.name }}<sc-if value="{{ row.meta }}" hint-placeholder-val=""><span style="font-size:13px; color:#6f747b; margin-left:8px;">{{ row.meta }}</span></sc-if><span style="color:#55595f; margin-left:10px; vertical-align:-2px; display:inline-flex;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg></span></div>
+                  </div>
+                  <sc-if value="{{ row.streak }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:3px; font-size:12.5px; font-weight:600; color:#a0a4ab;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#a0a4ab" stroke="none"><path d="M12 22c4.4 0 7-2.7 7-6.4 0-2.5-1.4-4.5-2.6-6-.5 1.1-1.2 1.9-2.1 2.4.3-2.9-1-6.3-4-8.6.2 2.3-.7 4-2 5.5C7 10.5 5 12.5 5 15.6 5 19.3 7.6 22 12 22z"></path></svg>{{ row.streak }}</span></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="width:340px; flex-shrink:0; border-left:1px solid #202227; display:flex; flex-direction:column; overflow:hidden;">
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:22px 20px 12px;">
+              <div style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:#8b9096;">Расписание</div>
+              <span style="width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:8px; color:#8b9096;" style-hover="background:#202227;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg></span>
+            </div>
+            <div style="margin:4px 16px 10px; padding:12px 14px; border:1px solid #202227; border-radius:14px; display:flex; align-items:center; gap:10px;">
+              <div style="flex:1;">
+                <div style="font-size:13px; font-weight:600;">Подключите календарь</div>
+                <div style="font-size:11.5px; color:#6f747b;">Синхронизация в обе стороны</div>
+              </div>
+              <button style="background:#f4f5f7; color:#16181b; font-size:12.5px; font-weight:600; padding:7px 13px; border-radius:9px;" style-hover="background:#d8dade;">Подключить</button>
+            </div>
+            <div style="flex:1; overflow-y:auto; position:relative; padding-bottom:20px;">
+              <div style="display:grid; grid-template-columns:52px 1fr; position:relative;">
+                <div style="position:relative; height:648px;">
+                  <sc-for list="{{ hours }}" as="h" hint-placeholder-count="12"><span style="{{ h.style }}">{{ h.label }}</span></sc-for>
+                </div>
+                <div style="position:relative; height:648px; border-left:1px solid #202227; background:repeating-linear-gradient(to bottom, #1c1e22 0, #1c1e22 1px, transparent 1px, transparent 54px);">
+                  <sc-for list="{{ events }}" as="e" hint-placeholder-count="3">
+                    <div style="{{ e.style }}"><span style="{{ e.dotStyle }}"></span><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ e.title }}</span></div>
+                  </sc-for>
+                  <div style="position:absolute; left:0; right:0; top:306px; height:1.5px; background:#f4f5f7; z-index:5;"><span style="position:absolute; left:-4px; top:-3px; width:7px; height:7px; border-radius:50%; background:#f4f5f7;"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---- Предстоящие ---- -->
+        <sc-if value="{{ isUpcoming }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden;">
+          <div style="padding:40px 40px 0;">
+            <h1 style="font-size:56px; line-height:.92; font-weight:300; letter-spacing:-.03em;">Предстоящие</h1>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:22px; padding-bottom:18px; border-bottom:1px solid #202227;">
+              <span style="font-size:13px; color:#a0a4ab; font-weight:500;">Август 2026</span>
+              <span style="flex:1;"></span>
+              <span style="display:inline-flex; align-items:center; background:#26282d; border-radius:999px; padding:3px; gap:2px; font-size:13px; font-weight:600;">
+                <span style="padding:5px 11px; border-radius:999px; color:#8b9096;">Д</span>
+                <span style="padding:5px 11px; border-radius:999px; color:#8b9096;">4Д</span>
+                <span style="padding:5px 11px; border-radius:999px; background:#16181b; color:#f4f5f7; box-shadow:0 1px 3px rgba(20,23,28,.12);">Н</span>
+                <span style="padding:5px 11px; border-radius:999px; color:#8b9096;">М</span>
+              </span>
+              <span style="display:inline-flex; align-items:center; gap:7px; background:#16181b; border:1px solid #2a2c31; color:#f4f5f7; font-size:13px; font-weight:600; padding:8px 14px; border-radius:11px;">Планировать</span>
+              <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M7 10h10M9 14h6"></path></svg></span>
+            </div>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:0 40px 40px;">
+            <sc-for list="{{ upcomingGroups }}" as="g" hint-placeholder-count="7">
+              <div style="display:flex; align-items:center; gap:12px; padding:24px 4px 10px;">
+                <span style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096;">{{ g.label }}</span>
+                <span style="font-size:12px; color:#62676d;">{{ g.date }}</span>
+                <span style="flex:1; height:1px; background:#202227;"></span>
+              </div>
+              <sc-if value="{{ g.empty }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px; color:#62676d; padding:4px 6px;">Нет задач</div></sc-if>
+              <sc-for list="{{ g.tasks }}" as="row" hint-placeholder-count="1">
+                <div style="display:flex; align-items:flex-start; gap:14px; padding:11px 6px; border-radius:12px;" style-hover="background:#1b1d20;">
+                  <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+                  <div style="flex:1; min-width:0;">
+                    <div style="{{ row.titleStyle }}">{{ row.title }}</div>
+                    <sc-if value="{{ row.hasMeta }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex; gap:10px; align-items:center; margin-top:3px; font-size:12.5px; color:#7a7f86;">
+                      <sc-if value="{{ row.time }}" hint-placeholder-val=""><span>{{ row.time }}</span></sc-if>
+                      <sc-if value="{{ row.link }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:3px; height:12px; border-radius:2px; background:{{ row.linkColor }};"></span>{{ row.link }}</span></sc-if>
+                      <sc-if value="{{ row.tag }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px; height:8px; border-radius:50%; background:#55595f;"></span>{{ row.tag }}</span></sc-if>
+                    </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---- Привычки ---- -->
+        <sc-if value="{{ isHabits }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden;">
+          <div style="padding:40px 40px 0;">
+            <h1 style="font-size:56px; line-height:.92; font-weight:300; letter-spacing:-.03em;">Мои привычки</h1>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:22px; padding-bottom:18px; border-bottom:1px solid #202227;">
+              <span style="display:inline-flex; align-items:center; gap:12px;">
+                <span style="width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"></path></svg></span>
+                <span style="font-size:14px; font-weight:600; color:#f4f5f7;">18 авг – 24 авг</span>
+                <span style="width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+              </span>
+              <span style="flex:1;"></span>
+              <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg></span>
+              <span style="display:inline-flex; align-items:center; gap:7px; background:#f4f5f7; color:#16181b; font-size:13px; font-weight:600; padding:9px 15px; border-radius:11px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"></path></svg>Добавить привычку</span>
+            </div>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:20px 40px 40px;">
+            <sc-for list="{{ habitsWeek }}" as="h" hint-placeholder-count="6">
+              <div style="display:flex; align-items:center; gap:14px; padding:14px 18px; margin-bottom:10px; border:1px solid #202227; border-radius:14px;">
+                <span style="display:flex; align-items:center; gap:10px; font-weight:600; font-size:15px; color:#f4f5f7;">
+                  <span style="color:#8b9096; display:flex;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg></span>
+                  {{ h.name }}
+                  <sc-if value="{{ h.streak }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:3px; font-size:12.5px; font-weight:600; color:#a0a4ab;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#a0a4ab" stroke="none"><path d="M12 22c4.4 0 7-2.7 7-6.4 0-2.5-1.4-4.5-2.6-6-.5 1.1-1.2 1.9-2.1 2.4.3-2.9-1-6.3-4-8.6.2 2.3-.7 4-2 5.5C7 10.5 5 12.5 5 15.6 5 19.3 7.6 22 12 22z"></path></svg>{{ h.streak }}</span></sc-if>
+                </span>
+                <span style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+                  <sc-for list="{{ h.cells }}" as="c" hint-placeholder-count="7"><span style="{{ c.style }}">{{ c.content }}</span></sc-for>
+                  <span style="display:flex; align-items:center; gap:6px; font-size:14px; font-weight:600; color:#f4f5f7; margin-left:8px; min-width:56px; justify-content:flex-end;"><span style="{{ h.ringStyle }}"></span>{{ h.pctLabel }}</span>
+                  <span style="color:#8b9096; display:flex;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg></span>
+                </span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---- Цели ---- -->
+        <sc-if value="{{ isGoals }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden;">
+          <div style="padding:40px 40px 0;">
+            <h1 style="font-size:56px; line-height:.92; font-weight:300; letter-spacing:-.03em;">Мои цели</h1>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:22px; padding-bottom:18px; border-bottom:1px solid #202227;">
+              <span style="flex:1;"></span>
+              <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M7 10h10M9 14h6"></path></svg></span>
+              <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg></span>
+              <span style="display:inline-flex; align-items:center; gap:7px; background:#f4f5f7; color:#16181b; font-size:13px; font-weight:600; padding:9px 15px; border-radius:11px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"></path></svg>Добавить цель</span>
+            </div>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:8px 40px 40px;">
+            <div style="display:grid; grid-template-columns:minmax(220px,1fr) 110px 130px 96px 110px 80px 160px; column-gap:14px; align-items:center; padding:12px 6px; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:#6f747b; border-bottom:1px solid #202227;">
+              <div>Название</div><div>Прогресс</div><div>Влияние</div><div>Начало</div><div>Дедлайн</div><div>Задачи</div><div>Сфера жизни</div>
+            </div>
+            <sc-for list="{{ goalRows }}" as="g" hint-placeholder-count="5">
+              <div style="display:grid; grid-template-columns:minmax(220px,1fr) 110px 130px 96px 110px 80px 160px; column-gap:14px; align-items:center; padding:16px 6px; border-bottom:1px solid #1c1e22;" style-hover="background:#1b1d20;">
+                <div style="display:flex; align-items:center; gap:13px; font-weight:600; font-size:15px; color:#f4f5f7; min-width:0;">
+                  <span style="position:relative; width:28px; height:28px; border-radius:8px; background:#26282d; display:flex; align-items:center; justify-content:center; color:#a0a4ab; flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8a4 4 0 1 0 4 4"></path><path d="M12 2a10 10 0 1 0 10 10"></path><path d="M12 12l4-4"></path><path d="M16 4v4h4"></path></svg><span style="position:absolute; right:-3px; bottom:-3px; width:10px; height:10px; border-radius:50%; background:{{ g.color }}; border:2px solid #16181b;"></span></span>
+                  <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ g.name }}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; font-size:14px; color:#a0a4ab;"><span style="{{ g.ringStyle }}"></span>{{ g.pctLabel }}</div>
+                <div><sc-if value="{{ g.hasImpact }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:7px; font-size:12px; font-weight:600; background:#26282d; color:#a0a4ab;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"></path></svg>{{ g.impact }}</span></sc-if></div>
+                <div style="font-size:14px; color:#8b9096;">{{ g.start }}</div>
+                <div style="font-size:14px; color:#8b9096; display:flex; align-items:center; gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6f747b" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22V4c4-2 8 2 12 0v10c-4 2-8-2-12 0"></path></svg>{{ g.deadline }}</div>
+                <div style="font-size:14px; color:#8b9096; display:flex; align-items:center; gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6f747b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ g.tasks }}</div>
+                <div style="font-size:14px; color:#8b9096; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ g.area }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---- Аналитика ---- -->
+        <sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden;">
+          <div style="padding:40px 40px 0;">
+            <h1 style="font-size:56px; line-height:.92; font-weight:300; letter-spacing:-.03em;">Аналитика</h1>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:22px; padding-bottom:18px; border-bottom:1px solid #202227;">
+              <span style="flex:1;"></span>
+              <span style="display:inline-flex; align-items:center; background:#26282d; border-radius:999px; padding:3px; gap:2px; font-size:13px; font-weight:600;">
+                <span style="padding:5px 12px; border-radius:999px; background:#16181b; color:#f4f5f7; box-shadow:0 1px 3px rgba(20,23,28,.12);">Н</span>
+                <span style="padding:5px 12px; border-radius:999px; color:#8b9096;">М</span>
+                <span style="padding:5px 12px; border-radius:999px; color:#8b9096;">К</span>
+                <span style="padding:5px 12px; border-radius:999px; color:#8b9096;">Г</span>
+              </span>
+              <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab;" style-hover="background:#202227;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg></span>
+            </div>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:0 40px 40px;">
+            <div style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096; padding:26px 0 14px;">Цели</div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#202227; border:1px solid #202227; border-radius:16px; overflow:hidden;">
+              <sc-for list="{{ insGoals }}" as="card" hint-placeholder-count="3">
+                <div style="background:#16181b; padding:18px 18px 20px;">
+                  <div style="display:flex; align-items:center; gap:9px; margin-bottom:14px;">
+                    <span style="width:28px; height:28px; border-radius:50%; background:#26282d; display:flex; align-items:center; justify-content:center; color:#a0a4ab; flex-shrink:0;">{{ card.icon }}</span>
+                    <span style="font-weight:600; font-size:14px; color:#f4f5f7; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ card.name }}</span>
+                  </div>
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px;">
+                    <span style="font-size:22px; font-weight:600; color:#f4f5f7;">{{ card.big }}</span>
+                    <span style="{{ card.trendStyle }}">{{ card.trend }}</span>
+                  </div>
+                  <div style="font-size:12.5px; color:#7a7f86; margin-bottom:14px;">{{ card.pct }}</div>
+                  <div style="display:flex; align-items:flex-end; gap:0; height:66px; border-bottom:1px solid #202227;">
+                    <sc-for list="{{ card.bars }}" as="b" hint-placeholder-count="7"><div style="{{ b.style }}"><span style="{{ b.inner }}"></span></div></sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096; padding:30px 0 14px;">Привычки</div>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#202227; border:1px solid #202227; border-radius:16px; overflow:hidden;">
+              <sc-for list="{{ insHabits }}" as="card" hint-placeholder-count="4">
+                <div style="background:#16181b; padding:18px 18px 20px;">
+                  <div style="display:flex; align-items:center; gap:9px; margin-bottom:14px;">
+                    <span style="width:28px; height:28px; border-radius:50%; background:#26282d; display:flex; align-items:center; justify-content:center; color:#a0a4ab; flex-shrink:0;">{{ card.icon }}</span>
+                    <span style="font-weight:600; font-size:14px; color:#f4f5f7; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ card.name }}</span>
+                  </div>
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px;">
+                    <span style="font-size:22px; font-weight:600; color:#f4f5f7;">{{ card.big }}</span>
+                    <span style="{{ card.trendStyle }}">{{ card.trend }}</span>
+                  </div>
+                  <div style="font-size:12.5px; color:#7a7f86; margin-bottom:14px;">{{ card.pct }}</div>
+                  <div style="display:flex; align-items:flex-end; gap:0; height:66px; border-bottom:1px solid #202227;">
+                    <sc-for list="{{ card.bars }}" as="b" hint-placeholder-count="7"><div style="{{ b.style }}"><span style="{{ b.inner }}"></span></div></sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MOBILE ===================== -->
+  <div>
+    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:20px; width:390px;">
+      <span style="font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#7a7f86; font-weight:600;">Mobile — 390</span>
+    </div>
+    <div style="width:390px; height:844px; background:#16181b; border:1px solid #2a2c31; border-radius:44px; box-shadow:0 40px 90px -50px rgba(20,23,28,.4); overflow:hidden; position:relative; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 22px 4px;">
+        <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px; color:#a0a4ab; background:#202227;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></span>
+        <span style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid #202227; color:#a0a4ab;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path></svg></span>
+      </div>
+      <div style="flex:1; overflow-y:auto; padding:0 22px 96px;">
+        <div style="padding:14px 2px 0;">
+          <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#7a7f86; font-weight:600; margin-bottom:8px;">{{ weekday }}</div>
+          <h1 style="font-size:54px; line-height:.9; font-weight:300; letter-spacing:-.03em;">Сегодня</h1>
+          <div style="display:flex; align-items:flex-end; gap:22px; margin-top:22px; padding-bottom:16px; border-bottom:1px solid #202227;">
+            <div>
+              <div style="font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:#7a7f86; margin-bottom:6px;">Задач</div>
+              <div style="font-size:52px; line-height:.8; font-weight:200; letter-spacing:-.02em;">{{ todayCount }}</div>
+            </div>
+            <div style="width:1px; height:50px; background:#2a2c31;"></div>
+            <div>
+              <div style="font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:#7a7f86; margin-bottom:6px;">{{ monthWord }}</div>
+              <div style="font-size:52px; line-height:.8; font-weight:200; letter-spacing:-.02em;">{{ dateNum }}</div>
+            </div>
+            <span style="flex:1;"></span>
+            <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#a0a4ab; background:#1c1e22; padding:6px 11px; border-radius:999px; margin-bottom:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ totalTime }}</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; padding:24px 2px 8px;">
+          <span style="font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#d9663f;">Просрочено</span>
+          <span style="flex:1; height:1px; background:#202227;"></span>
+        </div>
+        <sc-for list="{{ overdue }}" as="row" hint-placeholder-count="2">
+          <div style="display:flex; align-items:flex-start; gap:13px; padding:10px 2px;">
+            <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+            <div style="flex:1; min-width:0;">
+              <div style="{{ row.titleStyle }}">{{ row.title }}</div>
+              <div style="font-size:12px; color:#d9663f; margin-top:3px;">{{ row.sub }}</div>
+            </div>
+          </div>
+        </sc-for>
+        <div style="display:flex; align-items:center; gap:10px; padding:24px 2px 8px;">
+          <span style="font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096;">На сегодня</span>
+          <span style="flex:1; height:1px; background:#202227;"></span>
+        </div>
+        <sc-for list="{{ todays }}" as="row" hint-placeholder-count="5">
+          <div style="display:flex; align-items:flex-start; gap:13px; padding:10px 2px;">
+            <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+            <div style="flex:1; min-width:0;">
+              <div style="{{ row.titleStyle }}">{{ row.title }}</div>
+              <sc-if value="{{ row.hasMeta }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; gap:10px; align-items:center; margin-top:3px; font-size:12px; color:#7a7f86;">
+                <sc-if value="{{ row.time }}" hint-placeholder-val=""><span>{{ row.time }}</span></sc-if>
+                <sc-if value="{{ row.link }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:3px; height:11px; border-radius:2px; background:{{ row.linkColor }};"></span>{{ row.link }}</span></sc-if>
+                <sc-if value="{{ row.tag }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; border-radius:50%; background:#55595f;"></span>{{ row.tag }}</span></sc-if>
+              </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <div style="display:flex; align-items:center; gap:10px; padding:24px 2px 8px;">
+          <span style="font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; color:#8b9096;">Привычки</span>
+          <span style="flex:1; height:1px; background:#202227;"></span>
+        </div>
+        <sc-for list="{{ habits }}" as="row" hint-placeholder-count="4">
+          <div style="display:flex; align-items:center; gap:13px; padding:10px 2px;">
+            <button style="{{ row.checkStyle }}" onClick="{{ row.toggle }}"><sc-if value="{{ row.done }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+            <div style="flex:1; min-width:0;"><div style="{{ row.titleStyle }}">{{ row.name }}<sc-if value="{{ row.meta }}" hint-placeholder-val=""><span style="font-size:12.5px; color:#6f747b; margin-left:8px;">{{ row.meta }}</span></sc-if></div></div>
+            <sc-if value="{{ row.streak }}" hint-placeholder-val=""><span style="display:inline-flex; align-items:center; gap:3px; font-size:12px; font-weight:600; color:#a0a4ab;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#a0a4ab" stroke="none"><path d="M12 22c4.4 0 7-2.7 7-6.4 0-2.5-1.4-4.5-2.6-6-.5 1.1-1.2 1.9-2.1 2.4.3-2.9-1-6.3-4-8.6.2 2.3-.7 4-2 5.5C7 10.5 5 12.5 5 15.6 5 19.3 7.6 22 12 22z"></path></svg>{{ row.streak }}</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <button style="position:absolute; right:20px; bottom:96px; width:54px; height:54px; border-radius:50%; background:#f4f5f7; color:#16181b; display:flex; align-items:center; justify-content:center; box-shadow:0 12px 28px -8px rgba(20,23,28,.6);" style-hover="background:#d8dade;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <nav style="position:absolute; left:14px; right:14px; bottom:16px; display:flex; justify-content:space-around; align-items:center; background:#16181b; border:1px solid #202227; border-radius:22px; padding:9px 4px; box-shadow:0 12px 34px -14px rgba(20,23,28,.3);">
+        <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="5">
+          <div style="{{ tab.style }}" onClick="{{ tab.onClick }}">{{ tab.icon }}<span style="font-size:10px;">{{ tab.label }}</span></div>
+        </sc-for>
+      </nav>
+    </div>
+  </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1840,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  state = { done: {}, view: "today" };
+
+  toggle(id) { this.setState((s) => ({ done: { ...s.done, [id]: !s.done[id] } })); }
+  nav(v) { this.setState({ view: v }); }
+
+  checkBase() {
+    return "width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;cursor:pointer;transition:all .12s;background:#16181b;";
+  }
+  taskCheckStyle(row, done) {
+    if (done) return this.checkBase() + "background:#f4f5f7;border:1.6px solid #f4f5f7;color:#16181b;";
+    if (row.priority === "high") return this.checkBase() + "border:2px solid #f4f5f7;color:transparent;";
+    if (row.priority === "medium") return this.checkBase() + "border:2px solid #a0a4ab;color:transparent;";
+    if (row.priority === "low") return this.checkBase() + "border:2px solid #6f747b;color:transparent;";
+    return this.checkBase() + "border:1.6px solid #3a3d43;color:transparent;";
+  }
+  habitCheckStyle(row, done) {
+    const base = this.checkBase() + "border-style:dashed;";
+    if (done) return this.checkBase() + "background:#f4f5f7;border:1.6px dashed #f4f5f7;color:#16181b;";
+    if (row.state === "partial" && row.pct != null) {
+      const deg = Math.round(row.pct * 360);
+      return this.checkBase() + "border:1.6px dashed #f4f5f7;color:transparent;background:conic-gradient(#f4f5f7 " + deg + "deg, #202227 0);";
+    }
+    return base + "border-color:#3a3d43;color:transparent;";
+  }
+  titleStyle(done) {
+    const b = "font-size:15px;font-weight:450;letter-spacing:-.006em;color:#f4f5f7;line-height:1.3;";
+    return done ? "font-size:15px;font-weight:450;color:#62676d;text-decoration:line-through;line-height:1.3;" : b;
+  }
+
+  renderVals() {
+    const done = this.state.done;
+    const view = this.state.view;
+    const svgIcon = (paths, size) => React.createElement("svg", {
+      width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor",
+      strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round",
+      dangerouslySetInnerHTML: { __html: paths },
+    });
+
+    const overdueRaw = [
+      { id: "o1", title: "Отправить отчёт по Q2", sub: "вчера, 14:00", link: "Работа и карьера", priority: "high" },
+      { id: "o2", title: "Оплатить абонемент в зал", sub: "2 дн назад", link: "Спорт и здоровье" },
+    ];
+    const todaysRaw = [
+      { id: "t1", title: "Планёрка с командой", time: "10:00–10:30", link: "Работа и карьера" },
+      { id: "t2", title: "Английский — урок", time: "12:30" },
+      { id: "t3", title: "Прочитать главу книги", deadline: "3 дн", link: "Личное развитие" },
+      { id: "t4", title: "Купить продукты", tag: "дом" },
+      { id: "t5", title: "Созвон с ментором", time: "17:00–18:00", link: "Личное развитие", priority: "high" },
+    ];
+    const habitsRaw = [
+      { id: "h1", name: "Медитация", state: "streak", streak: "12" },
+      { id: "h2", name: "Пить воду", state: "partial", pct: 4 / 6, meta: "4/6" },
+      { id: "h3", name: "Зарядка", state: "done" },
+      { id: "h4", name: "Английский язык", state: "streak", streak: "7" },
+    ];
+    const AREA_COLORS = {
+      "Работа и карьера": "#6b8cae", "Спорт и здоровье": "#c08457", "Деньги и финансы": "#6e9b78",
+      "Личное развитие": "#8b7aa8", "Образование": "#5f7a9b", "Семья и друзья": "#c77b8b",
+    };
+    const mapTask = (r) => {
+      const d = !!done[r.id];
+      return { ...r, done: d, checkStyle: this.taskCheckStyle(r, d), titleStyle: this.titleStyle(d),
+        hasMeta: !!(r.time || r.link || r.tag), time: r.time || "", link: r.link || "", tag: r.tag || "",
+        linkColor: AREA_COLORS[r.link] || "#55595f", deadline: r.deadline || "", toggle: () => this.toggle(r.id) };
+    };
+    const mapHabit = (r) => {
+      const d = r.state === "done" ? (done[r.id] === undefined ? true : !!done[r.id]) : !!done[r.id];
+      return { ...r, done: d, checkStyle: this.habitCheckStyle(r, d), titleStyle: this.titleStyle(d),
+        meta: r.meta || "", streak: r.streak || "", toggle: () => this.toggle(r.id) };
+    };
+
+    const hours = [];
+    for (let h = 8; h <= 19; h++) hours.push({ label: (h < 10 ? "0" + h : h) + ":00", style: "position:absolute;right:10px;top:" + ((h - 8) * 54) + "px;transform:translateY(-50%);font-size:11px;color:#6f747b;white-space:nowrap;" });
+    const evBase = "position:absolute;left:6px;right:8px;background:#26282d;border:1px solid #2a2c31;border-radius:9px;font-size:12px;padding:5px 9px;display:flex;align-items:flex-start;gap:7px;color:#f4f5f7;overflow:hidden;";
+    const events = [
+      { title: "Планёрка с командой", style: evBase + "top:" + (2 * 54) + "px;height:" + (54 * 0.5) + "px;", dotStyle: "width:14px;height:14px;border-radius:50%;border:1.6px solid #3a3d43;flex-shrink:0;margin-top:1px;" },
+      { title: "Английский — урок", style: evBase + "top:" + (4.5 * 54) + "px;height:" + (54 * 0.9) + "px;", dotStyle: "width:14px;height:14px;border-radius:50%;border:1.6px solid #3a3d43;flex-shrink:0;margin-top:1px;" },
+      { title: "День рождения — Аня", style: evBase + "top:" + (7 * 54) + "px;height:44px;background:#1b1d20;border-style:dashed;color:#8b9096;", dotStyle: "display:none;" },
+      { title: "Созвон с ментором", style: evBase + "top:" + (9 * 54) + "px;height:54px;", dotStyle: "width:14px;height:14px;border-radius:50%;border:2px solid #f4f5f7;flex-shrink:0;margin-top:1px;" },
+    ];
+
+    const tabItem = (key, icon, label) => ({
+      icon: svgIcon(icon, 20), label, onClick: () => this.nav(key),
+      style: "display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;padding:4px 0;border-radius:14px;cursor:pointer;color:" + (view === key ? "#f4f5f7" : "#6f747b") + ";" + (view === key ? "font-weight:600;" : ""),
+    });
+    const tabs = [
+      tabItem("today", '<path d="M20 6 9 17l-5-5"></path>', "Задачи"),
+      tabItem("upcoming", '<rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path>', "Календарь"),
+      tabItem("habits", '<path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path>', "Привычки"),
+      tabItem("goals", '<path d="M12 8a4 4 0 1 0 4 4"></path><path d="M12 2a10 10 0 1 0 10 10"></path><path d="M12 12l4-4"></path><path d="M16 4v4h4"></path>', "Цели"),
+      tabItem("insights", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path>', "Аналитика"),
+    ];
+
+    // Предстоящие
+    const upcomingRaw = [
+      { label: "Понедельник", date: "18 авг", tasks: [ { id: "u1", title: "Ревью дизайна", time: "11:00", link: "Работа и карьера" }, { id: "u2", title: "Тренировка", time: "19:00", link: "Спорт и здоровье" } ] },
+      { label: "Вторник", date: "19 авг", tasks: [ { id: "u3", title: "Написать статью", link: "Личное развитие" } ] },
+      { label: "Среда", date: "20 авг", tasks: [] },
+      { label: "Четверг", date: "21 авг", tasks: [ { id: "u4", title: "Встреча с врачом", time: "09:30", link: "Спорт и здоровье" }, { id: "u5", title: "Оплатить счета", tag: "дом" } ] },
+      { label: "Пятница", date: "22 авг", tasks: [ { id: "u6", title: "Демо для клиента", time: "15:00", link: "Работа и карьера", priority: "high" } ] },
+      { label: "Суббота", date: "23 авг", tasks: [] },
+      { label: "Воскресенье", date: "24 авг", tasks: [ { id: "u7", title: "Планирование недели", link: "Личное развитие" } ] },
+    ];
+    const upcomingGroups = upcomingRaw.map((g) => ({ label: g.label, date: g.date, empty: g.tasks.length === 0, tasks: g.tasks.map(mapTask) }));
+
+    // Привычки
+    const letters = ["П", "В", "С", "Ч", "П", "С", "В"];
+    const cellBase = "width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;";
+    const cellStyle = (c) => {
+      if (c.type === "done") return cellBase + "background:#f4f5f7;color:#16181b;";
+      if (c.type === "plus") return cellBase + "background:#2f3237;color:#f4f5f7;";
+      if (c.type === "partial") { const p = Math.round(c.val * 100); return cellBase + "background:linear-gradient(to top,#f4f5f7 " + p + "%,#2f3237 " + p + "%);color:#16181b;"; }
+      if (c.type === "skip") return cellBase + "background:#26282d;color:#6f747b;";
+      if (c.type === "future") return cellBase + "background:transparent;color:#6f747b;";
+      return cellBase + "background:transparent;color:transparent;";
+    };
+    const cellContent = (c, i) => c.type === "done" ? "✓" : c.type === "plus" ? "+" : c.type === "skip" ? "→" : c.type === "future" ? letters[i] : "";
+    const D = { type: "done" }, F = { type: "future" }, SK = { type: "skip" }, PL = { type: "plus" }, OFF = { type: "off" };
+    const PA = (v) => ({ type: "partial", val: v });
+    const habitsWeekRaw = [
+      { name: "Медитация", streak: "12", pct: 100, cells: [D, D, D, D, D, D, F] },
+      { name: "Пить воду", streak: "3", pct: 83, cells: [D, D, PA(0.5), D, D, PL, F] },
+      { name: "Зарядка", streak: "0", pct: 71, cells: [D, SK, D, D, D, PL, F] },
+      { name: "Английский язык", streak: "7", pct: 100, cells: [D, D, D, D, D, D, F] },
+      { name: "Чтение перед сном", streak: "4", pct: 67, cells: [PA(0.5), D, D, SK, D, PL, F] },
+      { name: "Бег", streak: "0", pct: 50, cells: [D, OFF, D, OFF, SK, OFF, F] },
+    ];
+    const habitsWeek = habitsWeekRaw.map((h) => ({
+      name: h.name, streak: h.streak && h.streak !== "0" ? h.streak : "", pctLabel: h.pct + "%",
+      ringStyle: "width:16px;height:16px;border-radius:50%;flex-shrink:0;background:conic-gradient(#f4f5f7 " + (h.pct * 3.6).toFixed(1) + "deg,#2a2c31 0);",
+      cells: h.cells.map((c, i) => ({ style: cellStyle(c), content: cellContent(c, i) })),
+    }));
+
+    // Цели
+    const goalRaw = [
+      { name: "Запустить свой продукт", pct: 62, impact: "Высокое", start: "1 июн", deadline: "3 мес", tasks: "14", area: "Работа и карьера", color: "#6b8cae" },
+      { name: "Пробежать полумарафон", pct: 45, impact: "Среднее", start: "15 мая", deadline: "6 нед", tasks: "8", area: "Спорт и здоровье", color: "#c08457" },
+      { name: "Накопить подушку", pct: 78, impact: "Высокое", start: "1 янв", deadline: "2 мес", tasks: "5", area: "Деньги и финансы", color: "#6e9b78" },
+      { name: "Выучить английский", pct: 34, impact: "Среднее", start: "1 фев", deadline: "1 мес", tasks: "21", area: "Личное развитие", color: "#8b7aa8" },
+      { name: "Читать 24 книги", pct: 50, impact: "", start: "1 янв", deadline: "5 мес", tasks: "12", area: "Образование", color: "#5f7a9b" },
+    ];
+    const goalRows = goalRaw.map((g) => ({ ...g, pctLabel: g.pct + "%", hasImpact: !!g.impact,
+      ringStyle: "width:18px;height:18px;border-radius:50%;flex-shrink:0;background:conic-gradient(#f4f5f7 " + (g.pct * 3.6).toFixed(1) + "deg,#2a2c31 0);" }));
+
+    // Аналитика
+    const barsFrom = (arr, max) => arr.map((v) => ({ style: "flex:1;display:flex;align-items:flex-end;justify-content:center;height:100%;",
+      inner: "width:7px;border-radius:4px;background:#f4f5f7;display:block;height:" + Math.max(8, Math.round((v / max) * 100)) + "%;" }));
+    const T_ICON = '<path d="M12 8a4 4 0 1 0 4 4"></path><path d="M12 2a10 10 0 1 0 10 10"></path><path d="M12 12l4-4"></path><path d="M16 4v4h4"></path>';
+    const R_ICON = '<path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path>';
+    const insCard = (icon, name, big, trend, up, pct, arr, max) => ({ icon: svgIcon(icon, 15), name, big, trend, pct,
+      trendStyle: "font-size:13px;font-weight:700;color:" + (up ? "#f4f5f7" : "#6f747b") + ";", bars: barsFrom(arr, max) });
+    const insGoals = [
+      insCard(T_ICON, "Запустить свой продукт", "9 / 14 задач", "↑ 18%", true, "62%", [2, 1, 3, 2, 4, 3, 5], 5),
+      insCard(T_ICON, "Пробежать полумарафон", "18 / 42 км", "↑ 9%", true, "45%", [3, 4, 3, 5, 4, 6, 5], 6),
+      insCard(T_ICON, "Накопить подушку", "78 / 100 т₽", "↓ 4%", false, "78%", [5, 4, 5, 3, 4, 4, 5], 5),
+    ];
+    const insHabits = [
+      insCard(R_ICON, "Медитация", "7 / 7", "↑ 12%", true, "100%", [1, 1, 1, 1, 1, 1, 1], 1),
+      insCard(R_ICON, "Пить воду", "29 / 42", "↑ 6%", true, "69%", [6, 4, 5, 6, 3, 5, 4], 6),
+      insCard(R_ICON, "Зарядка", "5 / 7", "↓ 3%", false, "71%", [1, 0, 1, 1, 1, 1, 0], 1),
+      insCard(R_ICON, "Английский язык", "6 / 7", "↑ 8%", true, "86%", [1, 1, 1, 0, 1, 1, 1], 1),
+    ];
+
+    return {
+      view, nav: (v) => this.nav(v),
+      isToday: view === "today", isUpcoming: view === "upcoming", isHabits: view === "habits",
+      isGoals: view === "goals", isInsights: view === "insights",
+      weekday: "Воскресенье", monthWord: "Август", dateNum: "23", dateLabel: "23 авг",
+      todayCount: "05", totalTime: "3 ч 5 м", overdueCount: "2", habitCount: "4",
+      overdue: overdueRaw.map(mapTask), todays: todaysRaw.map(mapTask), habits: habitsRaw.map(mapHabit),
+      hours, events, tabs, upcomingGroups, habitsWeek, goalRows, insGoals, insHabits,
+    };
+  }
+}
+</script>
+</body>
+</html>
