@@ -15,7 +15,8 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
   });
 }
 
-const PAUSE_PRESETS = [1.5, 3, 4.5, 6];
+const PAUSE_PRESETS = [1, 1.5, 2, 2.5, 3];
+const REPEAT_PRESETS = [1, 2, 3];
 const LS_KEY = "luma:listen";
 
 /**
@@ -33,21 +34,27 @@ export function ListenSection() {
   const [excluded, setExcluded] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState<string | null>(null);
   const [cardsByLesson, setCardsByLesson] = useState<Record<string, PhraseCard[]>>({});
-  const [pauseSec, setPauseSec] = useState(3);
+  const [pauseSec, setPauseSec] = useState(2);
+  const [repeats, setRepeats] = useState(3);
+  const [withExample, setWithExample] = useState(false);
   const [loop, setLoop] = useState(false);
   const [building, setBuilding] = useState(false);
 
   // Плеер (queue !== null → режим воспроизведения).
   const [queue, setQueue] = useState<PhraseCard[] | null>(null);
   const [pos, setPos] = useState(0);
-  const [step, setStep] = useState<"ru" | "en" | "pause" | "done">("ru");
+  const [step, setStep] = useState<"ru" | "en" | "ru-ex" | "en-ex" | "pause" | "done">("ru");
   const [playing, setPlaying] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
   const loopRef = useRef(loop);
   const pauseRef = useRef(pauseSec);
+  const repeatsRef = useRef(repeats);
+  const exampleRef = useRef(withExample);
   useEffect(() => { loopRef.current = loop; }, [loop]);
   useEffect(() => { pauseRef.current = pauseSec; }, [pauseSec]);
+  useEffect(() => { repeatsRef.current = repeats; }, [repeats]);
+  useEffect(() => { exampleRef.current = withExample; }, [withExample]);
 
   // Восстановление сохранённого выбора (объявлено ДО сохраняющего эффекта,
   // чтобы прочитать localStorage раньше, чем он перезапишется).
@@ -59,6 +66,8 @@ export function ListenSection() {
         if (Array.isArray(s.checked)) setChecked(new Set(s.checked));
         if (Array.isArray(s.excluded)) setExcluded(new Set(s.excluded));
         if (typeof s.pauseSec === "number") setPauseSec(s.pauseSec);
+        if (typeof s.repeats === "number") setRepeats(s.repeats);
+        if (typeof s.withExample === "boolean") setWithExample(s.withExample);
         if (typeof s.loop === "boolean") setLoop(s.loop);
       }
     } catch {}
@@ -80,9 +89,9 @@ export function ListenSection() {
       return;
     }
     try {
-      localStorage.setItem(LS_KEY, JSON.stringify({ checked: [...checked], excluded: [...excluded], pauseSec, loop }));
+      localStorage.setItem(LS_KEY, JSON.stringify({ checked: [...checked], excluded: [...excluded], pauseSec, repeats, withExample, loop }));
     } catch {}
-  }, [checked, excluded, pauseSec, loop]);
+  }, [checked, excluded, pauseSec, repeats, withExample, loop]);
 
   // Подгружаем карточки выбранных уроков (для счётчика и построения очереди).
   useEffect(() => {
@@ -176,9 +185,24 @@ export function ListenSection() {
         setStep("pause");
         await sleep(pauseRef.current * 1000, signal);
         if (signal.aborted) return;
-        for (let k = 0; k < 3; k++) {
+        for (let k = 0; k < repeatsRef.current; k++) {
           setStep("en");
           await speakAndWait(card.english, voice, settings.speechRate, signal);
+          if (signal.aborted) return;
+          setStep("pause");
+          await sleep(pauseRef.current * 1000, signal);
+          if (signal.aborted) return;
+        }
+        // Пример предложения (опционально): русский → пауза → английский.
+        if (exampleRef.current && card.exampleRu && card.exampleEn) {
+          setStep("ru-ex");
+          await speakAndWait(card.exampleRu, voice, settings.speechRate, signal);
+          if (signal.aborted) return;
+          setStep("pause");
+          await sleep(pauseRef.current * 1000, signal);
+          if (signal.aborted) return;
+          setStep("en-ex");
+          await speakAndWait(card.exampleEn, voice, settings.speechRate, signal);
           if (signal.aborted) return;
           setStep("pause");
           await sleep(pauseRef.current * 1000, signal);
@@ -260,8 +284,26 @@ export function ListenSection() {
               >
                 {card.english}
               </div>
+              {withExample && card.exampleRu && card.exampleEn && (
+                <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 4, maxWidth: 520 }}>
+                  <div style={{ fontStyle: "italic", fontSize: "clamp(13px, 1.5vw, 16px)", color: "#fff", opacity: step === "ru-ex" ? 1 : 0.4, transition: "opacity 0.2s" }}>
+                    {card.exampleRu}
+                  </div>
+                  <div style={{ fontStyle: "italic", fontSize: "clamp(13px, 1.5vw, 16px)", color: "#fff", opacity: step === "en-ex" ? 1 : 0.4, transition: "opacity 0.2s" }}>
+                    {card.exampleEn}
+                  </div>
+                </div>
+              )}
               <span className="gpill" style={{ marginTop: 6, fontSize: 12 }}>
-                {step === "ru" ? "🔊 русский" : step === "en" ? "🔊 english" : "⏸ пауза"}
+                {step === "ru"
+                  ? "🔊 русский"
+                  : step === "en"
+                    ? "🔊 english"
+                    : step === "ru-ex"
+                      ? "🔊 пример (рус)"
+                      : step === "en-ex"
+                        ? "🔊 пример (eng)"
+                        : "⏸ пауза"}
               </span>
             </>
           )}
@@ -305,27 +347,49 @@ export function ListenSection() {
       )}
 
       {/* Настройки воспроизведения */}
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span className="muted" style={{ fontSize: 13 }}>Пауза:</span>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span className="muted" style={{ fontSize: 13, width: 78 }}>Пауза:</span>
           {PAUSE_PRESETS.map((s) => (
             <button
               key={s}
               className={pauseSec === s ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-              style={{ minHeight: 36, padding: "0 14px" }}
+              style={{ minHeight: 36, padding: "0 13px" }}
               onClick={() => setPauseSec(s)}
             >
               {String(s).replace(".", ",")}с
             </button>
           ))}
         </div>
-        <button
-          className={loop ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-          style={{ minHeight: 36 }}
-          onClick={() => setLoop((v) => !v)}
-        >
-          ↻ повтор {loop ? "вкл" : "выкл"}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span className="muted" style={{ fontSize: 13, width: 78 }}>Повторов:</span>
+          {REPEAT_PRESETS.map((n) => (
+            <button
+              key={n}
+              className={repeats === n ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+              style={{ minHeight: 36, padding: "0 16px" }}
+              onClick={() => setRepeats(n)}
+            >
+              ×{n}
+            </button>
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <button
+            className={withExample ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+            style={{ minHeight: 36 }}
+            onClick={() => setWithExample((v) => !v)}
+          >
+            + пример {withExample ? "вкл" : "выкл"}
+          </button>
+          <button
+            className={loop ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+            style={{ minHeight: 36 }}
+            onClick={() => setLoop((v) => !v)}
+          >
+            ↻ повтор {loop ? "вкл" : "выкл"}
+          </button>
+        </div>
       </div>
 
       {lessons === null ? (
