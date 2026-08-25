@@ -12,7 +12,12 @@ import { db } from "../db";
 const DEEPGRAM_KEY = process.env.DEEPGRAM_API_KEY || "";
 const GEMINI_KEY = process.env.GEMINI_API_KEY || "";
 const GEMINI_TTS_MODEL = process.env.GEMINI_TTS_MODEL || "gemini-2.5-flash-preview-tts";
+const AZURE_KEY = process.env.AZURE_SPEECH_KEY || "";
+const AZURE_REGION = process.env.AZURE_SPEECH_REGION || ""; // напр. "westeurope", "eastus"
 
+export function hasAzure(): boolean {
+  return AZURE_KEY.length > 0 && AZURE_REGION.length > 0;
+}
 export function hasDeepgram(): boolean {
   return DEEPGRAM_KEY.length > 0;
 }
@@ -20,7 +25,7 @@ export function hasGeminiTts(): boolean {
   return GEMINI_KEY.length > 0;
 }
 export function hasAnyTts(): boolean {
-  return hasDeepgram() || hasGeminiTts();
+  return hasAzure() || hasDeepgram() || hasGeminiTts();
 }
 
 export const AURA_VOICES = [
@@ -30,6 +35,17 @@ export const AURA_VOICES = [
   { id: "aura-2-apollo-en", label: "Apollo (муж.)" },
   { id: "aura-2-arcas-en", label: "Arcas (муж.)" },
   { id: "aura-2-orion-en", label: "Orion (муж.)" },
+];
+
+// Azure Neural — мультиязычные голоса (говорят и по-английски, и по-русски),
+// качество близко к ElevenLabs. Один голос покрывает обе стороны в «Слушать».
+export const AZURE_VOICES = [
+  { id: "en-US-AvaMultilingualNeural", label: "Ava (жен., естественный)" },
+  { id: "en-US-EmmaMultilingualNeural", label: "Emma (жен., тёплый)" },
+  { id: "en-US-JennyMultilingualNeural", label: "Jenny (жен., дружелюбный)" },
+  { id: "en-US-AndrewMultilingualNeural", label: "Andrew (муж., спокойный)" },
+  { id: "en-US-BrianMultilingualNeural", label: "Brian (муж., мягкий)" },
+  { id: "en-US-RyanMultilingualNeural", label: "Ryan (муж., деловой)" },
 ];
 
 export const GEMINI_VOICES = [
@@ -52,6 +68,7 @@ export const GEMINI_VOICES = [
 ];
 
 export function availableVoices() {
+  if (hasAzure()) return AZURE_VOICES;
   if (hasDeepgram()) return AURA_VOICES;
   if (hasGeminiTts()) return GEMINI_VOICES;
   return [];
@@ -186,7 +203,50 @@ export async function warmPhrases(texts: string[], voice: string): Promise<void>
 }
 
 /** Синтез английской фразы через доступный провайдер. null → пусть клиент озвучит браузером. */
+function xmlEscape(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+async function synthesizeAzure(text: string, voice: string): Promise<TtsResult | null> {
+  const voiceName = AZURE_VOICES.some((v) => v.id === voice) ? voice : "en-US-AvaMultilingualNeural";
+  // Язык по наличию кириллицы — мультиязычные голоса произносят и рус., и англ.
+  const lang = /[а-яё]/i.test(text) ? "ru-RU" : "en-US";
+  const key = hashKey("az", `${voiceName}|${lang}`, text);
+  const cached = await cacheGet(key);
+  if (cached) return cached;
+  try {
+    const ssml = `<speak version='1.0' xml:lang='${lang}'><voice name='${voiceName}'>${xmlEscape(text)}</voice></speak>`;
+    const res = await fetch(`https://${AZURE_REGION}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+      method: "POST",
+      headers: {
+        "Ocp-Apim-Subscription-Key": AZURE_KEY,
+        "Content-Type": "application/ssml+xml",
+        "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
+        "User-Agent": "luma",
+      },
+      body: ssml,
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length === 0) return null;
+    await cachePut(key, buf, "audio/mpeg");
+    return { audio: buf, contentType: "audio/mpeg" };
+  } catch {
+    return null;
+  }
+}
+
 export async function synthesize(text: string, voice: string): Promise<TtsResult | null> {
+  if (hasAzure()) {
+    const az = await synthesizeAzure(text, voice);
+    if (az) return az;
+  }
   if (hasDeepgram()) {
     const dg = await synthesizeDeepgram(text, voice);
     if (dg) return dg;
