@@ -254,14 +254,14 @@ export function ListenSection() {
           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "40px 20px", textAlign: "center", minHeight: 320, justifyContent: "center" }}
         >
           {done ? (
-            <div style={{ fontSize: "clamp(30px, 6vw, 56px)", fontWeight: 800, color: "#fff" }}>
+            <div style={{ fontSize: "clamp(26px, 5vw, 44px)", fontWeight: 800, color: "#fff" }}>
               готово<span className="dim">.</span>
             </div>
           ) : (
             <>
               <div
                 style={{
-                  fontSize: "clamp(28px, 5vw, 52px)",
+                  fontSize: "clamp(24px, 4vw, 40px)",
                   fontWeight: 800,
                   color: "#fff",
                   lineHeight: 1.02,
@@ -274,7 +274,7 @@ export function ListenSection() {
               <div style={{ height: 1, width: 60, background: "rgba(255,255,255,0.2)" }} />
               <div
                 style={{
-                  fontSize: "clamp(26px, 4.5vw, 46px)",
+                  fontSize: "clamp(22px, 3.6vw, 36px)",
                   fontWeight: 800,
                   color: "#fff",
                   lineHeight: 1.02,
@@ -346,45 +346,49 @@ export function ListenSection() {
         </div>
       )}
 
-      {/* Настройки воспроизведения */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span className="muted" style={{ fontSize: 13, width: 78 }}>Пауза:</span>
-          {PAUSE_PRESETS.map((s) => (
-            <button
-              key={s}
-              className={pauseSec === s ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-              style={{ minHeight: 36, padding: "0 13px" }}
-              onClick={() => setPauseSec(s)}
-            >
-              {String(s).replace(".", ",")}с
-            </button>
-          ))}
+      {/* Настройки воспроизведения — подпись отдельной строкой, кнопки в один ряд */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div>
+          <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>Пауза</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {PAUSE_PRESETS.map((s) => (
+              <button
+                key={s}
+                className={pauseSec === s ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+                style={{ minHeight: 34, padding: "0 12px", fontSize: 13 }}
+                onClick={() => setPauseSec(s)}
+              >
+                {String(s).replace(".", ",")}с
+              </button>
+            ))}
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span className="muted" style={{ fontSize: 13, width: 78 }}>Повторов:</span>
-          {REPEAT_PRESETS.map((n) => (
-            <button
-              key={n}
-              className={repeats === n ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-              style={{ minHeight: 36, padding: "0 16px" }}
-              onClick={() => setRepeats(n)}
-            >
-              ×{n}
-            </button>
-          ))}
+        <div>
+          <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>Повторов</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {REPEAT_PRESETS.map((n) => (
+              <button
+                key={n}
+                className={repeats === n ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+                style={{ minHeight: 34, padding: "0 16px", fontSize: 13 }}
+                onClick={() => setRepeats(n)}
+              >
+                ×{n}
+              </button>
+            ))}
+          </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <button
             className={withExample ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-            style={{ minHeight: 36 }}
+            style={{ minHeight: 34, fontSize: 13 }}
             onClick={() => setWithExample((v) => !v)}
           >
             + пример {withExample ? "вкл" : "выкл"}
           </button>
           <button
             className={loop ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-            style={{ minHeight: 36 }}
+            style={{ minHeight: 34, fontSize: 13 }}
             onClick={() => setLoop((v) => !v)}
           >
             ↻ повтор {loop ? "вкл" : "выкл"}
