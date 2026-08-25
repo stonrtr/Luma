@@ -3,13 +3,13 @@
 import "server-only";
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY || "";
-// Primary model first, then фолбэки с РАЗНЫМИ квотами (проверено против
-// ListModels 2026-08: gemini-2.0-flash отключён Google, gemini-flash-latest —
-// алиас 2.5-flash и делит с ней 429-бакет, поэтому бесполезен как фолбэк).
+// Primary model first, затем фолбэки. Проверено против ListModels 2026-08-25:
+// gemini-2.5-flash ВЫДАЁТ 404 «no longer available» → убран. Живые модели:
+// gemini-flash-latest (стабильный алиас, primary), 3.5-flash, 3.5-flash-lite.
 const GEMINI_MODELS = Array.from(
   new Set([
-    process.env.GEMINI_MODEL || "gemini-2.5-flash",
-    "gemini-2.5-flash",
+    process.env.GEMINI_MODEL || "gemini-flash-latest",
+    "gemini-flash-latest",
     "gemini-3.5-flash",
     "gemini-3.5-flash-lite",
   ])
