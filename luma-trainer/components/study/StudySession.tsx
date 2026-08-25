@@ -382,7 +382,7 @@ export function StudySession({
       <div
         style={{
           alignSelf: "center",
-          fontSize: embedded ? "clamp(38px, 6.5vw, 100px)" : "clamp(42px, 8vw, 130px)",
+          fontSize: embedded ? "clamp(30px, 5.2vw, 68px)" : "clamp(34px, 6.5vw, 92px)",
           fontWeight: 800,
           color: "#fff",
           lineHeight: 0.98,
@@ -476,7 +476,7 @@ export function StudySession({
           <>
             {card.alternativeTranslations.length > 0 && card.reviewCount < 2 ? (
               // Первые 2 показа: выбор основного перевода — тап по варианту.
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: 560 }}>
+              <div className="study-chooser" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: 560 }}>
                 <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 600 }}>
                   Выберите основной перевод
                 </span>
@@ -516,25 +516,25 @@ export function StudySession({
                 <span className="gpill" style={{ fontSize: 13 }}>подсказка использована — засчитывается как «Не вспомнил»</span>
                 <button
                   className="wbtn"
-                  style={{ minHeight: 52, padding: "0 30px", fontSize: 16, color: "#d6403f" }}
+                  style={{ minHeight: 46, padding: "0 30px", fontSize: 15, color: "#d6403f" }}
                   onClick={() => grade("again")}
                 >
                   Не вспомнил<span className="kbd-arrow"> →</span>
                 </button>
               </div>
             ) : (
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+              <div className="grade-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
                 <button
-                  className="wbtn"
-                  style={{ minHeight: 52, padding: "0 26px", fontSize: 16, color: "#d6403f" }}
+                  className="wbtn grade-btn"
+                  style={{ minHeight: 46, padding: "0 26px", fontSize: 15, color: "#d6403f" }}
                   onClick={() => grade("again")}
                 >
                   <span className="kbd-arrow">← </span>Не вспомнил
                 </button>
-                <button className="gbtn" style={{ minHeight: 52, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
+                <button className="gbtn grade-btn" style={{ minHeight: 46, padding: "0 26px", fontSize: 16 }} onClick={() => grade("hard")}>
                   <span className="kbd-arrow">↓ </span>С трудом
                 </button>
-                <button className="wbtn" style={{ minHeight: 52, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
+                <button className="wbtn grade-btn" style={{ minHeight: 46, padding: "0 30px", fontSize: 16 }} onClick={() => grade("easy")}>
                   Легко<span className="kbd-arrow"> →</span>
                 </button>
               </div>
@@ -554,9 +554,8 @@ export function StudySession({
       </div>
 
       <div className="wcard session-progress" style={{ padding: "18px 22px", width: "min(300px, 100%)" }}>
-        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, fontWeight: 700, letterSpacing: "-0.01em" }}>Прогресс фразы</div>
-        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, margin: "6px 0 12px" }}>
-          {card.known ? "выучено" : `${Math.round(card.progress)}%`} · повторений этой фразы: {card.reviewCount}
+        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, fontWeight: 700, letterSpacing: "-0.01em", margin: "0 0 12px" }}>
+          Прогресс фразы {Math.round(card.progress)}%. Повторений: {card.reviewCount}
         </div>
         <div className={`track ${card.known ? "is-known" : ""}`} style={{ height: 9 }}>
           <span style={{ width: `${card.progress}%` }} />
@@ -609,7 +608,7 @@ export function StudySession({
       <div className="overline" style={{ color: "rgba(255,255,255,0.55)" }}>
         {emptyFromStart ? "Очередь пуста" : "Сессия завершена"}
       </div>
-      <div style={{ fontSize: "clamp(48px, 9vw, 140px)", fontWeight: 800, color: "#fff", lineHeight: 0.95, letterSpacing: "-0.02em" }}>
+      <div style={{ fontSize: "clamp(34px, 6.5vw, 88px)", fontWeight: 800, color: "#fff", lineHeight: 0.95, letterSpacing: "-0.02em" }}>
         {emptyFromStart ? "на сегодня всё" : "готово"}
         <span className="dim">.</span>
       </div>
@@ -641,7 +640,7 @@ export function StudySession({
         )}
         <button
           className={(upcomingCount ?? 0) > 0 ? "gbtn" : "wbtn wbtn-lg"}
-          style={{ minHeight: 56, padding: "0 28px", fontSize: 16 }}
+          style={{ minHeight: 46, padding: "0 28px", fontSize: 16 }}
           onClick={goHome}
         >
           На главную
@@ -649,7 +648,7 @@ export function StudySession({
         {emptyFromStart && (upcomingCount ?? 0) === 0 && (
           <button
             className="gbtn"
-            style={{ minHeight: 56, padding: "0 24px", fontSize: 16 }}
+            style={{ minHeight: 46, padding: "0 24px", fontSize: 16 }}
             onClick={() => {
               goTo("lessons");
               if (!embedded && onClose) onClose();

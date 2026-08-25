@@ -9,6 +9,7 @@ import { ToastProvider } from "./ui";
 import { TodaySection } from "./sections/TodaySection";
 import { LessonsSection } from "./sections/LessonsSection";
 import { PhrasesSection } from "./sections/PhrasesSection";
+import { ListenSection } from "./sections/ListenSection";
 import { ProgressSection } from "./sections/ProgressSection";
 import { SettingsSection } from "./sections/SettingsSection";
 import { StudySession } from "./study/StudySession";
@@ -47,6 +48,20 @@ export function AppShell() {
       localStorage.setItem(LS_KEY, id);
     } catch {}
     A.saveSettings({ lastSection: id }).catch(() => {});
+  }, []);
+
+  // Шестерёнка-переключатель: открыть настройки, повторный клик — вернуться назад.
+  const prevSectionRef = useRef<SectionId>("today");
+  const toggleSettings = useCallback(() => {
+    setSection((cur) => {
+      const target: SectionId = cur === "settings" ? (prevSectionRef.current === "settings" ? "today" : prevSectionRef.current) : "settings";
+      if (cur !== "settings") prevSectionRef.current = cur;
+      try {
+        localStorage.setItem(LS_KEY, target);
+      } catch {}
+      A.saveSettings({ lastSection: target }).catch(() => {});
+      return target;
+    });
   }, []);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
@@ -93,6 +108,7 @@ export function AppShell() {
             <TopNav
               active={section}
               onNavigate={navigate}
+              onToggleSettings={toggleSettings}
               onStartRandom={() => setStudy({ scope: "random" })}
             />
             {/* key=section перезапускает fade-up при смене раздела */}
@@ -100,6 +116,7 @@ export function AppShell() {
               {section === "today" && <TodaySection />}
               {section === "lessons" && <LessonsSection />}
               {section === "phrases" && <PhrasesSection />}
+              {section === "listen" && <ListenSection />}
               {section === "progress" && <ProgressSection />}
               {section === "settings" && <SettingsSection />}
             </div>

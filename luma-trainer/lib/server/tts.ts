@@ -33,12 +33,22 @@ export const AURA_VOICES = [
 ];
 
 export const GEMINI_VOICES = [
-  { id: "Kore", label: "Kore (жен.)" },
-  { id: "Aoede", label: "Aoede (жен.)" },
-  { id: "Leda", label: "Leda (жен.)" },
-  { id: "Puck", label: "Puck (муж.)" },
-  { id: "Charon", label: "Charon (муж.)" },
-  { id: "Fenrir", label: "Fenrir (муж.)" },
+  // Женские
+  { id: "Kore", label: "Kore (жен., уверенный)" },
+  { id: "Aoede", label: "Aoede (жен., лёгкий)" },
+  { id: "Leda", label: "Leda (жен., молодой)" },
+  { id: "Callirrhoe", label: "Callirrhoe (жен., спокойный)" },
+  { id: "Autonoe", label: "Autonoe (жен., яркий)" },
+  { id: "Despina", label: "Despina (жен., мягкий)" },
+  { id: "Sulafat", label: "Sulafat (жен., тёплый)" },
+  // Мужские
+  { id: "Puck", label: "Puck (муж., бодрый)" },
+  { id: "Charon", label: "Charon (муж., деловой)" },
+  { id: "Fenrir", label: "Fenrir (муж., живой)" },
+  { id: "Orus", label: "Orus (муж., твёрдый)" },
+  { id: "Iapetus", label: "Iapetus (муж., чёткий)" },
+  { id: "Algieba", label: "Algieba (муж., мягкий)" },
+  { id: "Enceladus", label: "Enceladus (муж., низкий)" },
 ];
 
 export function availableVoices() {

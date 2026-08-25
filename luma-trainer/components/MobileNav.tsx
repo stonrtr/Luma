@@ -13,7 +13,8 @@ export function MobileNav({
 }) {
   return (
     <nav className="mobile-nav" aria-label="Разделы">
-      {SECTIONS.map((s) => (
+      {/* «Настройки» вынесены в шестерёнку в правом верхнем углу (TopNav). */}
+      {SECTIONS.filter((s) => s.id !== "settings").map((s) => (
         <button
           key={s.id}
           className={`mobile-nav-item ${active === s.id ? "active" : ""}`}

@@ -133,3 +133,90 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
   }
   speakBrowser(clean, rate);
 }
+
+/**
+ * Проиграть произвольный текст (любой язык) и дождаться конца — для режима
+ * «Слушать» (последовательное воспроизведение). Возвращает функцию остановки
+ * через ссылку на текущий Audio. Тихо резолвится при ошибке/отсутствии TTS.
+ */
+export async function speakAndWait(text: string, voice: string, rate = 1, signal?: AbortSignal): Promise<void> {
+  const clean = text.trim();
+  if (!clean || signal?.aborted) return;
+  if (current) {
+    current.pause();
+    current = null;
+  }
+  const useServer = await checkServerTts();
+  if (signal?.aborted) return;
+  if (useServer) {
+    const url = await ensureAudio(clean, voice);
+    if (signal?.aborted) return;
+    if (url) {
+      await new Promise<void>((resolve) => {
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          signal?.removeEventListener("abort", onAbort);
+          resolve();
+        };
+        const onAbort = () => {
+          try {
+            audio.pause();
+          } catch {}
+          finish();
+        };
+        let audio: HTMLAudioElement;
+        try {
+          audio = new Audio(url);
+          audio.playbackRate = Math.max(0.5, Math.min(2, rate));
+          current = audio;
+          audio.onended = finish;
+          audio.onerror = finish;
+          signal?.addEventListener("abort", onAbort, { once: true });
+          audio.play().catch(finish);
+        } catch {
+          finish();
+        }
+      });
+      return;
+    }
+  }
+  // Браузерный фолбэк: язык по наличию кириллицы.
+  await new Promise<void>((resolve) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return resolve();
+    const u = new SpeechSynthesisUtterance(clean);
+    u.rate = Math.max(0.5, Math.min(2, rate));
+    u.lang = /[а-яё]/i.test(clean) ? "ru-RU" : "en-US";
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      resolve();
+    };
+    u.onend = finish;
+    u.onerror = finish;
+    signal?.addEventListener("abort", () => { window.speechSynthesis.cancel(); finish(); }, { once: true });
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  });
+}
+
+/** Прогреть аудио произвольного текста (для предзагрузки следующей карточки). */
+export async function prefetchText(text: string, voice: string): Promise<void> {
+  const clean = text.trim();
+  if (!clean) return;
+  if (!(await checkServerTts())) return;
+  await ensureAudio(clean, voice);
+}
+
+/** Остановить текущее серверное аудио (для паузы/остановки режима «Слушать»). */
+export function stopAudio(): void {
+  if (current) {
+    current.pause();
+    current = null;
+  }
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+}

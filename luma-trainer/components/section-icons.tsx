@@ -41,6 +41,14 @@ export function SectionIcon({ id, size = 20 }: { id: SectionId; size?: number })
           <path d="M21 11.5a8 8 0 0 1-11.4 7.2L3 21l2.3-6.6A8 8 0 1 1 21 11.5z" />
         </svg>
       );
+    case "listen": // наушники
+      return (
+        <svg {...p}>
+          <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+          <rect x="2.5" y="14" width="4.5" height="7" rx="1.6" />
+          <rect x="17" y="14" width="4.5" height="7" rx="1.6" />
+        </svg>
+      );
     case "progress": // восходящий тренд
       return (
         <svg {...p}>

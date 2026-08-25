@@ -32,6 +32,7 @@ export const SECTIONS = [
   { id: "today", label: "Сегодня", icon: "☀️" },
   { id: "lessons", label: "Уроки", icon: "📚" },
   { id: "phrases", label: "Фразы", icon: "🗂️" },
+  { id: "listen", label: "Слушать", icon: "🎧" },
   { id: "progress", label: "Прогресс", icon: "📈" },
   { id: "settings", label: "Настройки", icon: "⚙️" },
 ] as const;
