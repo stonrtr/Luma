@@ -1,0 +1,19 @@
+# Пинг-будильник: держит бесплатный Render-сервис «тёплым», чтобы не было
+# холодного старта (~30–60 сек) после засыпания. Render Free засыпает после
+# ~15 минут простоя, поэтому пингуем каждые 10 минут.
+name: keep-alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # каждые 10 минут (UTC; GitHub может задерживать запуск)
+  workflow_dispatch: {}       # можно запустить вручную из вкладки Actions
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping prod
+        run: |
+          echo "Pinging Luma…"
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 --retry 2 https://luma-trainer.onrender.com/api/settings)
+          echo "HTTP $code"

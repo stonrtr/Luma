@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root { --primary: #4255ff; --border: #e2e5ee; --muted: #586380; }
+      body { width: 340px; margin: 0; font-family: -apple-system, "Segoe UI", Arial, sans-serif; color: #282e3e; padding: 12px; }
+      h1 { font-size: 15px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+      .dot { width: 16px; height: 16px; border-radius: 5px; background: linear-gradient(135deg, #51cfff, #4255ff); }
+      label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin: 8px 0 4px; }
+      input, textarea, select { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+      textarea { min-height: 54px; resize: vertical; }
+      button { width: 100%; margin-top: 10px; min-height: 40px; border: none; border-radius: 8px; background: var(--primary); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
+      button.secondary { background: #fff; color: #282e3e; border: 1px solid var(--border); }
+      .row { display: flex; gap: 8px; }
+      .row button { margin-top: 0; }
+      .status { font-size: 12px; margin-top: 8px; min-height: 16px; }
+      .ok { color: #23a66f; } .err { color: #d64c4c; }
+      img { max-width: 100%; border-radius: 8px; margin-top: 8px; display: none; }
+      .muted { color: var(--muted); font-size: 11px; }
+    </style>
+  </head>
+  <body>
+    <h1><span class="dot"></span> Отправить в Luma</h1>
+
+    <label>Фраза</label>
+    <textarea id="phrase" placeholder="Текст субтитра или выделения…"></textarea>
+    <div class="row">
+      <button class="secondary" id="useCaption">Из субтитров</button>
+      <button class="secondary" id="useSelection">Из выделения</button>
+    </div>
+
+    <label>Урок</label>
+    <select id="lesson"></select>
+
+    <button id="send">Сохранить фразу</button>
+    <button class="secondary" id="ocr">📸 Снимок области (OCR-помощь)</button>
+    <img id="shot" alt="снимок вкладки" />
+
+    <div class="status" id="status"></div>
+    <div class="muted" id="src"></div>
+    <div class="muted" style="margin-top:6px"><a href="#" id="opts">Настройки адреса Luma</a></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
