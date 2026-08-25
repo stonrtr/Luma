@@ -17,10 +17,12 @@ function GearIcon() {
 export function TopNav({
   active,
   onNavigate,
+  onToggleSettings,
   onStartRandom,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
+  onToggleSettings: () => void;
   onStartRandom: () => void;
 }) {
   return (
@@ -72,7 +74,7 @@ export function TopNav({
             background: active === "settings" ? "#fff" : undefined,
             color: active === "settings" ? "var(--deep)" : undefined,
           }}
-          onClick={() => onNavigate("settings")}
+          onClick={onToggleSettings}
           aria-label="Настройки"
           title="Настройки"
         >

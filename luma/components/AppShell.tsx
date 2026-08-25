@@ -50,6 +50,20 @@ export function AppShell() {
     A.saveSettings({ lastSection: id }).catch(() => {});
   }, []);
 
+  // Шестерёнка-переключатель: открыть настройки, повторный клик — вернуться назад.
+  const prevSectionRef = useRef<SectionId>("today");
+  const toggleSettings = useCallback(() => {
+    setSection((cur) => {
+      const target: SectionId = cur === "settings" ? (prevSectionRef.current === "settings" ? "today" : prevSectionRef.current) : "settings";
+      if (cur !== "settings") prevSectionRef.current = cur;
+      try {
+        localStorage.setItem(LS_KEY, target);
+      } catch {}
+      A.saveSettings({ lastSection: target }).catch(() => {});
+      return target;
+    });
+  }, []);
+
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   const updateSettings = useCallback((patch: Partial<UserSettings>) => {
@@ -94,6 +108,7 @@ export function AppShell() {
             <TopNav
               active={section}
               onNavigate={navigate}
+              onToggleSettings={toggleSettings}
               onStartRandom={() => setStudy({ scope: "random" })}
             />
             {/* key=section перезапускает fade-up при смене раздела */}
