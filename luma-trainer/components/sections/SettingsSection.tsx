@@ -65,7 +65,17 @@ export function SettingsSection() {
 
       <Group title="Озвучка">
         <Row label="Голос">
-          <select className="select" style={{ maxWidth: 260, minHeight: 42, fontSize: 14, fontWeight: 700, cursor: "pointer" }} value={settings.voice} onChange={(e) => updateSettings({ voice: e.target.value })}>
+          <select
+            className="select"
+            style={{ maxWidth: 260, minHeight: 42, fontSize: 14, fontWeight: 700, cursor: "pointer" }}
+            value={settings.voice}
+            onChange={(e) => {
+              const v = e.target.value;
+              updateSettings({ voice: v });
+              // Сразу проигрываем образец выбранным голосом.
+              speakEnglish("This is a sample sentence.", v, settings.speechRate);
+            }}
+          >
             {voices.map((v) => (
               <option key={v.id} value={v.id}>{v.label}</option>
             ))}

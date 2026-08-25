@@ -3,7 +3,9 @@ import { json, readJson, str } from "@/lib/server/http";
 
 // GET → доступен ли серверный TTS и список голосов текущего провайдера.
 export async function GET() {
-  return json({ available: hasAnyTts(), voices: availableVoices() });
+  // no-store: список голосов не должен кэшироваться (иначе при смене провайдера
+  // клиент показывает старые голоса).
+  return json({ available: hasAnyTts(), voices: availableVoices() }, { headers: { "Cache-Control": "no-store" } });
 }
 
 // POST → аудио английской фразы (mp3/wav). Ключи не покидают сервер (§19, §28).
