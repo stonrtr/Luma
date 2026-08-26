@@ -15,6 +15,16 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
   });
 }
 
+// Перемешать (Fisher–Yates) — новый массив, исходный не трогаем.
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 const PAUSE_PRESETS = [1, 1.5, 2, 2.5, 3];
 const REPEAT_PRESETS = [1, 2, 3];
 const LS_KEY = "luma:listen";
@@ -160,7 +170,7 @@ export function ListenSection() {
       const cards = await loadCards(id);
       for (const c of cards) if (!excluded.has(c.id)) out.push(c);
     }
-    return out;
+    return shuffle(out); // всегда перемешиваем
   };
 
   const run = useCallback(
@@ -211,7 +221,9 @@ export function ListenSection() {
       }
       if (signal.aborted) return;
       if (loopRef.current && q.length) {
-        run(q, 0);
+        const nq = shuffle(q); // каждый круг — новый порядок
+        setQueue(nq);
+        run(nq, 0);
         return;
       }
       setPlaying(false);
@@ -236,6 +248,14 @@ export function ListenSection() {
   const goNext = () => { if (queue) { primeListenAudio(); run(queue, Math.min(pos + 1, queue.length - 1)); } };
   const goPrev = () => { if (queue) { primeListenAudio(); run(queue, Math.max(pos - 1, 0)); } };
   const backToSelection = () => { abortRef.current?.abort(); stopAudio(); setQueue(null); setPlaying(false); };
+  const reshuffle = () => {
+    if (!queue) return;
+    primeListenAudio();
+    const q = shuffle(queue);
+    setQueue(q);
+    setPos(0);
+    run(q, 0);
+  };
 
   /* ── Плеер ──────────────────────────────────────────────────────────── */
   if (queue) {
@@ -245,9 +265,12 @@ export function ListenSection() {
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <button className="gbtn gbtn-sm" onClick={backToSelection}>← к выбору</button>
-          <span className="gpill" style={{ minHeight: 34, fontSize: 13 }}>
-            {Math.min(pos + 1, queue.length)} / {queue.length}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button className="gbtn gbtn-sm" onClick={reshuffle} title="Перемешать заново">🔀 перемешать</button>
+            <span className="gpill" style={{ minHeight: 34, fontSize: 13 }}>
+              {Math.min(pos + 1, queue.length)} / {queue.length}
+            </span>
+          </div>
         </div>
 
         <div
