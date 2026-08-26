@@ -100,6 +100,17 @@ export function primeSfx(): void {
   window.addEventListener("touchstart", unlock, { once: false });
 }
 
+/** Общий разблокированный AudioContext (переиспользуется озвучкой «Слушать»). */
+export function getAudioContext(): AudioContext | null {
+  return getCtx();
+}
+
+/** Возобновить контекст (вызывать в обработчике жеста). */
+export function resumeAudioContext(): void {
+  const c = getCtx();
+  if (c && c.state === "suspended") void c.resume().catch(() => {});
+}
+
 /** Проиграть эффект. Best-effort: тихо гасит любые ошибки. */
 export function playSfx(name: Sfx): void {
   try {

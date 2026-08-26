@@ -1,9 +1,83 @@
 // Client TTS: prefer server Deepgram audio; fall back to the browser Speech
 // Synthesis API. Never speaks Russian text with an English voice (§19).
 
+import { getAudioContext, resumeAudioContext } from "./sfx";
+
 let serverAvailable: boolean | null = null;
 const cache = new Map<string, string>(); // text|voice -> objectURL
 let current: HTMLAudioElement | null = null;
+
+// --- Web Audio путь (надёжен на iOS PWA для последовательного проигрывания) ---
+const bufferCache = new Map<string, AudioBuffer>(); // text|voice -> decoded
+const bufferInflight = new Map<string, Promise<AudioBuffer | null>>();
+let currentSource: AudioBufferSourceNode | null = null;
+
+/** Скачать + декодировать аудио фразы в AudioBuffer (с кэшем и дедупликацией). */
+async function ensureBuffer(text: string, voice: string): Promise<AudioBuffer | null> {
+  const ctx = getAudioContext();
+  if (!ctx) return null;
+  const key = `${text}|${voice}`;
+  const cached = bufferCache.get(key);
+  if (cached) return cached;
+  const pending = bufferInflight.get(key);
+  if (pending) return pending;
+  const p = (async (): Promise<AudioBuffer | null> => {
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, voice }),
+      });
+      if (!res.ok) return null;
+      const ab = await res.arrayBuffer();
+      const buf = await ctx.decodeAudioData(ab.slice(0));
+      bufferCache.set(key, buf);
+      return buf;
+    } catch {
+      return null;
+    } finally {
+      bufferInflight.delete(key);
+    }
+  })();
+  bufferInflight.set(key, p);
+  return p;
+}
+
+/** Проиграть декодированный буфер через Web Audio и дождаться конца/отмены. */
+function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortSignal): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const ctx = getAudioContext();
+    if (!ctx) return resolve();
+    let done = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const src = ctx.createBufferSource();
+    const finish = () => {
+      if (done) return;
+      done = true;
+      if (timer) clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
+      try { src.stop(); } catch {}
+      try { src.disconnect(); } catch {}
+      if (currentSource === src) currentSource = null;
+      resolve();
+    };
+    const onAbort = () => finish();
+    try {
+      src.buffer = buf;
+      src.playbackRate.value = Math.max(0.5, Math.min(2, rate));
+      src.connect(ctx.destination);
+      src.onended = finish;
+      signal?.addEventListener("abort", onAbort, { once: true });
+      currentSource = src;
+      if (ctx.state === "suspended") void ctx.resume().catch(() => {});
+      src.start(0);
+      // Страховка: длительность буфера с запасом.
+      timer = setTimeout(finish, Math.min(30000, buf.duration * 1000 / Math.max(0.5, rate) + 2000));
+    } catch {
+      finish();
+    }
+  });
+}
 
 // Один переиспользуемый аудио-элемент для последовательного воспроизведения
 // («Слушать»). Разблокируется первым жестом (клик «Слушать») и дальше играет
@@ -41,16 +115,16 @@ function silentWavUri(): string {
  */
 export function primeListenAudio(): void {
   if (typeof window === "undefined") return;
+  // Главное: возобновить общий Web Audio контекст прямо в жесте — дальше
+  // «Слушать» играет буферы через него без ограничений автозапуска iOS.
+  resumeAudioContext();
   try {
+    // Фолбэк-путь на <audio>: тоже разблокируем звучащим тихим клипом.
     const a = getListenAudio();
-    a.muted = true;
+    a.muted = false;
+    a.volume = 1;
     a.src = silentWavUri();
-    const p = a.play();
-    if (p && typeof p.then === "function") {
-      p.then(() => { a.pause(); a.muted = false; }).catch(() => { a.muted = false; });
-    } else {
-      a.muted = false;
-    }
+    a.play().catch(() => {});
   } catch {}
 }
 
@@ -198,6 +272,15 @@ export async function speakAndWait(text: string, voice: string, rate = 1, signal
   const useServer = await checkServerTts();
   if (signal?.aborted) return;
   if (useServer) {
+    // 1) Web Audio — надёжно на iOS PWA: играем декодированный буфер через
+    //    общий разблокированный контекст (без ограничений автозапуска).
+    const buf = await ensureBuffer(clean, voice);
+    if (signal?.aborted) return;
+    if (buf && getAudioContext()) {
+      await playBufferAndWait(buf, rate, signal);
+      return;
+    }
+    // 2) Фолбэк на <audio> (если Web Audio недоступен/не декодировал).
     const url = await ensureAudio(clean, voice);
     if (signal?.aborted) return;
     if (url) {
@@ -273,11 +356,21 @@ export async function prefetchText(text: string, voice: string): Promise<void> {
   const clean = text.trim();
   if (!clean) return;
   if (!(await checkServerTts())) return;
+  // Греем именно Web Audio буфер (основной путь); падаем на objectURL.
+  if (getAudioContext()) {
+    const buf = await ensureBuffer(clean, voice);
+    if (buf) return;
+  }
   await ensureAudio(clean, voice);
 }
 
 /** Остановить текущее серверное аудио (для паузы/остановки режима «Слушать»). */
 export function stopAudio(): void {
+  if (currentSource) {
+    try { currentSource.stop(); } catch {}
+    try { currentSource.disconnect(); } catch {}
+    currentSource = null;
+  }
   if (current) {
     current.pause();
     current = null;
