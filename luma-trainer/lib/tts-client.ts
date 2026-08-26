@@ -5,6 +5,55 @@ let serverAvailable: boolean | null = null;
 const cache = new Map<string, string>(); // text|voice -> objectURL
 let current: HTMLAudioElement | null = null;
 
+// Один переиспользуемый аудио-элемент для последовательного воспроизведения
+// («Слушать»). Разблокируется первым жестом (клик «Слушать») и дальше играет
+// клипы подряд БЕЗ новых жестов — new Audio() на каждый клип браузер блокирует.
+let listenAudio: HTMLAudioElement | null = null;
+function getListenAudio(): HTMLAudioElement {
+  if (!listenAudio) {
+    listenAudio = new Audio();
+    listenAudio.preload = "auto";
+  }
+  return listenAudio;
+}
+
+// Крошечный тихий WAV — для «разблокировки» аудио-элемента жестом.
+function silentWavUri(): string {
+  const sr = 8000;
+  const n = 256; // ~0.03с тишины
+  const buf = new ArrayBuffer(44 + n * 2);
+  const dv = new DataView(buf);
+  const w = (o: number, s: string) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); dv.setUint32(4, 36 + n * 2, true); w(8, "WAVE"); w(12, "fmt ");
+  dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, sr, true); dv.setUint32(28, sr * 2, true); dv.setUint16(32, 2, true);
+  dv.setUint16(34, 16, true); w(36, "data"); dv.setUint32(40, n * 2, true);
+  const bytes = new Uint8Array(buf);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return "data:audio/wav;base64," + btoa(bin);
+}
+
+/**
+ * Разблокировать аудио-элемент «Слушать» ПРЯМО в обработчике клика (до любых
+ * await). iOS даёт проигрывать медиа только рядом с жестом; после первой такой
+ * проигровки один и тот же элемент можно запускать дальше без новых жестов.
+ */
+export function primeListenAudio(): void {
+  if (typeof window === "undefined") return;
+  try {
+    const a = getListenAudio();
+    a.muted = true;
+    a.src = silentWavUri();
+    const p = a.play();
+    if (p && typeof p.then === "function") {
+      p.then(() => { a.pause(); a.muted = false; }).catch(() => { a.muted = false; });
+    } else {
+      a.muted = false;
+    }
+  } catch {}
+}
+
 export async function checkServerTts(): Promise<boolean> {
   if (serverAvailable !== null) return serverAvailable;
   try {
@@ -153,11 +202,19 @@ export async function speakAndWait(text: string, voice: string, rate = 1, signal
     if (signal?.aborted) return;
     if (url) {
       await new Promise<void>((resolve) => {
+        const audio = getListenAudio();
         let done = false;
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        const cleanup = () => {
+          if (timer) clearTimeout(timer);
+          audio.removeEventListener("ended", finish);
+          audio.removeEventListener("error", finish);
+          signal?.removeEventListener("abort", onAbort);
+        };
         const finish = () => {
           if (done) return;
           done = true;
-          signal?.removeEventListener("abort", onAbort);
+          cleanup();
           resolve();
         };
         const onAbort = () => {
@@ -166,14 +223,18 @@ export async function speakAndWait(text: string, voice: string, rate = 1, signal
           } catch {}
           finish();
         };
-        let audio: HTMLAudioElement;
         try {
-          audio = new Audio(url);
+          audio.pause();
+          audio.muted = false;
+          audio.src = url;
           audio.playbackRate = Math.max(0.5, Math.min(2, rate));
           current = audio;
-          audio.onended = finish;
-          audio.onerror = finish;
+          audio.addEventListener("ended", finish, { once: true });
+          audio.addEventListener("error", finish, { once: true });
           signal?.addEventListener("abort", onAbort, { once: true });
+          // Защитный таймаут: если событие окончания/ошибки не пришло —
+          // не подвисаем на этой карточке, идём дальше по очереди.
+          timer = setTimeout(finish, 30000);
           audio.play().catch(finish);
         } catch {
           finish();
@@ -189,9 +250,14 @@ export async function speakAndWait(text: string, voice: string, rate = 1, signal
     u.rate = Math.max(0.5, Math.min(2, rate));
     u.lang = /[а-яё]/i.test(clean) ? "ru-RU" : "en-US";
     let done = false;
+    // Оценка длительности речи + запас: некоторые браузеры (iOS Safari)
+    // не всегда шлют onend — без таймаута цикл «Слушать» повиснет навсегда.
+    const estimate = Math.min(30000, 1500 + clean.length * 90);
+    const timer = setTimeout(() => finish(), estimate);
     const finish = () => {
       if (done) return;
       done = true;
+      clearTimeout(timer);
       resolve();
     };
     u.onend = finish;

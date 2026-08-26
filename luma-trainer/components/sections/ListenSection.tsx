@@ -4,7 +4,7 @@ import { A } from "@/lib/api";
 import type { Lesson, PhraseCard, Topic } from "@/lib/types";
 import { useApp } from "../app-context";
 import { EmptyState, Spinner } from "../ui";
-import { speakAndWait, prefetchText, stopAudio } from "@/lib/tts-client";
+import { speakAndWait, prefetchText, stopAudio, primeListenAudio } from "@/lib/tts-client";
 
 // Прерываемая пауза.
 function sleep(ms: number, signal: AbortSignal): Promise<void> {
@@ -221,6 +221,7 @@ export function ListenSection() {
   );
 
   const start = async () => {
+    primeListenAudio(); // разблокировать аудио в рамках жеста, ДО await
     setBuilding(true);
     const q = await buildQueue();
     setBuilding(false);
@@ -231,9 +232,9 @@ export function ListenSection() {
   };
 
   const pausePlayback = () => { abortRef.current?.abort(); stopAudio(); setPlaying(false); };
-  const resume = () => { if (queue) run(queue, pos); };
-  const goNext = () => { if (queue) run(queue, Math.min(pos + 1, queue.length - 1)); };
-  const goPrev = () => { if (queue) run(queue, Math.max(pos - 1, 0)); };
+  const resume = () => { if (queue) { primeListenAudio(); run(queue, pos); } };
+  const goNext = () => { if (queue) { primeListenAudio(); run(queue, Math.min(pos + 1, queue.length - 1)); } };
+  const goPrev = () => { if (queue) { primeListenAudio(); run(queue, Math.max(pos - 1, 0)); } };
   const backToSelection = () => { abortRef.current?.abort(); stopAudio(); setQueue(null); setPlaying(false); };
 
   /* ── Плеер ──────────────────────────────────────────────────────────── */
@@ -318,7 +319,7 @@ export function ListenSection() {
               ⏸ пауза
             </button>
           ) : (
-            <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={done ? () => run(queue, 0) : resume}>
+            <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={done ? () => { primeListenAudio(); run(queue, 0); } : resume}>
               {done ? "↻ заново" : "▶ продолжить"}
             </button>
           )}
