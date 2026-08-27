@@ -32,6 +32,12 @@ export async function PATCH(req: Request) {
       ? body.theme
       : "blue";
   if ("lastSection" in body) data.lastSection = str(body.lastSection, 40);
+  if ("telegramLessonIds" in body) {
+    const ids = Array.isArray(body.telegramLessonIds)
+      ? (body.telegramLessonIds as unknown[]).filter((x) => typeof x === "string").slice(0, 200)
+      : [];
+    data.telegramLessonIds = JSON.stringify(ids);
+  }
 
   const row = await db.userSettings.update({ where: { id: "default" }, data });
   return json(toSettings(row));

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { A } from "@/lib/api";
+import type { Lesson } from "@/lib/types";
 import { speakEnglish } from "@/lib/tts-client";
 import { useApp } from "../app-context";
 import { Confirm, useToast } from "../ui";
@@ -10,6 +11,17 @@ export function SettingsSection() {
   const toast = useToast();
   const [voices, setVoices] = useState<{ id: string; label: string }[]>([]);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+
+  useEffect(() => {
+    A.lessons(false).then(setLessons).catch(() => {});
+  }, []);
+
+  const tgIds = settings.telegramLessonIds || [];
+  const toggleTgLesson = (id: string) => {
+    const next = tgIds.includes(id) ? tgIds.filter((x) => x !== id) : [...tgIds, id];
+    updateSettings({ telegramLessonIds: next });
+  };
 
   useEffect(() => {
     A.ttsInfo()
@@ -106,6 +118,42 @@ export function SettingsSection() {
           <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>
             Серверный TTS (Deepgram) не настроен — используется голос браузера.
           </p>
+        )}
+      </Group>
+
+      <Group title="Импорт из Telegram">
+        <p style={{ color: "var(--ink-2)", fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+          Отметь уроки, в которые можно добавлять фразы из Telegram-бота. В боте будут
+          показаны кнопки только этих уроков.
+        </p>
+        {lessons.length === 0 ? (
+          <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>Сначала создай хотя бы один урок.</p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {lessons.map((l) => {
+              const on = tgIds.includes(l.id);
+              return (
+                <div
+                  key={l.id}
+                  onClick={() => toggleTgLesson(l.id)}
+                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 4px", cursor: "pointer" }}
+                >
+                  <span
+                    style={{
+                      width: 20, height: 20, flex: "none", borderRadius: 6,
+                      border: on ? "none" : "1.5px solid var(--glass-border-strong)",
+                      background: on ? "var(--accent)" : "transparent",
+                      color: "#fff", fontWeight: 900, fontSize: 13,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
+                    {on ? "✓" : ""}
+                  </span>
+                  <span style={{ fontWeight: 600, color: "var(--ink-body)" }}>{l.title}</span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </Group>
 

@@ -125,6 +125,7 @@ export type UserSettings = {
   refreshLearned: boolean;
   theme: HueTheme;
   lastSection: string;
+  telegramLessonIds: string[];
 };
 
 export type TranslationResult = {

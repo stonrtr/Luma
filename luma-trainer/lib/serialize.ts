@@ -158,5 +158,16 @@ export function toSettings(row: any): UserSettings {
     refreshLearned: row.refreshLearned ?? true,
     theme: row.theme ?? "blue",
     lastSection: row.lastSection,
+    telegramLessonIds: parseIdList(row.telegramLessonIds),
   };
+}
+
+function parseIdList(v: unknown): string[] {
+  if (typeof v !== "string") return [];
+  try {
+    const arr = JSON.parse(v);
+    return Array.isArray(arr) ? arr.filter((x) => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
 }

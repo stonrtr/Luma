@@ -171,6 +171,7 @@ model UserSettings {
   refreshLearned     Boolean @default(true) // подмешивать выученные для освежения (п.3)
   theme              String  @default("blue") // blue | green | purple | red
   lastSection        String  @default("today")
+  telegramLessonIds  String  @default("[]") // JSON string[] — уроки-цели для Telegram-бота
   updatedAt          DateTime @updatedAt
 }
 

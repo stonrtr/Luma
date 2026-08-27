@@ -5,15 +5,13 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { db } from "../db";
 import { translatePhrase } from "./translate";
+import { getSettingsRow } from "./settings";
 import { estimateDifficulty } from "../difficulty";
 import { normalize } from "../lang";
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const ALLOWED_CHAT = (process.env.TELEGRAM_ALLOWED_CHAT_ID || "").trim();
 export const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || "";
-
-// Урок, в который падают карточки из Телеграма.
-const LESSON_TITLE = "Из Телеграма";
 
 export function hasTelegram(): boolean {
   return TOKEN.length > 0;
@@ -135,7 +133,7 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
       : `\n\nТвой chat id: <code>${chatId}</code>\nВпиши его в переменную <b>TELEGRAM_ALLOWED_CHAT_ID</b> на сервере, чтобы бот отвечал только тебе.`;
     await sendMessage(
       chatId,
-      `Привет! Пришли мне фразу на русском — я переведу её на английский и предложу добавить в Luma (урок «${LESSON_TITLE}»).${idNote}`
+      `Привет! Пришли фразу на русском — переведу на английский и предложу добавить в один из твоих уроков Luma (уроки настраиваются в Luma → Настройки → «Импорт из Telegram»).${idNote}`
     );
     return;
   }
@@ -144,8 +142,6 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
     await sendMessage(chatId, "Этот бот приватный.");
     return;
   }
-
-  await sendMessage(chatId, "🔁 Перевожу…");
 
   try {
     const result = await translatePhrase({ russian: text, sourceLanguage: "ru" });
@@ -167,27 +163,50 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
       alternatives,
     });
 
-    // Красивый ответ.
-    let body = `🇷🇺 ${escapeHtml(text)}\n🇬🇧 <b>${escapeHtml(english)}</b>`;
+    // Только перевод (без флагов) + короткий пример.
+    let body = `<b>${escapeHtml(english)}</b>`;
     if (result.transcription) body += `\n<code>${escapeHtml(result.transcription)}</code>`;
-    if (alternatives.length) body += `\n\nЕщё варианты: ${alternatives.map(escapeHtml).join(", ")}`;
     if (result.exampleEn) {
       body += `\n\n<i>${escapeHtml(result.exampleEn)}</i>`;
       if (result.exampleRu) body += `\n<i>${escapeHtml(result.exampleRu)}</i>`;
     }
-    body += `\n\nДобавить в Luma?`;
 
-    await sendMessage(chatId, body, {
-      inline_keyboard: [
-        [
-          { text: "✅ Добавить", callback_data: `add:${token}` },
-          { text: "✖️ Нет", callback_data: `skip:${token}` },
-        ],
-      ],
-    });
+    // Кнопки — только выбранные в настройках Luma уроки.
+    const lessons = await targetLessons();
+    if (lessons.length === 0) {
+      body += `\n\n<i>Куда добавить не выбрано. Отметь уроки в Luma → Настройки → «Импорт из Telegram».</i>`;
+      await sendMessage(chatId, body);
+      return;
+    }
+
+    const rows = lessons.map((l) => [
+      { text: `📎 ${l.title}`.slice(0, 60), callback_data: `add:${token}:${l.id}` },
+    ]);
+    rows.push([{ text: "✖️ Не добавлять", callback_data: `skip:${token}` }]);
+
+    await sendMessage(chatId, body, { inline_keyboard: rows });
   } catch {
     await sendMessage(chatId, "⚠️ Перевод временно недоступен (лимит или сеть). Попробуй ещё раз.");
   }
+}
+
+/** Уроки-цели из настроек (в порядке отметки), только существующие/не архивные. */
+async function targetLessons(): Promise<{ id: string; title: string }[]> {
+  let ids: string[] = [];
+  try {
+    const row = await getSettingsRow();
+    const parsed = JSON.parse(row.telegramLessonIds || "[]");
+    if (Array.isArray(parsed)) ids = parsed.filter((x): x is string => typeof x === "string");
+  } catch {
+    ids = [];
+  }
+  if (ids.length === 0) return [];
+  const found = await db.lesson.findMany({
+    where: { id: { in: ids }, archived: false },
+    select: { id: true, title: true },
+  });
+  const byId = new Map(found.map((l) => [l.id, l]));
+  return ids.map((id) => byId.get(id)).filter((l): l is { id: string; title: string } => !!l);
 }
 
 async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Promise<void> {
@@ -203,13 +222,16 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
     return;
   }
 
-  const [action, token] = data.split(":");
+  const parts = data.split(":");
+  const action = parts[0];
+  const token = parts[1];
+  const lessonId = parts.slice(2).join(":"); // на случай двоеточий (у cuid их нет)
   const item = token ? pending.get(token) : undefined;
 
   if (action === "skip") {
     if (token) pending.delete(token);
     await answerCallback(cb.id, "Пропущено");
-    await editMessageText(chatId, messageId, "✖️ Пропущено.");
+    await editMessageText(chatId, messageId, "✖️ Не добавлено.");
     return;
   }
 
@@ -219,12 +241,19 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
       await editMessageText(chatId, messageId, "⌛ Срок истёк — пришли фразу заново.");
       return;
     }
+    const lesson = lessonId
+      ? await db.lesson.findFirst({ where: { id: lessonId, archived: false }, select: { id: true, title: true } })
+      : null;
+    if (!lesson) {
+      await answerCallback(cb.id, "Урок не найден");
+      await editMessageText(chatId, messageId, "⚠️ Урок недоступен. Проверь выбор в настройках Luma.");
+      return;
+    }
     pending.delete(token);
     try {
-      const lessonId = await ensureLesson();
       await db.phraseCard.create({
         data: {
-          lessonId,
+          lessonId: lesson.id,
           english: item.english,
           russian: item.russian,
           alternativeTranslations: JSON.stringify(item.alternatives),
@@ -241,7 +270,7 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
       await editMessageText(
         chatId,
         messageId,
-        `✅ Добавлено в «${LESSON_TITLE}»:\n🇬🇧 <b>${escapeHtml(item.english)}</b> — 🇷🇺 ${escapeHtml(item.russian)}`
+        `✅ <b>${escapeHtml(item.english)}</b> → «${escapeHtml(lesson.title)}»`
       );
     } catch {
       await answerCallback(cb.id, "Ошибка");
@@ -251,17 +280,6 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
   }
 
   await answerCallback(cb.id);
-}
-
-/** Найти или создать урок «Из Телеграма». */
-async function ensureLesson(): Promise<string> {
-  const existing = await db.lesson.findFirst({
-    where: { title: LESSON_TITLE, archived: false },
-    orderBy: { createdAt: "asc" },
-  });
-  if (existing) return existing.id;
-  const created = await db.lesson.create({ data: { title: LESSON_TITLE } });
-  return created.id;
 }
 
 function escapeHtml(s: string): string {
