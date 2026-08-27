@@ -107,8 +107,9 @@ export async function translateRuToEnFast(russian: string): Promise<FastTranslat
         : [];
       return { english, alternatives };
     },
-    // Быстрая модель первой + короткий таймаут, чтобы не висеть на медленной.
-    { models: ["gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-3.5-flash"], timeoutMs: 12000 }
+    // Быстрые модели первыми, медленный алиас flash-latest — в конец;
+    // короткий таймаут, чтобы не висеть на подтормаживающей модели.
+    { models: ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"], timeoutMs: 12000 }
   );
   return result;
 }
