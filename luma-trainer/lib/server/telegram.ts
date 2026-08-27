@@ -48,6 +48,10 @@ function sendMessage(chatId: number | string, text: string, replyMarkup?: unknow
   });
 }
 
+function sendTyping(chatId: number | string): Promise<void> {
+  return tg("sendChatAction", { chat_id: chatId, action: "typing" });
+}
+
 function answerCallback(id: string, text?: string): Promise<void> {
   return tg("answerCallbackQuery", { callback_query_id: id, ...(text ? { text } : {}) });
 }
@@ -142,6 +146,8 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
     await sendMessage(chatId, "Этот бот приватный.");
     return;
   }
+
+  void sendTyping(chatId); // нативный «печатает…», пока идёт перевод
 
   try {
     const result = await translatePhrase({ russian: text, sourceLanguage: "ru" });

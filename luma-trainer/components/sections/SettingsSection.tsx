@@ -12,6 +12,7 @@ export function SettingsSection() {
   const [voices, setVoices] = useState<{ id: string; label: string }[]>([]);
   const [confirmReset, setConfirmReset] = useState(false);
   const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [tgOpen, setTgOpen] = useState(false);
 
   useEffect(() => {
     A.lessons(false).then(setLessons).catch(() => {});
@@ -129,30 +130,46 @@ export function SettingsSection() {
         {lessons.length === 0 ? (
           <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0, fontWeight: 600 }}>Сначала создай хотя бы один урок.</p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {lessons.map((l) => {
-              const on = tgIds.includes(l.id);
-              return (
-                <div
-                  key={l.id}
-                  onClick={() => toggleTgLesson(l.id)}
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 4px", cursor: "pointer" }}
-                >
-                  <span
-                    style={{
-                      width: 20, height: 20, flex: "none", borderRadius: 6,
-                      border: on ? "none" : "1.5px solid var(--glass-border-strong)",
-                      background: on ? "var(--accent)" : "transparent",
-                      color: "#fff", fontWeight: 900, fontSize: 13,
-                      display: "inline-flex", alignItems: "center", justifyContent: "center",
-                    }}
-                  >
-                    {on ? "✓" : ""}
-                  </span>
-                  <span style={{ fontWeight: 600, color: "var(--ink-body)" }}>{l.title}</span>
-                </div>
-              );
-            })}
+          <div>
+            <button
+              onClick={() => setTgOpen((v) => !v)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
+                width: "100%", padding: "10px 14px", cursor: "pointer",
+                borderRadius: 12, border: "1.5px solid var(--glass-border-strong)",
+                background: "transparent", color: "var(--ink-body)", fontWeight: 700, fontSize: 14,
+              }}
+            >
+              <span>{tgIds.length > 0 ? `Выбрано уроков: ${tgIds.length}` : "Выбрать уроки"}</span>
+              <span style={{ transform: tgOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s", opacity: 0.6 }}>▾</span>
+            </button>
+            {tgOpen && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 8, maxHeight: 260, overflowY: "auto" }}>
+                {lessons.map((l) => {
+                  const on = tgIds.includes(l.id);
+                  return (
+                    <div
+                      key={l.id}
+                      onClick={() => toggleTgLesson(l.id)}
+                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 6px", cursor: "pointer", borderRadius: 8 }}
+                    >
+                      <span
+                        style={{
+                          width: 20, height: 20, flex: "none", borderRadius: 6,
+                          border: on ? "none" : "1.5px solid var(--glass-border-strong)",
+                          background: on ? "var(--accent)" : "transparent",
+                          color: "#fff", fontWeight: 900, fontSize: 13,
+                          display: "inline-flex", alignItems: "center", justifyContent: "center",
+                        }}
+                      >
+                        {on ? "✓" : ""}
+                      </span>
+                      <span style={{ fontWeight: 600, color: "var(--ink-body)" }}>{l.title}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </Group>

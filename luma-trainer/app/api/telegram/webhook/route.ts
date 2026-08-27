@@ -17,12 +17,12 @@ export async function POST(req: Request) {
     return json({ ok: true }); // молча подтверждаем — не заставляем Telegram ретраить
   }
 
-  // Обрабатываем не блокируя ответ (Telegram ждёт быстрый 200).
-  try {
-    await handleUpdate(update as never);
-  } catch {
-    /* ошибки уже гасятся внутри */
-  }
+  // Отвечаем Telegram сразу (fire-and-forget): иначе долгий перевод на
+  // холодном старте вызывает таймаут и повторную доставку апдейта (дубли).
+  // На Render процесс постоянный — фоновый промис доживает до конца.
+  void Promise.resolve()
+    .then(() => handleUpdate(update as never))
+    .catch(() => {});
   return json({ ok: true });
 }
 
