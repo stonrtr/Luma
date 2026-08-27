@@ -29,9 +29,9 @@ export function hasAnyLLM(): boolean {
 
 const TIMEOUT_MS = 20000;
 
-async function withTimeout<T>(p: Promise<T>): Promise<T> {
+async function withTimeout<T>(p: Promise<T>, ms = TIMEOUT_MS): Promise<T> {
   const controller = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("LLM timeout")), TIMEOUT_MS)
+    setTimeout(() => reject(new Error("LLM timeout")), ms)
   );
   return Promise.race([p, controller]);
 }
@@ -70,19 +70,24 @@ function isRetryableModelError(msg: string): boolean {
   );
 }
 
-async function callGemini(system: string, user: string): Promise<string> {
+async function callGemini(
+  system: string,
+  user: string,
+  models: string[] = GEMINI_MODELS,
+  timeoutMs = TIMEOUT_MS
+): Promise<string> {
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(GEMINI_KEY);
   const errs: string[] = [];
   // Try models in order, moving on when one is rate-limited/unavailable.
-  for (const modelName of GEMINI_MODELS) {
+  for (const modelName of models) {
     try {
       const model = genAI.getGenerativeModel({
         model: modelName,
         systemInstruction: system,
         generationConfig: { responseMimeType: "application/json", temperature: 0.3 },
       });
-      const res = await withTimeout(model.generateContent(user));
+      const res = await withTimeout(model.generateContent(user), timeoutMs);
       return res.response.text();
     } catch (e) {
       const err = e as Error;
@@ -117,7 +122,8 @@ async function callAnthropic(system: string, user: string): Promise<string> {
 export async function askJson<T>(
   system: string,
   user: string,
-  validate: (obj: unknown) => T | null
+  validate: (obj: unknown) => T | null,
+  opts?: { models?: string[]; timeoutMs?: number }
 ): Promise<{ result: T; provider: "gemini" | "anthropic" }> {
   const errors: string[] = [];
 
@@ -129,7 +135,7 @@ export async function askJson<T>(
 
     if (hasGemini()) {
       try {
-        const text = await callGemini(system, user);
+        const text = await callGemini(system, user, opts?.models, opts?.timeoutMs);
         const parsed = extractJson(text);
         const valid = parsed ? validate(parsed) : null;
         if (valid) return { result: valid, provider: "gemini" };

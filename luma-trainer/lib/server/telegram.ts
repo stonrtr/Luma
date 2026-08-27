@@ -4,7 +4,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { db } from "../db";
-import { translatePhrase } from "./translate";
+import { translateRuToEnFast } from "./translate";
 import { getSettingsRow } from "./settings";
 import { estimateDifficulty } from "../difficulty";
 import { normalize } from "../lang";
@@ -150,22 +150,21 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
   void sendTyping(chatId); // нативный «печатает…», пока идёт перевод
 
   try {
-    const result = await translatePhrase({ russian: text, sourceLanguage: "ru" });
-    const english = normalize(result.english || result.translations[0] || "");
+    const result = await translateRuToEnFast(text);
+    const english = normalize(result.english || "");
     if (!english) {
       await sendMessage(chatId, "Не удалось перевести. Попробуй переформулировать.");
       return;
     }
-    const alternatives = result.translations.filter((t) => t && t !== english).slice(0, 4);
-    const difficulty = result.difficulty || estimateDifficulty(english);
+    const alternatives = result.alternatives.filter((t) => t && t !== english).slice(0, 4);
 
     const token = putPending({
       russian: text,
       english,
-      transcription: result.transcription || "",
-      exampleEn: result.exampleEn || "",
-      exampleRu: result.exampleRu || "",
-      difficulty,
+      transcription: "",
+      exampleEn: "",
+      exampleRu: "",
+      difficulty: estimateDifficulty(english),
       alternatives,
     });
 

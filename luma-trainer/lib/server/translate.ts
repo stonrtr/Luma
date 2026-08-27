@@ -79,3 +79,36 @@ export async function translatePhrase(input: TranslateInput): Promise<Translatio
     translations,
   };
 }
+
+// --- Быстрый перевод RU→EN для Telegram-бота -------------------------------
+// Минимальный промпт (без транскрипции/примеров/difficulty) на быстрой модели
+// с коротким таймаутом: обычный translatePhrase на flash-latest висит ~30с.
+const FAST_SYSTEM = `You translate a Russian word or phrase into natural English for a language learner.
+Return ONLY a strict JSON object: {"english": "<best English translation>", "alternatives": ["<other good option>", ...]}.
+Keep the same grammatical form. "english" is the single best translation. "alternatives": 0–3 more natural options, no duplicates, no empty strings. No extra keys, no commentary.`;
+
+export type FastTranslation = { english: string; alternatives: string[] };
+
+export async function translateRuToEnFast(russian: string): Promise<FastTranslation> {
+  const clean = normalize(russian);
+  const { result } = await askJson<FastTranslation>(
+    FAST_SYSTEM,
+    `Russian: "${clean}". Translate to English.`,
+    (o): FastTranslation | null => {
+      const obj = o as { english?: unknown; alternatives?: unknown };
+      const english = typeof obj.english === "string" ? normalize(obj.english) : "";
+      if (!english) return null;
+      const alternatives = Array.isArray(obj.alternatives)
+        ? obj.alternatives
+            .filter((x): x is string => typeof x === "string")
+            .map((s) => normalize(s))
+            .filter((s) => s && s !== english)
+            .slice(0, 3)
+        : [];
+      return { english, alternatives };
+    },
+    // Быстрая модель первой + короткий таймаут, чтобы не висеть на медленной.
+    { models: ["gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-3.5-flash"], timeoutMs: 12000 }
+  );
+  return result;
+}
