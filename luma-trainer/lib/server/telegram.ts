@@ -163,13 +163,8 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
       alternatives,
     });
 
-    // Только перевод (без флагов) + короткий пример.
+    // Только перевод — без флагов, транскрипции и примера.
     let body = `<b>${escapeHtml(english)}</b>`;
-    if (result.transcription) body += `\n<code>${escapeHtml(result.transcription)}</code>`;
-    if (result.exampleEn) {
-      body += `\n\n<i>${escapeHtml(result.exampleEn)}</i>`;
-      if (result.exampleRu) body += `\n<i>${escapeHtml(result.exampleRu)}</i>`;
-    }
 
     // Кнопки — только выбранные в настройках Luma уроки.
     const lessons = await targetLessons();
