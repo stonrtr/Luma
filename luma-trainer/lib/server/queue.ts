@@ -8,6 +8,16 @@ import type { PhraseCard } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Вероятность вспомнить прямо сейчас (FSRS-ретривабилити): exp(-dt / stability).
+// Нет данных / нет стабильности → 1 (считаем «помнит», из освежения исключаем).
+function cardRetrievability(c: any, now: Date): number {
+  if (!c.lastReviewedAt || !(c.stability > 0)) return 1;
+  const elapsedDays = (now.getTime() - new Date(c.lastReviewedAt).getTime()) / DAY_MS;
+  return Math.exp(-Math.max(0, elapsedDays) / c.stability);
+}
+
 // Priority within the "due" phase (§5.2): most overdue → lowest progress →
 // last answer "again" → longest since review.
 function dueComparator(a: any, b: any): number {
@@ -47,22 +57,23 @@ export async function buildTodayQueue(): Promise<PhraseCard[]> {
     .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
     .slice(0, newLimit);
 
-  // Освежение выученных (п.3): подмешиваем ~REFRESH_COUNT самых «залежавшихся»
-  // выученных слов, ещё не наступивших по расписанию и не повторявшихся сегодня.
-  // Так база не копит тихо забытое, но и не заваливает одними и теми же словами.
+  // Освежение выученных (п.3), но по-FSRS: подмешиваем выученные слова только
+  // когда вероятность их вспомнить реально просела ниже REFRESH_R (≈90%), а не
+  // на следующий день. Слово, выученное вчера (R≈0.98), НЕ берётся; берётся то,
+  // что начало забываться. Самые «забываемые» — первыми.
   const REFRESH_COUNT = 5;
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0);
+  const REFRESH_R = 0.9;
+  const REFRESH_MIN_DAYS = 3; // выученному слову — минимум 3 дня отдыха перед освежением
   const refresh = settings.refreshLearned
     ? ready
-        .filter(
-          (c) =>
-            c.known &&
-            c.dueAt &&
-            c.dueAt.getTime() > now.getTime() && // ещё не «пора» — берём чуть раньше срока
-            (!c.lastReviewedAt || c.lastReviewedAt.getTime() < startOfToday.getTime())
-        )
-        .sort((a, b) => (a.lastReviewedAt?.getTime() ?? 0) - (b.lastReviewedAt?.getTime() ?? 0))
+        .filter((c) => {
+          if (!c.known || !c.dueAt || c.dueAt.getTime() <= now.getTime()) return false; // не «пора» (иначе уже в due)
+          if (!c.lastReviewedAt) return false;
+          const elapsedDays = (now.getTime() - new Date(c.lastReviewedAt).getTime()) / DAY_MS;
+          if (elapsedDays < REFRESH_MIN_DAYS) return false; // не дёргаем сразу после изучения
+          return cardRetrievability(c, now) < REFRESH_R; // помним хуже 90% — пора освежить
+        })
+        .sort((a, b) => cardRetrievability(a, now) - cardRetrievability(b, now))
         .slice(0, REFRESH_COUNT)
     : [];
 
