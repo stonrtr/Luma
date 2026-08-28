@@ -57,6 +57,25 @@ export function ListenSection() {
   const [playing, setPlaying] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
+  // Wake Lock: держим экран включённым, пока идёт воспроизведение — иначе iOS
+  // блокирует экран, усыпляет страницу и Web Audio останавливается.
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+  const acquireWakeLock = useCallback(async () => {
+    try {
+      if ("wakeLock" in navigator && !wakeLockRef.current) {
+        wakeLockRef.current = await navigator.wakeLock.request("screen");
+        wakeLockRef.current.addEventListener("release", () => { wakeLockRef.current = null; });
+      }
+    } catch {
+      /* нет поддержки / отказ — не критично */
+    }
+  }, []);
+  const releaseWakeLock = useCallback(() => {
+    try {
+      void wakeLockRef.current?.release();
+    } catch {}
+    wakeLockRef.current = null;
+  }, []);
   const loopRef = useRef(loop);
   const pauseRef = useRef(pauseSec);
   const repeatsRef = useRef(repeats);
@@ -86,7 +105,21 @@ export function ListenSection() {
   useEffect(() => {
     A.lessons(false).then(setLessons).catch(() => setLessons([]));
     A.topics().then(setTopics).catch(() => {});
-    return () => { abortRef.current?.abort(); stopAudio(); };
+    // При возврате на вкладку заново берём Wake Lock, если ещё играем
+    // (система снимает его, когда страница уходит в фон).
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && abortRef.current && !abortRef.current.signal.aborted) {
+        void acquireWakeLock();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      abortRef.current?.abort();
+      stopAudio();
+      releaseWakeLock();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Сохраняем выбор — чтобы вернуться и сразу нажать «Слушать».
@@ -180,6 +213,7 @@ export function ListenSection() {
       abortRef.current = ac;
       const signal = ac.signal;
       setPlaying(true);
+      void acquireWakeLock();
       for (let i = startPos; i < q.length; i++) {
         if (signal.aborted) return;
         setPos(i);
@@ -228,8 +262,9 @@ export function ListenSection() {
       }
       setPlaying(false);
       setStep("done");
+      releaseWakeLock();
     },
-    [voice, settings.speechRate]
+    [voice, settings.speechRate, acquireWakeLock, releaseWakeLock]
   );
 
   const start = async () => {
@@ -243,11 +278,11 @@ export function ListenSection() {
     run(q, 0);
   };
 
-  const pausePlayback = () => { abortRef.current?.abort(); stopAudio(); setPlaying(false); };
+  const pausePlayback = () => { abortRef.current?.abort(); stopAudio(); setPlaying(false); releaseWakeLock(); };
   const resume = () => { if (queue) { primeListenAudio(); run(queue, pos); } };
   const goNext = () => { if (queue) { primeListenAudio(); run(queue, Math.min(pos + 1, queue.length - 1)); } };
   const goPrev = () => { if (queue) { primeListenAudio(); run(queue, Math.max(pos - 1, 0)); } };
-  const backToSelection = () => { abortRef.current?.abort(); stopAudio(); setQueue(null); setPlaying(false); };
+  const backToSelection = () => { abortRef.current?.abort(); stopAudio(); setQueue(null); setPlaying(false); releaseWakeLock(); };
   const reshuffle = () => {
     if (!queue) return;
     primeListenAudio();
