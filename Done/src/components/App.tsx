@@ -77,44 +77,50 @@ function ReminderScheduler() {
 function TelegramCapture() {
   const { data, addTask } = useStore();
   const addRef = useRef(addTask); addRef.current = addTask;
-  const busy = useRef(false);
   const token = data.settings?.captureBot?.token;
   const enabled = data.settings?.captureBot?.enabled;
   useEffect(() => {
     if (!enabled || !token) return;
     const key = "peak-capture-offset";
-    const tick = async () => {
-      if (busy.current) return;
-      busy.current = true;
-      try {
-        const off = Number(localStorage.getItem(key) || 0);
-        const url = `https://api.telegram.org/bot${token}/getUpdates?timeout=0&allowed_updates=%5B%22message%22%5D${off ? `&offset=${off}` : ""}`;
-        const r = await fetch(url);
-        const j = await r.json();
-        if (!j.ok || !Array.isArray(j.result)) return;
-        let maxId = off - 1;
-        for (const u of j.result) {
-          if (typeof u.update_id === "number") maxId = Math.max(maxId, u.update_id);
-          const msg = u.message;
-          const text: string | undefined = msg?.text?.trim();
-          if (!text || text.startsWith("/")) continue;
-          const today = text.startsWith("!");
-          const title = (today ? text.slice(1) : text).trim();
-          if (!title) continue;
-          addRef.current({ title, date: today ? todayKey() : null });
-          const chatId = msg.chat?.id;
-          if (chatId) {
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(today ? "✓ Задача на сегодня добавлена в Peak" : "✓ Идея добавлена в Peak")}`);
+    let stopped = false;
+    let controller: AbortController | null = null;
+    // Long polling: Telegram держит запрос открытым (timeout=25) и отдаёт ответ
+    // сразу, как только приходит сообщение → задержка ~1 сек, а не интервал опроса.
+    const loop = async () => {
+      while (!stopped) {
+        try {
+          const off = Number(localStorage.getItem(key) || 0);
+          controller = new AbortController();
+          const url = `https://api.telegram.org/bot${token}/getUpdates?timeout=25&allowed_updates=%5B%22message%22%5D${off ? `&offset=${off}` : ""}`;
+          const r = await fetch(url, { signal: controller.signal });
+          const j = await r.json();
+          if (j.ok && Array.isArray(j.result)) {
+            let maxId = off - 1;
+            for (const u of j.result) {
+              if (typeof u.update_id === "number") maxId = Math.max(maxId, u.update_id);
+              const msg = u.message;
+              const text: string | undefined = msg?.text?.trim();
+              if (!text || text.startsWith("/")) continue;
+              const today = text.startsWith("!");
+              const title = (today ? text.slice(1) : text).trim();
+              if (!title) continue;
+              addRef.current({ title, date: today ? todayKey() : null });
+              const chatId = msg.chat?.id;
+              if (chatId) {
+                fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(today ? "✓ Задача на сегодня добавлена в Done" : "✓ Идея добавлена в Done")}`);
+              }
+            }
+            if (j.result.length) localStorage.setItem(key, String(maxId + 1));
           }
+        } catch {
+          if (stopped) break;
+          // сеть/битый токен/таймаут — короткая пауза и повтор
+          await new Promise((res) => setTimeout(res, 3000));
         }
-        if (j.result.length) localStorage.setItem(key, String(maxId + 1));
-      } catch { /* сеть/битый токен — молча повторим позже */ } finally {
-        busy.current = false;
       }
     };
-    tick();
-    const id = setInterval(tick, 15000);
-    return () => clearInterval(id);
+    loop();
+    return () => { stopped = true; controller?.abort(); };
   }, [token, enabled]);
   return null;
 }
