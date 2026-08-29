@@ -234,6 +234,11 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
   const clean = text.trim();
   if (!clean) return;
 
+  // Останавливаем предыдущее (и Web Audio, и <audio>).
+  if (currentSource) {
+    try { currentSource.stop(); } catch {}
+    currentSource = null;
+  }
   if (current) {
     current.pause();
     current = null;
@@ -241,10 +246,21 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
 
   const useServer = await checkServerTts();
   if (useServer) {
+    // 1) Web Audio через разблокированный контекст — играет ВЫБРАННЫМ голосом
+    //    даже при автоозвучке карточки (iOS блокирует new Audio() без жеста,
+    //    из-за чего раньше карточку читал системный голос, а не Azure).
+    const buf = await ensureBuffer(clean, voice);
+    if (buf && getAudioContext()) {
+      await playBufferAndWait(buf, rate);
+      return;
+    }
+    // 2) Фолбэк на переиспользуемый <audio>.
     const url = await ensureAudio(clean, voice);
     if (url) {
       try {
-        const audio = new Audio(url);
+        const audio = getListenAudio();
+        audio.muted = false;
+        audio.src = url;
         audio.playbackRate = Math.max(0.5, Math.min(2, rate));
         current = audio;
         await audio.play();
