@@ -318,7 +318,7 @@ export function ListenSection() {
             </div>
           ) : (
             <>
-              {playing && <ListenLoader />}
+              {playing && <ListenLoader active={step !== "pause"} />}
               <div
                 style={{
                   fontSize: "clamp(24px, 4vw, 40px)",
@@ -548,10 +548,15 @@ export function ListenSection() {
   );
 }
 
-// Анимация «расплав» — крутится, пока идёт озвучка (стили в globals.css).
-function ListenLoader() {
+// Анимация «расплав» — видна только когда реально звучит звук (active),
+// в паузах между фразами плавно гаснет; место остаётся, текст не прыгает.
+function ListenLoader({ active }: { active: boolean }) {
   return (
-    <div className="listen-loader" aria-hidden="true">
+    <div
+      className="listen-loader"
+      aria-hidden="true"
+      style={{ opacity: active ? 1 : 0, transition: "opacity 0.25s ease" }}
+    >
       <svg width="100" height="100" viewBox="0 0 100 100">
         <defs>
           <mask id="listenClipping">
