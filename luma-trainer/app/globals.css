@@ -673,6 +673,7 @@ button {
     border-top: 1px solid rgba(255, 255, 255, 0.14);
   }
   .mobile-nav-item {
+    position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -685,17 +686,52 @@ button {
     color: rgba(255, 255, 255, 0.62);
     cursor: pointer;
     border-radius: 14px;
-    transition: color 0.15s ease, background 0.15s ease;
+    transition: color 0.18s ease;
   }
+  /* Активный пункт: акцентная иконка + «прожектор» сверху вниз на неё. */
   .mobile-nav-item.active {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.12);
+    color: var(--accent);
+  }
+  /* Цветная планка-индикатор на верхней кромке панели. */
+  .mobile-nav-item.active::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 4px;
+    border-radius: 0 0 3px 3px;
+    background: var(--accent);
+    box-shadow: 0 0 12px 1px var(--accent), 0 0 4px var(--accent);
+  }
+  /* Луч света от планки вниз к иконке (трапеция, гаснет книзу). */
+  .mobile-nav-item.active::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 58px;
+    height: 44px;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--accent) 42%, transparent),
+      transparent 82%
+    );
+    clip-path: polygon(36% 0, 64% 0, 100% 100%, 0 100%);
+    pointer-events: none;
   }
   .mobile-nav-icon {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
+  }
+  .mobile-nav-item.active .mobile-nav-icon {
+    filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 70%, transparent));
   }
   .mobile-nav-label {
     font-size: 10px;
