@@ -374,8 +374,8 @@ export function ListenSection() {
             ⏮
           </button>
           {playing ? (
-            <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={pausePlayback}>
-              ⏸ пауза
+            <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={pausePlayback} aria-label="Пауза">
+              ⏸
             </button>
           ) : (
             <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={done ? () => { primeListenAudio(); run(queue, 0); } : resume}>
