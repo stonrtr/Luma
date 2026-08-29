@@ -100,8 +100,8 @@ export function StudySession({
   const card = cards?.[index] ?? null;
   const effScope = scopeOverride ?? scope.scope;
 
-  // Закрываем редактирование при смене карточки / перевороте.
-  useEffect(() => { setEditing(false); }, [index, flipped]);
+  // Закрываем редактирование при смене карточки.
+  useEffect(() => { setEditing(false); }, [index]);
 
   // Встроенный режим перечитывает очередь после закрытия оверлейной сессии (refreshKey).
   const fetchKey = embedded ? refreshKey : 0;
@@ -153,6 +153,7 @@ export function StudySession({
     if (!flipped) return;
     playSfx("flip");
     setFlipped(false);
+    setEditing(false);
   }, [flipped]);
 
   // Английский проговаривается, КОГДА видна английская сторона карточки:
@@ -374,6 +375,7 @@ export function StudySession({
       key={`${index}-${flipped ? "b" : "f"}`}
       className="stage study-card"
       style={{
+        position: "relative",
         flex: 1,
         display: "grid",
         // minmax(0,1fr) держит верх и низ строго равными → слово всегда точно по центру,
@@ -395,6 +397,15 @@ export function StudySession({
         else open();
       }}
     >
+      {/* Кнопка «Ред.» — правый верхний угол карточки (обе стороны). */}
+      <button
+        className="gbtn"
+        style={{ position: "absolute", top: 12, right: 12, minHeight: 30, padding: "0 12px", fontSize: 12, zIndex: 2 }}
+        onClick={() => { setEditVal(card.russian); if (!flipped) setFlipped(true); setEditing(true); }}
+      >
+        ✎ Ред.
+      </button>
+
       {/* Верхний ряд */}
       <div style={{ alignSelf: "end" }}>{topRow}</div>
 
@@ -581,13 +592,6 @@ export function StudySession({
                     </span>
                   )
                 )}
-                <button
-                  className="gbtn"
-                  style={{ minHeight: 32, padding: "0 14px", fontSize: 13 }}
-                  onClick={() => { setEditVal(card.russian); setEditing(true); }}
-                >
-                  ✎ Ред.
-                </button>
               </div>
             )}
             {usedHint ? (
