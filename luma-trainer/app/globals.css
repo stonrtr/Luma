@@ -777,6 +777,12 @@ button {
   mask: url(#listenClipping);
   -webkit-mask: url(#listenClipping);
 }
+/* Пауза речи: замораживаем анимацию (не исчезаем). play-state не наследуется —
+   применяем ко всем анимированным элементам. */
+.listen-loader.paused,
+.listen-loader.paused * {
+  animation-play-state: paused !important;
+}
 .listen-loader svg {
   position: absolute;
 }
