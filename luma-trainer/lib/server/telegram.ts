@@ -97,6 +97,9 @@ type Pending = {
 const pending = new Map<string, Pending>();
 const PENDING_TTL_MS = 30 * 60 * 1000;
 
+// Чат ждёт ручной ввод перевода: chatId → token ожидающей фразы.
+const awaitingManual = new Map<number, string>();
+
 function putPending(p: Omit<Pending, "expires">): string {
   const token = randomUUID().slice(0, 8);
   pending.set(token, { ...p, expires: Date.now() + PENDING_TTL_MS });
@@ -144,6 +147,26 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
     return;
   }
 
+  // Ждём ручной ввод перевода для ранее присланной фразы?
+  const awaitToken = awaitingManual.get(chatId);
+  if (awaitToken) {
+    awaitingManual.delete(chatId);
+    const item = pending.get(awaitToken);
+    if (item && item.expires >= Date.now()) {
+      const chosen = text;
+      item.chosen = chosen;
+      item.candidates = Array.from(new Set([chosen, ...item.candidates])).slice(0, 6);
+      const kb = await lessonKeyboard(awaitToken);
+      if (!kb) {
+        await sendMessage(chatId, `<b>${escapeHtml(chosen)}</b>\n\n<i>Куда добавить не выбрано. Отметь уроки в Luma → Настройки → «Импорт из Telegram».</i>`);
+      } else {
+        await sendMessage(chatId, `<b>${escapeHtml(chosen)}</b>\nДобавить в урок:`, kb);
+      }
+      return;
+    }
+    // Срок истёк — просто переведём это сообщение как новую фразу (ниже).
+  }
+
   void sendTyping(chatId); // нативный «печатает…», пока идёт перевод
 
   try {
@@ -160,10 +183,11 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
 
     const token = putPending({ russian: text, candidates });
 
-    // Шаг 1: выбрать верный перевод.
+    // Шаг 1: выбрать верный перевод (или ввести свой).
     const rows = candidates.map((t, i) => [
       { text: t.slice(0, 60), callback_data: `pick:${token}:${i}` },
     ]);
+    rows.push([{ text: "✍️ Ввести свой", callback_data: `own:${token}` }]);
     rows.push([{ text: "✖️ Отмена", callback_data: `skip:${token}` }]);
 
     await sendMessage(chatId, `<b>${escapeHtml(text)}</b>\nВыбери верный перевод:`, {
@@ -224,9 +248,22 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
   const item = token ? pending.get(token) : undefined;
 
   if (action === "skip") {
-    if (token) pending.delete(token);
+    if (token) { pending.delete(token); awaitingManual.delete(chatId); }
     await answerCallback(cb.id, "Отменено");
     await editMessageText(chatId, messageId, "✖️ Отменено.");
+    return;
+  }
+
+  // Ручной ввод: ждём следующее сообщение как перевод.
+  if (action === "own") {
+    if (!item || item.expires < Date.now()) {
+      await answerCallback(cb.id, "Устарело");
+      await editMessageText(chatId, messageId, "⌛ Срок истёк — пришли фразу заново.");
+      return;
+    }
+    awaitingManual.set(chatId, token);
+    await answerCallback(cb.id, "Жду перевод");
+    await editMessageText(chatId, messageId, `<b>${escapeHtml(item.russian)}</b>\n✍️ Напиши свой перевод ответным сообщением.`);
     return;
   }
 
