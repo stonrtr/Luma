@@ -176,12 +176,6 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
                 onChange={(e) => saveCap({ syncKey: e.target.value })} />
               <input className="finput" placeholder="База API (пусто = тот же домен, что приложение)" value={cap.apiBase ?? ""}
                 onChange={(e) => saveCap({ apiBase: e.target.value })} />
-              <div className="set-sub" style={{ paddingLeft: 0 }}>
-                Серверная настройка (один раз, см. TELEGRAM-SETUP.md): бесплатный Upstash Redis + переменные
-                окружения в Vercel (<b>UPSTASH_REDIS_REST_URL</b>, <b>UPSTASH_REDIS_REST_TOKEN</b>,
-                <b> TG_BOT_TOKEN</b>, <b>SYNC_SECRET</b>) + регистрация вебхука Telegram. Сюда впишите тот же
-                <b> SYNC_SECRET</b>.
-              </div>
             </div>
           )}
         </div>
@@ -202,14 +196,11 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
                 : <button className="btn-secondary" onClick={connectG}>Подключить Google</button>}
             </div>
           </div>
-          <div className="tg-fields">
-            {gStatus && <div className={`set-status ${gStatus.startsWith("Подключено") ? "ok" : gStatus.startsWith("Не удалось") || gStatus.startsWith("Пока") ? "err" : ""}`}>{gStatus}</div>}
-            <div className="set-sub" style={{ paddingLeft: 0 }}>
-              Серверная настройка (один раз, см. TELEGRAM-SETUP.md → Google): создайте OAuth-клиент типа
-              «Web application» в Google Cloud, добавьте redirect URI <b>https://&lt;домен&gt;/api/gcal/callback</b>,
-              и переменные <b>GOOGLE_CLIENT_ID</b>, <b>GOOGLE_CLIENT_SECRET</b> в Vercel.
+          {gStatus && (
+            <div className="tg-fields">
+              <div className={`set-status ${gStatus.startsWith("Подключено") ? "ok" : gStatus.startsWith("Не удалось") || gStatus.startsWith("Пока") ? "err" : ""}`}>{gStatus}</div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Импорт .ics (одноразовый снимок) */}
