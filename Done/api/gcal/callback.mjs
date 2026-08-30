@@ -31,8 +31,9 @@ export default async function handler(req, res) {
     });
     const tok = await tr.json();
     if (!tok.access_token) {
-      const detail = tok.error_description || tok.error || "неизвестно";
-      res.status(200).send(page(`Не удалось получить токен: ${detail}`));
+      const detail = [tok.error, tok.error_description].filter(Boolean).join(" — ") || "неизвестно";
+      const dbg = `redirect_uri=${redirectUri(req)} · client_id=…${String(CLIENT_ID || "").slice(-16)}`;
+      res.status(200).send(page(`Не удалось получить токен: ${detail}`) + `<div style="color:#888;font-size:12px;text-align:center;font-family:monospace;padding:0 16px;word-break:break-all">${dbg}</div>`);
       return;
     }
     const st = {
