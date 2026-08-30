@@ -44,7 +44,14 @@ async function ensureBuffer(text: string, voice: string): Promise<AudioBuffer | 
 }
 
 /** Проиграть декодированный буфер через Web Audio и дождаться конца/отмены. */
-function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortSignal): Promise<void> {
+async function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortSignal): Promise<void> {
+  const ctx0 = getAudioContext();
+  if (!ctx0) return;
+  // Контекст мог «уснуть» после круга/простоя — будим и ЖДЁМ, иначе буфер
+  // «проигрывается» на спящем контексте: шаги идут, звука нет.
+  if (ctx0.state !== "running") {
+    try { await ctx0.resume(); } catch {}
+  }
   return new Promise<void>((resolve) => {
     const ctx = getAudioContext();
     if (!ctx) return resolve();
@@ -118,6 +125,18 @@ export function primeListenAudio(): void {
   // Главное: возобновить общий Web Audio контекст прямо в жесте — дальше
   // «Слушать» играет буферы через него без ограничений автозапуска iOS.
   resumeAudioContext();
+  try {
+    // Канонический iOS-анлок: проиграть пустой буфер через сам контекст в жесте.
+    // Это надёжно «будит» контекст перед НОВЫМ кругом (после done он засыпает).
+    const ctx = getAudioContext();
+    if (ctx) {
+      if (ctx.state !== "running") void ctx.resume().catch(() => {});
+      const b = ctx.createBufferSource();
+      b.buffer = ctx.createBuffer(1, 1, 22050);
+      b.connect(ctx.destination);
+      b.start(0);
+    }
+  } catch {}
   try {
     // Фолбэк-путь на <audio>: тоже разблокируем звучащим тихим клипом.
     const a = getListenAudio();

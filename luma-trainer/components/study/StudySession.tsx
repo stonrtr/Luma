@@ -400,11 +400,77 @@ export function StudySession({
       {/* Кнопка «Ред.» — правый верхний угол карточки (обе стороны). */}
       <button
         className="gbtn"
-        style={{ position: "absolute", top: 12, right: 12, minHeight: 30, padding: "0 12px", fontSize: 12, zIndex: 2 }}
-        onClick={() => { setEditVal(card.russian); if (!flipped) setFlipped(true); setEditing(true); }}
+        style={{ position: "absolute", top: 12, right: 12, minHeight: 30, padding: "0 12px", fontSize: 12, zIndex: 3 }}
+        onClick={() => { setEditVal(card.russian); setEditing(true); }}
       >
         ✎ Ред.
       </button>
+
+      {/* Оверлей редактирования перевода — поверх карточки, без переворота. */}
+      {editing && (
+        <div
+          onClick={(e) => { e.stopPropagation(); if (e.target === e.currentTarget) setEditing(false); }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            padding: "24px 18px",
+            background: "rgba(6, 24, 90, 0.86)",
+            backdropFilter: "blur(8px)",
+            borderRadius: 28,
+          }}
+        >
+          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: 600 }}>
+            Выберите перевод или введите свой
+          </span>
+          {Array.from(new Set([card.russian, ...card.alternativeTranslations])).length > 0 && (
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", maxWidth: 520 }}>
+              {Array.from(new Set([card.russian, ...card.alternativeTranslations])).map((t) => {
+                const primary = t === card.russian;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => saveEdit(t)}
+                    className="gpill"
+                    style={{
+                      cursor: "pointer",
+                      padding: "8px 16px",
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: primary ? "var(--deep)" : "#fff",
+                      background: primary ? "#fff" : "var(--glass)",
+                      border: primary ? "none" : "1px solid var(--glass-border-strong)",
+                    }}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+            <input
+              value={editVal}
+              onChange={(e) => setEditVal(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") saveEdit(editVal); }}
+              placeholder="свой перевод"
+              autoFocus
+              style={{ minWidth: 180, padding: "10px 14px", borderRadius: 999, border: "1px solid var(--glass-border-strong)", background: "rgba(255,255,255,0.12)", color: "#fff", fontSize: 15, fontWeight: 600, outline: "none" }}
+            />
+            <button className="wbtn" style={{ minHeight: 42, padding: "0 18px", fontSize: 14 }} onClick={() => saveEdit(editVal)} disabled={!editVal.trim()}>
+              Сохранить
+            </button>
+            <button className="gbtn" style={{ minHeight: 42, padding: "0 16px", fontSize: 14 }} onClick={() => setEditing(false)}>
+              Отмена
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Верхний ряд */}
       <div style={{ alignSelf: "end" }}>{topRow}</div>
@@ -505,94 +571,42 @@ export function StudySession({
           </>
         ) : (
           <>
-            {editing ? (
-              // Ручная правка перевода: выбрать из предложенных или ввести свой.
-              <div className="study-chooser" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, maxWidth: 560 }}>
+            {card.alternativeTranslations.length > 0 && card.reviewCount < 2 ? (
+              // Первые 2 показа: выбор основного перевода — тап по варианту.
+              <div className="study-chooser" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: 560 }}>
                 <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 600 }}>
-                  Выберите перевод или введите свой
+                  Выберите основной перевод
                 </span>
-                {Array.from(new Set([card.russian, ...card.alternativeTranslations])).length > 0 && (
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-                    {Array.from(new Set([card.russian, ...card.alternativeTranslations])).map((t) => {
-                      const primary = t === card.russian;
-                      return (
-                        <button
-                          key={t}
-                          onClick={() => saveEdit(t)}
-                          className="gpill"
-                          style={{
-                            cursor: "pointer",
-                            padding: "8px 16px",
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: primary ? "var(--deep)" : "#fff",
-                            background: primary ? "#fff" : "var(--glass)",
-                            border: primary ? "none" : "1px solid var(--glass-border-strong)",
-                          }}
-                        >
-                          {t}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
-                  <input
-                    value={editVal}
-                    onChange={(e) => setEditVal(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") saveEdit(editVal); }}
-                    placeholder="свой перевод"
-                    autoFocus
-                    style={{ minWidth: 180, padding: "9px 14px", borderRadius: 999, border: "1px solid var(--glass-border-strong)", background: "var(--glass)", color: "#fff", fontSize: 14, fontWeight: 600, outline: "none" }}
-                  />
-                  <button className="wbtn" style={{ minHeight: 40, padding: "0 18px", fontSize: 14 }} onClick={() => saveEdit(editVal)} disabled={!editVal.trim()}>
-                    Сохранить
-                  </button>
-                  <button className="gbtn" style={{ minHeight: 40, padding: "0 16px", fontSize: 14 }} onClick={() => setEditing(false)}>
-                    Отмена
-                  </button>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                  {Array.from(new Set([card.russian, ...card.alternativeTranslations])).map((t) => {
+                    const primary = t === card.russian;
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => chooseTranslation(t)}
+                        className="gpill"
+                        style={{
+                          cursor: "pointer",
+                          padding: "8px 16px",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: primary ? "var(--deep)" : "#fff",
+                          background: primary ? "#fff" : "var(--glass)",
+                          border: primary ? "none" : "1px solid var(--glass-border-strong)",
+                        }}
+                      >
+                        {t}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                {card.alternativeTranslations.length > 0 && card.reviewCount < 2 ? (
-                  // Первые 2 показа: выбор основного перевода — тап по варианту.
-                  <div className="study-chooser" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: 560 }}>
-                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 600 }}>
-                      Выберите основной перевод
-                    </span>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-                      {Array.from(new Set([card.russian, ...card.alternativeTranslations])).map((t) => {
-                        const primary = t === card.russian;
-                        return (
-                          <button
-                            key={t}
-                            onClick={() => chooseTranslation(t)}
-                            className="gpill"
-                            style={{
-                              cursor: "pointer",
-                              padding: "8px 16px",
-                              fontSize: 14,
-                              fontWeight: 700,
-                              color: primary ? "var(--deep)" : "#fff",
-                              background: primary ? "#fff" : "var(--glass)",
-                              border: primary ? "none" : "1px solid var(--glass-border-strong)",
-                            }}
-                          >
-                            {t}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : (
-                  card.alternativeTranslations.length > 0 && (
-                    <span className="gpill" style={{ color: "rgba(255,255,255,0.85)", padding: "5px 14px" }}>
-                      {card.alternativeTranslations.join(" · ")}
-                    </span>
-                  )
-                )}
-              </div>
+              card.alternativeTranslations.length > 0 && (
+                <span className="gpill" style={{ color: "rgba(255,255,255,0.85)", padding: "5px 14px" }}>
+                  {card.alternativeTranslations.join(" · ")}
+                </span>
+              )
             )}
             {usedHint ? (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>

@@ -25,6 +25,39 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// Иконки в едином стиле (outline, как в StudySession): fill none, stroke currentColor.
+function Svg({ children, size = 18 }: { children: React.ReactNode; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {children}
+    </svg>
+  );
+}
+const IconShuffle = () => (
+  <Svg><path d="M16 3h5v5" /><path d="M4 20 21 3" /><path d="M21 16v5h-5" /><path d="m15 15 6 6" /><path d="M4 4l5 5" /></Svg>
+);
+const IconPrev = () => (
+  <Svg size={20}><path d="M19 20 9 12l10-8v16z" /><path d="M5 19V5" /></Svg>
+);
+const IconNext = () => (
+  <Svg size={20}><path d="M5 4l10 8-10 8V4z" /><path d="M19 5v14" /></Svg>
+);
+const IconPause = () => (
+  <Svg size={20}><path d="M9 5v14" /><path d="M15 5v14" /></Svg>
+);
+const IconPlay = () => (
+  <Svg size={20}><path d="M7 5l12 7-12 7V5z" /></Svg>
+);
+const IconRotate = () => (
+  <Svg size={20}><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v4h4" /></Svg>
+);
+const IconRepeat = () => (
+  <Svg><path d="M17 2l4 4-4 4" /><path d="M3 11v-1a4 4 0 0 1 4-4h14" /><path d="M7 22l-4-4 4-4" /><path d="M21 13v1a4 4 0 0 1-4 4H3" /></Svg>
+);
+const IconPlus = () => (
+  <Svg><path d="M12 5v14" /><path d="M5 12h14" /></Svg>
+);
+
 const PAUSE_PRESETS = [1, 1.5, 2, 2.5, 3];
 const REPEAT_PRESETS = [1, 2, 3];
 const LS_KEY = "luma:listen";
@@ -301,7 +334,7 @@ export function ListenSection() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <button className="gbtn gbtn-sm" onClick={backToSelection}>← к выбору</button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button className="gbtn gbtn-sm" onClick={reshuffle} title="Перемешать заново">🔀 перемешать</button>
+            <button className="gbtn gbtn-sm" onClick={reshuffle} title="Перемешать заново" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconShuffle /> перемешать</button>
             <span className="gpill" style={{ minHeight: 34, fontSize: 13 }}>
               {Math.min(pos + 1, queue.length)} / {queue.length}
             </span>
@@ -354,36 +387,25 @@ export function ListenSection() {
                   </div>
                 </div>
               )}
-              <span className="gpill" style={{ marginTop: 6, fontSize: 12 }}>
-                {step === "ru"
-                  ? "🔊 русский"
-                  : step === "en"
-                    ? "🔊 english"
-                    : step === "ru-ex"
-                      ? "🔊 пример (рус)"
-                      : step === "en-ex"
-                        ? "🔊 пример (eng)"
-                        : "⏸ пауза"}
-              </span>
             </>
           )}
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
           <button className="icon-btn" style={{ width: 52, height: 52 }} aria-label="Назад" onClick={goPrev} disabled={pos === 0}>
-            ⏮
+            <IconPrev />
           </button>
           {playing ? (
-            <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={pausePlayback} aria-label="Пауза">
-              ⏸
+            <button className="wbtn wbtn-lg" style={{ minWidth: 120, display: "inline-flex", alignItems: "center", justifyContent: "center" }} onClick={pausePlayback} aria-label="Пауза">
+              <IconPause />
             </button>
           ) : (
-            <button className="wbtn wbtn-lg" style={{ minWidth: 120 }} onClick={done ? () => { primeListenAudio(); run(queue, 0); } : resume}>
-              {done ? "↻ заново" : "▶ продолжить"}
+            <button className="wbtn wbtn-lg" style={{ minWidth: 120, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }} onClick={done ? () => { primeListenAudio(); run(queue, 0); } : resume}>
+              {done ? <><IconRotate /> заново</> : <><IconPlay /> продолжить</>}
             </button>
           )}
           <button className="icon-btn" style={{ width: 52, height: 52 }} aria-label="Вперёд" onClick={goNext} disabled={pos >= queue.length - 1}>
-            ⏭
+            <IconNext />
           </button>
         </div>
       </div>
@@ -441,17 +463,17 @@ export function ListenSection() {
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <button
             className={withExample ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-            style={{ minHeight: 34, fontSize: 13 }}
+            style={{ minHeight: 34, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
             onClick={() => setWithExample((v) => !v)}
           >
-            + пример {withExample ? "вкл" : "выкл"}
+            <IconPlus /> пример {withExample ? "вкл" : "выкл"}
           </button>
           <button
             className={loop ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-            style={{ minHeight: 34, fontSize: 13 }}
+            style={{ minHeight: 34, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
             onClick={() => setLoop((v) => !v)}
           >
-            ↻ повтор {loop ? "вкл" : "выкл"}
+            <IconRepeat /> повтор {loop ? "вкл" : "выкл"}
           </button>
         </div>
       </div>
@@ -539,8 +561,8 @@ export function ListenSection() {
       {/* Кнопка запуска */}
       {lessons && lessons.length > 0 && (
         <div style={{ position: "sticky", bottom: 0, display: "flex", justifyContent: "center", paddingTop: 8 }}>
-          <button className="wbtn wbtn-lg" onClick={start} disabled={selectedCount === 0 || building}>
-            {building ? <Spinner /> : `▶ Слушать (${selectedCount})`}
+          <button className="wbtn wbtn-lg" onClick={start} disabled={selectedCount === 0 || building} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            {building ? <Spinner /> : <><IconPlay /> Слушать ({selectedCount})</>}
           </button>
         </div>
       )}
