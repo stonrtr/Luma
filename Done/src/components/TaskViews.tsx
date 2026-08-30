@@ -1037,11 +1037,10 @@ function HabitTaskRow({ habit }: { habit: Habit }) {
 }
 
 export function TodayView() {
-  const { data, updateTask } = useStore();
+  const { data, updateTask, set } = useStore();
   const t = todayKey();
   const all = useVisibleTasks();
   const [editing, setEditing] = useState<Task | null>(null);
-  const [banner, setBanner] = useState(true);
   const [overdueOpen, setOverdueOpen] = useState(true);
   const [todayOpen, setTodayOpen] = useState(true);
   const [habitsOpen, setHabitsOpen] = useState(true);
@@ -1157,25 +1156,15 @@ export function TodayView() {
       {panelOpen && <div className="today-right">
         <div className="tr-head">
           <div className="tr-title">Сегодня</div>
-          <Dropdown align="right" trigger={<span className="icon-btn"><Settings2 size={17} /></span>}>
-            {(close) => (
-              <MenuItem onClick={() => { setBanner(true); close(); }}>Показать баннер календаря</MenuItem>
-            )}
-          </Dropdown>
         </div>
-        {banner && (
-          <div className="connect-banner">
-            <div className="cb-text">
-              <div className="cb-title">Подключите календарь</div>
-              <div className="cb-sub">Синхронизация в обе стороны</div>
-            </div>
-            <button className="btn-primary" onClick={() => window.dispatchEvent(new Event("done:open-settings"))}>Подключить</button>
-            <button className="icon-btn" onClick={() => setBanner(false)}>✕</button>
-          </div>
-        )}
         <DayTimeline allday={allday} timed={timed} onOpen={setEditing} />
       </div>}
-      {editing && <TaskModal task={editing} onClose={() => setEditing(null)} />}
+      {editing && <TaskModal task={editing} onClose={() => {
+        // Черновик из клика по слоту без названия — не сохраняем.
+        const cur = data.tasks.find((x) => x.id === editing.id);
+        if (cur && !cur.title.trim()) set((d) => ({ ...d, tasks: d.tasks.filter((x) => x.id !== cur.id) }));
+        setEditing(null);
+      }} />}
     </div>
   );
 }
@@ -1269,7 +1258,7 @@ function DayTimeline({ allday, timed, onOpen }: { allday: Task[]; timed: Task[];
             const [start, total] = timeFromDropY(e, e.currentTarget);
             const endTotal = Math.min(24 * 60, total + 60);
             const created = addTask({
-              title: "Новая задача", date: t, timeStart: start,
+              title: "", date: t, timeStart: start,
               timeEnd: `${String(Math.floor(endTotal / 60)).padStart(2, "0")}:${String(endTotal % 60).padStart(2, "0")}`,
             });
             onOpen(created);

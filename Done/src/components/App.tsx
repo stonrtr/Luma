@@ -136,7 +136,7 @@ function GoogleSync() {
       try {
         for (const t of dataRef.current.tasks) {
           if (stop) break;
-          const active = !t.deletedAt && !t.completedAt && !!t.date;
+          const active = !t.deletedAt && !t.completedAt && !!t.date && !!t.title.trim();
           const h = taskHash({ title: t.title, date: t.date ?? "", timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes });
           if (active) {
             if (!t.googleEventId) {
