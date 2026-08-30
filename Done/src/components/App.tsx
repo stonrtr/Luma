@@ -72,24 +72,19 @@ function ReminderScheduler() {
   return null;
 }
 
-/** Захват идей из Telegram. Два режима:
- *  - "server": идеи принимает serverless-вебхук (мгновенный ответ даже при закрытом
- *    приложении), а приложение забирает накопленное из Upstash через /api/ideas.
- *  - "client": приложение само опрашивает getUpdates (работает только пока вкладка открыта).
+/** Захват идей из Telegram через serverless-вебхук: бот отвечает мгновенно даже при
+ *  закрытом приложении, а приложение забирает накопленные идеи из Upstash через /api/ideas.
  *  «!текст» — задача на сегодня. */
 function TelegramCapture() {
   const { data, addTask } = useStore();
   const addRef = useRef(addTask); addRef.current = addTask;
   const cb = data.settings?.captureBot;
   const enabled = cb?.enabled;
-  const mode = cb?.mode ?? "client";
-  const token = cb?.token;
   const syncKey = cb?.syncKey;
   const apiBase = (cb?.apiBase ?? "").replace(/\/$/, "");
 
-  // Серверный режим: тянем накопленные идеи из своего эндпоинта и добавляем локально.
   useEffect(() => {
-    if (!enabled || mode !== "server" || !syncKey) return;
+    if (!enabled || !syncKey) return;
     let stopped = false;
     const pull = async () => {
       try {
@@ -106,49 +101,7 @@ function TelegramCapture() {
     pull();
     const id = setInterval(() => { if (!stopped) pull(); }, 10000);
     return () => { stopped = true; clearInterval(id); };
-  }, [enabled, mode, syncKey, apiBase]);
-
-  // Клиентский режим: long polling getUpdates (задержка ~1 сек, пока вкладка открыта).
-  useEffect(() => {
-    if (!enabled || mode !== "client" || !token) return;
-    const key = "peak-capture-offset";
-    let stopped = false;
-    let controller: AbortController | null = null;
-    const loop = async () => {
-      while (!stopped) {
-        try {
-          const off = Number(localStorage.getItem(key) || 0);
-          controller = new AbortController();
-          const url = `https://api.telegram.org/bot${token}/getUpdates?timeout=25&allowed_updates=%5B%22message%22%5D${off ? `&offset=${off}` : ""}`;
-          const r = await fetch(url, { signal: controller.signal });
-          const j = await r.json();
-          if (j.ok && Array.isArray(j.result)) {
-            let maxId = off - 1;
-            for (const u of j.result) {
-              if (typeof u.update_id === "number") maxId = Math.max(maxId, u.update_id);
-              const msg = u.message;
-              const text: string | undefined = msg?.text?.trim();
-              if (!text || text.startsWith("/")) continue;
-              const today = text.startsWith("!");
-              const title = (today ? text.slice(1) : text).trim();
-              if (!title) continue;
-              addRef.current({ title, date: today ? todayKey() : null });
-              const chatId = msg.chat?.id;
-              if (chatId) {
-                fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(today ? "✓ Задача на сегодня добавлена в Done" : "✓ Идея добавлена в Done")}`);
-              }
-            }
-            if (j.result.length) localStorage.setItem(key, String(maxId + 1));
-          }
-        } catch {
-          if (stopped) break;
-          await new Promise((res) => setTimeout(res, 3000));
-        }
-      }
-    };
-    loop();
-    return () => { stopped = true; controller?.abort(); };
-  }, [enabled, mode, token]);
+  }, [enabled, syncKey, apiBase]);
   return null;
 }
 

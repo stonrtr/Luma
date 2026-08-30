@@ -151,42 +151,22 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
           <div className="set-row">
             <span className="fic"><Send size={18} /></span>
             <div className="set-label">
-              <div className="set-title">Отдельный бот для быстрого ввода</div>
-              <div className="set-sub">Пишете боту — текст попадает во «Входящие». Префикс «!» делает задачу на сегодня.</div>
+              <div className="set-title">Захват идей через бота</div>
+              <div className="set-sub">Пишете боту — текст попадает во «Входящие», бот отвечает мгновенно даже при закрытом приложении. Префикс «!» делает задачу на сегодня.</div>
             </div>
-            <Toggle on={cap.enabled} onChange={(v) => saveCap({ enabled: v })} />
+            <Toggle on={cap.enabled} onChange={(v) => saveCap({ enabled: v, mode: "server" })} />
           </div>
-          <div className="set-row">
-            <span className="fic"><Send size={18} /></span>
-            <div className="set-label">
-              <div className="set-title">Мгновенный захват через сервер</div>
-              <div className="set-sub">Бот отвечает сразу даже при закрытом приложении (serverless-вебхук + Upstash). Выкл — старый режим, ловит идеи только пока открыта вкладка.</div>
-            </div>
-            <Toggle on={(cap.mode ?? "client") === "server"} onChange={(v) => saveCap({ mode: v ? "server" : "client" })} />
-          </div>
-          {(cap.mode ?? "client") === "server" ? (
+          {cap.enabled && (
             <div className="tg-fields">
               <input className="finput" placeholder="Ключ синхронизации (= SYNC_SECRET на сервере)" value={cap.syncKey ?? ""}
                 onChange={(e) => saveCap({ syncKey: e.target.value })} />
               <input className="finput" placeholder="База API (пусто = тот же домен, что приложение)" value={cap.apiBase ?? ""}
                 onChange={(e) => saveCap({ apiBase: e.target.value })} />
               <div className="set-sub" style={{ paddingLeft: 0 }}>
-                Настройка на сервере (один раз): заведите бесплатный Upstash Redis; в Vercel → Settings →
-                Environment Variables добавьте <b>UPSTASH_REDIS_REST_URL</b>, <b>UPSTASH_REDIS_REST_TOKEN</b>,
-                <b> TG_BOT_TOKEN</b> (токен бота), <b>SYNC_SECRET</b> (тот же ключ, что выше); задеплойте и
-                зарегистрируйте вебхук у Telegram:
-                <div style={{ marginTop: 6, fontFamily: "monospace", fontSize: 12, wordBreak: "break-all", opacity: 0.85 }}>
-                  https://api.telegram.org/bot&lt;TOKEN&gt;/setWebhook?url=https://&lt;домен&gt;/api/telegram&amp;secret_token=&lt;SYNC_SECRET&gt;
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="tg-fields">
-              <input className="finput" placeholder="Токен отдельного бота захвата" value={cap.token}
-                onChange={(e) => saveCap({ token: e.target.value })} />
-              <div className="set-sub" style={{ paddingLeft: 0 }}>
-                Создайте отдельного бота через @BotFather, вставьте токен, включите тумблер и напишите боту.
-                Идеи подтягиваются, пока открыта вкладка Done.
+                Серверная настройка (один раз, см. TELEGRAM-SETUP.md): бесплатный Upstash Redis + переменные
+                окружения в Vercel (<b>UPSTASH_REDIS_REST_URL</b>, <b>UPSTASH_REDIS_REST_TOKEN</b>,
+                <b> TG_BOT_TOKEN</b>, <b>SYNC_SECRET</b>) + регистрация вебхука Telegram. Сюда впишите тот же
+                <b> SYNC_SECRET</b>.
               </div>
             </div>
           )}
