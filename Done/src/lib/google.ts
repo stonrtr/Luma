@@ -120,9 +120,11 @@ export async function deleteEvent(eventId: string): Promise<boolean> {
   catch { return false; }
 }
 
-/** Хэш синхронизируемых полей — чтобы обновлять событие только при реальном изменении. */
+/** Хэш синхронизируемых полей — чтобы обновлять событие только при реальном изменении.
+ *  Префикс версии: смена бампает хэш и заставляет один раз пере-синхронизировать все
+ *  события (например, после исправления часового пояса). */
 export function taskHash(t: CalTask): string {
-  return [t.title, t.date, t.timeStart || "", t.timeEnd || "", t.notes || ""].join("|");
+  return ["v2", t.title, t.date, t.timeStart || "", t.timeEnd || "", t.notes || ""].join("|");
 }
 
 function nextDay(d: string): string {

@@ -126,7 +126,7 @@ function GoogleSync() {
     const push = async (op: string, t: import("@/lib/types").Task) => {
       const r = await fetch(`${base}/api/gcal/push`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: sk, op, gid: t.googleEventId ?? undefined, title: t.title, date: t.date, timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes }),
+        body: JSON.stringify({ key: sk, op, gid: t.googleEventId ?? undefined, title: t.title, date: t.date, timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes, tz: Intl.DateTimeFormat().resolvedOptions().timeZone }),
       });
       return r.json();
     };

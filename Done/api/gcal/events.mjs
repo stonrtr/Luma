@@ -28,15 +28,14 @@ export default async function handler(req, res) {
       const start = e.start || {};
       const end = e.end || {};
       // Событие со временем → date+timeStart; «весь день» → date без времени.
+      // Берём локальное настенное время прямо из строки Google (…T23:27:00+03:00),
+      // без new Date(), чтобы не конвертировать в UTC сервера.
       let date = null, timeStart = null, timeEnd = null;
       if (start.dateTime) {
-        const d = new Date(start.dateTime);
-        date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-        timeStart = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-        if (end.dateTime) {
-          const de = new Date(end.dateTime);
-          timeEnd = `${String(de.getHours()).padStart(2, "0")}:${String(de.getMinutes()).padStart(2, "0")}`;
-        }
+        const s = String(start.dateTime);
+        date = s.slice(0, 10);
+        timeStart = s.slice(11, 16);
+        if (end.dateTime) timeEnd = String(end.dateTime).slice(11, 16);
       } else if (start.date) {
         date = start.date;
       }

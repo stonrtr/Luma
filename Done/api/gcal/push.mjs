@@ -5,7 +5,8 @@ import { SECRET, getState, ensureCalendar, gcal } from "./_lib.mjs";
 
 function body(t) {
   if (t.timeStart) {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    // Часовой пояс приходит от клиента (на сервере Intl вернул бы UTC).
+    const tz = t.tz || "UTC";
     const end = t.timeEnd || addMin(t.timeStart, 60);
     return {
       summary: t.title,
