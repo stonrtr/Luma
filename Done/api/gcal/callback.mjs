@@ -30,7 +30,11 @@ export default async function handler(req, res) {
       body,
     });
     const tok = await tr.json();
-    if (!tok.access_token) { res.status(200).send(page("Не удалось получить токен")); return; }
+    if (!tok.access_token) {
+      const detail = tok.error_description || tok.error || "неизвестно";
+      res.status(200).send(page(`Не удалось получить токен: ${detail}`));
+      return;
+    }
     const st = {
       access_token: tok.access_token,
       refresh_token: tok.refresh_token, // приходит только при prompt=consent
