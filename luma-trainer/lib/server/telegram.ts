@@ -99,6 +99,23 @@ const PENDING_TTL_MS = 30 * 60 * 1000;
 
 // Чат ждёт ручной ввод перевода: chatId → token ожидающей фразы.
 const awaitingManual = new Map<number, string>();
+// Чат ждёт название нового урока: chatId → token.
+const awaitingLesson = new Map<number, string>();
+
+/** Добавить урок в список целей Telegram-импорта (чтобы был в кнопках впредь). */
+async function addTelegramTarget(lessonId: string): Promise<void> {
+  try {
+    const row = await getSettingsRow();
+    const parsed = JSON.parse(row.telegramLessonIds || "[]");
+    const ids: string[] = Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    if (!ids.includes(lessonId)) {
+      ids.push(lessonId);
+      await db.userSettings.update({ where: { id: "default" }, data: { telegramLessonIds: JSON.stringify(ids) } });
+    }
+  } catch {
+    /* best-effort */
+  }
+}
 
 function putPending(p: Omit<Pending, "expires">): string {
   const token = randomUUID().slice(0, 8);
@@ -147,6 +164,44 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
     return;
   }
 
+  // Ждём название нового урока?
+  const lessonToken = awaitingLesson.get(chatId);
+  if (lessonToken) {
+    awaitingLesson.delete(chatId);
+    const item = pending.get(lessonToken);
+    if (item && item.expires >= Date.now()) {
+      const title = text.slice(0, 160).trim();
+      const chosen = item.chosen || item.candidates[0];
+      if (!title) {
+        await sendMessage(chatId, "Пустое название. Пришли фразу заново.");
+        pending.delete(lessonToken);
+        return;
+      }
+      try {
+        const lesson = await db.lesson.create({ data: { title } });
+        await db.phraseCard.create({
+          data: {
+            lessonId: lesson.id,
+            english: chosen,
+            russian: item.russian,
+            alternativeTranslations: JSON.stringify(item.candidates.filter((t) => t !== chosen).slice(0, 4)),
+            difficulty: estimateDifficulty(chosen),
+            translationStatus: "ready",
+            dueAt: new Date(),
+            source: JSON.stringify({ type: "telegram" }),
+          },
+        });
+        pending.delete(lessonToken);
+        await addTelegramTarget(lesson.id); // чтобы урок был в кнопках впредь
+        await sendMessage(chatId, `✅ Урок «${escapeHtml(title)}» создан.\n<b>${escapeHtml(chosen)}</b> → «${escapeHtml(title)}»`);
+      } catch {
+        await sendMessage(chatId, "⚠️ Не удалось создать урок. Попробуй позже.");
+      }
+      return;
+    }
+    // Срок истёк — переведём это сообщение как новую фразу (ниже).
+  }
+
   // Ждём ручной ввод перевода для ранее присланной фразы?
   const awaitToken = awaitingManual.get(chatId);
   if (awaitToken) {
@@ -157,11 +212,7 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
       item.chosen = chosen;
       item.candidates = Array.from(new Set([chosen, ...item.candidates])).slice(0, 6);
       const kb = await lessonKeyboard(awaitToken);
-      if (!kb) {
-        await sendMessage(chatId, `<b>${escapeHtml(chosen)}</b>\n\n<i>Куда добавить не выбрано. Отметь уроки в Luma → Настройки → «Импорт из Telegram».</i>`);
-      } else {
-        await sendMessage(chatId, `<b>${escapeHtml(chosen)}</b>\nДобавить в урок:`, kb);
-      }
+      await sendMessage(chatId, `<b>${escapeHtml(chosen)}</b>\nДобавить в урок:`, kb);
       return;
     }
     // Срок истёк — просто переведём это сообщение как новую фразу (ниже).
@@ -198,13 +249,13 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
   }
 }
 
-/** Клавиатура выбора урока для сохранения выбранного перевода. */
-async function lessonKeyboard(token: string): Promise<{ inline_keyboard: { text: string; callback_data: string }[][] } | null> {
+/** Клавиатура выбора урока (+ создать новый) для сохранения перевода. */
+async function lessonKeyboard(token: string): Promise<{ inline_keyboard: { text: string; callback_data: string }[][] }> {
   const lessons = await targetLessons();
-  if (lessons.length === 0) return null;
   const rows = lessons.map((l) => [
     { text: `📎 ${l.title}`.slice(0, 60), callback_data: `add:${token}:${l.id}` },
   ]);
+  rows.push([{ text: "➕ Новый урок", callback_data: `new:${token}` }]);
   rows.push([{ text: "✖️ Не добавлять", callback_data: `skip:${token}` }]);
   return { inline_keyboard: rows };
 }
@@ -248,9 +299,25 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
   const item = token ? pending.get(token) : undefined;
 
   if (action === "skip") {
-    if (token) { pending.delete(token); awaitingManual.delete(chatId); }
+    if (token) pending.delete(token);
+    awaitingManual.delete(chatId);
+    awaitingLesson.delete(chatId);
     await answerCallback(cb.id, "Отменено");
     await editMessageText(chatId, messageId, "✖️ Отменено.");
+    return;
+  }
+
+  // Создать новый урок: ждём его название следующим сообщением.
+  if (action === "new") {
+    if (!item || item.expires < Date.now()) {
+      await answerCallback(cb.id, "Устарело");
+      await editMessageText(chatId, messageId, "⌛ Срок истёк — пришли фразу заново.");
+      return;
+    }
+    const chosen = item.chosen || item.candidates[0];
+    awaitingLesson.set(chatId, token);
+    await answerCallback(cb.id, "Название урока");
+    await editMessageText(chatId, messageId, `<b>${escapeHtml(chosen)}</b>\n➕ Напиши название нового урока ответным сообщением.`);
     return;
   }
 
@@ -283,14 +350,6 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
     item.chosen = chosen;
     await answerCallback(cb.id, "Выбрано");
     const kb = await lessonKeyboard(token);
-    if (!kb) {
-      await editMessageText(
-        chatId,
-        messageId,
-        `<b>${escapeHtml(chosen)}</b>\n\n<i>Куда добавить не выбрано. Отметь уроки в Luma → Настройки → «Импорт из Telegram».</i>`
-      );
-      return;
-    }
     await editMessageText(chatId, messageId, `<b>${escapeHtml(chosen)}</b>\nДобавить в урок:`, kb);
     return;
   }
