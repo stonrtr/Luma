@@ -72,20 +72,48 @@ function ReminderScheduler() {
   return null;
 }
 
-/** Захват идей из Telegram: приложение само опрашивает getUpdates отдельного бота
- *  и создаёт «Входящие» задачи. «!текст» — задача на сегодня. Работает пока вкладка открыта. */
+/** Захват идей из Telegram. Два режима:
+ *  - "server": идеи принимает serverless-вебхук (мгновенный ответ даже при закрытом
+ *    приложении), а приложение забирает накопленное из Upstash через /api/ideas.
+ *  - "client": приложение само опрашивает getUpdates (работает только пока вкладка открыта).
+ *  «!текст» — задача на сегодня. */
 function TelegramCapture() {
   const { data, addTask } = useStore();
   const addRef = useRef(addTask); addRef.current = addTask;
-  const token = data.settings?.captureBot?.token;
-  const enabled = data.settings?.captureBot?.enabled;
+  const cb = data.settings?.captureBot;
+  const enabled = cb?.enabled;
+  const mode = cb?.mode ?? "client";
+  const token = cb?.token;
+  const syncKey = cb?.syncKey;
+  const apiBase = (cb?.apiBase ?? "").replace(/\/$/, "");
+
+  // Серверный режим: тянем накопленные идеи из своего эндпоинта и добавляем локально.
   useEffect(() => {
-    if (!enabled || !token) return;
+    if (!enabled || mode !== "server" || !syncKey) return;
+    let stopped = false;
+    const pull = async () => {
+      try {
+        const r = await fetch(`${apiBase}/api/ideas?key=${encodeURIComponent(syncKey)}`);
+        const j = await r.json();
+        if (j?.ok && Array.isArray(j.ideas)) {
+          for (const it of j.ideas) {
+            const title = String(it?.title ?? "").trim();
+            if (title) addRef.current({ title, date: it?.today ? todayKey() : null });
+          }
+        }
+      } catch { /* нет сети/функции — тихо повторим */ }
+    };
+    pull();
+    const id = setInterval(() => { if (!stopped) pull(); }, 10000);
+    return () => { stopped = true; clearInterval(id); };
+  }, [enabled, mode, syncKey, apiBase]);
+
+  // Клиентский режим: long polling getUpdates (задержка ~1 сек, пока вкладка открыта).
+  useEffect(() => {
+    if (!enabled || mode !== "client" || !token) return;
     const key = "peak-capture-offset";
     let stopped = false;
     let controller: AbortController | null = null;
-    // Long polling: Telegram держит запрос открытым (timeout=25) и отдаёт ответ
-    // сразу, как только приходит сообщение → задержка ~1 сек, а не интервал опроса.
     const loop = async () => {
       while (!stopped) {
         try {
@@ -114,14 +142,13 @@ function TelegramCapture() {
           }
         } catch {
           if (stopped) break;
-          // сеть/битый токен/таймаут — короткая пауза и повтор
           await new Promise((res) => setTimeout(res, 3000));
         }
       }
     };
     loop();
     return () => { stopped = true; controller?.abort(); };
-  }, [token, enabled]);
+  }, [enabled, mode, token]);
   return null;
 }
 

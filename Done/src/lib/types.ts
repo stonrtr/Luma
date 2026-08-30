@@ -130,7 +130,15 @@ export interface AppSettings {
   lang: "ru" | "en";
   notifications: boolean;
   telegram?: { token: string; chatId: string; enabled: boolean };
-  captureBot?: { token: string; enabled: boolean };
+  captureBot?: {
+    token: string;
+    enabled: boolean;
+    // "client" — приложение само опрашивает getUpdates (работает только пока открыто);
+    // "server" — идеи приходят через serverless-вебхук, приложение забирает их из Upstash.
+    mode?: "client" | "server";
+    syncKey?: string;   // = SYNC_SECRET на сервере
+    apiBase?: string;   // база serverless-функций; пусто = тот же домен, что и приложение
+  };
   google?: { clientId: string; enabled: boolean };
 }
 
