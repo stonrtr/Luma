@@ -51,3 +51,39 @@ https://api.telegram.org/bot<TG_BOT_TOKEN>/setWebhook?url=https://<ваш-дом
 
 > Клиентский режим (тумблер «Мгновенный захват» выключен) работает без сервера, но ловит
 > идеи только пока открыта вкладка приложения.
+
+---
+
+# Google Календарь (серверная двусторонняя синхронизация)
+
+Задачи с датой создаются событиями в отдельном календаре **«Done»**, а его события
+показываются в ленте приложения. Токены хранит сервер (Upstash), как в Telegram-захвате.
+Использует тот же `SYNC_SECRET`.
+
+## Настройка (один раз)
+
+### 1. OAuth-клиент в Google Cloud
+1. https://console.cloud.google.com/apis/credentials → **Create Credentials → OAuth client ID**.
+2. Application type: **Web application**.
+3. **Authorized redirect URIs** → добавь: `https://<домен>/api/gcal/callback`
+   (например `https://peak-ashen-six.vercel.app/api/gcal/callback`).
+4. Create → скопируй **Client ID** и **Client secret**.
+5. Экран согласия (OAuth consent screen): если приложение в режиме Testing — добавь свой
+   Google-аккаунт в **Test users**. Scope: Google Calendar (`.../auth/calendar`).
+
+### 2. Переменные в Vercel
+Добавь к уже существующим:
+
+| Имя | Значение |
+|---|---|
+| `GOOGLE_CLIENT_ID` | Client ID из шага 1 |
+| `GOOGLE_CLIENT_SECRET` | Client secret из шага 1 |
+
+Затем **Redeploy**.
+
+### 3. Подключение в приложении
+Настройки → **Google Календарь** → **Подключить Google** → подтверди доступ в открывшемся
+окне → вернись и нажми **Проверить**. Должно показать «Подключено».
+
+Готово: события пишутся в календарь «Done» и видны и в приложении, и среди всех твоих
+календарей в Google.

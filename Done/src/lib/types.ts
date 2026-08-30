@@ -123,6 +123,9 @@ export interface CalEvent {
   date: string; // YYYY-MM-DD
   timeStart?: string | null;
   timeEnd?: string | null;
+  source?: "ics" | "google";  // откуда событие; google-события заменяются при каждом обновлении
+  gid?: string;               // id события в Google Calendar
+  htmlLink?: string | null;   // ссылка на событие в Google
 }
 
 export interface AppSettings {

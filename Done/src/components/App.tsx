@@ -6,7 +6,7 @@ import { todayKey, dayOfWeekMon0 } from "@/lib/date";
 import { View } from "@/lib/types";
 import Sidebar, { SearchModal } from "./Sidebar";
 import { SettingsModal, sendTelegram } from "./Settings";
-import { connectGoogle, isConnected, createEvent, updateEvent, deleteEvent, taskHash } from "@/lib/google";
+import { taskHash } from "@/lib/google";
 import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User, Plus } from "./icons";
 import { InboxView, TodayView, UpcomingView, AllTasksView, CompletedView, TrashView, TagView } from "./TaskViews";
 import { GoalsView, GoalDetail } from "./Goals";
@@ -105,44 +105,53 @@ function TelegramCapture() {
   return null;
 }
 
-/** Google Calendar: пуш задач с датой в календарь (создание/обновление/удаление).
- *  Токен получаем в браузере (GIS), без сервера. Реконсиляция раз в 8 сек. */
+/** Google Calendar (серверная интеграция, как в workspace): задачи с датой пишутся
+ *  в выделенный календарь «Done» через /api/gcal/push, а события этого календаря
+ *  читаются обратно в ленту через /api/gcal/events. Токены хранит сервер (Upstash). */
 function GoogleSync() {
-  const { data, updateTask } = useStore();
+  const { data, updateTask, set } = useStore();
   const dataRef = useRef(data); dataRef.current = data;
   const updRef = useRef(updateTask); updRef.current = updateTask;
+  const setRef = useRef(set); setRef.current = set;
   const busy = useRef(false);
   const g = data.settings?.google;
+  const sk = data.settings?.captureBot?.syncKey;
+  const base = (data.settings?.captureBot?.apiBase ?? "").replace(/\/$/, "");
+  const enabled = g?.enabled && !!sk;
+
+  // Запись: реконсиляция задач с датой → события в календаре «Done».
   useEffect(() => {
-    if (!g?.enabled || !g.clientId) return;
+    if (!enabled) return;
     let stop = false;
+    const push = async (op: string, t: import("@/lib/types").Task) => {
+      const r = await fetch(`${base}/api/gcal/push`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: sk, op, gid: t.googleEventId ?? undefined, title: t.title, date: t.date, timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes }),
+      });
+      return r.json();
+    };
     const reconcile = async () => {
       if (busy.current || stop) return;
-      if (!isConnected()) {
-        const ok = await connectGoogle(g.clientId, false);
-        if (!ok) return;
-      }
       busy.current = true;
       try {
         for (const t of dataRef.current.tasks) {
           if (stop) break;
           const active = !t.deletedAt && !t.completedAt && !!t.date;
-          const ct = { title: t.title, date: t.date!, timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes };
+          const h = taskHash({ title: t.title, date: t.date ?? "", timeStart: t.timeStart, timeEnd: t.timeEnd, notes: t.notes });
           if (active) {
-            const h = taskHash(ct);
             if (!t.googleEventId) {
-              const id = await createEvent(ct);
-              if (id) updRef.current(t.id, { googleEventId: id, googleHash: h });
+              const j = await push("upsert", t);
+              if (j?.gid) updRef.current(t.id, { googleEventId: j.gid, googleHash: h });
             } else if (t.googleHash !== h) {
-              await updateEvent(t.googleEventId, ct);
-              updRef.current(t.id, { googleHash: h });
+              const j = await push("upsert", t);
+              if (j?.ok) updRef.current(t.id, { googleEventId: j.gid ?? t.googleEventId, googleHash: h });
             }
           } else if (t.googleEventId) {
-            await deleteEvent(t.googleEventId);
+            await push("delete", t);
             updRef.current(t.id, { googleEventId: null, googleHash: undefined });
           }
         }
-      } catch { /* токен протух/сеть — попробуем позже */ } finally {
+      } catch { /* сеть/не подключено — позже */ } finally {
         busy.current = false;
       }
     };
@@ -150,7 +159,32 @@ function GoogleSync() {
     const id = setInterval(reconcile, 8000);
     return () => { stop = true; clearInterval(id); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [g?.enabled, g?.clientId]);
+  }, [enabled, sk, base]);
+
+  // Чтение: события выделенного календаря → в ленту (calendarEvents, source="google").
+  useEffect(() => {
+    if (!enabled) return;
+    let stop = false;
+    const pull = async () => {
+      try {
+        const r = await fetch(`${base}/api/gcal/events?key=${encodeURIComponent(sk!)}`);
+        const j = await r.json();
+        if (j?.ok && j.connected && Array.isArray(j.events)) {
+          setRef.current((d) => {
+            const nonG = (d.calendarEvents ?? []).filter((e) => e.source !== "google");
+            const gev = j.events.map((e: { gid: string; title: string; date: string; timeStart?: string | null; timeEnd?: string | null; htmlLink?: string | null }) => ({
+              id: `g:${e.gid}`, gid: e.gid, source: "google" as const, title: e.title, date: e.date, timeStart: e.timeStart ?? null, timeEnd: e.timeEnd ?? null, htmlLink: e.htmlLink ?? null,
+            }));
+            return { ...d, calendarEvents: [...nonG, ...gev] };
+          });
+        }
+      } catch { /* сеть — позже */ }
+    };
+    pull();
+    const id = setInterval(() => { if (!stop) pull(); }, 60000);
+    return () => { stop = true; clearInterval(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, sk, base]);
   return null;
 }
 

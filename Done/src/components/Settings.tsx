@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { Modal, Toggle } from "./ui";
 import { Sun, Moon, Globe, Bell, Send, CalendarDay } from "./icons";
 import { CalendarConnectModal } from "./TaskViews";
-import { connectGoogle, disconnectGoogle } from "@/lib/google";
 
 /** Отправка сообщения через Telegram Bot API прямо из браузера (GET, без preflight) */
 export async function sendTelegram(token: string, chatId: string, text: string): Promise<boolean> {
@@ -30,16 +29,31 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const [tgStatus, setTgStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [notifStatus, setNotifStatus] = useState<string | null>(null);
   const gg = st.google ?? { clientId: "", enabled: false };
+  const gKey = st.captureBot?.syncKey ?? "";
+  const gBase = (st.captureBot?.apiBase ?? "").replace(/\/$/, "");
   const [gStatus, setGStatus] = useState<string | null>(null);
   const saveG = (patch: Partial<typeof gg>) =>
     updateSettings({ google: { clientId: gg.clientId, enabled: gg.enabled, ...patch } });
-  const connectG = async () => {
-    if (!gg.clientId.trim()) return;
-    setGStatus("Подключаю…");
-    const ok = await connectGoogle(gg.clientId.trim(), true);
-    if (ok) { saveG({ enabled: true }); setGStatus("Подключено. Задачи с датой будут попадать в Google Календарь."); }
-    else setGStatus("Не удалось. Проверьте Client ID и что домен добавлен в разрешённые в Google Cloud.");
+  const checkG = async () => {
+    if (!gKey) { setGStatus("Сначала задайте «Ключ синхронизации» в разделе «Идеи из Telegram»."); return; }
+    setGStatus("Проверяю…");
+    try {
+      const r = await fetch(`${gBase}/api/gcal/events?key=${encodeURIComponent(gKey)}`);
+      const j = await r.json();
+      if (j.connected) { saveG({ enabled: true }); setGStatus(`Подключено${j.email ? `: ${j.email}` : ""}. События пишутся в календарь «Done».`); }
+      else { saveG({ enabled: false }); setGStatus("Пока не подключено. Нажмите «Подключить Google»."); }
+    } catch { setGStatus("Не удалось проверить статус (нет сети или функции)."); }
   };
+  const connectG = () => {
+    if (!gKey) { setGStatus("Сначала задайте «Ключ синхронизации» в разделе «Идеи из Telegram»."); return; }
+    window.open(`${gBase}/api/gcal/start?key=${encodeURIComponent(gKey)}`, "_blank");
+    setGStatus("Откроется окно Google. После подтверждения вернитесь и нажмите «Проверить».");
+  };
+  const disconnectG = async () => {
+    try { await fetch(`${gBase}/api/gcal/disconnect?key=${encodeURIComponent(gKey)}`); } catch { /* ignore */ }
+    saveG({ enabled: false }); setGStatus("Отключено.");
+  };
+  useEffect(() => { if (gKey && gg.enabled) checkG(); /* eslint-disable-next-line */ }, []);
 
   const saveTg = (patch: Partial<typeof tg>) =>
     updateSettings({ telegram: { token: tg.token, chatId: tg.chatId, enabled: tg.enabled, ...patch } });
@@ -172,23 +186,29 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
           )}
         </div>
 
-        {/* Google Календарь — прямая синхронизация */}
+        {/* Google Календарь — серверная двусторонняя синхронизация */}
         <div className="set-section">
           <div className="set-section-title">Google Календарь</div>
           <div className="set-row">
             <span className="fic"><CalendarDay size={18} /></span>
             <div className="set-label">
-              <div className="set-title">Синхронизация задач в Google Календарь</div>
-              <div className="set-sub">Задачи с датой автоматически создают события. Нужен OAuth Client ID из Google Cloud (публичный, не секрет).</div>
+              <div className="set-title">Двусторонняя синхронизация с календарём «Done»</div>
+              <div className="set-sub">Задачи с датой создаются событиями в отдельном календаре «Done», а его события показываются в ленте. Токены хранит сервер (как в Telegram-захвате, тот же ключ синхронизации).</div>
             </div>
-            {gg.enabled
-              ? <button className="btn-secondary" onClick={() => { disconnectGoogle(); saveG({ enabled: false }); setGStatus("Отключено."); }}>Отключить</button>
-              : <button className="btn-secondary" disabled={!gg.clientId.trim()} style={{ opacity: gg.clientId.trim() ? 1 : 0.5 }} onClick={connectG}>Подключить Google</button>}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn-secondary" onClick={checkG}>Проверить</button>
+              {gg.enabled
+                ? <button className="btn-secondary" onClick={disconnectG}>Отключить</button>
+                : <button className="btn-secondary" onClick={connectG}>Подключить Google</button>}
+            </div>
           </div>
           <div className="tg-fields">
-            <input className="finput" placeholder="OAuth Client ID (…apps.googleusercontent.com)" value={gg.clientId}
-              onChange={(e) => saveG({ clientId: e.target.value })} />
-            {gStatus && <div className={`set-status ${gStatus.startsWith("Подключено") ? "ok" : gStatus.startsWith("Не удалось") ? "err" : ""}`}>{gStatus}</div>}
+            {gStatus && <div className={`set-status ${gStatus.startsWith("Подключено") ? "ok" : gStatus.startsWith("Не удалось") || gStatus.startsWith("Пока") ? "err" : ""}`}>{gStatus}</div>}
+            <div className="set-sub" style={{ paddingLeft: 0 }}>
+              Серверная настройка (один раз, см. TELEGRAM-SETUP.md → Google): создайте OAuth-клиент типа
+              «Web application» в Google Cloud, добавьте redirect URI <b>https://&lt;домен&gt;/api/gcal/callback</b>,
+              и переменные <b>GOOGLE_CLIENT_ID</b>, <b>GOOGLE_CLIENT_SECRET</b> в Vercel.
+            </div>
           </div>
         </div>
 
