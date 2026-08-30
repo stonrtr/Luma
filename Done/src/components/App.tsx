@@ -201,6 +201,12 @@ function Shell() {
   };
 
   useEffect(() => {
+    const open = () => setSettingsOpen(true);
+    window.addEventListener("done:open-settings", open);
+    return () => window.removeEventListener("done:open-settings", open);
+  }, []);
+
+  useEffect(() => {
     const fn = (e: KeyboardEvent) => {
       const el = document.activeElement as HTMLElement | null;
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable)) return;

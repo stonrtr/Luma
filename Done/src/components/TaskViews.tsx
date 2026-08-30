@@ -1050,7 +1050,6 @@ export function TodayView() {
   const [showHabits, setShowHabits] = useState(true);
   const [panelOpen, setPanelOpen] = useState(true);
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_FILTERS);
-  const [calModal, setCalModal] = useState(false);
   const tasks = applyTaskFilters(all.filter((x) => inList(x) && x.date && x.date <= t), filters);
   const timed = tasks.filter((x) => x.timeStart);
   const allday = tasks.filter((x) => !x.timeStart);
@@ -1170,13 +1169,12 @@ export function TodayView() {
               <div className="cb-title">Подключите календарь</div>
               <div className="cb-sub">Синхронизация в обе стороны</div>
             </div>
-            <button className="btn-primary" onClick={() => setCalModal(true)}>Подключить</button>
+            <button className="btn-primary" onClick={() => window.dispatchEvent(new Event("done:open-settings"))}>Подключить</button>
             <button className="icon-btn" onClick={() => setBanner(false)}>✕</button>
           </div>
         )}
         <DayTimeline allday={allday} timed={timed} onOpen={setEditing} />
       </div>}
-      {calModal && <CalendarConnectModal onClose={() => setCalModal(false)} />}
       {editing && <TaskModal task={editing} onClose={() => setEditing(null)} />}
     </div>
   );
