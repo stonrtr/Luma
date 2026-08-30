@@ -85,7 +85,8 @@ export async function translatePhrase(input: TranslateInput): Promise<Translatio
 // с коротким таймаутом: обычный translatePhrase на flash-latest висит ~30с.
 const FAST_SYSTEM = `You translate a Russian word or phrase into natural English for a language learner.
 Return ONLY a strict JSON object: {"english": "<best English translation>", "alternatives": ["<other good option>", ...]}.
-Keep the same grammatical form. "english" is the single best translation. "alternatives": 0–3 more natural options, no duplicates, no empty strings. No extra keys, no commentary.`;
+Keep the same grammatical form. "english" is the single best translation. "alternatives": 0–3 more natural options, no duplicates, no empty strings.
+CRITICAL: every translation must be FULLY in English — never leave any Russian word untranslated (e.g. "тренажёр" → "exercise machine"/"gym equipment", NOT left as "тренажер"). No Cyrillic letters anywhere. No extra keys, no commentary.`;
 
 export type FastTranslation = { english: string; alternatives: string[] };
 
@@ -93,18 +94,21 @@ export async function translateRuToEnFast(russian: string): Promise<FastTranslat
   const clean = normalize(russian);
   const { result } = await askJson<FastTranslation>(
     FAST_SYSTEM,
-    `Russian: "${clean}". Translate to English.`,
+    `Russian: "${clean}". Translate to English. Output English only — no Cyrillic.`,
     (o): FastTranslation | null => {
       const obj = o as { english?: unknown; alternatives?: unknown };
-      const english = typeof obj.english === "string" ? normalize(obj.english) : "";
-      if (!english) return null;
-      const alternatives = Array.isArray(obj.alternatives)
-        ? obj.alternatives
-            .filter((x): x is string => typeof x === "string")
-            .map((s) => normalize(s))
-            .filter((s) => s && s !== english)
-            .slice(0, 3)
+      // Отбрасываем любые варианты с кириллицей (модель иногда оставляет
+      // непереведённое русское слово, напр. "This тренажер is broken").
+      const clean1 = (s: string) => normalize(s);
+      const englishRaw = typeof obj.english === "string" ? clean1(obj.english) : "";
+      const altsRaw = Array.isArray(obj.alternatives)
+        ? obj.alternatives.filter((x): x is string => typeof x === "string").map(clean1)
         : [];
+      // Кандидаты без кириллицы, лучший (english) первым.
+      const pool = [englishRaw, ...altsRaw].filter((s) => s && !hasCyrillic(s));
+      if (pool.length === 0) return null; // всё с кириллицей — считаем неудачей, ретрай
+      const english = pool[0];
+      const alternatives = Array.from(new Set(pool.slice(1))).filter((s) => s !== english).slice(0, 3);
       return { english, alternatives };
     },
     // Быстрые модели первыми, медленный алиас flash-latest — в конец;
