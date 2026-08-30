@@ -1161,8 +1161,12 @@ export function TodayView() {
       </div>}
       {editing && <TaskModal task={editing} onClose={() => {
         // Черновик из клика по слоту без названия — не сохраняем.
-        const cur = data.tasks.find((x) => x.id === editing.id);
-        if (cur && !cur.title.trim()) set((d) => ({ ...d, tasks: d.tasks.filter((x) => x.id !== cur.id) }));
+        // Проверяем актуальное состояние внутри set (после возможного save()).
+        const id = editing.id;
+        set((d) => {
+          const cur = d.tasks.find((x) => x.id === id);
+          return cur && !cur.title.trim() ? { ...d, tasks: d.tasks.filter((x) => x.id !== id) } : d;
+        });
         setEditing(null);
       }} />}
     </div>
