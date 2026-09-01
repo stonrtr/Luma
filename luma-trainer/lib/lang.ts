@@ -17,9 +17,13 @@ export function hasLatin(text: string): boolean {
   return LATIN.test(text);
 }
 
-/** Trim, collapse internal whitespace, strip zero-width chars. */
+/** Trim, collapse internal whitespace, strip zero-width chars и эмодзи-флаги.
+ * ЗАПРЕТ: эмодзи-флаги стран (в т.ч. флаг России 🇷🇺) никогда не сохраняются в
+ * тексте карточек — вырезаем их здесь, т.к. через normalize проходит любой
+ * сохраняемый текст (фразы, перевод, Telegram-бот). */
 export function normalize(text: string): string {
   return text
+    .replace(/[\u{1F1E6}-\u{1F1FF}]/gu, "") // regional indicators → любые флаги
     .replace(/[​-‍﻿]/g, "")
     .replace(/\s+/g, " ")
     .trim();
