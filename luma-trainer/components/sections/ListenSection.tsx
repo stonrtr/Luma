@@ -353,6 +353,7 @@ export function ListenSection() {
             <>
               {playing && <ListenLoader active={step !== "pause"} />}
               <div
+                key={`ru-${pos}`}
                 style={{
                   fontSize: "clamp(24px, 4vw, 40px)",
                   fontWeight: 800,
@@ -366,6 +367,7 @@ export function ListenSection() {
               </div>
               <div style={{ height: 1, width: 60, background: "rgba(255,255,255,0.2)" }} />
               <div
+                key={`en-${pos}`}
                 style={{
                   fontSize: "clamp(22px, 3.6vw, 36px)",
                   fontWeight: 800,

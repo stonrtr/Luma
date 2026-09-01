@@ -242,7 +242,25 @@ async function synthesizeAzure(text: string, voice: string): Promise<TtsResult |
   }
 }
 
+// Вопросительная интонация: нейросетевые голоса дают её по знаку «?». Если фраза
+// явно вопрос, а «?» нет — подставляем его ТОЛЬКО для озвучки (текст карточки не
+// меняется). Императивы («Сделай это») не трогаем.
+function questionfy(text: string): string {
+  const t = text.trim();
+  if (!t) return t;
+  const last = t[t.length - 1];
+  if (last === "?" || last === "." || last === "!" || last === "…") return t;
+  const enWh = /^(who|what|where|when|why|how|which|whose|whom)\b/i;
+  const enAux = /^(do|does|did|is|are|am|was|were|can|could|will|would|should|shall|may|might|have|has|had)\b/i;
+  const enPron = /\b(you|we|they|he|she|it|i)\b/i;
+  const ruWh = /^(кто|что|где|когда|почему|зачем|как|какой|какая|какое|какие|сколько|чей|чья|чьё|чьи|куда|откуда|разве|неужели)\b/i;
+  const ruLi = /\bли\b/i;
+  const isQ = enWh.test(t) || (enAux.test(t) && enPron.test(t)) || ruWh.test(t) || ruLi.test(t);
+  return isQ ? t + "?" : t;
+}
+
 export async function synthesize(text: string, voice: string): Promise<TtsResult | null> {
+  text = questionfy(text);
   if (hasAzure()) {
     const az = await synthesizeAzure(text, voice);
     if (az) return az;
