@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { A } from "@/lib/api";
 import type { UserSettings } from "@/lib/types";
-import { AppContext, type SectionId, type StudyScope } from "./app-context";
+import { AppContext, SECTIONS, type SectionId, type StudyScope } from "./app-context";
 import { TopNav } from "./TopNav";
 import { MobileNav } from "./MobileNav";
 import { ToastProvider } from "./ui";
@@ -27,14 +27,31 @@ export function AppShell() {
 
   useEffect(() => {
     primeSfx();
+    // Свежий запуск PWA → «Сегодня». Но перезагрузка/перемонтаж В ТОЙ ЖЕ сессии
+    // (например iOS перерисовал WebView) не должны выкидывать из раздела —
+    // восстанавливаем последний раздел из sessionStorage (живёт до закрытия PWA).
+    try {
+      if (sessionStorage.getItem("luma:alive")) {
+        const s = sessionStorage.getItem("luma:section");
+        if (s && SECTIONS.some((x) => x.id === s)) setSection(s as SectionId);
+      } else {
+        sessionStorage.setItem("luma:alive", "1");
+      }
+    } catch {}
     (async () => {
       const s = await A.settings().catch(() => null);
-      // При открытии сайта всегда стартуем с «Сегодня» (последний раздел не восстанавливаем).
       if (s) setSettings(s);
       A.ttsInfo().then((t) => setTtsAvailable(t.available)).catch(() => {});
       ready.current = true;
     })();
   }, []);
+
+  // Держим текущий раздел в sessionStorage (для восстановления при перемонтаже).
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("luma:section", section);
+    } catch {}
+  }, [section]);
 
   // Настройка «анимации» (одна цветовая тема — переключателя нет).
   useEffect(() => {

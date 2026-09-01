@@ -96,7 +96,21 @@ export function Modal({
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      // iOS: после закрытия модалки-«листа» прилетает «ghost click» по тем же
+      // координатам — попадает в элемент под ней (нижнюю навигацию) и перекидывает
+      // в другой раздел. Гасим один следующий клик на тач-устройствах.
+      if (typeof window === "undefined" || !window.matchMedia?.("(pointer: coarse)").matches) return;
+      const swallow = (e: MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        document.removeEventListener("click", swallow, true);
+        clearTimeout(t);
+      };
+      document.addEventListener("click", swallow, true);
+      const t = setTimeout(() => document.removeEventListener("click", swallow, true), 500);
+    };
   }, [onClose]);
 
   const content = (
