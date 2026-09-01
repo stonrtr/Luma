@@ -23,6 +23,7 @@ export function PhrasesSection() {
   const { refreshKey, refresh, startStudy } = useApp();
   const [sort, setSort] = useState("worst");
   const [favOnly, setFavOnly] = useState(false);
+  const [query, setQuery] = useState("");
   const [phrases, setPhrases] = useState<PhraseCard[] | null>(null);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<PhraseCard | null>(null);
@@ -54,6 +55,18 @@ export function PhrasesSection() {
     refresh();
   };
 
+  // Мгновенный поиск по загруженным фразам (англ / рус / урок).
+  const q = query.trim().toLowerCase();
+  const visible =
+    phrases && q
+      ? phrases.filter(
+          (p) =>
+            (p.english || "").toLowerCase().includes(q) ||
+            (p.russian || "").toLowerCase().includes(q) ||
+            (p.lessonTitle || "").toLowerCase().includes(q)
+        )
+      : phrases;
+
   return (
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
@@ -63,6 +76,35 @@ export function PhrasesSection() {
           </div>
         </div>
         <button className="wbtn" onClick={() => setAdding(true)}>＋ Добавить фразу</button>
+      </div>
+
+      <div style={{ position: "relative" }}>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Поиск по фразам…"
+          style={{
+            width: "100%",
+            minHeight: 44,
+            padding: "0 40px 0 16px",
+            borderRadius: 14,
+            border: "1.5px solid var(--line-soft)",
+            background: "var(--panel-2, rgba(255,255,255,0.06))",
+            color: "var(--ink)",
+            fontSize: 15,
+            fontWeight: 600,
+            outline: "none",
+          }}
+        />
+        {query && (
+          <button
+            aria-label="Очистить"
+            onClick={() => setQuery("")}
+            style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", color: "var(--ink-3)", cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 6 }}
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -83,6 +125,8 @@ export function PhrasesSection() {
 
       {phrases === null ? (
         <div style={{ display: "grid", placeItems: "center", padding: 50, color: "#fff" }}><Spinner size={24} /></div>
+      ) : (visible || []).length === 0 && q ? (
+        <EmptyState icon="🔍" title="Ничего не найдено" hint={`По запросу «${query.trim()}» фраз нет.`} />
       ) : phrases.length === 0 ? (
         <EmptyState
           icon={favOnly ? "★" : "🗂️"}
@@ -92,7 +136,7 @@ export function PhrasesSection() {
         />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {phrases.map((p) => (
+          {(visible || []).map((p) => (
             <div key={p.id} className="wcard-sm" style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <Star active={p.favorite} onClick={() => toggleStar(p)} />
               <div style={{ flex: 1, minWidth: 0 }}>

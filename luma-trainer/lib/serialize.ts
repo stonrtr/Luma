@@ -22,6 +22,13 @@ function iso(d: Date | null | undefined): string | null {
   return d ? d.toISOString() : null;
 }
 
+// Убираем эмодзи-флаги (напр. 🇷🇺/🇬🇧), затесавшиеся в текст карточек, — они не
+// нужны ни в списке, ни в озвучке. Чистим на выдаче из API (одна точка).
+function stripFlags(s: string | null | undefined): string {
+  if (!s) return "";
+  return s.replace(/[\u{1F1E6}-\u{1F1FF}]/gu, "").replace(/\s{2,}/g, " ").trim();
+}
+
 // Loose row types — we only read fields we map.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -30,12 +37,12 @@ export function toPhrase(row: any, lessonTitle?: string): PhraseCard {
     id: row.id,
     lessonId: row.lessonId,
     lessonTitle: lessonTitle ?? row.lesson?.title,
-    english: row.english,
-    russian: row.russian,
-    alternativeTranslations: parseJson<string[]>(row.alternativeTranslations, []),
+    english: stripFlags(row.english),
+    russian: stripFlags(row.russian),
+    alternativeTranslations: parseJson<string[]>(row.alternativeTranslations, []).map(stripFlags).filter(Boolean),
     transcription: row.transcription,
-    exampleEn: row.exampleEn,
-    exampleRu: row.exampleRu,
+    exampleEn: stripFlags(row.exampleEn),
+    exampleRu: stripFlags(row.exampleRu),
     difficulty: row.difficulty,
     favorite: row.favorite,
     progress: row.progress,
