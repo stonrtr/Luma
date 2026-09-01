@@ -43,16 +43,20 @@ async function ensureBuffer(text: string, voice: string): Promise<AudioBuffer | 
   return p;
 }
 
-/** Проиграть декодированный буфер через Web Audio и дождаться конца/отмены. */
-async function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortSignal): Promise<void> {
+/** Проиграть декодированный буфер через Web Audio и дождаться конца/отмены.
+ * Возвращает true, если реально проигралось; false — если контекст не удалось
+ * разбудить (тогда вызывающий откатывается на <audio>). */
+async function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortSignal): Promise<boolean> {
   const ctx0 = getAudioContext();
-  if (!ctx0) return;
-  // Контекст мог «уснуть» после круга/простоя — будим и ЖДЁМ, иначе буфер
-  // «проигрывается» на спящем контексте: шаги идут, звука нет.
+  if (!ctx0) return false;
+  // Контекст мог «уснуть»/«прерваться» после круга — будим и ЖДЁМ.
   if (ctx0.state !== "running") {
     try { await ctx0.resume(); } catch {}
   }
-  return new Promise<void>((resolve) => {
+  // Всё ещё не running (iOS иногда застревает после круга) — не играем молча,
+  // отдаём false, чтобы вызывающий переключился на <audio>-элемент.
+  if (ctx0.state !== "running") return false;
+  await new Promise<void>((resolve) => {
     const ctx = getAudioContext();
     if (!ctx) return resolve();
     let done = false;
@@ -84,6 +88,7 @@ async function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortS
       finish();
     }
   });
+  return true;
 }
 
 // Один переиспользуемый аудио-элемент для последовательного воспроизведения
@@ -270,8 +275,9 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
     //    из-за чего раньше карточку читал системный голос, а не Azure).
     const buf = await ensureBuffer(clean, voice);
     if (buf && getAudioContext()) {
-      await playBufferAndWait(buf, rate);
-      return;
+      const played = await playBufferAndWait(buf, rate);
+      if (played) return;
+      // Контекст застрял → пробуем <audio>.
     }
     // 2) Фолбэк на переиспользуемый <audio>.
     const url = await ensureAudio(clean, voice);
@@ -312,10 +318,11 @@ export async function speakAndWait(text: string, voice: string, rate = 1, signal
     const buf = await ensureBuffer(clean, voice);
     if (signal?.aborted) return;
     if (buf && getAudioContext()) {
-      await playBufferAndWait(buf, rate, signal);
-      return;
+      const played = await playBufferAndWait(buf, rate, signal);
+      if (played || signal?.aborted) return;
+      // Web Audio не смог (контекст застрял после круга) → пробуем <audio>.
     }
-    // 2) Фолбэк на <audio> (если Web Audio недоступен/не декодировал).
+    // 2) Фолбэк на <audio> (если Web Audio недоступен/не декодировал/застрял).
     const url = await ensureAudio(clean, voice);
     if (signal?.aborted) return;
     if (url) {
