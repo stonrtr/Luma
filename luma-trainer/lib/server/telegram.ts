@@ -4,10 +4,9 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { db } from "../db";
-import { translateRuToEnFast } from "./translate";
+import { translateFast } from "./translate";
 import { getSettingsRow } from "./settings";
 import { estimateDifficulty } from "../difficulty";
-import { normalize } from "../lang";
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const ALLOWED_CHAT = (process.env.TELEGRAM_ALLOWED_CHAT_ID || "").trim();
@@ -89,9 +88,10 @@ export async function setWebhook(url: string): Promise<{ ok: boolean; descriptio
 
 // --- Ожидающие подтверждения переводы (в памяти, короткоживущие) -----------
 type Pending = {
-  russian: string;
-  candidates: string[]; // варианты перевода (лучший первым)
-  chosen?: string; // выбранный пользователем вариант
+  sourceLang: "en" | "ru"; // язык введённого текста
+  fixed: string; // введённый текст (известная сторона карточки)
+  candidates: string[]; // варианты перевода на другой язык (лучший первым)
+  chosen?: string; // выбранный пользователем перевод
   expires: number;
 };
 const pending = new Map<string, Pending>();
@@ -137,6 +137,24 @@ type TgUpdate = {
   };
 };
 
+// Поля карточки в зависимости от языка ввода: ввод — фиксированная сторона,
+// выбранный перевод — другая. Русские варианты в alternativeTranslations
+// сохраняем только когда переводили НА русский (ввод был английским).
+function cardFields(item: Pending, chosen: string) {
+  const english = item.sourceLang === "ru" ? chosen : item.fixed;
+  const russian = item.sourceLang === "ru" ? item.fixed : chosen;
+  const alts = item.sourceLang === "en" ? item.candidates.filter((c) => c !== chosen).slice(0, 4) : [];
+  return {
+    english,
+    russian,
+    alternativeTranslations: JSON.stringify(alts),
+    difficulty: estimateDifficulty(english),
+    translationStatus: "ready",
+    dueAt: new Date(),
+    source: JSON.stringify({ type: "telegram" }),
+  };
+}
+
 export async function handleUpdate(update: TgUpdate): Promise<void> {
   if (update.callback_query) return handleCallback(update.callback_query);
   if (update.message) return handleMessage(update.message);
@@ -179,18 +197,7 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
       }
       try {
         const lesson = await db.lesson.create({ data: { title } });
-        await db.phraseCard.create({
-          data: {
-            lessonId: lesson.id,
-            english: chosen,
-            russian: item.russian,
-            alternativeTranslations: JSON.stringify(item.candidates.filter((t) => t !== chosen).slice(0, 4)),
-            difficulty: estimateDifficulty(chosen),
-            translationStatus: "ready",
-            dueAt: new Date(),
-            source: JSON.stringify({ type: "telegram" }),
-          },
-        });
+        await db.phraseCard.create({ data: { lessonId: lesson.id, ...cardFields(item, chosen) } });
         pending.delete(lessonToken);
         await addTelegramTarget(lesson.id); // чтобы урок был в кнопках впредь
         await sendMessage(chatId, `✅ Урок «${escapeHtml(title)}» создан.\n<b>${escapeHtml(chosen)}</b> → «${escapeHtml(title)}»`);
@@ -221,18 +228,14 @@ async function handleMessage(msg: NonNullable<TgUpdate["message"]>): Promise<voi
   void sendTyping(chatId); // нативный «печатает…», пока идёт перевод
 
   try {
-    const result = await translateRuToEnFast(text);
-    const english = normalize(result.english || "");
-    if (!english) {
+    const result = await translateFast(text); // направление по языку ввода
+    const candidates = result.candidates;
+    if (candidates.length === 0) {
       await sendMessage(chatId, "Не удалось перевести. Попробуй переформулировать.");
       return;
     }
-    // Все варианты (лучший первым), без дублей.
-    const candidates = Array.from(
-      new Set([english, ...result.alternatives.map((t) => normalize(t))].filter(Boolean))
-    ).slice(0, 6);
 
-    const token = putPending({ russian: text, candidates });
+    const token = putPending({ sourceLang: result.sourceLang, fixed: result.fixed, candidates });
 
     // Шаг 1: выбрать верный перевод (или ввести свой).
     const rows = candidates.map((t, i) => [
@@ -330,7 +333,7 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
     }
     awaitingManual.set(chatId, token);
     await answerCallback(cb.id, "Жду перевод");
-    await editMessageText(chatId, messageId, `<b>${escapeHtml(item.russian)}</b>\n✍️ Напиши свой перевод ответным сообщением.`);
+    await editMessageText(chatId, messageId, `<b>${escapeHtml(item.fixed)}</b>\n✍️ Напиши свой перевод ответным сообщением.`);
     return;
   }
 
@@ -371,18 +374,7 @@ async function handleCallback(cb: NonNullable<TgUpdate["callback_query"]>): Prom
     }
     pending.delete(token);
     try {
-      await db.phraseCard.create({
-        data: {
-          lessonId: lesson.id,
-          english: chosen,
-          russian: item.russian,
-          alternativeTranslations: JSON.stringify(item.candidates.filter((t) => t !== chosen).slice(0, 4)),
-          difficulty: estimateDifficulty(chosen),
-          translationStatus: "ready",
-          dueAt: new Date(),
-          source: JSON.stringify({ type: "telegram" }),
-        },
-      });
+      await db.phraseCard.create({ data: { lessonId: lesson.id, ...cardFields(item, chosen) } });
       await answerCallback(cb.id, "Добавлено ✅");
       await editMessageText(
         chatId,

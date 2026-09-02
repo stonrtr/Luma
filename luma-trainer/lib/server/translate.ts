@@ -80,40 +80,46 @@ export async function translatePhrase(input: TranslateInput): Promise<Translatio
   };
 }
 
-// --- Быстрый перевод RU→EN для Telegram-бота -------------------------------
-// Минимальный промпт (без транскрипции/примеров/difficulty) на быстрой модели
-// с коротким таймаутом: обычный translatePhrase на flash-latest висит ~30с.
-const FAST_SYSTEM = `You translate a Russian word or phrase into natural English for a language learner.
-Return ONLY a strict JSON object: {"english": "<best English translation>", "alternatives": ["<other good option>", ...]}.
-Keep the same grammatical form. "english" is the single best translation. "alternatives": 0–3 more natural options, no duplicates, no empty strings.
-CRITICAL: every translation must be FULLY in English — never leave any Russian word untranslated (e.g. "тренажёр" → "exercise machine"/"gym equipment", NOT left as "тренажер"). No Cyrillic letters anywhere. No extra keys, no commentary.`;
+// --- Быстрый двунаправленный перевод для Telegram-бота ----------------------
+// Минимальный промпт на быстрой модели с коротким таймаутом (обычный
+// translatePhrase на flash-latest висит ~30с). Направление — по языку ввода:
+// русский → английский, английский → русский.
+function fastSystem(target: "English" | "Russian"): string {
+  const other = target === "English" ? "Russian" : "English";
+  return `You translate a ${other} word or phrase into natural ${target} for a language learner.
+Return ONLY a strict JSON object: {"best": "<best ${target} translation>", "alternatives": ["<other good option>", ...]}.
+Keep the same grammatical form. "best" is the single best translation. "alternatives": 0–3 more natural options, no duplicates, no empty strings.
+CRITICAL: every translation must be FULLY in ${target} — never leave any ${other} word untranslated. No extra keys, no commentary.`;
+}
 
-export type FastTranslation = { english: string; alternatives: string[] };
+export type FastTranslation = {
+  sourceLang: "en" | "ru"; // язык введённого текста
+  fixed: string; // введённый текст (известная сторона карточки)
+  candidates: string[]; // переводы на другой язык (лучший первым)
+};
 
-export async function translateRuToEnFast(russian: string): Promise<FastTranslation> {
-  const clean = normalize(russian);
-  const { result } = await askJson<FastTranslation>(
-    FAST_SYSTEM,
-    `Russian: "${clean}". Translate to English. Output English only — no Cyrillic.`,
-    (o): FastTranslation | null => {
-      const obj = o as { english?: unknown; alternatives?: unknown };
-      // Отбрасываем любые варианты с кириллицей (модель иногда оставляет
-      // непереведённое русское слово, напр. "This тренажер is broken").
-      const clean1 = (s: string) => normalize(s);
-      const englishRaw = typeof obj.english === "string" ? clean1(obj.english) : "";
-      const altsRaw = Array.isArray(obj.alternatives)
-        ? obj.alternatives.filter((x): x is string => typeof x === "string").map(clean1)
+export async function translateFast(text: string): Promise<FastTranslation> {
+  const clean = normalize(text);
+  const src: "en" | "ru" = detectLanguage(clean); // язык ввода
+  const target = src === "ru" ? "English" : "Russian";
+  const targetIsEn = target === "English";
+  const { result } = await askJson<string[]>(
+    fastSystem(target),
+    `${src === "ru" ? "Russian" : "English"}: "${clean}". Translate to ${target} only.`,
+    (o): string[] | null => {
+      const obj = o as { best?: unknown; alternatives?: unknown };
+      const norm = (s: string) => normalize(s);
+      const best = typeof obj.best === "string" ? norm(obj.best) : "";
+      const alts = Array.isArray(obj.alternatives)
+        ? obj.alternatives.filter((x): x is string => typeof x === "string").map(norm)
         : [];
-      // Кандидаты без кириллицы, лучший (english) первым.
-      const pool = [englishRaw, ...altsRaw].filter((s) => s && !hasCyrillic(s));
-      if (pool.length === 0) return null; // всё с кириллицей — считаем неудачей, ретрай
-      const english = pool[0];
-      const alternatives = Array.from(new Set(pool.slice(1))).filter((s) => s !== english).slice(0, 3);
-      return { english, alternatives };
+      // Оставляем только варианты на нужном языке: EN — без кириллицы; RU — с кириллицей.
+      const okLang = (s: string) => (targetIsEn ? !hasCyrillic(s) : hasCyrillic(s));
+      const pool = [best, ...alts].filter((s) => s && okLang(s));
+      if (pool.length === 0) return null; // не тот язык — считаем неудачей, ретрай
+      return Array.from(new Set(pool)).slice(0, 6);
     },
-    // Быстрые модели первыми, медленный алиас flash-latest — в конец;
-    // короткий таймаут, чтобы не висеть на подтормаживающей модели.
     { models: ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"], timeoutMs: 12000 }
   );
-  return result;
+  return { sourceLang: src, fixed: clean, candidates: result };
 }
