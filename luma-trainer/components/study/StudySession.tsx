@@ -571,6 +571,24 @@ export function StudySession({
           </>
         ) : (
           <>
+            {card.exampleEn && card.exampleRu && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
+                  maxWidth: 560,
+                  textAlign: "center",
+                  color: "rgba(255,255,255,0.92)",
+                  fontStyle: "italic",
+                  fontSize: "clamp(13px, 1.4vw, 16px)",
+                  lineHeight: 1.4,
+                }}
+              >
+                <span>{card.exampleEn}</span>
+                <span style={{ opacity: 0.6 }}>{card.exampleRu}</span>
+              </div>
+            )}
             {card.alternativeTranslations.length > 0 && card.reviewCount < 2 ? (
               // Первые 2 показа: выбор основного перевода — тап по варианту.
               <div className="study-chooser" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: 560 }}>
