@@ -6,6 +6,7 @@ export type StudyScope = {
   scope: "today" | "lesson" | "favorites" | "random";
   lessonId?: string;
   title?: string;
+  filter?: "learning" | "learned"; // для урока: учить (не выучено) / повторить (выучено)
 };
 
 export type AppCtx = {

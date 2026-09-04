@@ -62,9 +62,9 @@ export const A = {
       "/api/import",
       b
     ),
-  study: (scope: string, lessonId?: string) =>
+  study: (scope: string, lessonId?: string, filter?: string) =>
     api.get<{ scope: string; cards: PhraseCard[] }>(
-      `/api/study?scope=${scope}${lessonId ? `&lessonId=${lessonId}` : ""}`
+      `/api/study?scope=${scope}${lessonId ? `&lessonId=${lessonId}` : ""}${filter ? `&filter=${filter}` : ""}`
     ),
   review: (cardId: string, rating: string, usedHint: boolean) =>
     api.post<{ card: PhraseCard; intervalDays: number }>("/api/review", { cardId, rating, usedHint }),

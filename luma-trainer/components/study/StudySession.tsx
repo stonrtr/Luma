@@ -111,7 +111,7 @@ export function StudySession({
     setFlipped(false);
     setReveal(0);
     setUsedHint(false);
-    A.study(effScope, scope.lessonId)
+    A.study(effScope, scope.lessonId, scope.filter)
       // «Сегодня» показываем в случайном порядке при первом отображении,
       // чтобы первой не была всегда одна и та же карточка (нужные карточки те же).
       .then((r) => setCards(effScope === "today" ? shuffled(r.cards) : r.cards))

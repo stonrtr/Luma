@@ -82,9 +82,16 @@ export async function buildTodayQueue(): Promise<PhraseCard[]> {
 }
 
 /** Study a whole lesson regardless of schedule (§11.2). Worst-known first. */
-export async function buildLessonQueue(lessonId: string): Promise<PhraseCard[]> {
+export async function buildLessonQueue(
+  lessonId: string,
+  filter?: "learning" | "learned"
+): Promise<PhraseCard[]> {
+  const where: any = { lessonId, translationStatus: "ready" };
+  // «Учить» — ещё не выученные (progress < 100), «Повторить» — уже выученные.
+  if (filter === "learning") where.known = false;
+  else if (filter === "learned") where.known = true;
   const cards = await db.phraseCard.findMany({
-    where: { lessonId, translationStatus: "ready" },
+    where,
     include: { lesson: { select: { title: true } } },
   });
   cards.sort((a, b) => a.progress - b.progress || a.createdAt.getTime() - b.createdAt.getTime());

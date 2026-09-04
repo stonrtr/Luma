@@ -179,16 +179,24 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
           </div>
           <div style={{ color: "var(--ink-2)", fontSize: 11, textAlign: "right", marginTop: 3, fontWeight: 700 }}>{s.progress}%</div>
         </div>
-        <button
-          className="abtn"
-          onClick={(e) => {
-            e.stopPropagation();
-            startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title });
-          }}
-          disabled={s.total === 0}
-        >
-          Учить урок
-        </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: "none" }} onClick={(e) => e.stopPropagation()}>
+          <button
+            className="abtn"
+            onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learning" })}
+            disabled={s.total - s.learned <= 0}
+            title="Фразы, ещё не достигшие 100%"
+          >
+            Учить
+          </button>
+          <button
+            className="lbtn"
+            onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learned" })}
+            disabled={s.learned <= 0}
+            title="Уже выученные фразы — повторить"
+          >
+            Повторить
+          </button>
+        </div>
       </div>
 
       {open && (

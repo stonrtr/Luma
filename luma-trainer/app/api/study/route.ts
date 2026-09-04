@@ -14,12 +14,14 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const scope = url.searchParams.get("scope") || "today";
   const lessonId = url.searchParams.get("lessonId") || "";
+  const filterParam = url.searchParams.get("filter");
+  const filter = filterParam === "learning" || filterParam === "learned" ? filterParam : undefined;
 
   // Тихо добить застрявшие переводы (failed/pending), если такие есть.
   maybeRetryFailed();
 
   let cards;
-  if (scope === "lesson" && lessonId) cards = await buildLessonQueue(lessonId);
+  if (scope === "lesson" && lessonId) cards = await buildLessonQueue(lessonId, filter);
   else if (scope === "favorites") cards = await buildFavoriteQueue();
   else if (scope === "upcoming") cards = await buildUpcomingQueue();
   else if (scope === "random") cards = await buildRandomQueue();
