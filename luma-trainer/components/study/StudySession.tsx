@@ -821,6 +821,7 @@ export function StudySession({
               <SpeakerIcon />
             </button>
           )}
+          {card && <Star active={card.favorite} onClick={toggleStar} onPanel />}
           <span className="wbtn" style={{ cursor: "default", fontSize: 15 }}>
             {Math.min(index + 1, Math.max(total, 1))} / {Math.max(total, 1)}
           </span>
