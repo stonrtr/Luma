@@ -157,31 +157,30 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
             toggle();
           }
         }}
-        style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", cursor: "pointer" }}
+        style={{ display: "flex", flexDirection: "column", gap: 12, cursor: "pointer" }}
       >
-        <div style={{ flex: 1, minWidth: 180 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span aria-hidden style={{ fontSize: 16, color: "var(--ink-2)", flex: "none" }}>
-              {open ? "▾" : "▸"}
-            </span>
-            <span style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)" }}>{lesson.title}</span>
-          </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
-            <span className="chip">{s.total} фраз</span>
-            {s.due > 0 && <span className="chip chip-accent">{s.due} пора повторить</span>}
-            <span className="chip">{s.learning} изучается</span>
-            <span className="chip chip-green">{s.learned} выучено</span>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span aria-hidden style={{ fontSize: 16, color: "var(--ink-2)", flex: "none" }}>
+            {open ? "▾" : "▸"}
+          </span>
+          <span style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)" }}>{lesson.title}</span>
         </div>
-        <div style={{ width: 120 }}>
-          <div className="track">
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <span className="chip">{s.total} фраз</span>
+          {s.due > 0 && <span className="chip chip-accent">{s.due} пора повторить</span>}
+          <span className="chip">{s.learning} изучается</span>
+          <span className="chip chip-green">{s.learned} выучено</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="track" style={{ flex: 1 }}>
             <span style={{ width: `${s.progress}%` }} />
           </div>
-          <div style={{ color: "var(--ink-2)", fontSize: 11, textAlign: "right", marginTop: 3, fontWeight: 700 }}>{s.progress}%</div>
+          <span style={{ color: "var(--ink-2)", fontSize: 11, fontWeight: 700, minWidth: 34, textAlign: "right" }}>{s.progress}%</span>
         </div>
-        <div style={{ display: "flex", gap: 8, flex: "none" }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: "flex", gap: 8 }} onClick={(e) => e.stopPropagation()}>
           <button
             className="abtn"
+            style={{ flex: 1 }}
             onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learning" })}
             disabled={s.total - s.learned <= 0}
             title="Фразы, ещё не достигшие 100%"
@@ -190,6 +189,7 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
           </button>
           <button
             className="lbtn"
+            style={{ flex: 1 }}
             onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learned" })}
             disabled={s.learned <= 0}
             title="Уже выученные фразы — повторить"
