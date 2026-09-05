@@ -424,6 +424,18 @@ export function ListenSection() {
         Выбери уроки — и слушай подряд: русская фраза → пауза → английский ×3. Руки свободны.
       </p>
 
+      {/* Кнопка запуска — сверху вкладки. */}
+      {lessons && lessons.length > 0 && (
+        <button
+          className="wbtn wbtn-lg"
+          onClick={start}
+          disabled={selectedCount === 0 || building}
+          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, alignSelf: "center" }}
+        >
+          {building ? <Spinner /> : <><IconPlay /> Слушать ({selectedCount})</>}
+        </button>
+      )}
+
       {!ttsAvailable && (
         <div className="wcard-sm" style={{ color: "var(--danger-2)", fontSize: 13 }}>
           Серверная озвучка недоступна — будет использован голос браузера (качество ниже).
@@ -558,15 +570,6 @@ export function ListenSection() {
             })}
           </div>
         ))
-      )}
-
-      {/* Кнопка запуска */}
-      {lessons && lessons.length > 0 && (
-        <div style={{ position: "sticky", bottom: 0, display: "flex", justifyContent: "center", paddingTop: 8 }}>
-          <button className="wbtn wbtn-lg" onClick={start} disabled={selectedCount === 0 || building} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-            {building ? <Spinner /> : <><IconPlay /> Слушать ({selectedCount})</>}
-          </button>
-        </div>
       )}
     </div>
   );

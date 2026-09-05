@@ -49,13 +49,12 @@ async function ensureBuffer(text: string, voice: string): Promise<AudioBuffer | 
 async function playBufferAndWait(buf: AudioBuffer, rate: number, signal?: AbortSignal): Promise<boolean> {
   const ctx0 = getAudioContext();
   if (!ctx0) return false;
-  // Контекст мог «уснуть»/«прерваться» после круга — будим и ЖДЁМ.
+  // Контекст мог «уснуть»/«прерваться» — будим и ЖДЁМ. Даже если не удалось
+  // (iOS без жеста) — всё равно пытаемся играть: суспенд-контекст доиграет при
+  // ближайшем resume, и это не должно рушить озвучку карточек (был регресс).
   if (ctx0.state !== "running") {
     try { await ctx0.resume(); } catch {}
   }
-  // Всё ещё не running (iOS иногда застревает после круга) — не играем молча,
-  // отдаём false, чтобы вызывающий переключился на <audio>-элемент.
-  if (ctx0.state !== "running") return false;
   await new Promise<void>((resolve) => {
     const ctx = getAudioContext();
     if (!ctx) return resolve();

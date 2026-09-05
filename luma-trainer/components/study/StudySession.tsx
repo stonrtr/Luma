@@ -435,6 +435,17 @@ export function StudySession({
 
   // Карточка — сетка из 3 рядов (1fr auto 1fr): главное слово всегда в центре,
   // поэтому при перевороте перевод оказывается ровно там же, где было англ. слово.
+  // Оттенок карточки по направлению свайпа: влево — красный (не вспомнил),
+  // вверх — зелёный (легко), вправо — жёлтый (с трудом).
+  const dragMag = Math.max(Math.abs(dragDx), Math.abs(dragDy));
+  let swipeRgb: string | null = null;
+  if (dragMag > 8) {
+    if (Math.abs(dragDy) >= Math.abs(dragDx) && dragDy < 0) swipeRgb = "76,222,128"; // вверх — зелёный
+    else if (dragDx < 0) swipeRgb = "255,90,90"; // влево — красный
+    else if (dragDx > 0) swipeRgb = "255,190,60"; // вправо — жёлтый
+  }
+  const swipeOpacity = swipeRgb ? Math.min(0.5, dragMag / 180) : 0;
+
   const stage = card && (
     <div
       key={`${index}-${flipped ? "b" : "f"}`}
@@ -451,11 +462,13 @@ export function StudySession({
         rowGap: "clamp(10px, 2vh, 18px)",
         textAlign: "center",
         padding: "clamp(20px, 3.5vh, 40px) clamp(18px, 4vw, 40px)",
-        border: "1.5px dashed rgba(255,255,255,0.35)",
+        border: swipeRgb ? `1.5px solid rgba(${swipeRgb},${Math.min(1, swipeOpacity * 2.2)})` : "1.5px dashed rgba(255,255,255,0.35)",
         borderRadius: 28,
         cursor: "pointer",
+        background: swipeRgb ? `rgba(${swipeRgb},${swipeOpacity * 0.35})` : undefined,
+        boxShadow: swipeRgb ? `0 0 46px rgba(${swipeRgb},${swipeOpacity})` : undefined,
         transform: dragDx || dragDy ? `translate(${dragDx}px, ${dragDy}px) rotate(${dragDx * 0.05}deg)` : undefined,
-        transition: dragAnim ? "transform 0.2s ease" : "none",
+        transition: dragAnim ? "transform 0.2s ease, background 0.2s ease, border-color 0.2s ease" : "background 0.12s, border-color 0.12s",
         touchAction: "none",
       }}
       onTouchStart={onCardTouchStart}
