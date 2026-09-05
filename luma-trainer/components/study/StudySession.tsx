@@ -5,7 +5,7 @@ import type { PhraseCard, Rating } from "@/lib/types";
 import { maskAnswer, isFullyRevealed, hintLetterCount } from "@/lib/hint";
 import { difficultyBand } from "@/lib/difficulty";
 import { nextProgress } from "@/lib/srs";
-import { prefetchEnglish, speakEnglish } from "@/lib/tts-client";
+import { prefetchEnglish, speakEnglish, stopAudio } from "@/lib/tts-client";
 import { playSfx } from "@/lib/sfx";
 import { useApp } from "../app-context";
 import type { StudyScope } from "../app-context";
@@ -86,6 +86,12 @@ export function StudySession({
   const [editing, setEditing] = useState(false);
   const [editVal, setEditVal] = useState("");
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
+  // Свайп-оценка на мобиле: влево — «Не вспомнил», вправо — «С трудом».
+  const [dragDx, setDragDx] = useState(0);
+  const [dragAnim, setDragAnim] = useState(false);
+  const dragStartX = useRef<number | null>(null);
+  const dragDxRef = useRef(0);
+  const dragMoved = useRef(false);
   const [reviewedCount, setReviewedCount] = useState(0);
   // Итог сессии: сколько ответов каждого типа (подсказка считается как «Не вспомнил»).
   const [counts, setCounts] = useState({ easy: 0, hard: 0, again: 0 });
@@ -137,33 +143,38 @@ export function StudySession({
   const question = card ? (showFirst === "en" ? card.english : card.russian) : "";
   const answer = card ? (showFirst === "en" ? card.russian : card.english) : "";
   const questionIsEn = showFirst === "en";
-  const exampleQ = card ? (questionIsEn ? card.exampleEn : card.exampleRu) : "";
+  const exampleQ = card ? (questionIsEn ? card.exampleEn : card.exampleRu) : ""; // пример стороны вопроса
+  const exampleA = card ? (questionIsEn ? card.exampleRu : card.exampleEn) : ""; // пример стороны ответа
+  // Видимая сторона карточки (крупное слово): вопрос до переворота, ответ после.
+  const visibleText = flipped ? answer : question;
 
-  const playEnglish = useCallback(() => {
-    if (card?.english) speakEnglish(card.english, settings.voice, settings.speechRate);
-  }, [card, settings.voice, settings.speechRate]);
+  // Озвучиваем ТУ сторону, что видна: русскую — по-русски, английскую — по-английски.
+  const speakVisible = useCallback(() => {
+    if (visibleText) speakEnglish(visibleText, settings.voice, settings.speechRate);
+  }, [visibleText, settings.voice, settings.speechRate]);
 
   const open = useCallback(() => {
     if (flipped || !card) return;
     playSfx("flip");
+    stopAudio(); // при листании не доигрываем прошлую сторону
     setFlipped(true);
   }, [flipped, card]);
 
   const close = useCallback(() => {
     if (!flipped) return;
     playSfx("flip");
+    stopAudio();
     setFlipped(false);
     setEditing(false);
   }, [flipped]);
 
-  // Английский проговаривается, КОГДА видна английская сторона карточки:
-  // - showFirst="en" → английский на лице (виден при !flipped);
-  // - showFirst="ru" → английский на обороте (виден при flipped).
-  // Триггеры: новая карточка (card?.id) и переворот (flipped). Не на оценку.
-  const englishVisible = (showFirst === "en" && !flipped) || (showFirst === "ru" && flipped);
+  // Проговаривание видимой стороны при новой карточке и при перевороте.
   useEffect(() => {
-    if (!card || !settings.autoPlay || !englishVisible) return;
-    const t = setTimeout(playEnglish, 250);
+    if (!card || !settings.autoPlay) return;
+    const text = flipped ? answer : question;
+    const t = setTimeout(() => {
+      if (text) speakEnglish(text, settings.voice, settings.speechRate);
+    }, 200);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [card?.id, flipped, showFirst, settings.autoPlay]);
@@ -216,6 +227,45 @@ export function StudySession({
     [card, usedHint, advance, index, settings.animationsEnabled]
   );
 
+  // Свайп-оценка (только после показа ответа): улетание карточки + оценка.
+  const SWIPE_TH = 90;
+  const flyGrade = (rating: Rating, dir: number) => {
+    setDragAnim(true);
+    setDragDx(dir * (typeof window !== "undefined" ? window.innerWidth : 500));
+    setTimeout(() => {
+      setDragAnim(false);
+      setDragDx(0);
+      dragDxRef.current = 0;
+      grade(rating);
+    }, 180);
+  };
+  const onCardTouchStart = (e: React.TouchEvent) => {
+    // Свайп-оценка доступен на любой стороне карточки (и англ., и рус.).
+    if (busy.current || editing) return;
+    dragStartX.current = e.touches[0].clientX;
+    dragMoved.current = false;
+    setDragAnim(false);
+  };
+  const onCardTouchMove = (e: React.TouchEvent) => {
+    if (dragStartX.current == null) return;
+    const dx = e.touches[0].clientX - dragStartX.current;
+    if (Math.abs(dx) > 6) dragMoved.current = true;
+    dragDxRef.current = dx;
+    setDragDx(dx);
+  };
+  const onCardTouchEnd = () => {
+    if (dragStartX.current == null) return;
+    dragStartX.current = null;
+    const dx = dragDxRef.current;
+    if (dx <= -SWIPE_TH) flyGrade("again", -1);
+    else if (dx >= SWIPE_TH) flyGrade("hard", 1);
+    else {
+      setDragAnim(true);
+      setDragDx(0);
+      dragDxRef.current = 0;
+    }
+  };
+
   // Хоткеи (§6): не срабатывают в полях ввода. Встроенная карточка
   // отключает их, пока открыт полноэкранный оверлей, чтобы не было двойной обработки.
   const keysDisabled = embedded && studyOpen;
@@ -251,19 +301,19 @@ export function StudySession({
           if (flipped) grade("easy");
           break;
         case "Shift":
-          playEnglish();
+          speakVisible();
           break;
         case "Escape":
           if (onClose) onClose();
           break;
         default:
           // V — озвучить (учитываем русскую раскладку: клавиша V печатает «м»)
-          if (e.key.toLowerCase() === "v" || e.key.toLowerCase() === "м") playEnglish();
+          if (e.key.toLowerCase() === "v" || e.key.toLowerCase() === "м") speakVisible();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [card, flipped, open, close, doHint, grade, playEnglish, onClose, keysDisabled]);
+  }, [card, flipped, open, close, doHint, grade, speakVisible, onClose, keysDisabled]);
 
   const toggleStar = async () => {
     if (!card || !cards) return;
@@ -362,7 +412,7 @@ export function StudySession({
         />
         сложность {card.difficulty}/10
       </span>
-      <button aria-label="Озвучить" className="icon-btn icon-btn-sm" onClick={playEnglish}>
+      <button aria-label="Озвучить" className="icon-btn icon-btn-sm" onClick={speakVisible}>
         <SpeakerIcon />
       </button>
     </div>
@@ -389,10 +439,17 @@ export function StudySession({
         border: "1.5px dashed rgba(255,255,255,0.35)",
         borderRadius: 28,
         cursor: "pointer",
+        transform: dragDx ? `translateX(${dragDx}px) rotate(${dragDx * 0.05}deg)` : undefined,
+        transition: dragAnim ? "transform 0.2s ease" : "none",
+        touchAction: "pan-y",
       }}
+      onTouchStart={onCardTouchStart}
+      onTouchMove={onCardTouchMove}
+      onTouchEnd={onCardTouchEnd}
       onClick={(e) => {
         // Тап/клик по карточке переворачивает её. Клики по кнопкам и полям — не трогаем.
         if ((e.target as HTMLElement).closest("button, a, input, select, textarea")) return;
+        if (dragMoved.current) { dragMoved.current = false; return; } // это был свайп, не тап
         if (flipped) close();
         else open();
       }}
@@ -571,22 +628,18 @@ export function StudySession({
           </>
         ) : (
           <>
-            {card.exampleEn && card.exampleRu && (
+            {exampleA && (
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 3,
                   maxWidth: 560,
                   textAlign: "center",
-                  color: "rgba(255,255,255,0.92)",
+                  color: "rgba(255,255,255,0.9)",
                   fontStyle: "italic",
                   fontSize: "clamp(13px, 1.4vw, 16px)",
                   lineHeight: 1.4,
                 }}
               >
-                <span>{card.exampleEn}</span>
-                <span style={{ opacity: 0.6 }}>{card.exampleRu}</span>
+                {exampleA}
               </div>
             )}
             {card.alternativeTranslations.length > 0 && card.reviewCount < 2 ? (
@@ -626,6 +679,8 @@ export function StudySession({
                 </span>
               )
             )}
+            {/* Кнопки оценки — на мобиле скрыты (оценка свайпом карточки). */}
+            <div className="grade-area">
             {usedHint ? (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
                 <span className="gpill" style={{ fontSize: 13 }}>подсказка использована — засчитывается как «Не вспомнил»</span>
@@ -654,6 +709,8 @@ export function StudySession({
                 </button>
               </div>
             )}
+            </div>
+            <div className="swipe-hint">← смахни: не вспомнил · с трудом →</div>
           </>
         )}
       </div>
@@ -835,7 +892,7 @@ export function StudySession({
             </button>
           )}
           {card && (
-            <button aria-label="Озвучить" className="icon-btn" style={{ width: 46, height: 46 }} onClick={playEnglish}>
+            <button aria-label="Озвучить" className="icon-btn" style={{ width: 46, height: 46 }} onClick={speakVisible}>
               <SpeakerIcon />
             </button>
           )}

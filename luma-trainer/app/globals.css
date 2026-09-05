@@ -108,6 +108,10 @@ button {
   background: var(--grad);
   pointer-events: none;
 }
+/* Подсказка про свайп-оценку — только на мобиле (см. @media ниже). */
+.swipe-hint {
+  display: none;
+}
 .content-col {
   flex: 1;
   width: 100%;
@@ -584,10 +588,16 @@ button {
     padding-top: 12px !important;
     padding-bottom: 12px !important;
   }
-  /* Кнопки оценки компактнее, чтобы влезали в один ряд (иначе перенос в 2 ряда
-     съедает высоту и контент с окном выбора перевода уезжает под экран). */
-  .grade-row {
-    gap: 8px !important;
+  /* На мобиле оценка — свайпом карточки: кнопки прячем, показываем подсказку. */
+  .grade-area {
+    display: none !important;
+  }
+  .swipe-hint {
+    display: block;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
   }
   .grade-btn {
     min-height: 46px !important;
