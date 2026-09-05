@@ -27,8 +27,8 @@ async function req<T>(url: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   get: <T>(url: string) => req<T>(url),
-  post: <T>(url: string, body?: unknown) =>
-    req<T>(url, { method: "POST", body: JSON.stringify(body ?? {}) }),
+  post: <T>(url: string, body?: unknown, init?: RequestInit) =>
+    req<T>(url, { method: "POST", body: JSON.stringify(body ?? {}), ...init }),
   patch: <T>(url: string, body?: unknown) =>
     req<T>(url, { method: "PATCH", body: JSON.stringify(body ?? {}) }),
   del: <T>(url: string) => req<T>(url, { method: "DELETE" }),
@@ -67,7 +67,8 @@ export const A = {
       `/api/study?scope=${scope}${lessonId ? `&lessonId=${lessonId}` : ""}${filter ? `&filter=${filter}` : ""}`
     ),
   review: (cardId: string, rating: string, usedHint: boolean) =>
-    api.post<{ card: PhraseCard; intervalDays: number }>("/api/review", { cardId, rating, usedHint }),
+    // keepalive: браузер дошлёт оценку, даже если PWA сразу закрыли (свайп не ждёт ответа).
+    api.post<{ card: PhraseCard; intervalDays: number }>("/api/review", { cardId, rating, usedHint }, { keepalive: true }),
   rules: (archived = false) => api.get<GrammarRule[]>(`/api/rules?archived=${archived}`),
   createRule: (query: string) => api.post<GrammarRule>("/api/rules", { query }),
   rule: (id: string) => api.get<GrammarRule>(`/api/rules/${id}`),
