@@ -179,7 +179,7 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
           </div>
           <div style={{ color: "var(--ink-2)", fontSize: 11, textAlign: "right", marginTop: 3, fontWeight: 700 }}>{s.progress}%</div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: "none" }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: "flex", gap: 8, flex: "none" }} onClick={(e) => e.stopPropagation()}>
           <button
             className="abtn"
             onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learning" })}
