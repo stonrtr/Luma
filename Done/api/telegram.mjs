@@ -33,6 +33,8 @@ export default async function handler(req, res) {
     const msg = update.message || update.edited_message;
     const text = (msg && typeof msg.text === "string" ? msg.text : "").trim();
     const chatId = msg && msg.chat ? msg.chat.id : null;
+    // Запоминаем chat_id — сюда утренний cron будет слать план дня.
+    if (chatId) { try { await redis(["SET", "done:chat", String(chatId)]); } catch { /* ignore */ } }
     if (text && !text.startsWith("/")) {
       const today = text.startsWith("!");
       const title = (today ? text.slice(1) : text).trim();

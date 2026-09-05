@@ -188,6 +188,33 @@ function GoogleSync() {
   return null;
 }
 
+/** Выгрузка компактного снимка привычек и задач в Upstash — чтобы серверный
+ *  утренний cron мог собрать план дня даже при закрытом приложении. */
+function SnapshotSync() {
+  const { data } = useStore();
+  const sk = data.settings?.captureBot?.syncKey;
+  const base = (data.settings?.captureBot?.apiBase ?? "").replace(/\/$/, "");
+  useEffect(() => {
+    if (!sk) return;
+    const t = setTimeout(() => {
+      const habits = data.habits.map((h) => ({
+        id: h.id, name: h.name, schedule: h.schedule, daysOfWeek: h.daysOfWeek,
+        startDate: h.startDate, endDate: h.endDate ?? null, timesPerDay: h.timesPerDay,
+        showInHabits: h.showInHabits, archived: h.archived ?? false, time: h.time ?? null,
+      }));
+      const tasks = data.tasks
+        .filter((x) => !x.deletedAt && x.date)
+        .map((x) => ({ id: x.id, title: x.title, date: x.date, timeStart: x.timeStart ?? null, completedAt: x.completedAt ?? null }));
+      fetch(`${base}/api/snapshot`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: sk, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, habits, tasks }),
+      }).catch(() => { /* нет сети — позже */ });
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [data.habits, data.tasks, sk, base]);
+  return null;
+}
+
 function Shell() {
   const [view, setView] = useState<View>({ kind: "today" });
   const [sidebarHidden, setSidebarHidden] = useState(false);
@@ -261,6 +288,7 @@ function Shell() {
       <ReminderScheduler />
       <TelegramCapture />
       <GoogleSync />
+      <SnapshotSync />
       {!sidebarHidden && (
         <div className="sidebar-desktop">
           <Sidebar view={view} setView={setView} onHide={() => setSidebarHidden(true)} onOpenSettings={() => setSettingsOpen(true)} />
