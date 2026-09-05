@@ -202,7 +202,8 @@ export function StudySession({
   }, [index, cards, effScope]);
 
   const grade = useCallback(
-    async (rating: Rating) => {
+    // immediate=true (свайп): сразу к следующей карточке, без паузы на анимацию.
+    async (rating: Rating, immediate = false) => {
       if (!card || busy.current) return;
       // Подсказка = «Не вспомнил»: открывал буквы — сам не вспомнил.
       const effective: Rating = usedHint ? "again" : rating;
@@ -210,17 +211,24 @@ export function StudySession({
       playSfx(effective === "easy" ? "success" : effective === "hard" ? "so-so" : "mistake");
       setFeedback(effective === "again" ? "bad" : "good");
       setCounts((c) => ({ ...c, [effective]: c[effective] + 1 }));
-      // Сразу двигаем прогресс-бар текущей карточки (анимация width 0.5s в .track),
-      // чтобы был мгновенный отклик на ответ, до перехода к следующей.
       const newProgress = nextProgress(card.progress, effective);
       setCards((cs) => (cs ? cs.map((c, i) => (i === index ? { ...c, progress: newProgress } : c)) : cs));
+
+      if (immediate) {
+        // Сохраняем в фоне, карточку меняем мгновенно (иначе прошлая «возвращается»).
+        void A.review(card.id, effective, usedHint).then(() => setReviewedCount((n) => n + 1)).catch(() => {});
+        busy.current = false;
+        advance();
+        return;
+      }
+
       try {
         await A.review(card.id, effective, usedHint);
         setReviewedCount((n) => n + 1);
       } catch {
         /* не блокируем сессию при ошибке сохранения */
       }
-      // Держим карточку чуть дольше, чтобы движение бара было заметно.
+      // Держим карточку чуть дольше, чтобы движение бара было заметно (кнопки на десктопе).
       const delay = settings.animationsEnabled ? 600 : 0;
       setTimeout(() => {
         busy.current = false;
@@ -246,9 +254,13 @@ export function StudySession({
     setDragDx(vx * w);
     setDragDy(vy * h);
     setTimeout(() => {
-      resetDrag();
+      // Без возврата в центр: обнуляем drag без анимации и сразу берём новую карточку.
       setDragAnim(false);
-      grade(rating);
+      setDragDx(0);
+      setDragDy(0);
+      dragDxRef.current = 0;
+      dragDyRef.current = 0;
+      grade(rating, true);
     }, 180);
   };
   const onCardTouchStart = (e: React.TouchEvent) => {
