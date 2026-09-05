@@ -31,6 +31,25 @@ async function tg(method, body) {
 async function enqueue(title, kind) {
   await redis(["RPUSH", "done:ideas", JSON.stringify({ title, kind, today: kind === "task", at: Date.now() })]);
 }
+// «Ожидающие выбора» храним в hash done:pending: поле = message_id, значение = {chat,text,at}.
+async function getAllPending() {
+  const out = await redis(["HGETALL", "done:pending"]);
+  const arr = out && out.result ? out.result : [];
+  const entries = [];
+  if (Array.isArray(arr)) { for (let i = 0; i < arr.length; i += 2) entries.push([arr[i], arr[i + 1]]); }
+  else if (arr && typeof arr === "object") { for (const k of Object.keys(arr)) entries.push([k, arr[k]]); }
+  return entries;
+}
+// Сбросить перечисленные ожидающие в идеи (и убрать кнопки у сообщений).
+async function flushToIdeas(entries) {
+  for (const [mid, raw] of entries) {
+    let p; try { p = JSON.parse(raw); } catch { p = null; }
+    if (!p || !p.text) { await redis(["HDEL", "done:pending", mid]); continue; }
+    await enqueue(p.text, "idea");
+    await redis(["HDEL", "done:pending", mid]);
+    if (p.chat) { try { await tg("editMessageText", { chat_id: p.chat, message_id: Number(mid), text: `💡 В идеи: ${p.text}` }); } catch { /* ignore */ } }
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") { res.status(200).send("ok"); return; }
@@ -48,13 +67,13 @@ export default async function handler(req, res) {
       const msgId = cq.message?.message_id;
       let text = "";
       if (msgId != null) {
-        const p = await redis(["GET", `done:pending:${msgId}`]);
-        text = p && p.result ? p.result : "";
+        const p = await redis(["HGET", "done:pending", String(msgId)]);
+        try { text = p && p.result ? (JSON.parse(p.result).text || "") : ""; } catch { text = ""; }
       }
       if (text) {
         const kind = cq.data === "task" ? "task" : "idea";
         await enqueue(text, kind);
-        await redis(["DEL", `done:pending:${msgId}`]);
+        await redis(["HDEL", "done:pending", String(msgId)]);
         const label = kind === "task" ? "✅ В задачи" : "💡 В идеи";
         await tg("editMessageText", { chat_id: chatId, message_id: msgId, text: `${label}: ${text}` });
       } else if (chatId && msgId != null) {
@@ -77,7 +96,10 @@ export default async function handler(req, res) {
         const title = text.slice(1).trim();
         if (title) { await enqueue(title, "task"); await tg("sendMessage", { chat_id: chatId, text: `✅ Задача на сегодня: ${title}` }); }
       } else {
-        // Спрашиваем кнопками, куда распределить.
+        // Новое сообщение: прошлые невыбранные — сразу в идеи.
+        const prev = await getAllPending();
+        if (prev.length) await flushToIdeas(prev);
+        // Спрашиваем кнопками, куда распределить текущее.
         const sent = await tg("sendMessage", {
           chat_id: chatId,
           text: `Куда добавить?\n«${text}»`,
@@ -87,7 +109,10 @@ export default async function handler(req, res) {
           ]] },
         });
         const mid = sent?.result?.message_id;
-        if (mid != null) await redis(["SET", `done:pending:${mid}`, text, "EX", 86400]);
+        if (mid != null) {
+          await redis(["HSET", "done:pending", String(mid), JSON.stringify({ chat: chatId, text, at: Date.now() })]);
+          await redis(["EXPIRE", "done:pending", 86400]);
+        }
       }
     }
   } catch { /* глотаем ошибку, чтобы Telegram не ретраил бесконечно */ }
