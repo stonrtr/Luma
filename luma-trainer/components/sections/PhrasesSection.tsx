@@ -137,28 +137,30 @@ export function PhrasesSection() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {(visible || []).map((p) => (
-            <div key={p.id} className="wcard-sm" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <Star active={p.favorite} onClick={() => toggleStar(p)} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontWeight: 800, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {p.english || "—"}
-                  </span>
-                  <span className={`diff-dot diff-${difficultyBand(p.difficulty)}`} />
+            <div key={p.id} className="wcard-sm" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Star active={p.favorite} onClick={() => toggleStar(p)} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontWeight: 800, color: "var(--ink)", overflowWrap: "anywhere" }}>
+                      {p.english || "—"}
+                    </span>
+                    <span className={`diff-dot diff-${difficultyBand(p.difficulty)}`} style={{ flex: "none" }} />
+                  </div>
+                  <div style={{ color: "var(--ink-2)", fontSize: 14, overflowWrap: "anywhere" }}>
+                    {p.translationStatus === "ready" ? p.russian : p.translationStatus === "pending" ? "Перевод загружается…" : "Перевод не удался"}
+                  </div>
+                  <div style={{ color: "var(--ink-3)", fontSize: 11, marginTop: 2, fontWeight: 600 }}>{p.lessonTitle}</div>
                 </div>
-                <div style={{ color: "var(--ink-2)", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {p.translationStatus === "ready" ? p.russian : p.translationStatus === "pending" ? "Перевод загружается…" : "Перевод не удался"}
-                </div>
-                <div style={{ color: "var(--ink-3)", fontSize: 11, marginTop: 2, fontWeight: 600 }}>{p.lessonTitle}</div>
+                <button className="icon-btn" aria-label="Редактировать" onClick={() => setEditing(p)}><EditIcon /></button>
+                <button className="icon-btn icon-btn-danger" aria-label="Удалить" onClick={() => setDeleting(p)}><TrashIcon /></button>
               </div>
-              <div style={{ width: 90 }}>
-                <div className={`track ${p.known ? "is-known" : ""}`}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div className={`track ${p.known ? "is-known" : ""}`} style={{ flex: 1 }}>
                   <span style={{ width: `${p.progress}%` }} />
                 </div>
-                <div style={{ color: "var(--ink-2)", fontSize: 11, textAlign: "right", marginTop: 3, fontWeight: 700 }}>{p.progress}%</div>
+                <span style={{ color: "var(--ink-2)", fontSize: 11, fontWeight: 700, minWidth: 34, textAlign: "right" }}>{p.progress}%</span>
               </div>
-              <button className="icon-btn" aria-label="Редактировать" onClick={() => setEditing(p)}><EditIcon /></button>
-              <button className="icon-btn icon-btn-danger" aria-label="Удалить" onClick={() => setDeleting(p)}><TrashIcon /></button>
             </div>
           ))}
         </div>

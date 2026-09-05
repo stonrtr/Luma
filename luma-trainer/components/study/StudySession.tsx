@@ -86,11 +86,14 @@ export function StudySession({
   const [editing, setEditing] = useState(false);
   const [editVal, setEditVal] = useState("");
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
-  // Свайп-оценка на мобиле: влево — «Не вспомнил», вправо — «С трудом».
+  // Свайп-оценка на мобиле: влево — «Не вспомнил», вправо — «С трудом», вверх — «Легко».
   const [dragDx, setDragDx] = useState(0);
+  const [dragDy, setDragDy] = useState(0);
   const [dragAnim, setDragAnim] = useState(false);
   const dragStartX = useRef<number | null>(null);
+  const dragStartY = useRef(0);
   const dragDxRef = useRef(0);
+  const dragDyRef = useRef(0);
   const dragMoved = useRef(false);
   const [reviewedCount, setReviewedCount] = useState(0);
   // Итог сессии: сколько ответов каждого типа (подсказка считается как «Не вспомнил»).
@@ -227,15 +230,24 @@ export function StudySession({
     [card, usedHint, advance, index, settings.animationsEnabled]
   );
 
-  // Свайп-оценка (только после показа ответа): улетание карточки + оценка.
+  // Свайп-оценка: влево — «Не вспомнил», вправо — «С трудом», вверх — «Легко».
   const SWIPE_TH = 90;
-  const flyGrade = (rating: Rating, dir: number) => {
+  const resetDrag = () => {
     setDragAnim(true);
-    setDragDx(dir * (typeof window !== "undefined" ? window.innerWidth : 500));
+    setDragDx(0);
+    setDragDy(0);
+    dragDxRef.current = 0;
+    dragDyRef.current = 0;
+  };
+  const flyGrade = (rating: Rating, vx: number, vy: number) => {
+    const w = typeof window !== "undefined" ? window.innerWidth : 500;
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    setDragAnim(true);
+    setDragDx(vx * w);
+    setDragDy(vy * h);
     setTimeout(() => {
+      resetDrag();
       setDragAnim(false);
-      setDragDx(0);
-      dragDxRef.current = 0;
       grade(rating);
     }, 180);
   };
@@ -243,27 +255,30 @@ export function StudySession({
     // Свайп-оценка доступен на любой стороне карточки (и англ., и рус.).
     if (busy.current || editing) return;
     dragStartX.current = e.touches[0].clientX;
+    dragStartY.current = e.touches[0].clientY;
     dragMoved.current = false;
     setDragAnim(false);
   };
   const onCardTouchMove = (e: React.TouchEvent) => {
     if (dragStartX.current == null) return;
     const dx = e.touches[0].clientX - dragStartX.current;
-    if (Math.abs(dx) > 6) dragMoved.current = true;
+    const dy = e.touches[0].clientY - dragStartY.current;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) dragMoved.current = true;
     dragDxRef.current = dx;
+    dragDyRef.current = dy;
     setDragDx(dx);
+    setDragDy(dy);
   };
   const onCardTouchEnd = () => {
     if (dragStartX.current == null) return;
     dragStartX.current = null;
     const dx = dragDxRef.current;
-    if (dx <= -SWIPE_TH) flyGrade("again", -1);
-    else if (dx >= SWIPE_TH) flyGrade("hard", 1);
-    else {
-      setDragAnim(true);
-      setDragDx(0);
-      dragDxRef.current = 0;
-    }
+    const dy = dragDyRef.current;
+    // Вверх (преобладает вертикаль) → «Легко».
+    if (dy <= -SWIPE_TH && Math.abs(dy) >= Math.abs(dx)) flyGrade("easy", 0, -1);
+    else if (dx <= -SWIPE_TH) flyGrade("again", -1, 0);
+    else if (dx >= SWIPE_TH) flyGrade("hard", 1, 0);
+    else resetDrag();
   };
 
   // Хоткеи (§6): не срабатывают в полях ввода. Встроенная карточка
@@ -439,9 +454,9 @@ export function StudySession({
         border: "1.5px dashed rgba(255,255,255,0.35)",
         borderRadius: 28,
         cursor: "pointer",
-        transform: dragDx ? `translateX(${dragDx}px) rotate(${dragDx * 0.05}deg)` : undefined,
+        transform: dragDx || dragDy ? `translate(${dragDx}px, ${dragDy}px) rotate(${dragDx * 0.05}deg)` : undefined,
         transition: dragAnim ? "transform 0.2s ease" : "none",
-        touchAction: "pan-y",
+        touchAction: "none",
       }}
       onTouchStart={onCardTouchStart}
       onTouchMove={onCardTouchMove}
@@ -710,7 +725,7 @@ export function StudySession({
               </div>
             )}
             </div>
-            <div className="swipe-hint">← смахни: не вспомнил · с трудом →</div>
+            <div className="swipe-hint">смахни: ← не вспомнил · ↑ легко · с трудом →</div>
           </>
         )}
       </div>
