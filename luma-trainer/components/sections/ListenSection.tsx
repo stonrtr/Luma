@@ -420,33 +420,17 @@ export function ListenSection() {
       <div className="title-hero">
         слушать<span className="dim">.</span>
       </div>
-      <p className="muted" style={{ margin: 0, fontSize: 14 }}>
-        Выбери уроки — и слушай подряд: русская фраза → пауза → английский ×3. Руки свободны.
-      </p>
-
-      {/* Кнопка запуска — сверху вкладки. */}
-      {lessons && lessons.length > 0 && (
-        <button
-          className="wbtn wbtn-lg"
-          onClick={start}
-          disabled={selectedCount === 0 || building}
-          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, alignSelf: "center" }}
-        >
-          {building ? <Spinner /> : <><IconPlay /> Слушать ({selectedCount})</>}
-        </button>
-      )}
-
       {!ttsAvailable && (
         <div className="wcard-sm" style={{ color: "var(--danger-2)", fontSize: 13 }}>
           Серверная озвучка недоступна — будет использован голос браузера (качество ниже).
         </div>
       )}
 
-      {/* Настройки воспроизведения — подпись отдельной строкой, кнопки в один ряд */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div>
-          <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>Пауза</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+      {/* Настройки слева (метка + опции в строку), кнопка запуска справа. */}
+      <div style={{ display: "flex", gap: 14, alignItems: "stretch" }}>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span className="muted" style={{ fontSize: 12, minWidth: 62 }}>Пауза</span>
             {PAUSE_PRESETS.map((s) => (
               <button
                 key={s}
@@ -458,10 +442,8 @@ export function ListenSection() {
               </button>
             ))}
           </div>
-        </div>
-        <div>
-          <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>Повторов</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span className="muted" style={{ fontSize: 12, minWidth: 62 }}>Повторов</span>
             {REPEAT_PRESETS.map((n) => (
               <button
                 key={n}
@@ -473,23 +455,34 @@ export function ListenSection() {
               </button>
             ))}
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <button
+              className={withExample ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+              style={{ minHeight: 34, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
+              onClick={() => setWithExample((v) => !v)}
+            >
+              <IconPlus /> пример {withExample ? "вкл" : "выкл"}
+            </button>
+            <button
+              className={loop ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
+              style={{ minHeight: 34, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
+              onClick={() => setLoop((v) => !v)}
+            >
+              <IconRepeat /> повтор {loop ? "вкл" : "выкл"}
+            </button>
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        {lessons && lessons.length > 0 && (
           <button
-            className={withExample ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-            style={{ minHeight: 34, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
-            onClick={() => setWithExample((v) => !v)}
+            className="wbtn"
+            aria-label={`Слушать (${selectedCount})`}
+            onClick={start}
+            disabled={selectedCount === 0 || building}
+            style={{ flex: "none", alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, minWidth: 92, padding: "0 18px" }}
           >
-            <IconPlus /> пример {withExample ? "вкл" : "выкл"}
+            {building ? <Spinner /> : <><IconPlay /><span style={{ fontWeight: 800, fontSize: 18 }}>{selectedCount}</span></>}
           </button>
-          <button
-            className={loop ? "wbtn wbtn-sm" : "gbtn gbtn-sm"}
-            style={{ minHeight: 34, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
-            onClick={() => setLoop((v) => !v)}
-          >
-            <IconRepeat /> повтор {loop ? "вкл" : "выкл"}
-          </button>
-        </div>
+        )}
       </div>
 
       {lessons === null ? (
