@@ -126,10 +126,7 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
                 onClick={() => setView({ kind: "goal", id: g.id })}
               >
                 <span className="sb-icon">
-                  <span style={{
-                    width: 15, height: 15, borderRadius: "50%",
-                    border: "1.6px solid #c9c9c9", display: "block",
-                  }} />
+                  {g.icon ? <AreaIcon icon={g.icon} size={16} /> : <Target size={16} />}
                 </span>
                 {g.name}
                 <span className="sb-meta" title="Активные задачи и привычки">
