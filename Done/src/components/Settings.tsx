@@ -166,7 +166,7 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
             <span className="fic"><Send size={18} /></span>
             <div className="set-label">
               <div className="set-title">Захват идей через бота</div>
-              <div className="set-sub">Пишете боту — текст попадает во «Входящие», бот отвечает мгновенно даже при закрытом приложении. Префикс «!» делает задачу на сегодня.</div>
+              <div className="set-sub">Пишете боту — он предлагает кнопками добавить в идеи или в задачу (работает даже при закрытом приложении). Префикс «!» — сразу задача на сегодня.</div>
             </div>
             <Toggle on={cap.enabled} onChange={(v) => saveCap({ enabled: v, mode: "server" })} />
           </div>
