@@ -683,7 +683,7 @@ export function GoalDetail({ id, tab, setView }: { id: string; tab?: string; set
                 </div>
               </div>
             </div>
-            {goal.showRoadmap !== false && (
+            {goal.showRoadmap !== false && subgoals.length > 0 && (
               <RoadmapSection goal={goal} subgoals={subgoals} onAdd={() => setSubModal(true)} setView={setView} />
             )}
             <TasksSection goalId={goal.id} tasks={tasks} onOpen={setEditingTask} />
