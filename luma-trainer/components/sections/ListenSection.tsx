@@ -473,15 +473,18 @@ export function ListenSection() {
           </div>
         </div>
         {lessons && lessons.length > 0 && (
-          <button
-            className="wbtn"
-            aria-label={`Слушать (${selectedCount})`}
-            onClick={start}
-            disabled={selectedCount === 0 || building}
-            style={{ flex: "none", alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, minWidth: 92, padding: "0 18px" }}
-          >
-            {building ? <Spinner /> : <><IconPlay /><span style={{ fontWeight: 800, fontSize: 18 }}>{selectedCount}</span></>}
-          </button>
+          <div style={{ flex: "none", alignSelf: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <button
+              className="wbtn"
+              aria-label={`Слушать (${selectedCount})`}
+              onClick={start}
+              disabled={selectedCount === 0 || building}
+              style={{ width: 56, height: 56, minWidth: 56, borderRadius: "50%", padding: 0, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+            >
+              {building ? <Spinner /> : <IconPlay />}
+            </button>
+            <span style={{ fontWeight: 800, fontSize: 15, color: "#fff" }}>{selectedCount}</span>
+          </div>
         )}
       </div>
 
