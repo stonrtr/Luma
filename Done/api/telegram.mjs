@@ -1,17 +1,18 @@
-// Serverless-вебхук Telegram-бота захвата идей для приложения Done.
-// Telegram шлёт сюда сообщение → мы мгновенно отвечаем пользователю и кладём
-// идею в Upstash Redis. Приложение при открытии забирает идеи из хранилища.
+// Serverless-вебхук Telegram-бота захвата для приложения Done.
+// Постоянное меню снизу: «💡 В идеи» / «✅ В задачу». Пишете текст → он ждёт выбора,
+// тапаете кнопку меню → распределяется. Прошлое невыбранное уходит в идеи при новом
+// тексте или через 5 минут (досыпается в /api/ideas). «!текст» — сразу задача.
 //
-// Переменные окружения (задаются в Vercel → Project → Settings → Environment Variables):
-//   UPSTASH_REDIS_REST_URL   — REST URL базы Upstash Redis
-//   UPSTASH_REDIS_REST_TOKEN — REST-токен Upstash
-//   TG_BOT_TOKEN             — токен бота захвата (из @BotFather)
-//   SYNC_SECRET             — произвольная строка-секрет (та же, что в настройках приложения)
+// ENV: UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN, TG_BOT_TOKEN, SYNC_SECRET
 
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
 const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const BOT_TOKEN = process.env.TG_BOT_TOKEN;
 const SECRET = process.env.SYNC_SECRET;
+
+const IDEA_BTN = "💡 В идеи";
+const TASK_BTN = "✅ В задачу";
+const MENU = { keyboard: [[{ text: IDEA_BTN }, { text: TASK_BTN }]], resize_keyboard: true, is_persistent: true };
 
 async function redis(cmd) {
   const r = await fetch(REDIS_URL, {
@@ -27,94 +28,68 @@ async function tg(method, body) {
   });
   return r.json();
 }
-// Положить запись в очередь для приложения: kind = "idea" | "task".
+function say(chatId, text) { return tg("sendMessage", { chat_id: chatId, text, reply_markup: MENU }); }
 async function enqueue(title, kind) {
   await redis(["RPUSH", "done:ideas", JSON.stringify({ title, kind, today: kind === "task", at: Date.now() })]);
 }
-// «Ожидающие выбора» храним в hash done:pending: поле = message_id, значение = {chat,text,at}.
-async function getAllPending() {
-  const out = await redis(["HGETALL", "done:pending"]);
-  const arr = out && out.result ? out.result : [];
-  const entries = [];
-  if (Array.isArray(arr)) { for (let i = 0; i < arr.length; i += 2) entries.push([arr[i], arr[i + 1]]); }
-  else if (arr && typeof arr === "object") { for (const k of Object.keys(arr)) entries.push([k, arr[k]]); }
-  return entries;
-}
-// Сбросить перечисленные ожидающие в идеи (и убрать кнопки у сообщений).
-async function flushToIdeas(entries) {
-  for (const [mid, raw] of entries) {
-    let p; try { p = JSON.parse(raw); } catch { p = null; }
-    if (!p || !p.text) { await redis(["HDEL", "done:pending", mid]); continue; }
-    await enqueue(p.text, "idea");
-    await redis(["HDEL", "done:pending", mid]);
-    if (p.chat) { try { await tg("editMessageText", { chat_id: p.chat, message_id: Number(mid), text: `💡 В идеи: ${p.text}` }); } catch { /* ignore */ } }
-  }
+async function getAwait() {
+  const p = await redis(["GET", "done:await"]);
+  if (!p || !p.result) return null;
+  try { return JSON.parse(p.result); } catch { return null; }
 }
 
 export default async function handler(req, res) {
   if (req.method !== "POST") { res.status(200).send("ok"); return; }
-  // Проверяем секрет, которым Telegram подписывает вебхук (secret_token при регистрации).
   if (SECRET && req.headers["x-telegram-bot-api-secret-token"] !== SECRET) {
     res.status(401).send("forbidden"); return;
   }
   try {
     const update = req.body || {};
 
-    // --- Нажата кнопка выбора: в идеи или в задачу ---
+    // Старые инлайн-кнопки больше не используются — просто гасим «часики».
     if (update.callback_query) {
-      const cq = update.callback_query;
-      const chatId = cq.message?.chat?.id;
-      const msgId = cq.message?.message_id;
-      let text = "";
-      if (msgId != null) {
-        const p = await redis(["HGET", "done:pending", String(msgId)]);
-        try { text = p && p.result ? (JSON.parse(p.result).text || "") : ""; } catch { text = ""; }
-      }
-      if (text) {
-        const kind = cq.data === "task" ? "task" : "idea";
-        await enqueue(text, kind);
-        await redis(["HDEL", "done:pending", String(msgId)]);
-        const label = kind === "task" ? "✅ В задачи" : "💡 В идеи";
-        await tg("editMessageText", { chat_id: chatId, message_id: msgId, text: `${label}: ${text}` });
-      } else if (chatId && msgId != null) {
-        await tg("editMessageText", { chat_id: chatId, message_id: msgId, text: "⏳ Запись устарела — отправьте текст заново." });
-      }
-      await tg("answerCallbackQuery", { callback_query_id: cq.id });
+      await tg("answerCallbackQuery", { callback_query_id: update.callback_query.id, text: "Используйте меню снизу 👇" });
       res.status(200).send("ok"); return;
     }
 
-    // --- Текстовое сообщение ---
     const msg = update.message || update.edited_message;
     const text = (msg && typeof msg.text === "string" ? msg.text : "").trim();
     const chatId = msg && msg.chat ? msg.chat.id : null;
-    // Запоминаем chat_id — сюда утренний cron будет слать план дня.
-    if (chatId) { try { await redis(["SET", "done:chat", String(chatId)]); } catch { /* ignore */ } }
+    if (!chatId || !BOT_TOKEN) { res.status(200).send("ok"); return; }
+    try { await redis(["SET", "done:chat", String(chatId)]); } catch { /* ignore */ }
 
-    if (text && !text.startsWith("/") && chatId && BOT_TOKEN) {
-      if (text.startsWith("!")) {
-        // Быстрый путь: «!текст» — сразу задача на сегодня, без кнопок.
-        const title = text.slice(1).trim();
-        if (title) { await enqueue(title, "task"); await tg("sendMessage", { chat_id: chatId, text: `✅ Задача на сегодня: ${title}` }); }
+    // /start — показать меню
+    if (text === "/start") {
+      await say(chatId, "Привет! Пишите текст — распределяйте кнопками ниже: «В идеи» или «В задачу». Префикс «!» — сразу задача на сегодня.");
+      res.status(200).send("ok"); return;
+    }
+
+    // Нажата кнопка меню — распределить ожидающее
+    if (text === IDEA_BTN || text === TASK_BTN) {
+      const aw = await getAwait();
+      if (aw && aw.text) {
+        const kind = text === TASK_BTN ? "task" : "idea";
+        await enqueue(aw.text, kind);
+        await redis(["DEL", "done:await"]);
+        await say(chatId, `${kind === "task" ? "✅ В задачи" : "💡 В идеи"}: ${aw.text}`);
       } else {
-        // Новое сообщение: прошлые невыбранные — сразу в идеи.
-        const prev = await getAllPending();
-        if (prev.length) await flushToIdeas(prev);
-        // Спрашиваем кнопками, куда распределить текущее.
-        const sent = await tg("sendMessage", {
-          chat_id: chatId,
-          text: `Куда добавить?\n«${text}»`,
-          reply_markup: { inline_keyboard: [[
-            { text: "💡 В идеи", callback_data: "idea" },
-            { text: "✅ В задачу", callback_data: "task" },
-          ]] },
-        });
-        const mid = sent?.result?.message_id;
-        if (mid != null) {
-          await redis(["HSET", "done:pending", String(mid), JSON.stringify({ chat: chatId, text, at: Date.now() })]);
-          await redis(["EXPIRE", "done:pending", 86400]);
-        }
+        await say(chatId, "Нечего распределять — сначала пришлите текст.");
+      }
+      res.status(200).send("ok"); return;
+    }
+
+    if (text && !text.startsWith("/")) {
+      if (text.startsWith("!")) {
+        const title = text.slice(1).trim();
+        if (title) { await enqueue(title, "task"); await say(chatId, `✅ Задача на сегодня: ${title}`); }
+      } else {
+        // Новый текст: прошлое невыбранное — в идеи.
+        const prev = await getAwait();
+        if (prev && prev.text) await enqueue(prev.text, "idea");
+        await redis(["SET", "done:await", JSON.stringify({ chat: chatId, text, at: Date.now() }), "EX", 86400]);
+        await say(chatId, `Куда добавить?\n«${text}»\nВыберите кнопкой ниже 👇`);
       }
     }
-  } catch { /* глотаем ошибку, чтобы Telegram не ретраил бесконечно */ }
+  } catch { /* глотаем ошибку, чтобы Telegram не ретраил */ }
   res.status(200).send("ok");
 }

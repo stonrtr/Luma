@@ -16,28 +16,22 @@ async function redis(cmd) {
   return r.json();
 }
 
-// Сбросить «ожидающие выбора» старше 5 минут — в идеи (и убрать кнопки).
+// Сбросить «ожидающий выбора» старше 5 минут — в идеи.
 async function sweepPending() {
-  const out = await redis(["HGETALL", "done:pending"]);
-  const arr = out && out.result ? out.result : [];
-  const entries = [];
-  if (Array.isArray(arr)) { for (let i = 0; i < arr.length; i += 2) entries.push([arr[i], arr[i + 1]]); }
-  else if (arr && typeof arr === "object") { for (const k of Object.keys(arr)) entries.push([k, arr[k]]); }
-  const now = Date.now();
-  for (const [mid, raw] of entries) {
-    let p; try { p = JSON.parse(raw); } catch { p = null; }
-    if (!p) { await redis(["HDEL", "done:pending", mid]); continue; }
-    if (now - (p.at || 0) < AUTO_MS) continue;
-    await redis(["RPUSH", "done:ideas", JSON.stringify({ title: p.text, kind: "idea", today: false, at: now })]);
-    await redis(["HDEL", "done:pending", mid]);
-    if (BOT_TOKEN && p.chat) {
-      try {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: p.chat, message_id: Number(mid), text: `💡 В идеи (авто): ${p.text}` }),
-        });
-      } catch { /* ignore */ }
-    }
+  const g = await redis(["GET", "done:await"]);
+  if (!g || !g.result) return;
+  let p; try { p = JSON.parse(g.result); } catch { p = null; }
+  if (!p) { await redis(["DEL", "done:await"]); return; }
+  if (Date.now() - (p.at || 0) < AUTO_MS) return;
+  await redis(["RPUSH", "done:ideas", JSON.stringify({ title: p.text, kind: "idea", today: false, at: Date.now() })]);
+  await redis(["DEL", "done:await"]);
+  if (BOT_TOKEN && p.chat) {
+    try {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: p.chat, text: `💡 В идеи (авто): ${p.text}` }),
+      });
+    } catch { /* ignore */ }
   }
 }
 
