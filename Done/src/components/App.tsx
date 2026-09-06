@@ -93,7 +93,9 @@ function TelegramCapture() {
         if (j?.ok && Array.isArray(j.ideas)) {
           for (const it of j.ideas) {
             const title = String(it?.title ?? "").trim();
-            if (title) addRef.current({ title, date: it?.today ? todayKey() : null });
+            if (!title) continue;
+            const date = it?.date ?? (it?.today ? todayKey() : null);
+            addRef.current({ title, date, goalId: it?.goalId ?? null });
           }
         }
       } catch { /* нет сети/функции — тихо повторим */ }
@@ -203,11 +205,14 @@ function SnapshotSync() {
         showInHabits: h.showInHabits, archived: h.archived ?? false, time: h.time ?? null,
       }));
       const tasks = data.tasks
-        .filter((x) => !x.deletedAt && x.date)
-        .map((x) => ({ id: x.id, title: x.title, date: x.date, timeStart: x.timeStart ?? null, completedAt: x.completedAt ?? null }));
+        .filter((x) => !x.deletedAt)
+        .map((x) => ({ id: x.id, title: x.title, date: x.date ?? null, timeStart: x.timeStart ?? null, completedAt: x.completedAt ?? null, goalId: x.goalId ?? null }));
+      const goals = data.goals
+        .filter((g) => !g.parentId)
+        .map((g) => ({ id: g.id, name: g.name, completedAt: g.completedAt ?? null, archived: g.archived ?? false, areaId: g.areaId ?? null }));
       fetch(`${base}/api/snapshot`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: sk, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, habits, tasks }),
+        body: JSON.stringify({ key: sk, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, habits, tasks, goals }),
       }).catch(() => { /* нет сети — позже */ });
     }, 4000);
     return () => clearTimeout(t);

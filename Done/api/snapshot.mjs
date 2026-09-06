@@ -29,6 +29,7 @@ export default async function handler(req, res) {
       tz: b.tz || "UTC",
       habits: Array.isArray(b.habits) ? b.habits : [],
       tasks: Array.isArray(b.tasks) ? b.tasks : [],
+      goals: Array.isArray(b.goals) ? b.goals : [],
       at: Date.now(),
     };
     await redis(["SET", "done:snapshot", JSON.stringify(snapshot)]);
