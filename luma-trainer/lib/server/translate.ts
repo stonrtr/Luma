@@ -103,23 +103,34 @@ export async function translateFast(text: string): Promise<FastTranslation> {
   const src: "en" | "ru" = detectLanguage(clean); // язык ввода
   const target = src === "ru" ? "English" : "Russian";
   const targetIsEn = target === "English";
-  const { result } = await askJson<string[]>(
-    fastSystem(target),
-    `${src === "ru" ? "Russian" : "English"}: "${clean}". Translate to ${target} only.`,
-    (o): string[] | null => {
-      const obj = o as { best?: unknown; alternatives?: unknown };
-      const norm = (s: string) => normalize(s);
-      const best = typeof obj.best === "string" ? norm(obj.best) : "";
-      const alts = Array.isArray(obj.alternatives)
-        ? obj.alternatives.filter((x): x is string => typeof x === "string").map(norm)
-        : [];
-      // Оставляем только варианты на нужном языке: EN — без кириллицы; RU — с кириллицей.
-      const okLang = (s: string) => (targetIsEn ? !hasCyrillic(s) : hasCyrillic(s));
-      const pool = [best, ...alts].filter((s) => s && okLang(s));
-      if (pool.length === 0) return null; // не тот язык — считаем неудачей, ретрай
-      return Array.from(new Set(pool)).slice(0, 6);
-    },
-    { models: ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"], timeoutMs: 12000 }
-  );
-  return { sourceLang: src, fixed: clean, candidates: result };
+  const okLang = (s: string) => (targetIsEn ? !hasCyrillic(s) : hasCyrillic(s));
+
+  try {
+    const { result } = await askJson<string[]>(
+      fastSystem(target),
+      `${src === "ru" ? "Russian" : "English"}: "${clean}". Translate to ${target} only.`,
+      (o): string[] | null => {
+        const obj = o as { best?: unknown; alternatives?: unknown };
+        const norm = (s: string) => normalize(s);
+        const best = typeof obj.best === "string" ? norm(obj.best) : "";
+        const alts = Array.isArray(obj.alternatives)
+          ? obj.alternatives.filter((x): x is string => typeof x === "string").map(norm)
+          : [];
+        const pool = [best, ...alts].filter((s) => s && okLang(s));
+        if (pool.length === 0) return null;
+        return Array.from(new Set(pool)).slice(0, 6);
+      },
+      { models: ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"], timeoutMs: 12000 }
+    );
+    return { sourceLang: src, fixed: clean, candidates: result };
+  } catch {
+    // Быстрый путь не справился (лимит/таймаут) → надёжный полный перевод.
+    const r = await translatePhrase(
+      src === "ru" ? { russian: clean, sourceLanguage: "ru" } : { english: clean, sourceLanguage: "en" }
+    );
+    const raw = targetIsEn ? [r.english, ...r.translations] : [...r.translations];
+    const pool = raw.map((s) => normalize(s)).filter((s) => s && okLang(s));
+    if (pool.length === 0) throw new Error("no translation");
+    return { sourceLang: src, fixed: clean, candidates: Array.from(new Set(pool)).slice(0, 6) };
+  }
 }
