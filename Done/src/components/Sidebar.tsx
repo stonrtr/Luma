@@ -27,7 +27,6 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
     (x) => !x.deletedAt && !x.completedAt && (x.date === t || (x.date && x.date < t))
   ).length;
   const favorites = data.goals.filter((g) => g.favorite && !g.parentId && !g.archived);
-  const favAreas = data.areas.filter((a) => a.favorite && !a.archived);
 
   const item = (
     v: View, icon: React.ReactNode, label: string,
@@ -86,7 +85,6 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
         </div>
         {lifeOpen && (
           <>
-            {item({ kind: "areas" }, <Heart size={17} />, "Сферы жизни")}
             {item({ kind: "goals" }, <Target size={17} />, "Цели")}
             {item({ kind: "habits" }, <Repeat size={17} />, "Привычки")}
             {item({ kind: "insights" }, <ChartBars size={17} />, "Аналитика")}
@@ -94,7 +92,7 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
         )}
       </div>
 
-      {(favorites.length > 0 || favAreas.length > 0) && (
+      {favorites.length > 0 && (
         <div className="sb-section">
           <div className="sb-heading">
             Избранное
@@ -102,16 +100,6 @@ export default function Sidebar({ view, setView, onHide, onOpenSettings }: { vie
               <button onClick={() => setFavOpen(!favOpen)}>{favOpen ? <ChevronDown size={13} /> : <ChevronUp size={13} />}</button>
             </span>
           </div>
-          {favOpen && favAreas.map((a) => (
-            <button
-              key={a.id}
-              className={`sb-item${view.kind === "area" && view.id === a.id ? " active" : ""}`}
-              onClick={() => setView({ kind: "area", id: a.id })}
-            >
-              <span className="sb-icon"><AreaIcon icon={a.icon} size={16} /></span>
-              {a.name}
-            </button>
-          ))}
           {favOpen && favorites.map((g) => {
             const taskCount = data.tasks.filter(
               (x) => x.goalId === g.id && !x.completedAt && !x.deletedAt
@@ -196,11 +184,10 @@ export function SearchModal({ onClose, setView }: { onClose: () => void; setView
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const ql = q.trim().toLowerCase();
   const match = (x: string, notes?: string) => x.toLowerCase().includes(ql) || (notes ?? "").toLowerCase().includes(ql);
-  const areas = ql ? data.areas.filter((a) => match(a.name)) : [];
   const goals = ql ? data.goals.filter((g) => match(g.name, g.description)) : [];
   const habits = ql ? data.habits.filter((h) => match(h.name, h.notes)) : [];
   const tasks = ql ? data.tasks.filter((x) => !x.deletedAt && match(x.title, x.notes)) : [];
-  const total = areas.length + goals.length + habits.length + tasks.length;
+  const total = goals.length + habits.length + tasks.length;
   const go = (v: View) => { setView(v); onClose(); };
 
   return (
@@ -209,12 +196,6 @@ export function SearchModal({ onClose, setView }: { onClose: () => void; setView
         <input className="finput" autoFocus placeholder="Поиск по задачам, целям, привычкам…"
           value={q} onChange={(e) => setQ(e.target.value)} />
         <div style={{ marginTop: 10 }}>
-          {areas.map((a) => (
-            <button key={a.id} className="menu-item" onClick={() => go({ kind: "area", id: a.id })}>
-              <span className="mi-check"><AreaIcon icon={a.icon} size={15} /></span>{a.name}
-              <span className="muted" style={{ marginLeft: "auto", fontSize: 12.5 }}>сфера</span>
-            </button>
-          ))}
           {goals.map((g) => (
             <button key={g.id} className="menu-item" onClick={() => go({ kind: "goal", id: g.id })}>
               <span className="mi-check"><Target size={15} /></span>{g.name}

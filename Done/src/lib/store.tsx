@@ -39,7 +39,7 @@ function seed(): AppData {
   return {
     settings: { theme: "system", lang: "ru", notifications: false },
     calendarEvents: [],
-    areas: DEFAULT_AREAS.map((a) => ({ ...a, id: uid() })),
+    areas: [],
     goals: [],
     tasks: [],
     habits: [],

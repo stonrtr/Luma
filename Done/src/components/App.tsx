@@ -10,7 +10,6 @@ import { taskHash } from "@/lib/google";
 import { PanelLeft, Burger, Check, CalendarUp, Repeat, Target, ChartBars, User, Plus } from "./icons";
 import { InboxView, TodayView, UpcomingView, AllTasksView, CompletedView, TrashView, TagView } from "./TaskViews";
 import { GoalsView, GoalDetail } from "./Goals";
-import { LifeAreasView, AreaDetail } from "./LifeAreas";
 import { HabitsView } from "./Habits";
 import { InsightsView } from "./Insights";
 
@@ -279,8 +278,6 @@ function Shell() {
     case "all": content = <AllTasksView />; break;
     case "completed": content = <CompletedView />; break;
     case "trash": content = <TrashView />; break;
-    case "areas": content = <LifeAreasView setView={setView} />; break;
-    case "area": content = <AreaDetail id={view.id} tab={view.tab} setView={setView} />; break;
     case "goals": content = <GoalsView setView={setView} />; break;
     case "goal": content = <GoalDetail id={view.id} tab={view.tab} setView={setView} />; break;
     case "habits": content = <HabitsView />; break;
@@ -337,7 +334,7 @@ function Shell() {
         <button className={view.kind === "habits" ? "active" : ""} onClick={() => nav({ kind: "habits" })}>
           <Repeat size={20} /><span>Привычки</span>
         </button>
-        <button className={["goals", "goal", "areas", "area"].includes(view.kind) ? "active" : ""} onClick={() => nav({ kind: "goals" })}>
+        <button className={["goals", "goal"].includes(view.kind) ? "active" : ""} onClick={() => nav({ kind: "goals" })}>
           <Target size={20} /><span>Цели</span>
         </button>
         <button className={view.kind === "insights" ? "active" : ""} onClick={() => nav({ kind: "insights" })}>

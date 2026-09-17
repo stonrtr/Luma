@@ -165,8 +165,6 @@ export type View =
   | { kind: "all" }
   | { kind: "completed" }
   | { kind: "trash" }
-  | { kind: "areas" }
-  | { kind: "area"; id: ID; tab?: string }
   | { kind: "goals" }
   | { kind: "goal"; id: ID; tab?: string }
   | { kind: "habits" }

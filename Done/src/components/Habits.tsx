@@ -397,13 +397,8 @@ export function HabitModal({ habit, onClose }: { habit?: Habit; onClose: () => v
         <div className="frow">
           <div className="flabel"><span className="fic"><Bolt size={17} /></span>Привязать к</div>
           <div className="fctrl">
-            <Select value={f.linkTo} placeholder="Выбрать" onChange={(v) => setF({ ...f, linkTo: v })}>
-              <optgroup label="Цели">
-                {goals.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-              </optgroup>
-              <optgroup label="Сферы жизни">
-                {data.areas.map((a) => <option key={a.id} value={`a:${a.id}`}>{a.name}</option>)}
-              </optgroup>
+            <Select value={f.linkTo} placeholder="Без цели" onChange={(v) => setF({ ...f, linkTo: v })}>
+              {goals.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
             </Select>
           </div>
         </div>
@@ -639,9 +634,7 @@ function HdSettings({ habit, onClose }: { habit: Habit; onClose: () => void }) {
 
   const linked = habit.goalId
     ? data.goals.find((g) => g.id === habit.goalId)?.name
-    : habit.areaId
-      ? data.areas.find((a) => a.id === habit.areaId)?.name
-      : null;
+    : null;
 
   const schedLabel = habit.schedule === "daily"
     ? "Каждый день"
@@ -655,7 +648,7 @@ function HdSettings({ habit, onClose }: { habit: Habit; onClose: () => void }) {
       <Dropdown trigger={
         <div className="hd-row click" style={{ color: linked ? undefined : "#9a9a9a" }}>
           <span className="fic"><Target size={17} /></span>
-          <span className="hd-val">{linked ?? "Цель или сфера жизни"}</span>
+          <span className="hd-val">{linked ?? "Без цели"}</span>
         </div>
       }>
         {(close) => (
@@ -664,14 +657,8 @@ function HdSettings({ habit, onClose }: { habit: Habit; onClose: () => void }) {
               <MenuItem key={g.id} selected={habit.goalId === g.id}
                 onClick={() => { updateHabit(habit.id, { goalId: g.id, areaId: null }); close(); }}>{g.name}</MenuItem>
             ))}
-            {data.areas.map((a) => (
-              <MenuItem key={a.id} selected={habit.areaId === a.id}
-                onClick={() => { updateHabit(habit.id, { areaId: a.id, goalId: null }); close(); }}>
-                <span className="cbar" style={{ background: a.color }} />{a.name}
-              </MenuItem>
-            ))}
-            <MenuItem selected={!habit.goalId && !habit.areaId}
-              onClick={() => { updateHabit(habit.id, { goalId: null, areaId: null }); close(); }}>Без привязки</MenuItem>
+            <MenuItem selected={!habit.goalId}
+              onClick={() => { updateHabit(habit.id, { goalId: null, areaId: null }); close(); }}>Без цели</MenuItem>
           </>
         )}
       </Dropdown>

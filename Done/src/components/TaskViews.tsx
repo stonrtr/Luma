@@ -62,13 +62,7 @@ export function TaskRow({ task, onClick, sub }: { task: Task; onClick?: () => vo
   let linked: { name: string; color: string } | null = null;
   if (task.goalId) {
     const g = data.goals.find((x) => x.id === task.goalId);
-    if (g) {
-      const area = data.areas.find((x) => x.id === g.areaId);
-      linked = { name: g.name, color: g.color ?? area?.color ?? "#6e6ade" };
-    }
-  } else if (task.areaId) {
-    const a = data.areas.find((x) => x.id === task.areaId);
-    if (a) linked = { name: a.name, color: a.color };
+    if (g) linked = { name: g.name, color: g.color ?? "#6e6ade" };
   }
 
   const dl = task.deadline && !task.completedAt ? daysBetween(t, task.deadline) : null;
@@ -231,21 +225,12 @@ export function AddTask({ defaults, simple }: { defaults?: Partial<Task>; simple
               {(close) => (
                 <>
                   {data.goals.filter((g) => !g.parentId).length > 0 && <div className="menu-label">Цели</div>}
-                  {data.goals.filter((g) => !g.parentId).map((g) => {
-                    const area = data.areas.find((a) => a.id === g.areaId);
-                    return (
-                      <MenuItem key={g.id} selected={link === g.id} onClick={() => { setLink(g.id); close(); }}>
-                        <span className="cbar" style={{ background: g.color ?? area?.color ?? "#6e6ade" }} />{g.name}
-                      </MenuItem>
-                    );
-                  })}
-                  <div className="menu-label">Сферы жизни</div>
-                  {data.areas.map((a) => (
-                    <MenuItem key={a.id} selected={link === `a:${a.id}`} onClick={() => { setLink(`a:${a.id}`); close(); }}>
-                      <span className="cbar" style={{ background: a.color }} />{a.name}
+                  {data.goals.filter((g) => !g.parentId).map((g) => (
+                    <MenuItem key={g.id} selected={link === g.id} onClick={() => { setLink(g.id); close(); }}>
+                      <span className="cbar" style={{ background: g.color ?? "#6e6ade" }} />{g.name}
                     </MenuItem>
                   ))}
-                  <MenuItem selected={!link} onClick={() => { setLink(""); close(); }}>Без привязки</MenuItem>
+                  <MenuItem selected={!link} onClick={() => { setLink(""); close(); }}>Без цели</MenuItem>
                 </>
               )}
             </Dropdown>
@@ -429,17 +414,9 @@ export function TaskModal({ task, onClose }: { task: Task; onClose: () => void }
         <div className="frow">
           <div className="flabel"><span className="fic"><Bolt size={17} /></span>Привязать к</div>
           <div className="fctrl">
-            <Select value={f.goalId ?? (f.areaId ? `a:${f.areaId}` : "")} placeholder="Выбрать"
-              onChange={(v) => {
-                if (v.startsWith("a:")) setF({ ...f, areaId: v.slice(2), goalId: null });
-                else setF({ ...f, goalId: v || null, areaId: null });
-              }}>
-              <optgroup label="Цели">
-                {goals.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-              </optgroup>
-              <optgroup label="Сферы жизни">
-                {data.areas.map((a) => <option key={a.id} value={`a:${a.id}`}>{a.name}</option>)}
-              </optgroup>
+            <Select value={f.goalId ?? ""} placeholder="Без цели"
+              onChange={(v) => setF({ ...f, goalId: v || null, areaId: null })}>
+              {goals.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
             </Select>
           </div>
         </div>
@@ -677,7 +654,7 @@ export function hasActiveFilters(f: TaskFilters): boolean {
 export function groupTasks(
   tasks: Task[],
   group: string,
-  data: { areas: { id: string; name: string }[]; goals: { id: string; areaId?: string | null }[] }
+  data: { goals: { id: string; name: string }[] }
 ): [string, Task[]][] {
   if (!group) return [["", tasks]];
   const buckets = new Map<string, Task[]>();
@@ -693,9 +670,8 @@ export function groupTasks(
       else push(fmtHuman(t.date), t);
     } else if (group === "priority") {
       push(t.priority === "High" ? "Высокий" : t.priority === "Medium" ? "Средний" : t.priority === "Low" ? "Низкий" : "Без приоритета", t);
-    } else if (group === "area") {
-      const areaId = t.areaId ?? data.goals.find((g) => g.id === t.goalId)?.areaId;
-      push(data.areas.find((a) => a.id === areaId)?.name ?? "Без сферы", t);
+    } else if (group === "goal") {
+      push(data.goals.find((g) => g.id === t.goalId)?.name ?? "Без цели", t);
     }
   }
   return [...buckets.entries()];
@@ -741,7 +717,7 @@ function FilterPopover({ onClose, filters, setFilters }: {
             options={[
               { v: "date", l: "По дате" },
               { v: "priority", l: "По приоритету" },
-              { v: "area", l: "По сфере жизни" },
+              { v: "goal", l: "По цели" },
             ]} />
         </div>
         <div className="pop-sep" />

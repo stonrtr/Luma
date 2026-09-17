@@ -114,14 +114,12 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
   const [showUpcoming, setShowUpcoming] = useState(false);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [sort, setSort] = useState("");
-  const [fArea, setFArea] = useState("");
   const [fImpact, setFImpact] = useState("");
   const [fStart, setFStart] = useState("");
   const [fDeadline, setFDeadline] = useState("");
 
   const isUpcomingGoal = (g: Goal) => !!g.startDate && g.startDate > todayKey();
   let goals = data.goals.filter((g) => !g.parentId && (showArchived || !g.archived) && (showCompleted || !g.completedAt) && (showUpcoming || !isUpcomingGoal(g)));
-  if (fArea) goals = goals.filter((g) => g.areaId === fArea);
   if (fImpact) goals = goals.filter((g) => g.impact === fImpact);
   const inPeriod = (key: string | null | undefined, period: string): boolean => {
     if (!key) return false;
@@ -176,11 +174,6 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
             <div className="pop-sep" />
             <div className="pop-sub">Фильтры</div>
             <div className="pop-row">
-              <div className="flabel"><span className="fic"><Heart size={16} /></span>Сферы жизни</div>
-              <PSel value={fArea} placeholder="Выбрать" onChange={setFArea}
-                options={data.areas.map((a) => ({ v: a.id, l: a.name }))} />
-            </div>
-            <div className="pop-row">
               <div className="flabel">
                 <span className="fic"><ListIcon size={16} /></span>Активные цели
                 <InfoCircle size={13} className="muted" />
@@ -209,8 +202,8 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
                 options={[{ v: "week", l: "Эта неделя" }, { v: "month", l: "Этот месяц" }, { v: "quarter", l: "Этот квартал" }]} />
             </div>
           </div>
-          {(sort || fArea || fImpact || fStart || fDeadline || showCompleted) && (
-            <button className="pop-reset" onClick={() => { setSort(""); setFArea(""); setFImpact(""); setFStart(""); setFDeadline(""); setShowCompleted(false); }}>
+          {(sort || fImpact || fStart || fDeadline || showCompleted) && (
+            <button className="pop-reset" onClick={() => { setSort(""); setFImpact(""); setFStart(""); setFDeadline(""); setShowCompleted(false); }}>
               Сбросить фильтры
             </button>
           )}
@@ -246,7 +239,6 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
           <div className="goal-cards">
             {goals.map((g) => {
               const pct = goalProgress(g, data);
-              const area = data.areas.find((a) => a.id === g.areaId);
               return (
                 <div key={g.id} className="goal-card" onClick={() => setView({ kind: "goal", id: g.id })}>
                   <span className="row-dot-icon">
@@ -258,13 +250,12 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
                     <ProgressCircle pct={pct} /> {pct}%
                     {g.impact && <span className={`badge ${g.impact.toLowerCase()}`}><Bolt size={11} /> {IMPACT_RU[g.impact]}</span>}
                   </div>
-                  <div className="gc-area">{area?.name ?? ""}</div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <div className="table" style={{ ["--cols" as string]: "minmax(220px, 1fr) 96px 118px 88px 106px 72px 150px" } as React.CSSProperties}>
+          <div className="table" style={{ ["--cols" as string]: "minmax(220px, 1fr) 96px 118px 88px 106px 72px" } as React.CSSProperties}>
             <div className="table-head">
               <div>Название</div>
               <div>Прогресс</div>
@@ -272,11 +263,9 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
               <div>Начало</div>
               <div>Дедлайн</div>
               <div>Задачи</div>
-              <div>Сфера жизни</div>
             </div>
             {goals.map((g) => {
               const pct = goalProgress(g, data);
-              const area = data.areas.find((a) => a.id === g.areaId);
               const taskCount = data.tasks.filter((t) => t.goalId === g.id && !t.deletedAt).length;
               return (
                 <div key={g.id} className="table-row" onClick={() => setView({ kind: "goal", id: g.id })}>
@@ -327,21 +316,6 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
                   </div>
                   <div className="cell" style={{ display: "flex", alignItems: "center", gap: 5 }}>
                     <Check size={14} /> {taskCount}
-                  </div>
-                  <div className="cell" onClick={(e) => e.stopPropagation()}>
-                    <Dropdown align="right" trigger={<span className="cell-btn wrap">{area?.name ?? "–"}</span>}>
-                      {(close) => (
-                        <>
-                          {data.areas.map((a) => (
-                            <MenuItem key={a.id} selected={g.areaId === a.id}
-                              onClick={() => { updateGoal(g.id, { areaId: a.id }); close(); }}>
-                              <span className="cbar" style={{ background: a.color }} />{a.name}
-                            </MenuItem>
-                          ))}
-                          <MenuItem selected={!g.areaId} onClick={() => { updateGoal(g.id, { areaId: null }); close(); }}>Нет</MenuItem>
-                        </>
-                      )}
-                    </Dropdown>
                   </div>
                 </div>
               );
@@ -419,7 +393,7 @@ export function GoalModal({ goal, onClose, defaultAreaId, parentId }: {
     onClose();
   };
 
-  const colorName = f.color ? (PALETTE.find((p) => p.hex === f.color)?.name ?? f.color) : "Как у сферы жизни";
+  const colorName = f.color ? (PALETTE.find((p) => p.hex === f.color)?.name ?? f.color) : "По умолчанию";
   const areaColor = data.areas.find((a) => a.id === f.areaId)?.color ?? "#46a758";
 
   return (
@@ -452,14 +426,6 @@ export function GoalModal({ goal, onClose, defaultAreaId, parentId }: {
           </div>
         </div>
 
-        <div className="frow">
-          <div className="flabel"><span className="fic"><Heart size={17} /></span>Сфера жизни</div>
-          <div className="fctrl">
-            <Select value={f.areaId} placeholder="Выбрать" onChange={(v) => setF({ ...f, areaId: v })}>
-              {data.areas.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-            </Select>
-          </div>
-        </div>
         <div className="frow">
           <div className="flabel"><span className="fic"><Bolt size={17} /></span>Влияние</div>
           <div className="fctrl">
@@ -529,7 +495,7 @@ export function GoalModal({ goal, onClose, defaultAreaId, parentId }: {
           {colorOpen && (
             <div className="color-pop">
               <button className="color-opt" onClick={() => { setF({ ...f, color: null }); setColorOpen(false); }}>
-                <span className="swatch" style={{ background: areaColor }} /> Как у сферы жизни
+                <span className="swatch" style={{ background: areaColor }} /> По умолчанию
               </button>
               {PALETTE.map((c) => (
                 <button key={c.name} className="color-opt" onClick={() => { setF({ ...f, color: c.hex }); setColorOpen(false); }}>
@@ -571,10 +537,8 @@ export function GoalDetail({ id, tab, setView }: { id: string; tab?: string; set
   const [edit, setEdit] = useState(false);
   const [subModal, setSubModal] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [menuPage, setMenuPage] = useState<"main" | "move">("main");
   if (!goal) return <div className="empty-state">Цель не найдена</div>;
 
-  const area = data.areas.find((a) => a.id === goal.areaId);
   const pct = goalProgress(goal, data);
   const tasks = data.tasks.filter((t) => t.goalId === goal.id && !t.deletedAt && !t.completedAt);
   const subgoals = data.goals.filter((g) => g.parentId === goal.id);
@@ -600,21 +564,7 @@ export function GoalDetail({ id, tab, setView }: { id: string; tab?: string; set
         </button>
         <Dropdown align="right" width={250} trigger={<span className="icon-btn"><Dots size={17} /></span>}>
           {(close) => {
-            const done = (fn?: () => void) => { fn?.(); setMenuPage("main"); close(); };
-            if (menuPage === "move") {
-              return (
-                <>
-                  <div className="menu-label">Переместить в сферу</div>
-                  {data.areas.map((a) => (
-                    <MenuItem key={a.id} selected={goal.areaId === a.id}
-                      onClick={() => done(() => updateGoal(goal.id, { areaId: a.id }))}>
-                      <span className="cbar" style={{ background: a.color }} />{a.name}
-                    </MenuItem>
-                  ))}
-                  <MenuItem onClick={() => setMenuPage("main")}>← Назад</MenuItem>
-                </>
-              );
-            }
+            const done = (fn?: () => void) => { fn?.(); close(); };
             return (
               <>
                 <MenuItem onClick={() => done(() => setEdit(true))}><Pencil size={15} /> Редактировать цель</MenuItem>
@@ -629,7 +579,6 @@ export function GoalDetail({ id, tab, setView }: { id: string; tab?: string; set
                   <Check size={15} /> {goal.completedAt ? "Возобновить цель" : "Завершить цель"}
                 </MenuItem>
                 <div className="menu-sep" />
-                <MenuItem onClick={() => setMenuPage("move")}>→ Переместить в…</MenuItem>
                 <MenuItem onClick={() => done(() => setSubModal(true))}><Plus size={15} /> Добавить подцель</MenuItem>
                 <div className="menu-sep" />
                 <div className="menu-item" style={{ cursor: "default" }}>
@@ -670,7 +619,6 @@ export function GoalDetail({ id, tab, setView }: { id: string; tab?: string; set
                 <span className="cdot" style={{ background: goalColor(goal, data.areas) }} />
               </div>
               <div>
-                {area && <div className="gh-area"><AreaIcon icon={area.icon} size={14} /> {area.name}</div>}
                 <div className="gh-name">{goal.name}</div>
                 {goal.description && <div className="gh-desc">{goal.description}</div>}
                 <div className="gh-meta">
