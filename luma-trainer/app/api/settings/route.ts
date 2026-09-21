@@ -4,8 +4,13 @@ import { toSettings } from "@/lib/serialize";
 import { clampInt, json, readJson, str } from "@/lib/server/http";
 
 export async function GET() {
-  const row = await getSettingsRow();
-  return json(toSettings(row));
+  try {
+    const row = await getSettingsRow();
+    return json(toSettings(row));
+  } catch (e) {
+    // ВРЕМЕННО: показать реальную ошибку БД для диагностики (убрать после).
+    return json({ error: "db", message: (e as Error).message, name: (e as Error).name }, { status: 500 });
+  }
 }
 
 export async function PATCH(req: Request) {
