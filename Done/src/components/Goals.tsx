@@ -9,7 +9,7 @@ import {
   Target, Plus, Dots, FilterLines, Settings2, ChevronRight, ChevronDown, ArrowLeft,
   Star, Heart, Bolt, CalendarDay, Flag, ChartBars, InfoCircle, Search, MapPin, Check, LineChart, Pencil, Trash, ListIcon,
 } from "./icons";
-import { Modal, Select, Stepper, Toggle, Dropdown, MenuItem, DateMenu, Pop, PSel, InlineAdd } from "./ui";
+import { Modal, Select, Stepper, Toggle, Dropdown, MenuItem, DateMenu, Pop, PSel } from "./ui";
 import { AddTask, TaskRow, TaskModal } from "./TaskViews";
 import { AreaIcon, AREA_ICONS } from "./icons";
 
@@ -21,6 +21,31 @@ export function goalColor(g: Goal, areas: { id: string; color: string }[]): stri
   if (g.color) return g.color;
   const a = areas.find((x) => x.id === g.areaId);
   return a?.color ?? "#6e6ade";
+}
+
+/** Инлайн-создание цели на доске: название + «зачем» (описание). */
+function GoalInlineAdd({ onAdd }: { onAdd: (name: string, why: string) => void }) {
+  const [name, setName] = useState("");
+  const [why, setWhy] = useState("");
+  const [open, setOpen] = useState(false);
+  const whyRef = useRef<HTMLInputElement>(null);
+  const submit = () => { const n = name.trim(); if (!n) return; onAdd(n, why.trim()); setName(""); setWhy(""); setOpen(false); };
+  return (
+    <div className="goal-inline-add">
+      <div className="inline-add">
+        <span className="add-ring" />
+        <input placeholder="Добавить цель" value={name}
+          onFocus={() => setOpen(true)}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { if (why || !name.trim()) submit(); else whyRef.current?.focus(); } }} />
+      </div>
+      {open && (
+        <input ref={whyRef} className="goal-inline-why" placeholder="Зачем эта цель? Почему хочу её достичь"
+          value={why} onChange={(e) => setWhy(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") submit(); }} />
+      )}
+    </div>
+  );
 }
 
 /** Прогресс цели: числовая метрика — по формуле, иначе каждая выполненная
@@ -246,6 +271,7 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
                     <span className="cdot" style={{ background: goalColor(g, data.areas) }} />
                   </span>
                   <div className="gc-name">{g.name}</div>
+                  {g.description && <div className="gc-why">{g.description}</div>}
                   <div className="gc-meta">
                     <ProgressCircle pct={pct} /> {pct}%
                     {g.impact && <span className={`badge ${g.impact.toLowerCase()}`}><Bolt size={11} /> {IMPACT_RU[g.impact]}</span>}
@@ -274,7 +300,10 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
                       {g.icon ? <AreaIcon icon={g.icon} size={22} /> : <Target size={22} />}
                       <span className="cdot" style={{ background: goalColor(g, data.areas) }} />
                     </span>
-                    {g.name}
+                    <span className="row-name-text">
+                      <span>{g.name}</span>
+                      {g.description && <span className="row-name-why">{g.description}</span>}
+                    </span>
                   </div>
                   <div className="cell" style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <ProgressCircle pct={pct} /> {pct}%
@@ -323,7 +352,7 @@ export function GoalsView({ setView }: { setView: (v: View) => void }) {
           </div>
         )}
         {goals.length > 0 && (
-          <InlineAdd placeholder="Добавить цель" onAdd={(name) => addGoal({ name })} />
+          <GoalInlineAdd onAdd={(name, why) => addGoal({ name, description: why || undefined })} />
         )}
       </div>
       {modal && <GoalModal onClose={() => setModal(false)} />}
@@ -421,7 +450,7 @@ export function GoalModal({ goal, onClose, defaultAreaId, parentId }: {
           <div className="m-titles">
             <input className="m-name" autoFocus placeholder="Название цели" value={f.name}
               onChange={(e) => setF({ ...f, name: e.target.value })} />
-            <input className="m-desc" placeholder="Описание" value={f.description}
+            <input className="m-desc" placeholder="Зачем эта цель? Почему хочу её достичь" value={f.description}
               onChange={(e) => setF({ ...f, description: e.target.value })} />
           </div>
         </div>

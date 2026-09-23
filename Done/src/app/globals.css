@@ -1044,3 +1044,13 @@ h1.page-title, .page-title { font-weight: 300; }
 .inline-add .add-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.6px solid var(--border); flex-shrink: 0; }
 .inline-add input { flex: 1; border: none; background: transparent; font-size: 15px; color: inherit; }
 .inline-add input::placeholder { color: var(--text-faint); }
+
+/* Описание цели («зачем») под названием */
+.table-row .row-name .row-name-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.row-name-why { font-size: 12.5px; font-weight: 400; color: var(--text-faint); white-space: normal; line-height: 1.35; }
+.goal-card .gc-why { font-size: 12.5px; color: var(--text-faint); margin: -4px 0 8px 0; line-height: 1.35; }
+
+/* Инлайн-создание цели: поле «зачем» */
+.goal-inline-why { display: block; width: calc(100% - 96px); margin: -4px 0 8px 56px;
+  border: none; background: transparent; font-size: 13px; color: inherit; }
+.goal-inline-why::placeholder { color: var(--text-faint); }
