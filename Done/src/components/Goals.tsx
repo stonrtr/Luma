@@ -40,7 +40,7 @@ function GoalInlineAdd({ onAdd }: { onAdd: (name: string, why: string) => void }
           onKeyDown={(e) => { if (e.key === "Enter") { if (why || !name.trim()) submit(); else whyRef.current?.focus(); } }} />
       </div>
       {open && (
-        <input ref={whyRef} className="goal-inline-why" placeholder="Зачем эта цель? Почему хочу её достичь"
+        <input ref={whyRef} className="goal-inline-why" placeholder="Почему важно?"
           value={why} onChange={(e) => setWhy(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") submit(); }} />
       )}
@@ -450,7 +450,7 @@ export function GoalModal({ goal, onClose, defaultAreaId, parentId }: {
           <div className="m-titles">
             <input className="m-name" autoFocus placeholder="Название цели" value={f.name}
               onChange={(e) => setF({ ...f, name: e.target.value })} />
-            <input className="m-desc" placeholder="Зачем эта цель? Почему хочу её достичь" value={f.description}
+            <input className="m-desc" placeholder="Почему важно?" value={f.description}
               onChange={(e) => setF({ ...f, description: e.target.value })} />
           </div>
         </div>
