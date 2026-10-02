@@ -8,21 +8,11 @@ import { Confirm, EditIcon, EmptyState, Modal, Spinner, Star, TrashIcon, useToas
 import { AddPhraseDialog } from "../dialogs/AddPhraseDialog";
 import { ImportDialog } from "../dialogs/ImportDialog";
 import { EditPhraseDialog } from "../dialogs/EditPhraseDialog";
-
-const SORTS: [string, string][] = [
-  ["recent", "Недавно открытые"],
-  ["attention", "Требуют внимания"],
-  ["worst", "Хуже всего изучены"],
-  ["stale", "Давно не повторялись"],
-  ["new", "Новые"],
-  ["title", "По названию"],
-  ["count", "По количеству фраз"],
-];
+import { orderedLessonGroups } from "@/lib/lesson-order";
 
 export function LessonsSection() {
   const { refreshKey, refresh } = useApp();
   const [tab, setTab] = useState<"active" | "archive">("active");
-  const [sort, setSort] = useState("recent");
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [dialog, setDialog] = useState<"create" | "import" | "topics" | null>(null);
@@ -32,19 +22,12 @@ export function LessonsSection() {
 
   useEffect(() => {
     setLessons(null);
-    A.lessons(tab === "archive", sort).then(setLessons).catch(() => setLessons([]));
+    A.lessons(tab === "archive").then(setLessons).catch(() => setLessons([]));
     A.topics().then(setTopics).catch(() => {});
-  }, [tab, sort, refreshKey, local]);
+  }, [tab, refreshKey, local]);
 
-  const grouped =
-    lessons && tab === "active"
-      ? [
-          ...topics
-            .map((t) => ({ name: t.name, items: lessons.filter((l) => l.topicId === t.id) }))
-            .filter((g) => g.items.length > 0),
-          { name: "Без темы", items: lessons.filter((l) => !l.topicId) },
-        ].filter((g) => g.items.length > 0)
-      : null;
+  // Порядок: сверху последние открытые, ниже — по дате добавления (новые выше).
+  const grouped = lessons && tab === "active" ? orderedLessonGroups(lessons, topics) : null;
 
   return (
     <>
@@ -61,7 +44,7 @@ export function LessonsSection() {
         </div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <select
           className="select-onpanel"
           value={tab}
@@ -70,13 +53,6 @@ export function LessonsSection() {
           <option value="active">Активные</option>
           <option value="archive">Архив</option>
         </select>
-        {tab === "active" && (
-          <select className="select-onpanel" value={sort} onChange={(e) => setSort(e.target.value)}>
-            {SORTS.map(([v, l]) => (
-              <option key={v} value={v}>{l}</option>
-            ))}
-          </select>
-        )}
       </div>
 
       {lessons === null ? (

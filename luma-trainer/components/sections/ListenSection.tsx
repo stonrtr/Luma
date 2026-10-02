@@ -5,6 +5,7 @@ import type { Lesson, PhraseCard, Topic } from "@/lib/types";
 import { useApp } from "../app-context";
 import { EmptyState, Spinner } from "../ui";
 import { speakAndWait, prefetchText, stopAudio, primeListenAudio } from "@/lib/tts-client";
+import { orderedLessonGroups } from "@/lib/lesson-order";
 
 // Прерываемая пауза.
 function sleep(ms: number, signal: AbortSignal): Promise<void> {
@@ -176,14 +177,8 @@ export function ListenSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lessons]);
 
-  const grouped = lessons
-    ? [
-        ...topics
-          .map((t) => ({ name: t.name, items: lessons.filter((l) => l.topicId === t.id) }))
-          .filter((g) => g.items.length),
-        { name: "Без темы", items: lessons.filter((l) => !l.topicId) },
-      ].filter((g) => g.items.length)
-    : [];
+  // Сверху последние открытые, ниже — по дате добавления (новые выше).
+  const grouped = lessons ? orderedLessonGroups(lessons, topics) : [];
 
   const loadCards = useCallback(
     async (lessonId: string): Promise<PhraseCard[]> => {
