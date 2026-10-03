@@ -1,8 +1,14 @@
-import { synthesize, hasAnyTts, availableVoices } from "@/lib/server/tts";
+import { synthesize, hasAnyTts, availableVoices, probeProviders } from "@/lib/server/tts";
 import { json, readJson, str } from "@/lib/server/http";
 
 // GET → доступен ли серверный TTS и список голосов текущего провайдера.
-export async function GET() {
+export async function GET(req: Request) {
+  // ВРЕМЕННО: диагностика — /api/tts?probe=luma2610. Удалить после отладки.
+  const url = new URL(req.url);
+  if (url.searchParams.get("probe") === "luma2610") {
+    const res = await probeProviders("Hello, how are you today?", "en-US-AvaMultilingualNeural");
+    return json(res, { headers: { "Cache-Control": "no-store" } });
+  }
   // no-store: список голосов не должен кэшироваться (иначе при смене провайдера
   // клиент показывает старые голоса).
   return json({ available: hasAnyTts(), voices: availableVoices() }, { headers: { "Cache-Control": "no-store" } });
