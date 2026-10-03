@@ -186,37 +186,6 @@ async function synthesizeGemini(text: string, voice: string): Promise<TtsResult 
   }
 }
 
-// ВРЕМЕННО: диагностика провайдеров — статусы без утечки ключей. Удалить после отладки.
-export async function probeProviders(text: string, voice: string): Promise<unknown> {
-  const out: Record<string, unknown> = {};
-  if (hasAzure()) {
-    try {
-      const lang = /[а-яё]/i.test(text) ? "ru-RU" : "en-US";
-      const voiceName = AZURE_VOICES.some((v) => v.id === voice) ? voice : "en-US-AvaMultilingualNeural";
-      const ssml = `<speak version='1.0' xml:lang='${lang}'><voice name='${voiceName}'>${xmlEscape(text)}</voice></speak>`;
-      const res = await fetch(`https://${AZURE_REGION}.tts.speech.microsoft.com/cognitiveservices/v1`, {
-        method: "POST",
-        headers: { "Ocp-Apim-Subscription-Key": AZURE_KEY, "Content-Type": "application/ssml+xml", "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3", "User-Agent": "luma" },
-        body: ssml, signal: AbortSignal.timeout(15000),
-      });
-      out.azure = { status: res.status, ok: res.ok, bytes: res.ok ? (await res.arrayBuffer()).byteLength : undefined, body: res.ok ? undefined : (await res.text()).slice(0, 300), region: AZURE_REGION };
-    } catch (e) { out.azure = { error: String(e).slice(0, 200) }; }
-  } else out.azure = "not-configured";
-  if (hasGeminiTts()) {
-    try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TTS_MODEL}:generateContent`, {
-        method: "POST",
-        headers: { "x-goog-api-key": GEMINI_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } } } }),
-        signal: AbortSignal.timeout(15000),
-      });
-      out.gemini = { model: GEMINI_TTS_MODEL, status: res.status, ok: res.ok, body: res.ok ? "ok" : (await res.text()).slice(0, 300) };
-    } catch (e) { out.gemini = { error: String(e).slice(0, 200) }; }
-  } else out.gemini = "not-configured";
-  out.deepgram = hasDeepgram() ? "configured" : "not-configured";
-  return out;
-}
-
 /**
  * Прогреть дисковый кэш для набора фраз (последовательно, чтобы уважать RPM-лимиты).
  * Останавливается после двух подряд неудач (обычно это исчерпанная квота).
