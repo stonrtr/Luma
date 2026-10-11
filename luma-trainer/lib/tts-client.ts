@@ -11,6 +11,11 @@ let current: HTMLAudioElement | null = null;
 const bufferCache = new Map<string, AudioBuffer>(); // text|voice -> decoded
 const bufferInflight = new Map<string, Promise<AudioBuffer | null>>();
 let currentSource: AudioBufferSourceNode | null = null;
+// Поколение озвучки: каждый новый speakEnglish/stopAudio инкрементит счётчик,
+// а асинхронные этапы (fetch/decode) после await проверяют, что они всё ещё
+// актуальны. Иначе две озвучки, стартовавшие до того, как хоть одна выставила
+// currentSource (холодный старт без кэша), играли бы одновременно.
+let speakGen = 0;
 
 /** Скачать + декодировать аудио фразы в AudioBuffer (с кэшем и дедупликацией). */
 async function ensureBuffer(text: string, voice: string): Promise<AudioBuffer | null> {
@@ -257,6 +262,10 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
   const clean = text.trim();
   if (!clean) return;
 
+  // Новое поколение: любая ранее запущенная (ещё ждущая буфер) озвучка станет
+  // неактуальной и не заиграет.
+  const myGen = ++speakGen;
+
   // Останавливаем предыдущее (и Web Audio, и <audio>).
   if (currentSource) {
     try { currentSource.stop(); } catch {}
@@ -268,11 +277,13 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
   }
 
   const useServer = await checkServerTts();
+  if (myGen !== speakGen) return;
   if (useServer) {
     // 1) Web Audio через разблокированный контекст — играет ВЫБРАННЫМ голосом
     //    даже при автоозвучке карточки (iOS блокирует new Audio() без жеста,
     //    из-за чего раньше карточку читал системный голос, а не Azure).
     const buf = await ensureBuffer(clean, voice);
+    if (myGen !== speakGen) return;
     if (buf && getAudioContext()) {
       const played = await playBufferAndWait(buf, rate);
       if (played) return;
@@ -280,6 +291,7 @@ export async function speakEnglish(text: string, voice: string, rate = 1): Promi
     }
     // 2) Фолбэк на переиспользуемый <audio>.
     const url = await ensureAudio(clean, voice);
+    if (myGen !== speakGen) return;
     if (url) {
       try {
         const audio = getListenAudio();
@@ -407,6 +419,7 @@ export async function prefetchText(text: string, voice: string): Promise<void> {
 
 /** Остановить текущее серверное аудио (для паузы/остановки режима «Слушать»). */
 export function stopAudio(): void {
+  speakGen++; // отменяем любую ждущую буфер озвучку
   if (currentSource) {
     try { currentSource.stop(); } catch {}
     try { currentSource.disconnect(); } catch {}
