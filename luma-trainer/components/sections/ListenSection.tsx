@@ -82,6 +82,7 @@ export function ListenSection() {
   const [repeats, setRepeats] = useState(3);
   const [withExample, setWithExample] = useState(false);
   const [loop, setLoop] = useState(false);
+  const [rate, setRate] = useState(1); // скорость воспроизведения (1 = норма, ниже = медленнее)
   const [building, setBuilding] = useState(false);
 
   // Плеер (queue !== null → режим воспроизведения).
@@ -114,10 +115,12 @@ export function ListenSection() {
   const pauseRef = useRef(pauseSec);
   const repeatsRef = useRef(repeats);
   const exampleRef = useRef(withExample);
+  const rateRef = useRef(rate);
   useEffect(() => { loopRef.current = loop; }, [loop]);
   useEffect(() => { pauseRef.current = pauseSec; }, [pauseSec]);
   useEffect(() => { repeatsRef.current = repeats; }, [repeats]);
   useEffect(() => { exampleRef.current = withExample; }, [withExample]);
+  useEffect(() => { rateRef.current = rate; }, [rate]);
 
   // Восстановление сохранённого выбора (объявлено ДО сохраняющего эффекта,
   // чтобы прочитать localStorage раньше, чем он перезапишется).
@@ -252,14 +255,14 @@ export function ListenSection() {
           void prefetchText(next.english, voice);
         }
         setStep("ru");
-        await speakAndWait(card.russian, voice, settings.speechRate, signal);
+        await speakAndWait(card.russian, voice, rateRef.current, signal);
         if (signal.aborted) return;
         setStep("pause");
         await sleep(pauseRef.current * 1000, signal);
         if (signal.aborted) return;
         for (let k = 0; k < repeatsRef.current; k++) {
           setStep("en");
-          await speakAndWait(card.english, voice, settings.speechRate, signal);
+          await speakAndWait(card.english, voice, rateRef.current, signal);
           if (signal.aborted) return;
           setStep("pause");
           await sleep(pauseRef.current * 1000, signal);
@@ -268,13 +271,13 @@ export function ListenSection() {
         // Пример предложения (опционально): русский → пауза → английский.
         if (exampleRef.current && card.exampleRu && card.exampleEn) {
           setStep("ru-ex");
-          await speakAndWait(card.exampleRu, voice, settings.speechRate, signal);
+          await speakAndWait(card.exampleRu, voice, rateRef.current, signal);
           if (signal.aborted) return;
           setStep("pause");
           await sleep(pauseRef.current * 1000, signal);
           if (signal.aborted) return;
           setStep("en-ex");
-          await speakAndWait(card.exampleEn, voice, settings.speechRate, signal);
+          await speakAndWait(card.exampleEn, voice, rateRef.current, signal);
           if (signal.aborted) return;
           setStep("pause");
           await sleep(pauseRef.current * 1000, signal);
@@ -292,7 +295,7 @@ export function ListenSection() {
       setStep("done");
       releaseWakeLock();
     },
-    [voice, settings.speechRate, acquireWakeLock, releaseWakeLock]
+    [voice, acquireWakeLock, releaseWakeLock]
   );
 
   const start = async () => {
@@ -449,6 +452,27 @@ export function ListenSection() {
                 ×{n}
               </button>
             ))}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <span className="muted" style={{ fontSize: 12, minWidth: 62 }}>Скорость</span>
+            <input
+              type="range"
+              min={0.5}
+              max={1.25}
+              step={0.05}
+              value={rate}
+              onChange={(e) => setRate(Number(e.target.value))}
+              aria-label="Скорость воспроизведения"
+              style={{ flex: 1, minWidth: 120, maxWidth: 240, accentColor: "#fff" }}
+            />
+            <button
+              className="gbtn gbtn-sm"
+              style={{ minHeight: 34, padding: "0 10px", fontSize: 13, minWidth: 56 }}
+              onClick={() => setRate(1)}
+              title="Сбросить на обычную скорость"
+            >
+              {rate.toFixed(2).replace(/0$/, "")}×
+            </button>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <button
