@@ -14,6 +14,7 @@ import { ProgressSection } from "./sections/ProgressSection";
 import { SettingsSection } from "./sections/SettingsSection";
 import { StudySession } from "./study/StudySession";
 import { MatchGame } from "./study/MatchGame";
+import { LearnSession } from "./study/LearnSession";
 import { primeSfx } from "@/lib/sfx";
 
 const LS_KEY = "luma:section";
@@ -144,6 +145,14 @@ export function AppShell() {
 
         {study && study.mode === "match" ? (
           <MatchGame
+            scope={study}
+            onClose={() => {
+              setStudy(null);
+              refresh();
+            }}
+          />
+        ) : study && study.mode === "learn" ? (
+          <LearnSession
             scope={study}
             onClose={() => {
               setStudy(null);

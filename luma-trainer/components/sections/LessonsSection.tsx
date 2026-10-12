@@ -153,34 +153,47 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
           </div>
           <span style={{ color: "var(--ink-2)", fontSize: 11, fontWeight: 700, minWidth: 34, textAlign: "right" }}>{s.progress}%</span>
         </div>
-        <div style={{ display: "flex", gap: 8 }} onClick={(e) => e.stopPropagation()}>
-          <button
-            className="abtn"
-            style={{ flex: 1 }}
-            onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learning" })}
-            disabled={s.total - s.learned <= 0}
-            title="Фразы, ещё не достигшие 100%"
-          >
-            Учить
-          </button>
-          <button
-            className="lbtn"
-            style={{ flex: 1 }}
-            onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learned" })}
-            disabled={s.learned <= 0}
-            title="Уже выученные фразы — повторить"
-          >
-            Повторить
-          </button>
-          <button
-            className="lbtn"
-            style={{ flex: 1 }}
-            onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, mode: "match" })}
-            disabled={s.total <= 0}
-            title="Игра «Подбор» — сопоставь слова и переводы"
-          >
-            Подбор
-          </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              className="abtn"
+              style={{ flex: 1 }}
+              onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learning" })}
+              disabled={s.total - s.learned <= 0}
+              title="Фразы, ещё не достигшие 100%"
+            >
+              Учить
+            </button>
+            <button
+              className="lbtn"
+              style={{ flex: 1 }}
+              onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, filter: "learned" })}
+              disabled={s.learned <= 0}
+              title="Уже выученные фразы — повторить"
+            >
+              Повторить
+            </button>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              className="lbtn"
+              style={{ flex: 1 }}
+              onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, mode: "learn" })}
+              disabled={s.total <= 0}
+              title="Заучивание — выбор вариантов, затем ввод ответа, до полного освоения"
+            >
+              Заучивание
+            </button>
+            <button
+              className="lbtn"
+              style={{ flex: 1 }}
+              onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, mode: "match" })}
+              disabled={s.total <= 0}
+              title="Игра «Подбор» — сопоставь слова и переводы"
+            >
+              Подбор
+            </button>
+          </div>
         </div>
       </div>
 
