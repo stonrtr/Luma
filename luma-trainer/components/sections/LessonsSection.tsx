@@ -172,6 +172,15 @@ function LessonCard({ lesson, topics, onChanged }: { lesson: Lesson; topics: Top
           >
             Повторить
           </button>
+          <button
+            className="lbtn"
+            style={{ flex: 1 }}
+            onClick={() => startStudy({ scope: "lesson", lessonId: lesson.id, title: lesson.title, mode: "match" })}
+            disabled={s.total <= 0}
+            title="Игра «Подбор» — сопоставь слова и переводы"
+          >
+            Подбор
+          </button>
         </div>
       </div>
 

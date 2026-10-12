@@ -7,6 +7,7 @@ export type StudyScope = {
   lessonId?: string;
   title?: string;
   filter?: "learning" | "learned"; // для урока: учить (не выучено) / повторить (выучено)
+  mode?: "study" | "match"; // match — игра «Подбор» вместо карточек
 };
 
 export type AppCtx = {

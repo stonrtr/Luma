@@ -13,6 +13,7 @@ import { ListenSection } from "./sections/ListenSection";
 import { ProgressSection } from "./sections/ProgressSection";
 import { SettingsSection } from "./sections/SettingsSection";
 import { StudySession } from "./study/StudySession";
+import { MatchGame } from "./study/MatchGame";
 import { primeSfx } from "@/lib/sfx";
 
 const LS_KEY = "luma:section";
@@ -141,7 +142,15 @@ export function AppShell() {
           </div>
         )}
 
-        {study && (
+        {study && study.mode === "match" ? (
+          <MatchGame
+            scope={study}
+            onClose={() => {
+              setStudy(null);
+              refresh();
+            }}
+          />
+        ) : study ? (
           <StudySession
             scope={study}
             onClose={() => {
@@ -149,7 +158,7 @@ export function AppShell() {
               refresh();
             }}
           />
-        )}
+        ) : null}
       </AppContext.Provider>
     </ToastProvider>
   );
