@@ -453,25 +453,43 @@ export function ListenSection() {
               </button>
             ))}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span className="muted" style={{ fontSize: 12, minWidth: 62 }}>Скорость</span>
+            <button
+              className="gbtn gbtn-sm"
+              style={{ minHeight: 34, width: 34, padding: 0, fontSize: 18, lineHeight: 1 }}
+              onClick={() => setRate((r) => Math.max(0.7, Math.round((r - 0.1) * 10) / 10))}
+              title="Медленнее"
+              aria-label="Медленнее"
+            >
+              −
+            </button>
             <input
               type="range"
-              min={0.5}
-              max={1.25}
-              step={0.05}
+              min={0.7}
+              max={1.5}
+              step={0.1}
               value={rate}
               onChange={(e) => setRate(Number(e.target.value))}
               aria-label="Скорость воспроизведения"
-              style={{ flex: 1, minWidth: 120, maxWidth: 240, accentColor: "#fff" }}
+              style={{ flex: 1, minWidth: 100, maxWidth: 200, accentColor: "#fff" }}
             />
             <button
               className="gbtn gbtn-sm"
-              style={{ minHeight: 34, padding: "0 10px", fontSize: 13, minWidth: 56 }}
-              onClick={() => setRate(1)}
-              title="Сбросить на обычную скорость"
+              style={{ minHeight: 34, width: 34, padding: 0, fontSize: 18, lineHeight: 1 }}
+              onClick={() => setRate((r) => Math.min(1.5, Math.round((r + 0.1) * 10) / 10))}
+              title="Быстрее"
+              aria-label="Быстрее"
             >
-              {rate.toFixed(2).replace(/0$/, "")}×
+              +
+            </button>
+            <button
+              className="gbtn gbtn-sm"
+              style={{ minHeight: 34, padding: "0 10px", fontSize: 13, minWidth: 52 }}
+              onClick={() => setRate(1)}
+              title="Сбросить на 1×"
+            >
+              {rate.toFixed(1)}×
             </button>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
